@@ -52,6 +52,7 @@
 #include "Cpu/Std/IfxCpu_Intrinsics.h"
 #include "IfxCpu_reg.h"
 #include "Ifx_Cfg.h"
+#include "zf_common_debug.h"
 #ifdef IFX_CFG_EXTEND_TRAP_HOOKS
 #include "Ifx_Cfg_Trap.h"
 #endif
@@ -175,6 +176,10 @@ void IfxCpu_Trap_busError(uint32 tin)
     volatile IfxCpu_Trap trapWatch;
     trapWatch = IfxCpu_Trap_extractTrapInfo(IfxCpu_Trap_Class_bus, tin);
     IFX_CFG_CPU_TRAP_BE_HOOK(trapWatch);
+
+    // 如果单片机卡死在了这里 说明有资源没初始化成功就直接调用了使用函数
+    // 举个例子，没调用pwm_init初始化函数，然后直接调用pwm_set_duty来赋值输出
+
     IFX_CFG_CPU_TRAP_DEBUG;
     __asm("rslcx"); /* Restore lower context before returning. lower context was stored in the trap vector */
     __asm("rfe");

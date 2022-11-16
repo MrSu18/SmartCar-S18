@@ -1239,9 +1239,10 @@ IFX_INLINE void IfxQspi_writeMixedDataTransmitFifo(Ifx_QSPI *qspi, uint32 mixEnt
     qspi->MIXENTRY.U = mixEntryVal;
 }
 
+
 IFX_INLINE void IfxQspi_writeTransmitFifo(Ifx_QSPI *qspi, uint32 data)
 {
-        qspi->DATAENTRY[0].U = data;
+    qspi->DATAENTRY[0].U = data;
 }
 
 

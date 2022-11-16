@@ -1900,8 +1900,8 @@ typedef struct _Ifx_GTM_DPLL_IRQ_NOTIFY_Bits
 {
     Ifx_Strict_32Bit PDI:1;                 /**< \brief [0:0] DPLL disable interrupt (rwh) */
     Ifx_Strict_32Bit PEI:1;                 /**< \brief [1:1] DPLL enable interrupt (rwh) */
-    Ifx_Strict_32Bit TINI:1;                /**< \brief [2:2] TRIGGER minimum hold time violation interrupt (∆T) (rwh) */
-    Ifx_Strict_32Bit TAXI:1;                /**< \brief [3:3] TRIGGER maximum hold time violation interrupt (∆T>THMA>0) (rwh) */
+    Ifx_Strict_32Bit TINI:1;                /**< \brief [2:2] TRIGGER minimum hold time violation interrupt (鈭員) (rwh) */
+    Ifx_Strict_32Bit TAXI:1;                /**< \brief [3:3] TRIGGER maximum hold time violation interrupt (鈭員>THMA>0) (rwh) */
     Ifx_Strict_32Bit SISI:1;                /**< \brief [4:4] STATE inactive slope interrupt (rwh) */
     Ifx_Strict_32Bit TISI:1;                /**< \brief [5:5] TRIGGER inactive slope interrupt (rwh) */
     Ifx_Strict_32Bit MSI:1;                 /**< \brief [6:6] Missing STATE interrupt (rwh) */
@@ -3957,7 +3957,7 @@ typedef struct _Ifx_GTM_TOM_CH_CN0_Bits
     Ifx_Strict_32Bit reserved_16:16;        /**< \brief \internal Reserved */
 } Ifx_GTM_TOM_CH_CN0_Bits;
 
-/** \brief  TOM Channel Control Register’ */
+/** \brief  TOM Channel Control Register鈥� */
 typedef struct _Ifx_GTM_TOM_CH_CTRL_Bits
 {
     Ifx_Strict_32Bit reserved_0:11;         /**< \brief \internal Reserved */
@@ -6853,7 +6853,7 @@ typedef union
     Ifx_GTM_TOM_CH_CN0_Bits B;              /**< \brief Bitfield access */
 } Ifx_GTM_TOM_CH_CN0;
 
-/** \brief  TOM Channel Control Register’ */
+/** \brief  TOM Channel Control Register鈥� */
 typedef union
 {
     unsigned int U;                         /**< \brief Unsigned access */
@@ -7282,7 +7282,7 @@ typedef volatile struct _Ifx_GTM_TIM_CH
 /** \brief  TOM channel objects */
 typedef volatile struct _Ifx_GTM_TOM_CH
 {
-    Ifx_GTM_TOM_CH_CTRL CTRL;               /**< \brief 0, TOM Channel Control Register’ */
+    Ifx_GTM_TOM_CH_CTRL CTRL;               /**< \brief 0, TOM Channel Control Register鈥� */
     Ifx_GTM_TOM_CH_SR0 SR0;                 /**< \brief 4, TOM Channel CCU0 Compare Shadow Register */
     Ifx_GTM_TOM_CH_SR1 SR1;                 /**< \brief 8, TOM Channel CCU1 Compare Shadow Register */
     Ifx_GTM_TOM_CH_CM0 CM0;                 /**< \brief C, TOM Channel CCU0 Compare Register */
