@@ -43,71 +43,71 @@
 // 参数说明     count_pin       设置计数引脚
 // 参数说明     dir_pin         设置计数方向引脚
 // 返回参数     void
-// 使用示例     encoder_mapping_set(gptn, count_pin, dir_pin);
+// 使用示例     encoder_mapping_set(gptn, ch1_pin, ch2_pin);
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-static void encoder_mapping_set (encoder_index_enum encoder_n, encoder_channel1_enum count_pin, encoder_channel2_enum dir_pin)
+static void encoder_mapping_set (encoder_index_enum encoder_n, encoder_channel1_enum ch1_pin, encoder_channel2_enum ch2_pin)
 {
-    IfxGpt12_TxIn_In *count;
-    IfxGpt12_TxEud_In *dir;
+    IfxGpt12_TxIn_In  *ch1;
+    IfxGpt12_TxEud_In *ch2;
 
     switch(encoder_n)
     {
         case TIM2_ENCOEDER:
         {
-            if      (TIM2_ENCOEDER_CH1_P00_7  == count_pin)    count   = &IfxGpt120_T2INA_P00_7_IN;
-            else if (TIM2_ENCOEDER_CH1_P33_7  == count_pin)    count   = &IfxGpt120_T2INB_P33_7_IN;
+            if      (TIM2_ENCOEDER_CH1_P00_7  == ch1_pin)    ch1   = &IfxGpt120_T2INA_P00_7_IN;
+            else if (TIM2_ENCOEDER_CH1_P33_7  == ch1_pin)    ch1   = &IfxGpt120_T2INB_P33_7_IN;
             else    zf_assert(FALSE);
 
-            if      (TIM2_ENCOEDER_CH2_P00_8 == dir_pin)       dir     = &IfxGpt120_T2EUDA_P00_8_IN;
-            else if (TIM2_ENCOEDER_CH2_P33_6 == dir_pin)       dir     = &IfxGpt120_T2EUDB_P33_6_IN;
+            if      (TIM2_ENCOEDER_CH2_P00_8  == ch2_pin)    ch2   = &IfxGpt120_T2EUDA_P00_8_IN;
+            else if (TIM2_ENCOEDER_CH2_P33_6  == ch2_pin)    ch2   = &IfxGpt120_T2EUDB_P33_6_IN;
             else    zf_assert(FALSE);
         }break;
 
         case TIM3_ENCOEDER:
         {
-            if      (TIM3_ENCOEDER_CH1_P02_6  == count_pin)    count   = &IfxGpt120_T3INA_P02_6_IN;
+            if      (TIM3_ENCOEDER_CH1_P02_6  == ch1_pin)    ch1   = &IfxGpt120_T3INA_P02_6_IN;
             else    zf_assert(FALSE);
 
-            if      (TIM3_ENCOEDER_CH2_P02_7 == dir_pin)       dir     = &IfxGpt120_T3EUDA_P02_7_IN;
+            if      (TIM3_ENCOEDER_CH2_P02_7  == ch2_pin)    ch2   = &IfxGpt120_T3EUDA_P02_7_IN;
             else    zf_assert(FALSE);
         }break;
 
         case TIM4_ENCOEDER:
         {
-            if      (TIM4_ENCOEDER_CH1_P02_8  == count_pin)    count   = &IfxGpt120_T4INA_P02_8_IN;
+            if      (TIM4_ENCOEDER_CH1_P02_8  == ch1_pin)    ch1   = &IfxGpt120_T4INA_P02_8_IN;
             else    zf_assert(FALSE);
 
-            if      (TIM4_ENCOEDER_CH2_P00_9 == dir_pin)       dir     = &IfxGpt120_T4EUDA_P00_9_IN;
-            else if (TIM4_ENCOEDER_CH2_P33_5 == dir_pin)       dir     = &IfxGpt120_T4EUDB_P33_5_IN;
+            if      (TIM4_ENCOEDER_CH2_P00_9  == ch2_pin)    ch2   = &IfxGpt120_T4EUDA_P00_9_IN;
+            else if (TIM4_ENCOEDER_CH2_P33_5  == ch2_pin)    ch2   = &IfxGpt120_T4EUDB_P33_5_IN;
             else    zf_assert(FALSE);
         }break;
 
         case TIM5_ENCOEDER:
         {
-            if      (TIM5_ENCOEDER_CH1_P21_7  == count_pin)    count   = &IfxGpt120_T5INA_P21_7_IN;
-            else if (TIM5_ENCOEDER_CH1_P10_3  == count_pin)    count   = &IfxGpt120_T5INB_P10_3_IN;
+            if      (TIM5_ENCOEDER_CH1_P21_7  == ch1_pin)    ch1   = &IfxGpt120_T5INA_P21_7_IN;
+            else if (TIM5_ENCOEDER_CH1_P10_3  == ch1_pin)    ch1   = &IfxGpt120_T5INB_P10_3_IN;
             else    zf_assert(FALSE);
 
-            if      (TIM5_ENCOEDER_CH2_P21_6 == dir_pin)       dir     = &IfxGpt120_T5EUDA_P21_6_IN;
-            else if (TIM5_ENCOEDER_CH2_P10_1 == dir_pin)       dir     = &IfxGpt120_T5EUDB_P10_1_IN;
+            if      (TIM5_ENCOEDER_CH2_P21_6  == ch2_pin)    ch2   = &IfxGpt120_T5EUDA_P21_6_IN;
+            else if (TIM5_ENCOEDER_CH2_P10_1  == ch2_pin)    ch2   = &IfxGpt120_T5EUDB_P10_1_IN;
             else    zf_assert(FALSE);
         }break;
 
         case TIM6_ENCOEDER:
         {
-            if      (TIM6_ENCOEDER_CH1_P20_3  == count_pin)    count   = &IfxGpt120_T6INA_P20_3_IN;
-            else if (TIM6_ENCOEDER_CH1_P10_2  == count_pin)    count   = &IfxGpt120_T6INB_P10_2_IN;
+            if      (TIM6_ENCOEDER_CH1_P20_3  == ch1_pin)    ch1   = &IfxGpt120_T6INA_P20_3_IN;
+            else if (TIM6_ENCOEDER_CH1_P10_2  == ch1_pin)    ch1   = &IfxGpt120_T6INB_P10_2_IN;
             else    zf_assert(FALSE);
 
-            if      (TIM6_ENCOEDER_CH2_P20_0 == dir_pin)       dir     = &IfxGpt120_T6EUDA_P20_0_IN;
+            if      (TIM6_ENCOEDER_CH2_P20_0  == ch2_pin)    ch2   = &IfxGpt120_T6EUDA_P20_0_IN;
             else    zf_assert(FALSE);
         }break;
     }
 #pragma warning 507
 
-    IfxGpt12_initTxInPinWithPadLevel(count,  IfxPort_InputMode_pullUp, IfxPort_PadDriver_cmosAutomotiveSpeed1);
-    IfxGpt12_initTxEudInPinWithPadLevel(dir, IfxPort_InputMode_pullUp, IfxPort_PadDriver_cmosAutomotiveSpeed1);
+    IfxGpt12_initTxInPinWithPadLevel(ch1,  IfxPort_InputMode_pullUp, IfxPort_PadDriver_cmosAutomotiveSpeed1);
+    IfxGpt12_initTxEudInPinWithPadLevel(ch2, IfxPort_InputMode_pullUp, IfxPort_PadDriver_cmosAutomotiveSpeed1);
 
 #pragma warning default
 }

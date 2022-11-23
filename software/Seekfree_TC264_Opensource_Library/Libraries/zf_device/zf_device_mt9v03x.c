@@ -351,7 +351,7 @@ uint8 mt9v03x_set_exposure_time (uint16 light)
         uint16 temp;
         uint16 timeout_count = 0;
         uint32 uart_buffer_index = 0;
-
+        set_camera_type(CAMERA_GRAYSCALE, mt9v03x_vsync_handler, mt9v03x_dma_handler, mt9v03x_uart_callback);    // 设置连接摄像头类型
         uart_buffer[0] = 0xA5;
         uart_buffer[1] = MT9V03X_SET_EXP_TIME;
         temp = light;
@@ -379,7 +379,7 @@ uint8 mt9v03x_set_exposure_time (uint16 light)
     {
         return_state = mt9v03x_set_exposure_time_sccb(light);
     }
-
+    set_camera_type(CAMERA_GRAYSCALE, mt9v03x_vsync_handler, mt9v03x_dma_handler, NULL);    // 设置连接摄像头类型
     return return_state;
 }
 
@@ -400,7 +400,7 @@ uint8 mt9v03x_set_reg (uint8 addr, uint16 data)
         uint16 temp;
         uint16 timeout_count = 0;
         uint32 uart_buffer_index = 0;
-
+        set_camera_type(CAMERA_GRAYSCALE, mt9v03x_vsync_handler, mt9v03x_dma_handler, mt9v03x_uart_callback);    // 设置连接摄像头类型
         uart_buffer[0] = 0xA5;
         uart_buffer[1] = MT9V03X_SET_ADDR;
         temp = addr;
@@ -436,6 +436,7 @@ uint8 mt9v03x_set_reg (uint8 addr, uint16 data)
     {
         return_state = mt9v03x_set_reg_sccb(addr, data);
     }
+    set_camera_type(CAMERA_GRAYSCALE, mt9v03x_vsync_handler, mt9v03x_dma_handler, NULL);    // 设置连接摄像头类型
     return return_state;
 }
 
