@@ -15,10 +15,11 @@ typedef struct SeedGrowAqueue
 }SeedGrowAqueue;//种子生长的队列
 
 /**************全局变量*****************/
-extern uint8 left_line[USE_IMAGE_H], center_line[USE_IMAGE_H], right_line[USE_IMAGE_H];//左中右三线
+extern uint8 left_line_x[USE_IMAGE_H], center_line_x[USE_IMAGE_H], right_line_x[USE_IMAGE_H];//左中右三线
 extern uint8 left_line_y[USE_IMAGE_W], right_line_y[USE_IMAGE_W];//赛道边界的Y坐标
 extern uint8 black_block_num;//赛道黑块个数
 extern uint8 l_lostline_num, r_lostline_num;//左右丢线数
+extern uint8 track_top_row;//赛道的最顶行，也可起到最长白列的效果
 //****************************************
 
 void SowSeed(myPoint* left_seed,myPoint* right_seed);//扫线前的播种操作

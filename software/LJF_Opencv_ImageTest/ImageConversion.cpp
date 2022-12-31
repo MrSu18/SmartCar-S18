@@ -9,11 +9,11 @@
 
 //定义变量
 uint8* PerImg_ip[USE_IMAGE_H][USE_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
-uint8 binary_image[MT9V03X_H][MT9V03X_W];//二值化后的图像
+uint8 binary_image[MT9V03X_H][MT9V03X_W]={0};//二值化后的图像
 uint8 left_border[USE_IMAGE_H] = {0};//图像左边界
 uint8 right_border[USE_IMAGE_H] = {USE_IMAGE_W-1};//图像右边界
 
-extern uint8 left_line[USE_IMAGE_H], right_line[USE_IMAGE_H];//左中右三线
+extern uint8 left_line_x[USE_IMAGE_H], right_line_x[USE_IMAGE_H];//左中右三线
 
 /***********************************************
 * @brief : 大津法二值化0.8ms程序（实际测试4ms在TC264中）
@@ -26,7 +26,7 @@ extern uint8 left_line[USE_IMAGE_H], right_line[USE_IMAGE_H];//左中右三线
 ************************************************/
 uint8 otsuThreshold(uint8* image, uint16 width, uint16 height)
 {
-#define GrayScale 256
+#define GrayScale 256 //最高灰度级
     int pixelCount[GrayScale] = { 0 };//每个灰度值所占像素个数
     float pixelPro[GrayScale] = { 0 };//每个灰度值所占总像素比例
     int i, j;
@@ -100,14 +100,10 @@ void ImagePerspective_Init(void)
     {
         for (int j = 0; j < USE_IMAGE_H; j++)
         {
-            int local_x = (int)((change_un_Mat[0][0] * i
-                + change_un_Mat[0][1] * j + change_un_Mat[0][2])
-                / (change_un_Mat[2][0] * i + change_un_Mat[2][1] * j
-                    + change_un_Mat[2][2]));
-            int local_y = (int)((change_un_Mat[1][0] * i
-                + change_un_Mat[1][1] * j + change_un_Mat[1][2])
-                / (change_un_Mat[2][0] * i + change_un_Mat[2][1] * j
-                    + change_un_Mat[2][2]));
+            int local_x = (int)((change_un_Mat[0][0]*i+change_un_Mat[0][1]*j+change_un_Mat[0][2])
+                               /(change_un_Mat[2][0]*i+change_un_Mat[2][1]*j+change_un_Mat[2][2]));
+            int local_y = (int)((change_un_Mat[1][0]*i+change_un_Mat[1][1]*j+change_un_Mat[1][2])
+                               /(change_un_Mat[2][0]*i+change_un_Mat[2][1]*j+change_un_Mat[2][2]));
             if (local_x>= 0 && local_y >= 0 && local_y < MT9V03X_H && local_x < MT9V03X_W) 
             {
                 PerImg_ip[j][i] = &PER_IMG[local_y][local_x];
@@ -176,8 +172,8 @@ void ImageBorderInit(void)
     //找完边界之后重置一下左右两线让他们的初始值等于边界
     for (uint8 row = 0; row < USE_IMAGE_H; row++)
     {
-        left_line[row] = left_border[row];
-        right_line[row] = right_border[row];
+        left_line_x[row] = left_border[row];
+        right_line_x[row] = right_border[row];
     }
 }
 

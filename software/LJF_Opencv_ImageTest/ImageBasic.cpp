@@ -1,13 +1,12 @@
 #include "ImageBasic.h"
-#include <stdio.h>
 
-uint8 left_line[USE_IMAGE_H], center_line[USE_IMAGE_H], right_line[USE_IMAGE_H];//左中右三线
+uint8 left_line_x[USE_IMAGE_H], center_line_x[USE_IMAGE_H], right_line_x[USE_IMAGE_H];//左中右三线
 uint8 left_line_y[USE_IMAGE_W] = { 0 }, right_line_y[USE_IMAGE_W] = {USE_IMAGE_H-1};//赛道边界的Y坐标
 uint8 black_block_num = 0;//赛道黑块个数
 uint8 const seed_l_flag[8] = { 0,1,2,3,4,5,6,7 };//左种子标号队列数据域
 uint8 const seed_r_flag[8] = { 4,3,2,1,0,7,6,5 };//右种子标号队列数据域
 uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
-uint8 leftline_endrow = USE_IMAGE_H, rightline_endrow = USE_IMAGE_H;//左右线的结束行
+uint8 track_top_row = USE_IMAGE_H;//赛道的最顶行，也可起到最长白列的效果
 
 #define BLACK_CONTINUE_WIDTH_THR	10//从中间往两边的黑色连续的阈值
 #define TRACK_HALF_WIDTH	13//赛道半宽像素点	
@@ -39,14 +38,14 @@ void SowSeed(myPoint* left_seed,myPoint* right_seed)
 			if (l_black_width >= BLACK_CONTINUE_WIDTH_THR || (column- BLACK_CONTINUE_WIDTH_THR)<left_border[left_seed->Y])
 			{
 				left_seed->X = column;
-				left_line[left_seed->Y] = left_seed->X;
+                left_line_x[left_seed->Y] = left_seed->X;
 				break;
 			}
 			else continue;
 		}
 	}
 	//找到右边的种子
-	for (uint8 column = USE_IMAGE_W / 2; column < right_border[right_seed->Y]-1; column++)
+	for (uint8 column = left_seed->X; column < right_border[right_seed->Y]-1; column++)
 	{
 		//找到白跳黑
 		if (use_image[right_seed->Y][column] == IMAGE_WHITE && use_image[right_seed->Y][column + 1] == IMAGE_BLACK)
@@ -63,7 +62,7 @@ void SowSeed(myPoint* left_seed,myPoint* right_seed)
 			if (r_black_width >= BLACK_CONTINUE_WIDTH_THR || (column + BLACK_CONTINUE_WIDTH_THR) > right_border[right_seed->Y])
 			{
 				right_seed->X = column+1;
-				right_line[right_seed->Y] = right_seed->X;
+                right_line_x[right_seed->Y] = right_seed->X;
 				break;
 			}
 			else continue;
@@ -225,27 +224,28 @@ void EdgeDetection(void)
 		black_block_num++;
 	}
 	/*2.种子从左下角开始生长，生长出一个闭合赛道边缘*/
-	uint8 seed_grow_top_flag=0;//标志着种子是否生长到了图像顶端需要切换左右线的判断，0：左边线，1：右边线
+	uint8 seed_grow_top_flag=0,seed_grow_right_flag=0;//标志着种子是否生长到了图像顶端或赛道右端需要切换左右线的判断，0：左边线，1：右边线
 	do
 	{
 		LCDDrawPoint(left_seed.Y, left_seed.X);
 		if (EightAreasSeedGrown(&left_seed, &l_seed_queue, &seed_l_flag[0]) == 1)
 		{
-			//记录最高到哪行，对种子行进行记录
-			if (left_seed.Y < leftline_endrow)
+			//记录最高到哪行，对种子行进行记录，可用来判断直弯道
+			if (left_seed.Y < track_top_row)
 			{
-				leftline_endrow = left_seed.Y;
-				//判断种子是否生长到了图像顶端
-				if (leftline_endrow == 0)	seed_grow_top_flag = 1;
+                track_top_row = left_seed.Y;
 			}
+            //判断是否目前种子是在左边线还是右边线
+            if(left_seed.Y==0)  seed_grow_top_flag=1;
+            else if(left_seed.X==right_border[left_seed.Y]) seed_grow_right_flag=1;
 			//判断是否是边线,对种子列进行记录
-			if (seed_grow_top_flag == 0)//还在赛道左边界
+			if (seed_grow_top_flag==0 && seed_grow_right_flag==0)//还在赛道左边界
 			{
 				if (use_image[left_seed.Y][left_seed.X + 1] == IMAGE_WHITE && use_image[left_seed.Y][left_seed.X + 2] == IMAGE_WHITE)
 				{
-					if (left_seed.X > left_line[left_seed.Y])
+					if (left_seed.X > left_line_x[left_seed.Y])
 					{
-						left_line[left_seed.Y] = left_seed.X;
+                        left_line_x[left_seed.Y] = left_seed.X;
 					}
 				}
 				if (left_seed.X == left_border[left_seed.Y])//判断是否丢线
@@ -257,9 +257,9 @@ void EdgeDetection(void)
 			{
 				if (use_image[left_seed.Y][left_seed.X - 1] == IMAGE_WHITE && use_image[left_seed.Y][left_seed.X - 2] == IMAGE_WHITE)
 				{
-					if (left_seed.X < right_line[left_seed.Y])
+					if (left_seed.X < right_line_x[left_seed.Y])
 					{
-						right_line[left_seed.Y] = left_seed.X;
+                        right_line_x[left_seed.Y] = left_seed.X;
 					}
 					if (left_seed.X == right_border[left_seed.Y])//判断是否丢线
 					{
@@ -296,9 +296,9 @@ void EdgeDetection(void)
 void CaculateBlackBlock()
 {
 	//判断扫线的封顶行
-	if (leftline_endrow<=1)
+	if (track_top_row <= 1)
 	{
-		for (uint8 column = left_line[1]; column < right_line[1]; column++)
+		for (uint8 column = left_line_x[1]; column < right_line_x[1]; column++)
 		{
 			if (column == left_border[1] || column == right_border[1])
 			{
@@ -311,31 +311,31 @@ void CaculateBlackBlock()
 		}
 	}
 	uint8 l_flag=3, r_flag=3;//避免因为连续的判断一种状态（因为一种状态是不会连续出现的）,因为一开始不知道是丢还是不丢，先给一个状态之外的值
-	for (uint8 row = USE_IMAGE_H-5; row > leftline_endrow; row--)
+	for (uint8 row = USE_IMAGE_H-5; row > track_top_row; row--)
 	{
 		//从不丢线到丢线
-		if (left_line[row]==left_border[row] && left_line[row-2]==left_border[row-2] && left_line[row+2]!=left_border[row+2] && l_flag!=0)
+		if (left_line_x[row] == left_border[row] && left_line_x[row - 2] == left_border[row - 2] && left_line_x[row + 2] != left_border[row + 2] && l_flag != 0)
 		{
 			black_block_num++;
 			l_flag = 0;
 		}
-		if (right_line[row]==right_border[row] && right_line[row-2]==right_border[row-2] && right_line[row+2]!=right_border[row+2] && r_flag!=0)
+		if (right_line_x[row] == right_border[row] && right_line_x[row - 2] == right_border[row - 2] && right_line_x[row + 2] != right_border[row + 2] && r_flag != 0)
 		{
 			black_block_num++;
 			r_flag = 0;
 		}
 		//从丢线到不丢线
-		if (left_line[row]!=left_border[row] && left_line[row-2]!=left_border[row-2] && left_line[row+2]==left_border[row+2] && l_flag != 1)
+		if (left_line_x[row] != left_border[row] && left_line_x[row - 2] != left_border[row - 2] && left_line_x[row + 2] == left_border[row + 2] && l_flag != 1)
 		{
 			black_block_num++;
 			l_flag = 1;
 		}
-		if (right_line[row]!=right_border[row] && right_line[row-2]!=right_border[row-2] && right_line[row+2]==right_border[row+2] && r_flag != 1)
+		if (right_line_x[row] != right_border[row] && right_line_x[row - 2] != right_border[row - 2] && right_line_x[row + 2] == right_border[row + 2] && r_flag != 1)
 		{
  			black_block_num++;
 			r_flag = 1;
 		}
 		//顺便在这个操作下获得中线
-		center_line[row] = (left_line[row] + right_line[row]) / 2;
+		center_line_x[row] = (left_line_x[row] + right_line_x[row]) / 2;
 	}
 }
