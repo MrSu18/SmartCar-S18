@@ -160,7 +160,7 @@ float mpu6050_acc_transition (int16 acc_value)
 float mpu6050_gyro_transition (int16 gyro_value)
 {
     float gyro_data = 0;
-    switch(MPU6050_GYRO_SAMPLE)
+    switch(MPU6050_GYR_SAMPLE)
     {
         case 0x00: gyro_data = (float)gyro_value / 131.2f;  break;  //  0x00 陀螺仪量程为:±250 dps     获取到的陀螺仪数据除以131           可以转化为带物理单位的数据，单位为：°/s
         case 0x08: gyro_data = (float)gyro_value / 65.6f;   break;  //  0x08 陀螺仪量程为:±500 dps     获取到的陀螺仪数据除以65.5          可以转化为带物理单位的数据，单位为：°/s
@@ -202,7 +202,7 @@ uint8 mpu6050_init (void)
         mpu6050_write_register(MPU6050_PWR_MGMT_1, 0x00);                       // 解除休眠状态
         mpu6050_write_register(MPU6050_SMPLRT_DIV, 0x07);                       // 125HZ采样率
         mpu6050_write_register(MPU6050_CONFIG, 0x04);
-        mpu6050_write_register(MPU6050_GYRO_CONFIG, MPU6050_GYRO_SAMPLE);       // 2000°/s
+        mpu6050_write_register(MPU6050_GYRO_CONFIG, MPU6050_GYR_SAMPLE);       // 2000°/s
         mpu6050_write_register(MPU6050_ACCEL_CONFIG, MPU6050_ACC_SAMPLE);       // 8g(m/s^2)
         mpu6050_write_register(MPU6050_USER_CONTROL, 0x00);
         mpu6050_write_register(MPU6050_INT_PIN_CFG, 0x02);

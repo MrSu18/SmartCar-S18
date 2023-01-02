@@ -375,7 +375,7 @@ float imu963ra_acc_transition (int16 acc_value)
 float imu963ra_gyro_transition (int16 gyro_value)
 {
     float gyro_data = 0;
-    switch(IMU963RA_GYRO_SAMPLE)
+    switch(IMU963RA_GYR_SAMPLE)
     {
         case 0x52: gyro_data = (float)gyro_value / 228.6f; break;  //  0x52 陀螺仪量程为:±125dps  获取到的陀螺仪数据除以228.6，   可以转化为带物理单位的数据，单位为：°/s
         case 0x50: gyro_data = (float)gyro_value / 114.3f; break;  //  0x50 陀螺仪量程为:±250dps  获取到的陀螺仪数据除以114.3，   可以转化为带物理单位的数据，单位为：°/s
@@ -440,14 +440,14 @@ uint8 imu963ra_init (void)
         }
 
         imu963ra_write_acc_gyro_register(IMU963RA_INT1_CTRL, 0x03);             // 开启陀螺仪 加速度数据就绪中断
-        imu963ra_write_acc_gyro_register(IMU963RA_CTRL1_XL, 0x3C);              // 设置加速度计量程±8G以及数据输出速率52hz 以及加速度信息从第一级滤波器输出
+        imu963ra_write_acc_gyro_register(IMU963RA_CTRL1_XL, IMU963RA_ACC_SAMPLE);              // 设置加速度计量程±8G以及数据输出速率52hz 以及加速度信息从第一级滤波器输出
         // IMU963RA_CTRL1_XL 寄存器
         // 设置为:0x30 加速度量程为:±2G      获取到的加速度计数据 除以16393，可以转化为带物理单位的数据，单位：g(m/s^2)
         // 设置为:0x38 加速度量程为:±4G      获取到的加速度计数据 除以8197， 可以转化为带物理单位的数据，单位：g(m/s^2)
         // 设置为:0x3C 加速度量程为:±8G      获取到的加速度计数据 除以4098， 可以转化为带物理单位的数据，单位：g(m/s^2)
         // 设置为:0x34 加速度量程为:±16G     获取到的加速度计数据 除以2049， 可以转化为带物理单位的数据，单位：g(m/s^2)
 
-        imu963ra_write_acc_gyro_register(IMU963RA_CTRL2_G, 0x5C);               // 设置陀螺仪计量程 ±2000dps 以及数据输出速率 208hz
+        imu963ra_write_acc_gyro_register(IMU963RA_CTRL2_G, IMU963RA_GYR_SAMPLE);               // 设置陀螺仪计量程 ±2000dps 以及数据输出速率 208hz
         // IMU963RA_CTRL2_G 寄存器
         // 设置为:0x52 陀螺仪量程为:±125dps  获取到的陀螺仪数据除以228.6，   可以转化为带物理单位的数据，单位为：°/s
         // 设置为:0x50 陀螺仪量程为:±250dps  获取到的陀螺仪数据除以114.3，   可以转化为带物理单位的数据，单位为：°/s
@@ -482,7 +482,7 @@ uint8 imu963ra_init (void)
             break;
         }
 
-        imu963ra_write_mag_register(IMU963RA_MAG_ADDR, IMU963RA_MAG_CONTROL1, 0x19);    // 设置磁力计量程8G 输出速率100hz 连续模式
+        imu963ra_write_mag_register(IMU963RA_MAG_ADDR, IMU963RA_MAG_CONTROL1, IMU963RA_MAG_SAMPLE);    // 设置磁力计量程8G 输出速率100hz 连续模式
         // IMU963RA_MAG_ADDR 寄存器
         // 设置为:0x19 磁力计量程为:8G     获取到的加速度计数据 除以3000， 可以转化为带物理单位的数据，单位：G(高斯)
         // 设置为:0x09 磁力计量程为:2G     获取到的加速度计数据 除以12000，可以转化为带物理单位的数据，单位：G(高斯)

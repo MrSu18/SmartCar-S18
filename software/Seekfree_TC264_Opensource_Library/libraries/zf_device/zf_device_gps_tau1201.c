@@ -45,7 +45,6 @@
 
 #include "zf_common_function.h"
 #include "zf_common_fifo.h"
-#include "zf_common_interrupt.h"
 #include "zf_driver_delay.h"
 #include "zf_driver_uart.h"
 #include "zf_device_type.h"
@@ -53,7 +52,7 @@
 
 #define GPS_TAU1201_BUFFER_SIZE     (128)
 
-vuint8                      gps_tau1201_flag;                                       // 1：采集完成等待处理数据 0：没有采集完成
+uint8                       gps_tau1201_flag;                                       // 1：采集完成等待处理数据 0：没有采集完成
 gps_info_struct             gps_tau1201;                                            // GPS解析之后的数据
 
 static  uint8               gps_tau1201_state = 0;                                  // 1：GPS初始化完成
@@ -118,7 +117,7 @@ static int get_int_number (char *s)
     i = i - 1;
     strncpy(buf, s, i);
     buf[i] = 0;
-    return_value = str_to_int(buf);
+    return_value = func_str_to_int(buf);
     return return_value;
 }
 
@@ -139,7 +138,7 @@ static float get_float_number (char *s)
     i = i - 1;
     strncpy(buf, s, i);
     buf[i] = 0;
-    return_value = (float)str_to_double(buf);
+    return_value = (float)func_str_to_double(buf);
     return return_value;
 }
 
@@ -160,7 +159,7 @@ static double get_double_number (char *s)
     i = i - 1;
     strncpy(buf, s, i);
     buf[i] = 0;
-    return_value = str_to_double(buf);
+    return_value = func_str_to_double(buf);
     return return_value;
 }
 
@@ -186,12 +185,12 @@ static void utc_to_btc (gps_time_struct *time)
             day_num = 28;
             if((time->year % 4 == 0 && time->year % 100 != 0) || time->year % 400 == 0) // 判断是否为闰年
             {
-                day_num ++;                                                             // 闰月 2月为29天
+                day_num ++;                                                     // 闰月 2月为29天
             }
         }
         else
         {
-            day_num = 31;                                                               // 1 3 5 7 8 10 12这些月份为31天
+            day_num = 31;                                                       // 1 3 5 7 8 10 12这些月份为31天
             if(4  == time->month || 6  == time->month || 9  == time->month || 11 == time->month )
             {
                 day_num = 30;
@@ -223,8 +222,8 @@ static uint8 gps_gnrmc_parse (char *line, gps_info_struct *gps)
 {
     uint8 state, temp;
 
-    double  latitude;                                                           // 经度
-    double  longitude;                                                          // 纬度
+    double  latitude;                                                           // 纬度
+    double  longitude;                                                          // 经度
 
     float lati_cent_tmp, lati_second_tmp;
     float long_cent_tmp, long_second_tmp;
@@ -297,7 +296,7 @@ static uint8 gps_gngga_parse (char *line, gps_info_struct *gps)
 
     if (state != ',')
     {
-        gps->satellite_used = (uint8)(get_int_number(&buf[get_parameter_index(7, buf)]));
+        gps->satellite_used = (uint8)get_int_number(&buf[get_parameter_index(7, buf)]);
         gps->height         = get_float_number(&buf[get_parameter_index(9, buf)]) + get_float_number(&buf[get_parameter_index(11, buf)]);  // 高度 = 海拔高度 + 地球椭球面相对大地水准面的高度
         return_state = 1;
     }
@@ -384,7 +383,7 @@ uint8 gps_data_parse (void)
         {
             gps_rmc_state = GPS_STATE_PARSING;
             strncpy((char *)&check_buffer[2], strchr((const char *)gps_rmc_buffer, '*')+1, 2);
-            bbc_xor_origin = (uint8)str_to_hex((char *)check_buffer);
+            bbc_xor_origin = (uint8)func_str_to_hex((char *)check_buffer);
             for(bbc_xor_calculation = gps_rmc_buffer[1], data_len = 2; gps_rmc_buffer[data_len] != '*'; data_len ++)
             {
                 bbc_xor_calculation ^= gps_rmc_buffer[data_len];
@@ -404,7 +403,7 @@ uint8 gps_data_parse (void)
         {
             gps_gga_state = GPS_STATE_PARSING;
             strncpy((char *)&check_buffer[2], strchr((const char *)gps_gga_buffer, '*')+1, 2);
-            bbc_xor_origin = (uint8)str_to_hex((char *)check_buffer);
+            bbc_xor_origin = (uint8)func_str_to_hex((char *)check_buffer);
 
             for(bbc_xor_calculation = gps_gga_buffer[1], data_len = 2; gps_gga_buffer[data_len] != '*'; data_len ++)
             {
@@ -505,10 +504,12 @@ uint8 gps_init (void)
     const uint8 close_txt[]     = {0xF1, 0xD9, 0x06, 0x01, 0x03, 0x00, 0xF0, 0x40, 0x00, 0x3A, 0x8F};
     const uint8 close_txt_ant[] = {0xF1, 0xD9, 0x06, 0x01, 0x03, 0x00, 0xF0, 0x20, 0x00, 0x1A, 0x4F};
 
-    set_wireless_type(GPS_TAU1201, gps_uart_callback);
     fifo_init(&gps_tau1201_receiver_fifo, FIFO_DATA_8BIT, gps_tau1201_receiver_buffer, GPS_TAU1201_BUFFER_SIZE);
     system_delay_ms(500);                                                           // 等待GPS启动后开始初始化
     uart_init(GPS_TAU1201_UART, 115200, GPS_TAU1201_RX, GPS_TAU1201_TX);
+
+    set_wireless_type(GPS_TAU1201, gps_uart_callback);
+
     uart_write_buffer(GPS_TAU1201_UART, (uint8 *)set_rate, sizeof(set_rate));       // 设置GPS更新速率为10hz 如果不调用此语句则默认为1hz
     system_delay_ms(200);
 

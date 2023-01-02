@@ -255,31 +255,31 @@ void uart_mux (uart_index_enum uartn, uart_tx_pin_enum tx_pin, uart_rx_pin_enum 
 }
 
 //-------------------------------------------------------------------------------------------------------------------
+// 函数简介       串口等待发送
+// 参数说明       uart_n          串口模块号 参照 zf_driver_uart.h 内 uart_index_enum 枚举体定义
+// 参数说明       dat             需要发送的字节
+// 返回参数       void
+// 使用示例       uart_write_byte_wait(UART_1, 0xA5);                 // 往串口1的发送缓冲区写入0xA5，并等待数据发送完成
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+void uart_write_byte_wait (uart_index_enum uart_n, const uint8 dat)
+{
+    Ifx_SizeT count = 1;
+    (void)IfxAsclin_Asc_write(uart_get_handle(uart_n), &dat, &count, TIME_INFINITE);
+    while(TRUE == uart_get_handle(uart_n)->txInProgress);
+}
+//-------------------------------------------------------------------------------------------------------------------
 // 函数简介       串口发送写入
 // 参数说明       uart_n          串口模块号 参照 zf_driver_uart.h 内 uart_index_enum 枚举体定义
 // 参数说明       dat             需要发送的字节
 // 返回参数       void
-// 使用示例       uart_write_tx_buffer(UART_1, 0xA5);                  // 往串口1的发送缓冲区写入0xA5，写入后仍然会发送数据，但是会减少CPU在串口的执行时长
-// 备注信息
-//-------------------------------------------------------------------------------------------------------------------
-void uart_write_tx_buffer (uart_index_enum uart_n, const uint8 dat)
-{
-    Ifx_SizeT count = 1;
-    (void)IfxAsclin_Asc_write(uart_get_handle(uart_n), &dat, &count, TIME_INFINITE);
-}
-//-------------------------------------------------------------------------------------------------------------------
-// 函数简介       串口字节输出
-// 参数说明       uart_n          串口模块号 参照 zf_driver_uart.h 内 uart_index_enum 枚举体定义
-// 参数说明       dat             需要发送的字节
-// 返回参数       void
-// 使用示例       uart_write_byte(UART_1, 0xA5);                  // 串口1发送0xA5
+// 使用示例       uart_write_byte(UART_1, 0xA5);                    // 往串口1的发送缓冲区写入0xA5，写入后仍然会发送数据，但是会减少CPU在串口的执行时
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void uart_write_byte (uart_index_enum uart_n, const uint8 dat)
 {
     Ifx_SizeT count = 1;
     (void)IfxAsclin_Asc_write(uart_get_handle(uart_n), &dat, &count, TIME_INFINITE);
-    while(TRUE == uart_get_handle(uart_n)->txInProgress);
 }
 
 
@@ -296,7 +296,7 @@ void uart_write_buffer (uart_index_enum uart_n, const uint8 *buff, uint32 len)
 {
     while(len)
     {
-        uart_write_tx_buffer(uart_n, *buff);
+        uart_write_byte(uart_n, *buff);
         len--;
         buff++;
     }

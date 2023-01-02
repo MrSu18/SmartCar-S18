@@ -264,14 +264,16 @@ user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC26
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_absolute_encoder.h :
 user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_bluetooth_ch9141.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_bluetooth_ch9141.h :
-user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_type.h
-e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_type.h :
 user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_gps_tau1201.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_gps_tau1201.h :
 user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_camera.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_camera.h :
 user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_uart.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_uart.h :
+user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_type.h
+e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_type.h :
+user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_dl1a.h
+e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_dl1a.h :
 user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_icm20602.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_icm20602.h :
 user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_imu660ra.h

@@ -45,13 +45,14 @@
 *                   ------------------------------------
 ********************************************************************************************************************/
 
+
 #include "zf_common_debug.h"
 #include "zf_common_function.h"
 #include "zf_driver_delay.h"
 #include "zf_driver_soft_spi.h"
 #include "zf_driver_spi.h"
-#include "zf_device_absolute_encoder.h"
 
+#include "zf_device_absolute_encoder.h"
 
 static int16 now_location = 0;
 static int16 last_location = 0;
@@ -76,7 +77,7 @@ static soft_spi_info_struct                 absolute_encoder_spi;
 static void absolute_encoder_write_register(uint8 reg, uint8 data)
 {
     ABSOLUTE_ENCODER_CSN(0);                                                    // 片选拉低选中
-    absolute_encoder_write(reg | ABS_ENCODER_SPI_W);                            // 寄存器
+    absolute_encoder_write(reg | ABSOLUTE_ENCODER_SPI_W);                       // 寄存器
     absolute_encoder_write(data);                                               // 数据
     ABSOLUTE_ENCODER_CSN(1);                                                    // 片选拉高释放
     system_delay_us(1);                                                         // 必要操作
@@ -97,7 +98,7 @@ static uint8 absolute_encoder_read_register(uint8 reg)
 {
     uint8 data = 0;
     ABSOLUTE_ENCODER_CSN(0);                                                    // 片选拉低选中
-    absolute_encoder_write(reg | ABS_ENCODER_SPI_R);                            // 寄存器
+    absolute_encoder_write(reg | ABSOLUTE_ENCODER_SPI_R);                       // 寄存器
     absolute_encoder_write(0x00);                                               // 占位
     ABSOLUTE_ENCODER_CSN(1);                                                    // 片选拉高释放
     system_delay_us(1);                                                         // 必要操作
@@ -177,16 +178,16 @@ int16 absolute_encoder_get_location (void)
 //-------------------------------------------------------------------------------------------------------------------
 int16 absolute_encoder_get_offset (void)
 {
-    int16 offset_num = 0;
-    if(myabs(now_location-last_location) > 2048)
+    int16 result_data = 0;
+    if(func_abs(now_location - last_location) > 2048)
     {
-        offset_num = (now_location > 2048 ? (now_location - 4096 - last_location) : (now_location + 4096 - last_location));
+        result_data = (now_location > 2048 ? (now_location - 4096 - last_location) : (now_location + 4096 - last_location));
     }
     else
     {
-        offset_num = (now_location - last_location);
+        result_data = (now_location - last_location);
     }
-    return offset_num;
+    return result_data;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -198,6 +199,7 @@ int16 absolute_encoder_get_offset (void)
 //-------------------------------------------------------------------------------------------------------------------
 uint8 absolute_encoder_init (void)
 {
+    uint8 return_state = 0;
     uint16 zero_position = ABSOLUTE_ENCODER_DEFAULT_ZERO;
 #if ABSOLUTE_ENCODER_USE_SOFT_SPI
     soft_spi_init(&absolute_encoder_spi, 0, ABSOLUTE_ENCODER_SOFT_SPI_DELAY, ABSOLUTE_ENCODER_SCLK_PIN, ABSOLUTE_ENCODER_MOSI_PIN, ABSOLUTE_ENCODER_MISO_PIN, SOFT_SPI_PIN_NULL);
@@ -206,17 +208,22 @@ uint8 absolute_encoder_init (void)
 #endif
     gpio_init(ABSOLUTE_ENCODER_CS_PIN, GPO, GPIO_LOW, GPO_PUSH_PULL);
 
-    if(absolute_encoder_self_check())
+    do
     {
-        // 如果程序在输出了断言信息 并且提示出错位置在这里
-        // 那么就是绝对值编码器自检出错并超时退出了
-        // 检查一下接线有没有问题 如果没问题可能就是坏了
-        zf_assert(0);
-    }
-    absolute_encoder_write_register(DIR_REG, 0x00);                             // 设置旋转方向 正转数值变小：0x00   反转数值变大：0x80
-    zero_position = (uint16)(4096 - zero_position);
-    zero_position = zero_position << 4;
-    absolute_encoder_write_register(ZERO_L_REG, (uint8)zero_position);          // 设置零位
-    absolute_encoder_write_register(ZERO_H_REG, zero_position >> 8);
-    return 0;
+        if(absolute_encoder_self_check())
+        {
+            // 如果程序在输出了断言信息 并且提示出错位置在这里
+            // 那么就是绝对值编码器自检出错并超时退出了
+            // 检查一下接线有没有问题 如果没问题可能就是坏了
+            return_state = 1;
+            zf_log(0, "absolute encoder init errror.");
+            break;
+        }
+        absolute_encoder_write_register(ABSOLUTE_ENCODER_DIR_REG, 0x00);                    // 设置旋转方向 正转数值变小：0x00   反转数值变大：0x80
+        zero_position = (uint16)(4096 - zero_position);
+        zero_position = zero_position << 4;
+        absolute_encoder_write_register(ABSOLUTE_ENCODER_ZERO_L_REG, (uint8)zero_position); // 设置零位
+        absolute_encoder_write_register(ABSOLUTE_ENCODER_ZERO_H_REG, zero_position >> 8);
+    }while(0);
+    return return_state;
 }

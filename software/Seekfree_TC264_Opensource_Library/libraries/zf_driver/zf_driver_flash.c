@@ -56,9 +56,11 @@ uint8 flash_check (uint32 sector_num, uint32 page_num)
 
     uint32 sector_addr = IfxFlash_dFlashTableEepLog[page_num].start;
 
-    uint32 temp = *(uint32 *)sector_addr;
+    uint32 num = 0;
 
-    return temp != 0 ? 1 : 0;
+    for(num = 0; num < EEPROM_PAGE_LENGTH && *(uint32 *)(sector_addr + num  * FLASH_DATA_SIZE) == 0; num ++);
+
+    return num == EEPROM_PAGE_LENGTH ? 0 : 1;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

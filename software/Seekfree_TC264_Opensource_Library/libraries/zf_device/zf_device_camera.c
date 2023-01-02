@@ -33,6 +33,7 @@
 * 2022-09-15       pudding             first version
 ********************************************************************************************************************/
 
+#include "zf_common_debug.h"
 #include "zf_common_interrupt.h"
 #include "zf_driver_gpio.h"
 #include "zf_driver_dma.h"
@@ -58,7 +59,8 @@ uint8 camera_send_image_frame_header[4] = {0x00, 0xFF, 0x01, 0x01};
 void camera_binary_image_decompression (const uint8 *data1, uint8 *data2, uint32 image_size)
 {
     uint8  i = 8;
-
+    zf_assert(data1 != NULL);
+    zf_assert(data2 != NULL);
     while(image_size --)
     {
         i = 8;
@@ -80,6 +82,7 @@ void camera_binary_image_decompression (const uint8 *data1, uint8 *data2, uint32
 //-------------------------------------------------------------------------------------------------------------------
 void camera_send_image (uart_index_enum uartn, const uint8 *image_addr, uint32 image_size)
 {
+    zf_assert(image_addr != NULL);
     // 发送命令
     uart_write_buffer(uartn, camera_send_image_frame_header, 4);
 
@@ -110,7 +113,7 @@ void camera_fifo_init (void)
 // @return      void
 // Sample usage:                camera_init();
 //-------------------------------------------------------------------------------------------------------------------
-uint8 camera_init (void)
+uint8 camera_init (uint8 *source_addr, uint8 *destination_addr, uint16 image_size)
 {
     uint8 num;
     uint8 link_list_num;
@@ -123,11 +126,11 @@ uint8 camera_init (void)
                 gpio_init((gpio_pin_enum)(OV7725_DATA_PIN + num), GPI, GPIO_LOW, GPI_FLOATING_IN);
             }
             link_list_num = dma_init(OV7725_DMA_CH,
-                                     OV7725_DATA_ADD,
-                                     ov7725_image_binary[0],
+                                     source_addr,
+                                     destination_addr,
                                      OV7725_PCLK_PIN,
                                      EXTI_TRIGGER_FALLING,
-                                     OV7725_IMAGE_SIZE);
+                                     image_size);
             exti_init(OV7725_VSYNC_PIN, EXTI_TRIGGER_FALLING);                  //初始化场中断，并设置为下降沿触发中断
             break;
         case CAMERA_GRAYSCALE:                                                  // 总钻风
@@ -136,11 +139,11 @@ uint8 camera_init (void)
                 gpio_init((gpio_pin_enum)(MT9V03X_DATA_PIN + num), GPI, GPIO_LOW, GPI_FLOATING_IN);
             }
             link_list_num = dma_init(MT9V03X_DMA_CH,
-                                     MT9V03X_DATA_ADD,
-                                     mt9v03x_image[0],
+                                     source_addr,
+                                     destination_addr,
                                      MT9V03X_PCLK_PIN,
                                      EXTI_TRIGGER_RISING,
-                                     MT9V03X_IMAGE_SIZE);                       // 如果超频到300M 倒数第二个参数请设置为FALLING
+                                     image_size);                               // 如果超频到300M 倒数第二个参数请设置为FALLING
 
             exti_init(MT9V03X_VSYNC_PIN, EXTI_TRIGGER_FALLING);                 // 初始化场中断，并设置为下降沿触发中断
             break;
@@ -151,13 +154,13 @@ uint8 camera_init (void)
             }
 
             link_list_num = dma_init(SCC8660_DMA_CH,
-                                     SCC8660_DATA_ADD,
-                                     (uint8 *)scc8660_image[0],
+                                     source_addr,
+                                     destination_addr,
                                      SCC8660_PCLK_PIN,
                                      EXTI_TRIGGER_RISING,
-                                     SCC8660_IMAGE_SIZE);                       // 如果超频到300M 倒数第二个参数请设置为FALLING
+                                     image_size);                               // 如果超频到300M 倒数第二个参数请设置为FALLING
 
-            exti_init(SCC8660_VSYNC_PIN, EXTI_TRIGGER_RISING);                  // 初始化场中断，并设置为下降沿触发中断
+            exti_init(SCC8660_VSYNC_PIN, EXTI_TRIGGER_FALLING);                  // 初始化场中断，并设置为下降沿触发中断
             break;
         default:
             break;

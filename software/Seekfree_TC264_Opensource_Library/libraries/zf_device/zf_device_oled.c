@@ -350,7 +350,7 @@ void oled_show_int (uint16 x, uint16 y, const int32 dat, uint8 num)
         }
         dat_temp %= offset;
     }
-    int_to_str(data_buffer, dat_temp);
+    func_int_to_str(data_buffer, dat_temp);
     oled_show_string(x, y, (const char *)&data_buffer);
 }
 
@@ -389,7 +389,7 @@ void oled_show_uint (uint16 x,uint16 y,const uint32 dat,uint8 num)
         }
         dat_temp %= offset;
     }
-    uint_to_str(data_buffer, dat_temp);
+    func_uint_to_str(data_buffer, dat_temp);
     oled_show_string(x, y, (const char *)&data_buffer);
 }
 
@@ -398,7 +398,7 @@ void oled_show_uint (uint16 x,uint16 y,const uint32 dat,uint8 num)
 // 参数说明     x               x 轴坐标设置 0-127
 // 参数说明     y               y 轴坐标设置 0-7
 // 参数说明     dat             需要显示的变量，数据类型float或double
-// 参数说明     num             整数位显示长度   最高10位
+// 参数说明     num             整数位显示长度   最高8位
 // 参数说明     pointnum        小数位显示长度   最高6位
 // 返回参数     void
 // 使用示例     oled_show_float(0, 0, x, 2, 3);                 // 显示浮点数   整数显示2位   小数显示三位
@@ -434,7 +434,7 @@ void oled_show_float (uint16 x,uint16 y,const float dat,uint8 num,uint8 pointnum
         }
         dat_temp = dat_temp - ((int)dat_temp / (int)offset) * offset;
     }
-    float_to_str(data_buffer, dat_temp, pointnum);
+    func_float_to_str(data_buffer, dat_temp, pointnum);
     oled_show_string(x, y, data_buffer);
 }
 
@@ -458,6 +458,7 @@ void oled_show_binary_image (uint16 x, uint16 y, const uint8 *image, uint16 widt
     // 检查一下你的显示调用的函数 自己计算一下哪里超过了屏幕显示范围
     zf_assert(x < 128);
     zf_assert(y < 8);
+    zf_assert(image != NULL);
 
     uint32 i = 0, j = 0, z = 0;
     uint8 dat;
@@ -536,6 +537,7 @@ void oled_show_gray_image (uint16 x, uint16 y, const uint8 *image, uint16 width,
     // 检查一下你的显示调用的函数 自己计算一下哪里超过了屏幕显示范围
     zf_assert(x < 128);
     zf_assert(y < 8);
+    zf_assert(image != NULL);
 
     int16 i, j;
     uint8 dat;
@@ -609,6 +611,7 @@ void oled_show_wave (uint16 x, uint16 y, const uint16 *wave, uint16 width, uint1
     // 检查一下你的显示调用的函数 自己计算一下哪里超过了屏幕显示范围
     zf_assert(x < 128);
     zf_assert(y < 8);
+    zf_assert(wave != NULL);
 
     uint32 i = 0;
     uint32 width_index = 0, value_max_index = 0;
@@ -655,6 +658,7 @@ void oled_show_chinese (uint16 x, uint16 y, uint8 size, const uint8 *chinese_buf
     // 检查一下你的显示调用的函数 自己计算一下哪里超过了屏幕显示范围
     zf_assert(x < 128);
     zf_assert(y < 8);
+    zf_assert(chinese_buffer != NULL);
 
     int16 i, j, k;
 
@@ -686,8 +690,6 @@ void oled_init (void)
 #if OLED_USE_SOFT_SPI
     soft_spi_init(&oled_spi, 0, OLED_SOFT_SPI_DELAY, OLED_D0_PIN, OLED_D1_PIN, SOFT_SPI_PIN_NULL, SOFT_SPI_PIN_NULL);
 #else
-    
-    
     spi_init(OLED_SPI, SPI_MODE0, OLED_SPI_SPEED, OLED_D0_PIN, OLED_D1_PIN, OLED_D1_PIN_IN, SPI_CS_NULL);
 #endif
     gpio_init(OLED_RES_PIN, GPO, GPIO_HIGH, GPO_PUSH_PULL);

@@ -93,6 +93,7 @@ uint32 wireless_uart_send_byte (const uint8 data)
 //-------------------------------------------------------------------------------------------------------------------
 uint32 wireless_uart_send_buff (const uint8 *buff, uint32 len)
 {
+    zf_assert(buff != NULL);
     uint16 time_count = 0;
     while(0 != len)
     {
@@ -133,6 +134,7 @@ uint32 wireless_uart_send_buff (const uint8 *buff, uint32 len)
 //-------------------------------------------------------------------------------------------------------------------
 uint32 wireless_uart_send_string (const char *str)
 {
+    zf_assert(str != NULL);
     uint16 time_count = 0;
     uint32 len = strlen(str);
     while(0 != len)
@@ -175,6 +177,7 @@ uint32 wireless_uart_send_string (const char *str)
 //-------------------------------------------------------------------------------------------------------------------
 void wireless_uart_send_image (const uint8 *image_addr, uint32 image_size)
 {
+    zf_assert(image_addr != NULL);
     extern uint8 camera_send_image_frame_header[4];
     wireless_uart_send_buff(camera_send_image_frame_header, 4);
     wireless_uart_send_buff((uint8 *)image_addr, image_size);
@@ -190,6 +193,7 @@ void wireless_uart_send_image (const uint8 *image_addr, uint32 image_size)
 //-------------------------------------------------------------------------------------------------------------------
 uint32 wireless_uart_read_buff (uint8 *buff, uint32 len)
 {
+    zf_assert(buff != NULL);
     uint32 data_len = len;
     fifo_read_buffer(&wireless_uart_fifo, buff, &data_len, FIFO_READ_AND_CLEAN);
     return data_len;
@@ -244,22 +248,22 @@ uint8 wireless_uart_init (void)
     wireless_auto_baud_data[1] = 1;
     wireless_auto_baud_data[2] = 3;
 
-    rts_init_status = gpio_get(WIRELESS_UART_RTS_PIN);
+    rts_init_status = gpio_get_level(WIRELESS_UART_RTS_PIN);
     gpio_init(WIRELESS_UART_RTS_PIN, GPO, rts_init_status, GPO_PUSH_PULL);      // 初始化流控引脚
 
     uart_init (WIRELESS_UART_INDEX, WIRELESS_UART_BUAD_RATE, WIRELESS_UART_RX_PIN, WIRELESS_UART_TX_PIN);   // 初始化串口
-    uart_rx_irq(WIRELESS_UART_INDEX, 1);
+    uart_rx_interrupt(WIRELESS_UART_INDEX, 1);
 
     system_delay_ms(5);                                                         // 模块上电之后需要延时等待
-    gpio_set(WIRELESS_UART_RTS_PIN, !rts_init_status);                          // RTS引脚拉高，进入自动波特率模式
+    gpio_set_level(WIRELESS_UART_RTS_PIN, !rts_init_status);                    // RTS引脚拉高，进入自动波特率模式
     system_delay_ms(100);                                                       // RTS拉高之后必须延时20ms
     gpio_toggle(WIRELESS_UART_RTS_PIN);                                         // RTS引脚取反
 
     wireless_auto_baud_flag = 1;
 
-    uart_putchar(WIRELESS_UART_INDEX, wireless_auto_baud_data[0]);              // 发送特定数据 用于模块自动判断波特率
-    uart_putchar(WIRELESS_UART_INDEX, wireless_auto_baud_data[1]);              // 发送特定数据 用于模块自动判断波特率
-    uart_putchar(WIRELESS_UART_INDEX, wireless_auto_baud_data[2]);              // 发送特定数据 用于模块自动判断波特率
+    uart_write_byte(WIRELESS_UART_INDEX, wireless_auto_baud_data[0]);           // 发送特定数据 用于模块自动判断波特率
+    uart_write_byte(WIRELESS_UART_INDEX, wireless_auto_baud_data[1]);           // 发送特定数据 用于模块自动判断波特率
+    uart_write_byte(WIRELESS_UART_INDEX, wireless_auto_baud_data[2]);           // 发送特定数据 用于模块自动判断波特率
     system_delay_ms(20);
 
     time_count = 0;

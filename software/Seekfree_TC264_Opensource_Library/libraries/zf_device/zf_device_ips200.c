@@ -452,7 +452,7 @@ void ips200_draw_line (uint16 x_start, uint16 y_start, uint16 x_end, uint16 y_en
             }
             break;
         }
-        if(myabs(y_start - y_end) > myabs(x_start - x_end))
+        if(func_abs(y_start - y_end) > func_abs(x_start - x_end))
         {
             while(y_start != y_end)
             {
@@ -630,7 +630,7 @@ void ips200_show_int (uint16 x, uint16 y, const int32 dat, uint8 num)
         }
         dat_temp %= offset;
     }
-    int_to_str(data_buffer, dat_temp);
+    func_int_to_str(data_buffer, dat_temp);
     ips200_show_string(x, y, (const char *)&data_buffer);
 }
 
@@ -667,7 +667,7 @@ void ips200_show_uint (uint16 x, uint16 y, const uint32 dat, uint8 num)
         }
         dat_temp %= offset;
     }
-    uint_to_str(data_buffer, dat_temp);
+    func_uint_to_str(data_buffer, dat_temp);
     ips200_show_string(x, y, (const char *)&data_buffer);
 }
 
@@ -710,7 +710,7 @@ void ips200_show_float (uint16 x, uint16 y, const float dat, uint8 num, uint8 po
         }
         dat_temp = dat_temp - ((int)dat_temp / (int)offset) * offset;
     }
-    float_to_str(data_buffer, dat_temp, pointnum);
+    func_float_to_str(data_buffer, dat_temp, pointnum);
     ips200_show_string(x, y, data_buffer);
 }
 
@@ -733,6 +733,7 @@ void ips200_show_binary_image (uint16 x, uint16 y, const uint8 *image, uint16 wi
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
+    zf_assert(image != NULL);
 
     uint32 i = 0, j = 0;
     uint8 temp = 0;
@@ -787,6 +788,7 @@ void ips200_show_gray_image (uint16 x, uint16 y, const uint8 *image, uint16 widt
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
+    zf_assert(image != NULL);
 
     uint32 i = 0, j = 0;
     uint16 color = 0,temp = 0;
@@ -848,6 +850,7 @@ void ips200_show_rgb565_image (uint16 x, uint16 y, const uint16 *image, uint16 w
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
+    zf_assert(image != NULL);
 
     uint32 i = 0, j = 0;
     uint16 color = 0;
@@ -898,6 +901,7 @@ void ips200_show_wave (uint16 x, uint16 y, const uint16 *wave, uint16 width, uin
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
+    zf_assert(wave != NULL);
 
     uint32 i = 0, j = 0;
     uint32 width_index = 0, value_max_index = 0;
@@ -945,6 +949,7 @@ void ips200_show_chinese (uint16 x, uint16 y, uint8 size, const uint8 *chinese_b
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
+    zf_assert(chinese_buffer != NULL);
 
     int i, j, k;
     uint8 temp, temp1, temp2;

@@ -116,7 +116,7 @@ static void encoder_mapping_set (encoder_index_enum encoder_n, encoder_channel1_
 //  函数简介      编码器数据采集
 //  参数说明      gptn            选择所使用的定时器
 //  返回参数      void
-//  使用示例      int16 speed; speed = encoder_get_count(GPT12_T2); // 使用T2定时器
+//  使用示例      int16 speed; speed = encoder_get_count(TIM2_ENCOEDER); // 使用T2定时器
 //  备注信息
 //-------------------------------------------------------------------------------------------------------------------
 int16 encoder_get_count (encoder_index_enum encoder_n)
@@ -137,7 +137,7 @@ int16 encoder_get_count (encoder_index_enum encoder_n)
 //  函数简介      编码器计数清除
 //  参数说明      gptn            选择所使用的定时器
 //  返回参数      void
-//  使用示例      encoder_clear_count(GPT12_T2);// 使用T2定时器
+//  使用示例      encoder_clear_count(TIM2_ENCOEDER);// 使用T2定时器
 //  备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void encoder_clear_count (encoder_index_enum encoder_n)
@@ -158,7 +158,7 @@ void encoder_clear_count (encoder_index_enum encoder_n)
 //  参数说明      ch1_pin         ENCODER 通道 1
 //  参数说明      ch2_pin         ENCODER 通道 2
 //  返回参数      void
-//  使用示例      encoder_quad_init(TIM2_ENCOEDER, TIM2_ENCOEDER_CH1_P00_7, TIM2_ENCOEDER_CH2_P00_8);// 使用T2定时器   P00_7引脚进行计数    计数方向使用P00_8引脚
+//  使用示例      encoder_quad_init(TIM2_ENCOEDER, TIM2_ENCOEDER_CH1_P00_7, TIM2_ENCOEDER_CH2_P00_8);// 使用T2定时器   P00_7引脚为A通道    P00_8引脚为B通道
 //  备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void encoder_quad_init (encoder_index_enum encoder_n, encoder_channel1_enum count_pin, encoder_channel2_enum dir_pin)

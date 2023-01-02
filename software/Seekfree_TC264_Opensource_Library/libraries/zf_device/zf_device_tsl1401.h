@@ -51,7 +51,7 @@
 
 //=================================================TSL1401 驱动配置====================================================
 #define TSL1401_AO_PIN          (ADC0_CH4_A4)                                   // 对应第一个 TSL1401 的 AO 引脚
-#define TSL1401_AO_PIN1         (ADC0_CH5_A5)                                   // 对应第一个 TSL1401 的 AO 引脚
+#define TSL1401_AO_PIN1         (ADC0_CH5_A5)                                   // 对应第二个 TSL1401 的 AO 引脚
 // TSL1401 的控制引脚定义 多个 TSL1401 建议将控制引脚直接并联
 #define TSL1401_CLK_PIN         (P00_0)                                         // TSL1401 的 CLK 引脚定义
 #define TSL1401_SI_PIN          (P00_1)                                         // TSL1401 的 SI 引脚定义

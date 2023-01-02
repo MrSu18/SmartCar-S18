@@ -75,12 +75,12 @@
 #define ABSOLUTE_ENCODER_DEFAULT_ZERO       (0)
 
 //====================================================角度传感器参数====================================================
-#define ABS_ENCODER_SPI_W                   (0x80)
-#define ABS_ENCODER_SPI_R                   (0x40)
+#define ABSOLUTE_ENCODER_SPI_W              (0x80)
+#define ABSOLUTE_ENCODER_SPI_R              (0x40)
 
-#define ZERO_L_REG                          (0x00)
-#define ZERO_H_REG                          (0x01)
-#define DIR_REG                             (0X09)
+#define ABSOLUTE_ENCODER_ZERO_L_REG         (0x00)
+#define ABSOLUTE_ENCODER_ZERO_H_REG         (0x01)
+#define ABSOLUTE_ENCODER_DIR_REG            (0X09)
 //====================================================角度传感器参数====================================================
 
 

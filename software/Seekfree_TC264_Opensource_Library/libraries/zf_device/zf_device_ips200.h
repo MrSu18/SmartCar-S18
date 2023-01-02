@@ -214,7 +214,7 @@ void    ips200_init                     (ips200_type_enum type_select);
 // 参数说明     width           图像实际宽度
 // 参数说明     height          图像实际高度
 // 返回参数     void
-// 使用示例     ips200_displayimage8660(mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
+// 使用示例     ips200_displayimage8660(scc8660_image[0], SCC8660_W, SCC8660_W);
 // 备注信息     拓展的一键显示函数，默认无缩放，从屏幕坐标起始点开始显示
 //-------------------------------------------------------------------------------------------------------------------
 #define ips200_displayimage8660(p, width, height)       (ips200_show_rgb565_image(0, 0, (p), SCC8660_W, SCC8660_H, (width), (height), 1))

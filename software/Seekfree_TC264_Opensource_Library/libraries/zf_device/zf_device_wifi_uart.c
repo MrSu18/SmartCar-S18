@@ -598,6 +598,8 @@ uint8 wifi_uart_exit_serianet (void)
 //--------------------------------------------------------------------------------------------------
 uint8 wifi_uart_connect_tcp_servers (char *ip, char *port, wifi_uart_transfer_mode_enum mode)
 {
+    zf_assert(ip != NULL);
+    zf_assert(port != NULL);
 
     uint8 return_state = 0;
 
@@ -689,6 +691,9 @@ uint8 wifi_uart_connect_tcp_servers (char *ip, char *port, wifi_uart_transfer_mo
 //--------------------------------------------------------------------------------------------------
 uint8 wifi_uart_connect_udp_client (char *ip, char *port, char *local_port, wifi_uart_transfer_mode_enum mode)
 {
+    zf_assert(ip != NULL);
+    zf_assert(port != NULL);
+    zf_assert(local_port != NULL);
     uint8 return_state = 0;
 
     wifi_uart_clear_receive_buffer();                                           // 清空WiFi接收缓冲区
@@ -827,6 +832,7 @@ uint8 wifi_uart_disconnect_link_with_id (wifi_uart_link_id_enum link_id)
 //--------------------------------------------------------------------------------------------------
 uint8 wifi_uart_entry_tcp_servers (char *port)
 {
+    zf_assert(port != NULL);
     uint8 return_state = 0;
 
     wifi_uart_clear_receive_buffer();                                           // 清空WiFi接收缓冲区
@@ -948,6 +954,7 @@ uint8 wifi_uart_tcp_servers_check_link (void)
 //-------------------------------------------------------------------------------------------------------------------
 uint32 wifi_uart_send_buffer (uint8 *buff, uint32 len)
 {
+    zf_assert(buff != NULL);
     int32 timeout = WAIT_TIME_OUT;
 
     char lenth[32] = {0};
@@ -958,7 +965,7 @@ uint32 wifi_uart_send_buffer (uint8 *buff, uint32 len)
         {
             wifi_uart_clear_receive_buffer();                                   // 清空WiFi接收缓冲区
 
-            int_to_str(lenth,len);
+            func_int_to_str(lenth,len);
             if(len > 8192)
             {
                 uart_write_string(WIFI_UART_INDEX, "AT+CIPSENDL=");
@@ -1002,6 +1009,7 @@ uint32 wifi_uart_send_buffer (uint8 *buff, uint32 len)
             }
         }
     }
+    wifi_uart_clear_receive_buffer();                                           // 清空WiFi接收缓冲区
     return len;
 }
 
@@ -1016,6 +1024,7 @@ uint32 wifi_uart_send_buffer (uint8 *buff, uint32 len)
 //-------------------------------------------------------------------------------------------------------------------
 uint32 wifi_uart_tcp_servers_send_buffer (uint8 *buff, uint32 len, wifi_uart_link_id_enum id)
 {
+    zf_assert(buff != NULL);
     char lenth[32] = {0};
 
     if( wifi_uart_information.wifi_uart_transfer_mode == WIFI_UART_COMMAND && \
@@ -1023,7 +1032,7 @@ uint32 wifi_uart_tcp_servers_send_buffer (uint8 *buff, uint32 len, wifi_uart_lin
     {
         wifi_uart_clear_receive_buffer();                                       // 清空WiFi接收缓冲区
 
-        int_to_str(lenth,len);
+        func_int_to_str(lenth,len);
         if(len > 8192)
         {
             uart_write_string(WIFI_UART_INDEX, "AT+CIPSENDL=");
@@ -1064,6 +1073,7 @@ uint32 wifi_uart_tcp_servers_send_buffer (uint8 *buff, uint32 len, wifi_uart_lin
 //-------------------------------------------------------------------------------------------------------------------
 uint32 wifi_uart_read_buffer (uint8 *buffer, uint32 len)
 {
+    zf_assert(buffer != NULL);
     uint32 read_len = len;
     fifo_read_buffer(&wifi_uart_fifo, buffer, &read_len, FIFO_READ_AND_CLEAN);
     return read_len;
@@ -1096,6 +1106,8 @@ void wifi_uart_callback (void)
 //-------------------------------------------------------------------------------------------------------------------
 uint8 wifi_uart_init (char *wifi_ssid, char *pass_word, wifi_uart_mode_enum wifi_mode)
 {
+    zf_assert(wifi_ssid != NULL);
+    zf_assert(pass_word != NULL);
     char uart_baud[32] = {0};
     uint8 return_state = 0;
 
@@ -1121,7 +1133,7 @@ uint8 wifi_uart_init (char *wifi_ssid, char *pass_word, wifi_uart_mode_enum wifi
             return_state = 1;
             break;
         }
-        int_to_str(uart_baud, WIFI_UART_BAUD);                                  // 更改WiFi模块所使用的波尔率参数
+        func_int_to_str(uart_baud, WIFI_UART_BAUD);                             // 更改WiFi模块所使用的波尔率参数
         if(wifi_uart_uart_config_set(uart_baud, "8", "1", "0", "1"))            // 调用接口重设模块的工作串口参数
         {
             zf_log(0, "set config failed");

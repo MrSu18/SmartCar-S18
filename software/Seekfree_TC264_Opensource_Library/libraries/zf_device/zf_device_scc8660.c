@@ -207,7 +207,6 @@ static void scc8660_uart_callback (void)
 {
     uint8 data = 0;
     uart_query_byte(SCC8660_COF_UART, &data);
-    uart_write_byte(UART_0, data);
     if(0xA5 == data)
     {
         fifo_clear(&camera_receiver_fifo);
@@ -568,7 +567,7 @@ uint8 scc8660_init (void)
                 break;
             }
 
-            scc8660_link_list_num = camera_init();
+            scc8660_link_list_num = camera_init(SCC8660_DATA_ADD, (uint8 *)scc8660_image[0], SCC8660_IMAGE_SIZE);
         }
     }while(0);
 

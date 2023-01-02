@@ -7,6 +7,7 @@ C_SRCS += \
 ../libraries/zf_device/zf_device_absolute_encoder.c \
 ../libraries/zf_device/zf_device_bluetooth_ch9141.c \
 ../libraries/zf_device/zf_device_camera.c \
+../libraries/zf_device/zf_device_dl1a.c \
 ../libraries/zf_device/zf_device_gps_tau1201.c \
 ../libraries/zf_device/zf_device_icm20602.c \
 ../libraries/zf_device/zf_device_imu660ra.c \
@@ -30,6 +31,7 @@ OBJS += \
 ./libraries/zf_device/zf_device_absolute_encoder.o \
 ./libraries/zf_device/zf_device_bluetooth_ch9141.o \
 ./libraries/zf_device/zf_device_camera.o \
+./libraries/zf_device/zf_device_dl1a.o \
 ./libraries/zf_device/zf_device_gps_tau1201.o \
 ./libraries/zf_device/zf_device_icm20602.o \
 ./libraries/zf_device/zf_device_imu660ra.o \
@@ -53,6 +55,7 @@ COMPILED_SRCS += \
 ./libraries/zf_device/zf_device_absolute_encoder.src \
 ./libraries/zf_device/zf_device_bluetooth_ch9141.src \
 ./libraries/zf_device/zf_device_camera.src \
+./libraries/zf_device/zf_device_dl1a.src \
 ./libraries/zf_device/zf_device_gps_tau1201.src \
 ./libraries/zf_device/zf_device_icm20602.src \
 ./libraries/zf_device/zf_device_imu660ra.src \
@@ -76,6 +79,7 @@ C_DEPS += \
 ./libraries/zf_device/zf_device_absolute_encoder.d \
 ./libraries/zf_device/zf_device_bluetooth_ch9141.d \
 ./libraries/zf_device/zf_device_camera.d \
+./libraries/zf_device/zf_device_dl1a.d \
 ./libraries/zf_device/zf_device_gps_tau1201.d \
 ./libraries/zf_device/zf_device_icm20602.d \
 ./libraries/zf_device/zf_device_imu660ra.d \

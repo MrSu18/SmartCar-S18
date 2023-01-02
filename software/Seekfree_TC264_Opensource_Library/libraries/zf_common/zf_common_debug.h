@@ -68,11 +68,13 @@
 #define zf_log(x, str)              (debug_log_handler((x), (str), __FILE__, __LINE__)) // 调试信息输出 用来做一些报错或者警告之类的输出
 
 //-------------------------------------------------------------------------------------------------------------------
-// 函数简介     总线报错接管
+// 函数简介     CPU报错接管
 // 返回参数     void
-// 备注信息     当触发总线报错时会通过log信息输出来提醒用户
+// 备注信息     当触发CPU报错时会通过log信息输出来提醒用户
 //-------------------------------------------------------------------------------------------------------------------
-#define IFX_CFG_CPU_TRAP_BE_HOOK(x) zf_log(0, "Some peripherals are not initialized"); while(1);
+#define IFX_CFG_CPU_TRAP_BE_HOOK(x)  zf_log(0, "Memory access failure or Use an uninitialized peripheral, please check"); while(1);
+#define IFX_CFG_CPU_TRAP_IPE_HOOK(x) zf_log(0, "Accessing an null address, array access may be out of bounds, please check"); while(1);
+
 
 typedef struct
 {

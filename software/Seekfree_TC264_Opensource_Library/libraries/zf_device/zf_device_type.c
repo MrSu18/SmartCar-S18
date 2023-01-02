@@ -38,12 +38,12 @@
 static void type_default_callback(void);
 
 camera_type_enum    camera_type                     = NO_CAMERE;                            // 摄像头类型变量
-callback_function   camera_dma_handler              = type_default_callback;                // 串口通讯中断函数指针，根据初始化时设置的函数进行跳转
-callback_function   camera_vsync_handler            = type_default_callback;;               // 串口通讯中断函数指针，根据初始化时设置的函数进行跳转
-callback_function   camera_uart_handler             = type_default_callback;;               // 串口通讯中断函数指针，根据初始化时设置的函数进行跳转
+callback_function   camera_dma_handler              = type_default_callback;                // DMA完成中断函数指针，根据初始化时设置的函数进行跳转
+callback_function   camera_vsync_handler            = type_default_callback;                // 场中断函数指针，根据初始化时设置的函数进行跳转
+callback_function   camera_uart_handler             = type_default_callback;                // 串口通讯中断函数指针，根据初始化时设置的函数进行跳转
 
 wireless_type_enum  wireless_type                   = NO_WIRELESS;
-callback_function   wireless_module_uart_handler    = type_default_callback;;               // 无线串口接收中断函数指针，根据初始化时设置的函数进行跳转
+callback_function   wireless_module_uart_handler    = type_default_callback;                // 无线串口接收中断函数指针，根据初始化时设置的函数进行跳转
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     默认回调函数
@@ -84,6 +84,7 @@ void set_camera_type (camera_type_enum type_set, callback_function vsync_callbac
 void set_wireless_type (wireless_type_enum type_set, callback_function uart_callback)
 {
     wireless_type = type_set;
-    wireless_module_uart_handler = uart_callback;
+    if(uart_callback == NULL)  wireless_module_uart_handler = type_default_callback;
+    else                       wireless_module_uart_handler = uart_callback;
 }
 

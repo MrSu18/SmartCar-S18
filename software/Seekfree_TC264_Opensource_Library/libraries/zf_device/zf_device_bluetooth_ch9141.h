@@ -48,7 +48,6 @@
 #define _zf_device_bluetooth_ch9141_h_
 
 #include "zf_common_typedef.h"
-#include "zf_device_type.h"
 
 
 //=================================================9141¿∂—¿ «˝∂Ø≈‰÷√====================================================

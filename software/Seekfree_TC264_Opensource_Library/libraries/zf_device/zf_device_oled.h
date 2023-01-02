@@ -136,7 +136,7 @@ void    oled_init                       (void);
 // 参数说明     height          图像实际高度
 // 参数说明     x               对比度（OLED屏幕无法显示灰度，必须二值化）
 // 返回参数     void
-// 使用示例     oled_displayimage03x(ov7725_image_binary[0], OV7725_W, OV7725_H);
+// 使用示例     oled_displayimage03x(mt9v03x_image[0], MT9V03X_W, MT9V03X_H, 100);
 // 备注信息     拓展的一键显示函数，默认缩放至64x128显示
 //-------------------------------------------------------------------------------------------------------------------
 #define oled_displayimage03x(p,width,height,x)                                  (oled_show_gray_image(0, 0, (p), (width), (height), 128, 64, (x)))
@@ -149,7 +149,7 @@ void    oled_init                       (void);
 // 参数说明     dis_height      图像缩放高度
 // 参数说明     x               对比度（OLED屏幕无法显示灰度，必须二值化）
 // 返回参数     void
-// 使用示例     oled_displayimage03x(ov7725_image_binary[0], OV7725_W, OV7725_H);
+// 使用示例     oled_displayimage03x_zoom(mt9v03x_image[0], 78, 50, 100);
 // 备注信息     拓展的一键显示函数，用户可以自定义缩放后显示的图像大小
 //-------------------------------------------------------------------------------------------------------------------
 #define oled_displayimage03x_zoom(p,width,height,dis_width,dis_height,x)        (oled_show_gray_image(0, 0, (p), (width), (height), (dis_width,) (dis_height), (x)))

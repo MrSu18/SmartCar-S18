@@ -494,7 +494,7 @@ uint8 mt9v03x_init (void)
             }
         }
         set_camera_type(CAMERA_GRAYSCALE, mt9v03x_vsync_handler, mt9v03x_dma_handler, NULL);    // 设置连接摄像头类型
-        mt9v03x_link_list_num = camera_init();
+        mt9v03x_link_list_num = camera_init(MT9V03X_DATA_ADD, mt9v03x_image[0], MT9V03X_IMAGE_SIZE);
     }while(0);
 
     return return_state;

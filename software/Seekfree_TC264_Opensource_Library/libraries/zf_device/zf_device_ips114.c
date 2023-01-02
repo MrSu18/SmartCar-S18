@@ -366,7 +366,7 @@ void ips114_draw_line (uint16 x_start, uint16 y_start, uint16 x_end, uint16 y_en
             }
             break;
         }
-        if(myabs(y_start - y_end) > myabs(x_start - x_end))
+        if(func_abs(y_start - y_end) > func_abs(x_start - x_end))
         {
             while(y_start != y_end)
             {
@@ -538,7 +538,7 @@ void ips114_show_int (uint16 x, uint16 y, const int32 dat, uint8 num)
         }
         dat_temp %= offset;
     }
-    int_to_str(data_buffer, dat_temp);
+    func_int_to_str(data_buffer, dat_temp);
     ips114_show_string(x, y, (const char *)&data_buffer);
 }
 
@@ -575,7 +575,7 @@ void ips114_show_uint (uint16 x, uint16 y, const uint32 dat, uint8 num)
         }
         dat_temp %= offset;
     }
-    uint_to_str(data_buffer, dat_temp);
+    func_uint_to_str(data_buffer, dat_temp);
     ips114_show_string(x, y, (const char *)&data_buffer);
 }
 
@@ -584,7 +584,7 @@ void ips114_show_uint (uint16 x, uint16 y, const uint32 dat, uint8 num)
 // 参数说明     x               坐标x方向的起点 参数范围 [0, ips114_x_max-1]
 // 参数说明     y               坐标y方向的起点 参数范围 [0, ips114_y_max-1]
 // 参数说明     dat             需要显示的变量 数据类型 float 或 double
-// 参数说明     num             整数位显示长度   最高10位
+// 参数说明     num             整数位显示长度   最高8位
 // 参数说明     pointnum        小数位显示长度   最高6位
 // 返回参数     void
 // 使用示例     ips114_show_float(0, 0, x, 2, 3);               // 显示浮点数 整数显示 2 位 小数显示 3 位
@@ -618,7 +618,7 @@ void ips114_show_float (uint16 x, uint16 y, const float dat, uint8 num, uint8 po
         }
         dat_temp = dat_temp - ((int)dat_temp / (int)offset) * offset;
     }
-    float_to_str(data_buffer, dat_temp, pointnum);
+    func_float_to_str(data_buffer, dat_temp, pointnum);
     ips114_show_string(x, y, data_buffer);
 }
 
@@ -641,6 +641,7 @@ void ips114_show_binary_image (uint16 x, uint16 y, const uint8 *image, uint16 wi
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips114_x_max);
     zf_assert(y < ips114_y_max);
+    zf_assert(image != NULL);
 
     uint32 i = 0, j = 0;
     uint8 temp = 0;
@@ -689,6 +690,7 @@ void ips114_show_gray_image (uint16 x, uint16 y, const uint8 *image, uint16 widt
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips114_x_max);
     zf_assert(y < ips114_y_max);
+    zf_assert(image != NULL);
 
     uint32 i = 0, j = 0;
     uint16 color = 0,temp = 0;
@@ -744,6 +746,7 @@ void ips114_show_rgb565_image (uint16 x, uint16 y, const uint16 *image, uint16 w
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips114_x_max);
     zf_assert(y < ips114_y_max);
+    zf_assert(image != NULL);
 
     uint32 i = 0, j = 0;
     uint16 color = 0;
@@ -788,6 +791,7 @@ void ips114_show_wave (uint16 x, uint16 y, const uint16 *wave, uint16 width, uin
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips114_x_max);
     zf_assert(y < ips114_y_max);
+    zf_assert(wave != NULL);
 
     uint32 i = 0, j = 0;
     uint32 width_index = 0, value_max_index = 0;
@@ -829,6 +833,7 @@ void ips114_show_chinese (uint16 x, uint16 y, uint8 size, const uint8 *chinese_b
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips114_x_max);
     zf_assert(y < ips114_y_max);
+    zf_assert(chinese_buffer != NULL);
 
     int i, j, k;
     uint8 temp, temp1, temp2;
@@ -882,9 +887,9 @@ void ips114_init (void)
     spi_init(IPS114_SPI, SPI_MODE0, IPS114_SPI_SPEED, IPS114_SCL_PIN, IPS114_SDA_PIN, IPS114_SDA_IN_PIN, SPI_CS_NULL);
 #endif
 
-    gpio_init(IPS114_DC_PIN, GPO, GPIO_LOW, GPO_PUSH_PULL);
-    gpio_init(IPS114_RST_PIN, GPO, GPIO_LOW, GPO_PUSH_PULL);
-    gpio_init(IPS114_CS_PIN, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    gpio_init(IPS114_DC_PIN,  GPO, GPIO_LOW,  GPO_PUSH_PULL);
+    gpio_init(IPS114_RST_PIN, GPO, GPIO_LOW,  GPO_PUSH_PULL);
+    gpio_init(IPS114_CS_PIN,  GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(IPS114_BLK_PIN, GPO, GPIO_HIGH, GPO_PUSH_PULL);
 
     ips114_set_dir(ips114_display_dir);

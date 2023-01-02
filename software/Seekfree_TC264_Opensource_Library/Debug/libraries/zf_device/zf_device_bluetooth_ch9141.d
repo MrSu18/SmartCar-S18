@@ -158,7 +158,7 @@ libraries/zf_device/zf_device_bluetooth_ch9141.o :	e:/nodeanddata/studio/FSL/Com
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Cpu/Std/Ifx_Types.h :
 libraries/zf_device/zf_device_bluetooth_ch9141.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_delay.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_delay.h :
-libraries/zf_device/zf_device_bluetooth_ch9141.o :	../libraries/zf_device/zf_device_bluetooth_ch9141.h
-../libraries/zf_device/zf_device_bluetooth_ch9141.h :
 libraries/zf_device/zf_device_bluetooth_ch9141.o :	../libraries/zf_device/zf_device_type.h
 ../libraries/zf_device/zf_device_type.h :
+libraries/zf_device/zf_device_bluetooth_ch9141.o :	../libraries/zf_device/zf_device_bluetooth_ch9141.h
+../libraries/zf_device/zf_device_bluetooth_ch9141.h :

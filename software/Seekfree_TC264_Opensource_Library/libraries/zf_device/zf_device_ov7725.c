@@ -63,10 +63,10 @@
 vuint8 ov7725_finish_flag = 0;
 uint8  ov7725_image_binary [OV7725_H][OV7725_W / 8];                            // 图像保存数组
 
-vuint8 ov7725_uart_dma_init_flag;                                               // 重新初始化DMA的标志位
-vuint8 ov7725_dma_int_num    = 0;
-vuint8 ov7725_lost_flag      = 1;
-vuint8 ov7725_link_list_num  = 0;
+uint8 ov7725_uart_dma_init_flag;                                                // 重新初始化DMA的标志位
+uint8 ov7725_dma_int_num    = 0;
+uint8 ov7725_lost_flag      = 1;
+uint8 ov7725_link_list_num  = 0;
 // 需要配置到摄像头的数据 不允许在这修改参数
 static uint16 ov7725_set_confing_buffer [OV7725_CONFIG_FINISH][2]=
 {
@@ -341,7 +341,7 @@ static void ov7725_vsync_handler(void)
                                         OV7725_DATA_ADD,
                                         ov7725_image_binary[0],
                                         OV7725_PCLK_PIN,
-                                        EXTI_TRIGGER_FALLING,
+                                        EXTI_TRIGGER_RISING,
                                         OV7725_IMAGE_SIZE);
         dma_enable(OV7725_DMA_CH);
     }
@@ -532,7 +532,7 @@ uint8 ov7725_init (void)
                     break;
                 }
             }
-            ov7725_link_list_num = camera_init();
+            ov7725_link_list_num = camera_init(OV7725_DATA_ADD, ov7725_image_binary[0], OV7725_IMAGE_SIZE);
         }while(0);
     }
 

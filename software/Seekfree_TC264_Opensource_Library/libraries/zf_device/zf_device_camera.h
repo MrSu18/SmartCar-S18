@@ -49,7 +49,7 @@ extern fifo_struct camera_receiver_fifo;
 void  camera_binary_image_decompression (const uint8 *data1, uint8 *data2, uint32 image_size);
 void  camera_send_image                 (uart_index_enum uartn, const uint8 *image_addr, uint32 image_size);
 void  camera_fifo_init                  (void);
-uint8 camera_init                       (void);
+uint8 camera_init                       (uint8 *source_addr, uint8 *destination_addr, uint16 image_size);
 //================================================摄像头公共库 基础函数====================================================
 
 #endif

@@ -132,6 +132,7 @@ void IfxCpu_Trap_memoryManagementError(uint32 tin)
     volatile IfxCpu_Trap trapWatch;
     trapWatch = IfxCpu_Trap_extractTrapInfo(IfxCpu_Trap_Class_memoryManagement, tin);
     IFX_CFG_CPU_TRAP_MME_HOOK(trapWatch);
+
     IFX_CFG_CPU_TRAP_DEBUG;
     __asm("rslcx"); /* Restore lower context before returning. lower context was stored in the trap vector */
     __asm("rfe");
@@ -143,6 +144,9 @@ void IfxCpu_Trap_internalProtectionError(uint32 tin)
     volatile IfxCpu_Trap trapWatch;
     trapWatch = IfxCpu_Trap_extractTrapInfo(IfxCpu_Trap_Class_internalProtection, tin);
     IFX_CFG_CPU_TRAP_IPE_HOOK(trapWatch);
+
+    // 如果单片机卡死在这里，则说明单片机访问到了空的内存位置，也就是常说的访问越界
+
     IFX_CFG_CPU_TRAP_DEBUG;
     __asm("rslcx"); /* Restore lower context before returning. lower context was stored in the trap vector */
     __asm("rfe");
@@ -177,8 +181,9 @@ void IfxCpu_Trap_busError(uint32 tin)
     trapWatch = IfxCpu_Trap_extractTrapInfo(IfxCpu_Trap_Class_bus, tin);
     IFX_CFG_CPU_TRAP_BE_HOOK(trapWatch);
 
-    // 如果单片机卡死在了这里 说明有资源没初始化成功就直接调用了使用函数
+    // 如果单片机卡死在了这里 可能是使用了未初始化的外设资源
     // 举个例子，没调用pwm_init初始化函数，然后直接调用pwm_set_duty来赋值输出
+    // 也可能是访问内存失败导致 如果访问失败请仔细检查使用指针访问数据的地方
 
     IFX_CFG_CPU_TRAP_DEBUG;
     __asm("rslcx"); /* Restore lower context before returning. lower context was stored in the trap vector */

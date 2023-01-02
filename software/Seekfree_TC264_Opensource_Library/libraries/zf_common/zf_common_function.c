@@ -33,18 +33,18 @@
 * 2022-09-15       pudding            first version
 ********************************************************************************************************************/
 
+#include "zf_common_debug.h"
 #include "zf_common_function.h"
-
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     获取整型数的最大公约数 九章算术之更相减损术
 // 参数说明     num1            数字1
 // 参数说明     num2            数字2
 // 返回参数     uint32          最大公约数
-// 使用示例     return get_greatest_common_divisor(144, 36);    // 获取 144 与 36 的最大公约数
+// 使用示例     return func_get_greatest_common_divisor(144, 36);               // 获取 144 与 36 的最大公约数
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-uint32 get_greatest_common_divisor (uint32 num1, uint32 num2)
+uint32 func_get_greatest_common_divisor (uint32 num1, uint32 num2)
 {
     while(num1 != num2)
     {
@@ -64,10 +64,10 @@ uint32 get_greatest_common_divisor (uint32 num1, uint32 num2)
 // 函数简介     软件延时
 // 参数说明     t               延时时间
 // 返回参数     void
-// 使用示例     my_delay(100);
+// 使用示例     func_soft_delay(100);
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-void my_delay (volatile long t)
+void func_soft_delay (volatile long t)
 {
     while(t --);
 }
@@ -76,11 +76,12 @@ void my_delay (volatile long t)
 // 函数简介     字符串转整形数字 数据范围是 [-32768,32767]
 // 参数说明     *str            传入字符串 可带符号
 // 返回参数     int32           转换后的数据
-// 使用示例     int32 dat = str_to_int("-100");
+// 使用示例     int32 dat = func_str_to_int("-100");
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-int32 str_to_int (char *str)
+int32 func_str_to_int (char *str)
 {
+    zf_assert(str != NULL);
     uint8 sign = 0;                                                             // 标记符号 0-正数 1-负数
     int32 temp = 0;                                                             // 临时计算变量
     do
@@ -119,11 +120,12 @@ int32 str_to_int (char *str)
 // 参数说明     *str            字符串指针
 // 参数说明     number          传入的数据
 // 返回参数     void
-// 使用示例     int_to_str(data_buffer, -300);
+// 使用示例     func_int_to_str(data_buffer, -300);
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-void int_to_str (char *str, int32 number)
+void func_int_to_str (char *str, int32 number)
 {
+    zf_assert(str != NULL);
     uint8 data_temp[16];                                                        // 缓冲区
     uint8 bit = 0;                                                              // 数字位数
     int32 number_temp = 0;
@@ -149,7 +151,7 @@ void int_to_str (char *str, int32 number)
         while(0 != number)                                                      // 循环直到数值归零
         {
             number_temp = number % 10;
-            data_temp[bit ++] = myabs(number_temp);                             // 倒序将数值提取出来
+            data_temp[bit ++] = func_abs(number_temp);                          // 倒序将数值提取出来
             number /= 10;                                                       // 削减被提取的个位数
         }
         while(0 != bit)                                                         // 提取的数字个数递减处理
@@ -164,11 +166,12 @@ void int_to_str (char *str, int32 number)
 // 函数简介     字符串转整形数字 数据范围是 [0,65535]
 // 参数说明     *str            传入字符串 无符号
 // 返回参数     uint32          转换后的数据
-// 使用示例     uint32 dat = str_to_uint("100");
+// 使用示例     uint32 dat = func_str_to_uint("100");
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-uint32 str_to_uint (char *str)
+uint32 func_str_to_uint (char *str)
 {
+    zf_assert(str != NULL);
     uint32 temp = 0;                                                            // 临时计算变量
 
     do
@@ -193,11 +196,12 @@ uint32 str_to_uint (char *str)
 // 参数说明     *str            字符串指针
 // 参数说明     number          传入的数据
 // 返回参数     void
-// 使用示例     uint_to_str(data_buffer, 300);
+// 使用示例     func_uint_to_str(data_buffer, 300);
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-void uint_to_str (char *str, uint32 number)
+void func_uint_to_str (char *str, uint32 number)
 {
+    zf_assert(str != NULL);
     int8 data_temp[16];                                                         // 缓冲区
     uint8 bit = 0;                                                              // 数字位数
 
@@ -231,11 +235,12 @@ void uint_to_str (char *str, uint32 number)
 // 函数简介     字符串转浮点数 有效累计精度为小数点后六位
 // 参数说明     *str            传入字符串 可带符号
 // 返回参数     float           转换后的数据
-// 使用示例     float dat = str_to_float("-100.2");
+// 使用示例     float dat = func_str_to_float("-100.2");
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-float str_to_float (char *str)
+float func_str_to_float (char *str)
 {
+    zf_assert(str != NULL);
     uint8 sign = 0;                                                             // 标记符号 0-正数 1-负数
     float temp = 0.0;                                                           // 临时计算变量 整数部分
     float temp_point = 0.0;                                                     // 临时计算变量 小数部分
@@ -291,11 +296,12 @@ float str_to_float (char *str)
 // 参数说明     number          传入的数据
 // 参数说明     point_bit       小数点精度
 // 返回参数     void
-// 使用示例     float_to_str(data_buffer, 3.1415, 2);           // 结果输出 data_buffer = "3.14"
+// 使用示例     func_float_to_str(data_buffer, 3.1415, 2);                      // 结果输出 data_buffer = "3.14"
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-void float_to_str (char *str, float number, uint8 point_bit)
+void func_float_to_str (char *str, float number, uint8 point_bit)
 {
+    zf_assert(str != NULL);
     int data_int = 0;                                                           // 整数部分
     int data_float = 0.0;                                                       // 小数部分
     int data_temp[8];                                                           // 整数字符缓冲
@@ -340,7 +346,7 @@ void float_to_str (char *str, float number, uint8 point_bit)
         }while(0 != data_int);
         while(0 != bit)
         {
-            *str ++ = (myabs(data_temp[bit - 1]) + 0x30);                       // 再倒序将倒序的数值写入字符串 得到正序数值
+            *str ++ = (func_abs(data_temp[bit - 1]) + 0x30);                    // 再倒序将倒序的数值写入字符串 得到正序数值
             bit --;
         }
 
@@ -363,7 +369,7 @@ void float_to_str (char *str, float number, uint8 point_bit)
                 }
                 while(0 != bit)
                 {
-                    *str ++ = (myabs(data_temp_point[bit - 1]) + 0x30);         // 再倒序将倒序的数值写入字符串 得到正序数值
+                    *str ++ = (func_abs(data_temp_point[bit - 1]) + 0x30);      // 再倒序将倒序的数值写入字符串 得到正序数值
                     bit --;
                 }
             }
@@ -375,11 +381,12 @@ void float_to_str (char *str, float number, uint8 point_bit)
 // 函数简介     字符串转浮点数 有效累计精度为小数点后九位
 // 参数说明     str             传入字符串 可带符号
 // 返回参数     double          转换后的数据
-// 使用示例     double dat = str_to_double("-100.2");
+// 使用示例     double dat = func_str_to_double("-100.2");
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-double str_to_double (char *str)
+double func_str_to_double (char *str)
 {
+    zf_assert(str != NULL);
     uint8 sign = 0;                                                             // 标记符号 0-正数 1-负数
     double temp = 0.0;                                                          // 临时计算变量 整数部分
     double temp_point = 0.0;                                                    // 临时计算变量 小数部分
@@ -436,11 +443,12 @@ double str_to_double (char *str)
 // 参数说明     number          传入的数据
 // 参数说明     point_bit       小数点精度
 // 返回参数     void
-// 使用示例     double_to_str(data_buffer, 3.1415, 2);           // 结果输出 data_buffer = "3.14"
+// 使用示例     func_double_to_str(data_buffer, 3.1415, 2);                     // 结果输出 data_buffer = "3.14"
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-void double_to_str (char *str, double number, uint8 point_bit)
+void func_double_to_str (char *str, double number, uint8 point_bit)
 {
+    zf_assert(str != NULL);
     int data_int = 0;                                                           // 整数部分
     int data_float = 0.0;                                                       // 小数部分
     int data_temp[12];                                                          // 整数字符缓冲
@@ -485,7 +493,7 @@ void double_to_str (char *str, double number, uint8 point_bit)
         }while(0 != data_int);
         while(0 != bit)
         {
-            *str ++ = (myabs(data_temp[bit - 1]) + 0x30);                       // 再倒序将倒序的数值写入字符串 得到正序数值
+            *str ++ = (func_abs(data_temp[bit - 1]) + 0x30);                    // 再倒序将倒序的数值写入字符串 得到正序数值
             bit --;
         }
 
@@ -506,7 +514,7 @@ void double_to_str (char *str, double number, uint8 point_bit)
                 }
                 while(0 != bit)
                 {
-                    *str ++ = (myabs(data_temp_point[bit - 1]) + 0x30);         // 再倒序将倒序的数值写入字符串 得到正序数值
+                    *str ++ = (func_abs(data_temp_point[bit - 1]) + 0x30);      // 再倒序将倒序的数值写入字符串 得到正序数值
                     bit --;
                 }
             }
@@ -518,11 +526,12 @@ void double_to_str (char *str, double number, uint8 point_bit)
 // 函数简介     字符串转 Hex
 // 参数说明     str             传入字符串 无符号
 // 返回参数     uint32          转换后的数据
-// 使用示例     uint32 dat = str_to_hex("0x11");
+// 使用示例     uint32 dat = func_str_to_hex("0x11");
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-uint32 str_to_hex (char *str)
+uint32 func_str_to_hex (char *str)
 {
+    zf_assert(str != NULL);
     uint32 str_len = strlen(str);                                               // 字符串长
     uint32 result_data = 0;                                                     // 结果缓存
     uint8 temp = 0;                                                             // 计算变量
@@ -575,11 +584,12 @@ uint32 str_to_hex (char *str)
 // 参数说明     *str            字符串指针
 // 参数说明     number          传入的数据
 // 返回参数     void
-// 使用示例     hex_to_str(data_buffer, 0x11);                  // 结果输出 data_buffer = "0x11"
+// 使用示例     func_hex_to_str(data_buffer, 0x11);                             // 结果输出 data_buffer = "0x11"
 // 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-void hex_to_str (char *str, uint32 number)
+void func_hex_to_str (char *str, uint32 number)
 {
+    zf_assert(str != NULL);
     const char hex_index[16] = {
         '0', '1', '2', '3',
         '4', '5', '6', '7',
@@ -861,7 +871,6 @@ uint32 zf_sprintf (int8 *buff, const int8 *format, ...)
                         uint32 ival = (uint32)va_arg(arg, uint32);
                         uint8 vlen = 0;
                         vlen = number_conversion_ascii(ival, vstr, 0, 16);
-
                         printf_reverse_order(vstr, 8);
                         memcpy(buff, vstr, 8);
                         buff += 8;
@@ -893,3 +902,4 @@ uint32 zf_sprintf (int8 *buff, const int8 *format, ...)
 
     return buff_len;
 }
+

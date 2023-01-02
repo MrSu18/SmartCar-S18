@@ -4,8 +4,8 @@
 
 libraries/zf_common/zf_common_function.o :	../libraries/zf_common/zf_common_function.c
 ../libraries/zf_common/zf_common_function.c :
-libraries/zf_common/zf_common_function.o :	../libraries/zf_common/zf_common_function.h
-../libraries/zf_common/zf_common_function.h :
+libraries/zf_common/zf_common_function.o :	../libraries/zf_common/zf_common_debug.h
+../libraries/zf_common/zf_common_debug.h :
 libraries/zf_common/zf_common_function.o :	../libraries/zf_common/zf_common_typedef.h
 ../libraries/zf_common/zf_common_typedef.h :
 libraries/zf_common/zf_common_function.o :	e:/IDE/Infineon/AURIX-Studio-1.8.0/plugins/com.infineon.aurix.tools_1.8.0/build_system/tools/Compilers/Tasking_1.1r8/ctc/include/math.h
@@ -38,3 +38,5 @@ libraries/zf_common/zf_common_function.o :	e:/nodeanddata/studio/FSL/Complete/S1
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Cpu/Std/Ifx_TypesTasking.h :
 libraries/zf_common/zf_common_function.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Cpu/Std/PLATFORM_TYPES.H
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Cpu/Std/PLATFORM_TYPES.H :
+libraries/zf_common/zf_common_function.o :	../libraries/zf_common/zf_common_function.h
+../libraries/zf_common/zf_common_function.h :

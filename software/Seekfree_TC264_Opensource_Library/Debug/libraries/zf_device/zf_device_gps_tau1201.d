@@ -40,8 +40,6 @@ libraries/zf_device/zf_device_gps_tau1201.o :	e:/nodeanddata/studio/FSL/Complete
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Cpu/Std/PLATFORM_TYPES.H :
 libraries/zf_device/zf_device_gps_tau1201.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_fifo.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_fifo.h :
-libraries/zf_device/zf_device_gps_tau1201.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_interrupt.h
-e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_interrupt.h :
 libraries/zf_device/zf_device_gps_tau1201.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_delay.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_delay.h :
 libraries/zf_device/zf_device_gps_tau1201.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_uart.h

@@ -49,6 +49,8 @@
 #include "zf_driver_gpio.h"
 #include "zf_driver_uart.h"
 #include "zf_driver_delay.h"
+#include "zf_device_type.h"
+
 #include "zf_device_bluetooth_ch9141.h"
 
 static  fifo_struct     bluetooth_ch9141_fifo;
@@ -57,11 +59,172 @@ static  uint8           bluetooth_ch9141_buffer[BLUETOOTH_CH9141_BUFFER_SIZE];  
 static  uint8           bluetooth_ch9141_data;
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      蓝牙转串口模块 串口中断回调函数
-//  @param      void
-//  @return     void
-//  Sample usage:
-//  @note       该函数在ISR文件 串口中断程序被调用
+// 函数简介       蓝牙转串口模块发送数组
+// 参数说明       uart_n          串口模块号 参照 zf_driver_uart.h 内 uart_index_enum 枚举体定义
+// 参数说明       *buff           要发送的数组地址
+// 参数说明       len             发送长度
+// 返回参数       void
+// 使用示例       bluetooth_ch9141_write_buffer(UART_1, &a[0], 5);
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+static void bluetooth_ch9141_write_buffer (uart_index_enum uart_n, const uint8 *buff, uint32 len)
+{
+    while(len)
+    {
+        uart_write_byte_wait(uart_n, *buff);
+        len--;
+        buff++;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     蓝牙转串口模块 发送数据
+// 参数说明     data            8bit 数据
+// 返回参数     uint32          剩余发送长度
+// 使用示例     bluetooth_ch9141_send_byte(0x5A);
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+uint32 bluetooth_ch9141_send_byte (const uint8 data)
+{
+    uint16 time_count = BLUETOOTH_CH9141_TIMEOUT_COUNT;
+    while(time_count)
+    {
+        if(!gpio_get_level(BLUETOOTH_CH9141_RTS_PIN))
+        {
+            uart_write_byte_wait(BLUETOOTH_CH9141_INDEX, data);                      // 发送数据
+            break;
+        }
+        time_count --;
+        system_delay_ms(1);
+    }
+    return (0 < time_count);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     蓝牙转串口模块 发送函数
+// 参数说明     buff             需要发送的数据地址
+// 返回参数     len              发送长度
+// 使用示例     uint32           剩余未发送的字节数
+// 使用示例     bluetooth_ch9141_send_buff(buff, 16);
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+uint32 bluetooth_ch9141_send_buff (const uint8 *buff, uint32 len)
+{
+    zf_assert(buff != NULL);
+    uint16 time_count = 0;
+    while(0 != len)
+    {
+        if(!gpio_get_level(BLUETOOTH_CH9141_RTS_PIN))                           // 如果RTS为低电平 则继续发送数据
+        {
+            if(30 <= len)                                                       // 数据分 30byte 每包发送
+            {
+                bluetooth_ch9141_write_buffer(BLUETOOTH_CH9141_INDEX, buff, 30);            // 发送数据
+                buff += 30;                                                     // 地址偏移
+                len -= 30;                                                      // 数量
+                time_count = 0;
+            }
+            else                                                                // 不足 30byte 的数据一次性发送完毕
+            {
+                bluetooth_ch9141_write_buffer(BLUETOOTH_CH9141_INDEX, buff, len);           // 发送数据
+                len = 0;
+                break;
+            }
+        }
+        else                                                                    // 如果RTS为高电平 则模块忙
+        {
+            if(BLUETOOTH_CH9141_TIMEOUT_COUNT <= (++ time_count))               // 超出了最大等待时间
+            {
+                break;                                                          // 退出发送
+            }
+            system_delay_ms(1);
+        }
+    }
+    return len;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     蓝牙转串口模块 发送字符串
+// 参数说明     *str            要发送的字符串地址
+// 返回参数     uint32          剩余发送长度
+// 使用示例     bluetooth_ch9141_send_string("Trust yourself.");
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+uint32 bluetooth_ch9141_send_string (const char *str)
+{
+    zf_assert(str != NULL);
+    uint16 time_count = 0;
+    uint32 len = strlen(str);
+    while(0 != len)
+    {
+        if(!gpio_get_level(BLUETOOTH_CH9141_RTS_PIN))                           // 如果RTS为低电平 则继续发送数据
+        {
+            if(30 <= len)                                                       // 数据分 30byte 每包发送
+            {
+                bluetooth_ch9141_write_buffer(BLUETOOTH_CH9141_INDEX, (const uint8 *)str, 30);   // 发送数据
+                str += 30;                                                      // 地址偏移
+                len -= 30;                                                      // 数量
+                time_count = 0;
+            }
+            else                                                                // 不足 30byte 的数据一次性发送完毕
+            {
+                bluetooth_ch9141_write_buffer(BLUETOOTH_CH9141_INDEX, (const uint8 *)str, len);// 发送数据
+                len = 0;
+                break;
+            }
+        }
+        else                                                                    // 如果RTS为高电平 则模块忙
+        {
+            if(BLUETOOTH_CH9141_TIMEOUT_COUNT <= (++ time_count))               // 超出了最大等待时间
+            {
+                break;                                                          // 退出发送
+            }
+            system_delay_ms(1);
+        }
+    }
+    return len;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     蓝牙转串口模块 发送摄像头图像至上位机查看图像
+// 参数说明     *image_addr     需要发送的图像地址
+// 参数说明     image_size      图像的大小
+// 返回参数     void
+// 使用示例     bluetooth_ch9141_send_image(&mt9v03x_image[0][0], MT9V03X_IMAGE_SIZE);
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+void bluetooth_ch9141_send_image (const uint8 *image_addr, uint32 image_size)
+{
+    zf_assert(image_addr != NULL);
+
+    extern uint8 camera_send_image_frame_header[4];
+    bluetooth_ch9141_send_buff(camera_send_image_frame_header, 4);
+    bluetooth_ch9141_send_buff((uint8 *)image_addr, image_size);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     蓝牙转串口模块 读取函数
+// 参数说明     buff            存储的数据地址
+// 参数说明     len             长度
+// 返回参数     uint32          实际读取字节数
+// 使用示例     bluetooth_ch9141_read_buff(buff, 16);
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+uint32 bluetooth_ch9141_read_buff (uint8 *buff, uint32 len)
+{
+    zf_assert(buff != NULL);
+    uint32 data_len = len;
+    fifo_read_buffer(&bluetooth_ch9141_fifo, buff, &data_len, FIFO_READ_AND_CLEAN);
+    return data_len;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     蓝牙转串口模块 串口中断回调函数
+// 参数说明     void
+// 返回参数     void
+// 使用示例
+// 备注信息     该函数在 ISR 文件的串口中断程序被调用
+//              由串口中断服务函数调用 wireless_module_uart_handler() 函数
+//              再由 wireless_module_uart_handler() 函数调用本函数
 //-------------------------------------------------------------------------------------------------------------------
 void bluetooth_ch9141_uart_callback (void)
 {
@@ -70,131 +233,15 @@ void bluetooth_ch9141_uart_callback (void)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// @brief       蓝牙转串口模块 发送数据
-// @param       data            8bit 数据
-// @return      uint32          剩余发送长度
-// Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
-uint32 bluetooth_ch9141_send_byte (const uint8 data)
-{
-    uint16 time_count = 0;
-    while(gpio_get_level(BLUETOOTH_CH9141_RTS_PIN))                             // 如果RTS为低电平，则继续发送数据
-    {
-        if(BLUETOOTH_CH9141_TIMEOUT_COUNT < time_count ++)
-            return 1;                                                           // 模块忙,如果允许当前程序使用while等待 则可以使用后面注释的while等待语句替换本if语句
-        system_delay_ms(1);
-    }
-    uart_write_byte(BLUETOOTH_CH9141_INDEX, data);                              // 发送最后的数据
-
-    return 0;
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      蓝牙转串口模块 发送函数
-//  @param      buff            需要发送的数据地址
-//  @param      len             发送长度
-//  @return     uint32          剩余未发送的字节数
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
-uint32 bluetooth_ch9141_send_buff (const uint8 *buff, uint32 len)
-{
-    uint16 time_count = 0;
-    while(30 < len)
-    {
-        time_count = 0;
-        while(gpio_get_level(BLUETOOTH_CH9141_RTS_PIN) && BLUETOOTH_CH9141_TIMEOUT_COUNT > time_count ++) // 如果RTS为低电平，则继续发送数据
-            system_delay_ms(1);
-        if(BLUETOOTH_CH9141_TIMEOUT_COUNT <= time_count)
-            return len;                                                         // 模块忙,如果允许当前程序使用while等待 则可以使用后面注释的while等待语句替换本if语句
-        uart_write_buffer(BLUETOOTH_CH9141_INDEX, buff, 30);
-
-        buff += 30;                                                             // 地址偏移
-        len -= 30;                                                              // 数量
-    }
-
-    time_count = 0;
-    while(gpio_get_level(BLUETOOTH_CH9141_RTS_PIN) && BLUETOOTH_CH9141_TIMEOUT_COUNT > time_count ++)     // 如果RTS为低电平，则继续发送数据
-        system_delay_ms(1);
-    if(time_count >= BLUETOOTH_CH9141_TIMEOUT_COUNT)
-        return len;                                                             // 模块忙,如果允许当前程序使用while等待 则可以使用后面注释的while等待语句替换本if语句
-    uart_write_buffer(BLUETOOTH_CH9141_INDEX, buff, len);                       // 发送最后的数据
-
-    return 0;
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-// @brief       蓝牙转串口模块 发送字符串
-// @param       *str            要发送的字符串地址
-// @return      uint32          剩余发送长度
-// Sample usage:                bluetooth_ch9141_send_string("Believe in yourself.");
-//-------------------------------------------------------------------------------------------------------------------
-uint32 bluetooth_ch9141_send_string (const char *str)
-{
-    uint16 time_count = 0;
-    uint32 len = strlen(str);
-    while(30 < len)
-    {
-        time_count = 0;
-        while(gpio_get_level(BLUETOOTH_CH9141_RTS_PIN))                         // 如果RTS为低电平，则继续发送数据
-        {
-            if(BLUETOOTH_CH9141_TIMEOUT_COUNT > time_count ++)
-                return len;                                                     // 模块忙,如果允许当前程序使用while等待 则可以使用后面注释的while等待语句替换本if语句
-            system_delay_ms(1);
-        }
-        uart_write_buffer(BLUETOOTH_CH9141_INDEX, (const uint8 *)str, 30);
-
-        str += 30;                                                              // 地址偏移
-        len -= 30;                                                              // 数量
-    }
-
-    time_count = 0;
-    while(gpio_get_level(BLUETOOTH_CH9141_RTS_PIN))                             // 如果RTS为低电平，则继续发送数据
-    {
-        if(BLUETOOTH_CH9141_TIMEOUT_COUNT > time_count ++)
-            return len;                                                         // 模块忙,如果允许当前程序使用while等待 则可以使用后面注释的while等待语句替换本if语句
-        system_delay_ms(1);
-    }
-    uart_write_buffer(BLUETOOTH_CH9141_INDEX, (const uint8 *)str, len);         // 发送最后的数据
-
-    return 0;
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-// @brief       蓝牙转串口模块 发送摄像头图像至上位机查看图像
-// @param       *image_addr     需要发送的图像地址
-// @param       image_size      图像的大小
-// @return      void
-// Sample usage:                bluetooth_ch9141_send_image(&mt9v03x_image[0][0], MT9V03X_IMAGE_SIZE);
-//-------------------------------------------------------------------------------------------------------------------
-void bluetooth_ch9141_send_image (const uint8 *image_addr, uint32 image_size)
-{
-    extern uint8 camera_send_image_frame_header[4];
-    bluetooth_ch9141_send_buff(camera_send_image_frame_header, 4);
-    bluetooth_ch9141_send_buff((uint8 *)image_addr, image_size);
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-// @brief       蓝牙转串口模块 读取函数
-// @param       buff            存储的数据地址
-// @param       len             长度
-// @return      uint32          实际读取字节数
-// Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
-uint32 bluetooth_ch9141_read_buff (uint8 *buff, uint32 len)
-{
-    uint32 data_len = len;
-    fifo_read_buffer(&bluetooth_ch9141_fifo, buff, &data_len, FIFO_READ_AND_CLEAN);
-    return data_len;
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-// @brief       蓝牙转串口模块 初始化
-// @param       mode            蓝牙模式 MASTER_MODE(主机)或者SLAVE_MODE(从机)
-// @return      uint8           初始化状态 0-成功 1-失败
-// Sample usage:
+// 函数简介     蓝牙转串口模块 初始化
+// 参数说明     void
+// 返回参数     uint8           初始化状态 0-成功 1-失败
+// 使用示例     bluetooth_ch9141_init();
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 uint8 bluetooth_ch9141_init (void)
 {
+    uint8 return_state = 0;
     set_wireless_type(BLUETOOTH_CH9141, bluetooth_ch9141_uart_callback);
 
     fifo_init(&bluetooth_ch9141_fifo, FIFO_DATA_8BIT, bluetooth_ch9141_buffer, BLUETOOTH_CH9141_BUFFER_SIZE);
@@ -203,5 +250,5 @@ uint8 bluetooth_ch9141_init (void)
     uart_init(BLUETOOTH_CH9141_INDEX, BLUETOOTH_CH9141_BUAD_RATE, BLUETOOTH_CH9141_RX_PIN, BLUETOOTH_CH9141_TX_PIN);
     uart_rx_interrupt(BLUETOOTH_CH9141_INDEX, 1);
 
-    return 0;
+    return return_state;
 }

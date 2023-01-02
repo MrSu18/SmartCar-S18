@@ -4,8 +4,8 @@
 
 libraries/zf_device/zf_device_camera.o :	../libraries/zf_device/zf_device_camera.c
 ../libraries/zf_device/zf_device_camera.c :
-libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_interrupt.h
-e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_interrupt.h :
+libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_debug.h
+e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_debug.h :
 libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_typedef.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_typedef.h :
 libraries/zf_device/zf_device_camera.o :	e:/IDE/Infineon/AURIX-Studio-1.8.0/plugins/com.infineon.aurix.tools_1.8.0/build_system/tools/Compilers/Tasking_1.1r8/ctc/include/math.h
@@ -38,6 +38,8 @@ libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Cpu/Std/Ifx_TypesTasking.h :
 libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Cpu/Std/PLATFORM_TYPES.H
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Cpu/Std/PLATFORM_TYPES.H :
+libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_interrupt.h
+e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_interrupt.h :
 libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_gpio.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_gpio.h :
 libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/infineon_libraries/iLLD/TC26B/Tricore/Port/Std/IFXPORT.h
@@ -142,8 +144,6 @@ libraries/zf_device/zf_device_camera.o :	../libraries/zf_device/zf_device_mt9v03
 ../libraries/zf_device/zf_device_mt9v03x.h :
 libraries/zf_device/zf_device_camera.o :	../libraries/zf_device/zf_device_type.h
 ../libraries/zf_device/zf_device_type.h :
-libraries/zf_device/zf_device_camera.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_debug.h
-e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_debug.h :
 libraries/zf_device/zf_device_camera.o :	../libraries/zf_device/zf_device_ov7725.h
 ../libraries/zf_device/zf_device_ov7725.h :
 libraries/zf_device/zf_device_camera.o :	../libraries/zf_device/zf_device_scc8660.h

@@ -69,7 +69,7 @@
 
 #define MT9V03X_VSYNC_PIN       (ERU_CH3_REQ6_P02_0)                            // 场中断引脚
 
-#define MT9V03X_DATA_PIN        (P00_0)                                         // 数据引脚 这里是 只能是 GPIOx0 或者 GPIOx8 开始 连续八个引脚例如 F0-F7
+#define MT9V03X_DATA_PIN        (P00_0)                                         // 数据引脚 这里是 只能是 GPIOx0 或者 GPIOx8 开始 连续八个引脚例如 P00_0-P00_7
 #define MT9V03X_DATA_ADD        (get_port_in_addr(MT9V03X_DATA_PIN))
 
 #define MT9V03X_INIT_TIMEOUT    (0x0080)                                        // 默认的摄像头初始化超时时间 毫秒为单位

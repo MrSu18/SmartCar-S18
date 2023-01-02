@@ -53,14 +53,18 @@ static uint16 crc_check (uint8 *buff, uint8 crc_cnt)
 
     for(i = 0; i < crc_cnt; i ++)
     {
-    crc_temp ^= buff[i];
-    for(j = 0; j < 8; j ++)
-    {
-    if (crc_temp & 0x01)
-    crc_temp = (crc_temp >> 1) ^ 0xa001;
-    else
-    crc_temp = crc_temp >> 1;
-    }
+        crc_temp ^= buff[i];
+        for(j = 0; j < 8; j ++)
+        {
+            if (crc_temp & 0x01)
+            {
+                crc_temp = (crc_temp >> 1) ^ 0xa001;
+            }
+            else
+            {
+                crc_temp = crc_temp >> 1;
+            }
+        }
     }
     return(crc_temp);
 }
