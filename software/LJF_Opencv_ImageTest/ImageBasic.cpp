@@ -1,16 +1,18 @@
 #include "ImageBasic.h"
-
-uint8 left_line_x[USE_IMAGE_H], center_line_x[USE_IMAGE_H], right_line_x[USE_IMAGE_H];//左中右三线
-uint8 left_line_y[USE_IMAGE_W] = { 0 }, right_line_y[USE_IMAGE_W] = {USE_IMAGE_H-1};//赛道边界的Y坐标
-uint8 black_block_num = 0;//赛道黑块个数
+//============================参数================================
+#define TRACK_HALF_WIDTH	13//赛道半宽像素点
 uint8 const seed_l_flag[8] = { 0,1,2,3,4,5,6,7 };//左种子标号队列数据域
 uint8 const seed_r_flag[8] = { 4,3,2,1,0,7,6,5 };//右种子标号队列数据域
+//===============================================================
+
+//=========================赛道特征变量=============================
+myPoint left_line[EDGELINE_LENGTH], center_line[EDGELINE_LENGTH], right_line[EDGELINE_LENGTH];//左中右三线
+uint8 l_line_count=0,c_line_count=0,r_line_count=0;//左中右边线记录总共有多长
 uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
+uint8 black_block_num = 0;//赛道黑块个数
 uint8 track_top_row = USE_IMAGE_H;//赛道的最顶行，也可起到最长白列的效果
-
-#define BLACK_CONTINUE_WIDTH_THR	10//从中间往两边的黑色连续的阈值
-#define TRACK_HALF_WIDTH	13//赛道半宽像素点	
-
+//================================================================
+uint8 left_line_x[USE_IMAGE_H], center_line_x[USE_IMAGE_H], right_line_x[USE_IMAGE_H];//左中右三线
 /***********************************************
 * @brief : 扫线的播种函数，得到最下一行左右线的种子
 * @param : 二值化图像
@@ -18,6 +20,7 @@ uint8 track_top_row = USE_IMAGE_H;//赛道的最顶行，也可起到最长白列的效果
 * @date  : 2022.9.7
 * @author: 刘骏帆
 ************************************************/
+#define BLACK_CONTINUE_WIDTH_THR	7//从中间往两边的黑色连续的阈值
 void SowSeed(myPoint* left_seed,myPoint* right_seed)
 {
 	//找到左边种子
@@ -38,7 +41,8 @@ void SowSeed(myPoint* left_seed,myPoint* right_seed)
 			if (l_black_width >= BLACK_CONTINUE_WIDTH_THR || (column- BLACK_CONTINUE_WIDTH_THR)<left_border[left_seed->Y])
 			{
 				left_seed->X = column;
-                left_line_x[left_seed->Y] = left_seed->X;
+                left_line[l_line_count].X=left_seed->X;left_line[l_line_count].Y=left_seed->Y;
+                l_line_count++;
 				break;
 			}
 			else continue;
@@ -62,7 +66,8 @@ void SowSeed(myPoint* left_seed,myPoint* right_seed)
 			if (r_black_width >= BLACK_CONTINUE_WIDTH_THR || (column + BLACK_CONTINUE_WIDTH_THR) > right_border[right_seed->Y])
 			{
 				right_seed->X = column+1;
-                right_line_x[right_seed->Y] = right_seed->X;
+                right_line[r_line_count].X=right_seed->X;right_line[r_line_count].Y=right_seed->Y;
+                r_line_count++;
 				break;
 			}
 			else continue;
@@ -87,7 +92,7 @@ uint8 EightAreasSeedGrown(myPoint* seed,SeedGrowAqueue* seed_queue,const uint8* 
 		switch (queue_data[seed_queue->front])
 		{
 		case 0:
-			if (seed->X+1<=right_border[seed->Y])//防止种子生长越界
+			if (seed->X+1<=USE_IMAGE_W-1)//防止种子生长越界
 			{
 				if (use_image[seed->Y][seed->X + 1] == IMAGE_BLACK)
 				{
@@ -97,7 +102,7 @@ uint8 EightAreasSeedGrown(myPoint* seed,SeedGrowAqueue* seed_queue,const uint8* 
 			}
 			break;
 		case 1:
-			if (seed->Y-1>=0 && seed->X+1<=right_border[seed->Y-1])
+			if (seed->Y-1>=0 && seed->X+1<=USE_IMAGE_W-1)
 			{
 				if (use_image[seed->Y - 1][seed->X + 1] == IMAGE_BLACK)
 				{
@@ -157,7 +162,7 @@ uint8 EightAreasSeedGrown(myPoint* seed,SeedGrowAqueue* seed_queue,const uint8* 
 			}
 			break;
 		case 7:
-			if (seed->Y+1<=USE_IMAGE_H-1 && seed->X+1<=right_border[seed->Y+1])
+			if (seed->Y+1<=USE_IMAGE_H-1 && seed->X+1<=USE_IMAGE_W-1)
 			{
 				if (use_image[seed->Y + 1][seed->X + 1] == IMAGE_BLACK)
 				{
@@ -208,11 +213,9 @@ uint8 EightAreasSeedGrown(myPoint* seed,SeedGrowAqueue* seed_queue,const uint8* 
 ************************************************/
 void EdgeDetection(void)
 {
+    /*1.播种找到左右种子*/
 	myPoint left_seed, right_seed;//左右线的初始种子
 	left_seed.X = left_border[USE_IMAGE_H - 2]; left_seed.Y = USE_IMAGE_H - 2; right_seed.X = right_border[USE_IMAGE_H - 2]; right_seed.Y = USE_IMAGE_H - 2;//初始化为0
-	SeedGrowAqueue l_seed_queue,r_seed_queue;//左右线用于标号转移的循环队列
-	l_seed_queue.front = 0; l_seed_queue.rear = 7; r_seed_queue.front = 0; r_seed_queue.rear = 7;
-	/*1.播种找到左右种子*/
 	SowSeed(&left_seed,&right_seed);
 	//判断种子是否丢线
 	if (left_seed.X != left_border[left_seed.Y])
@@ -224,66 +227,53 @@ void EdgeDetection(void)
 		black_block_num++;
 	}
 	/*2.种子从左下角开始生长，生长出一个闭合赛道边缘*/
-	uint8 seed_grow_top_flag=0,seed_grow_right_flag=0;//标志着种子是否生长到了图像顶端或赛道右端需要切换左右线的判断，0：左边线，1：右边线
+    SeedGrowAqueue l_seed_queue,r_seed_queue;//左右线用于标号转移的循环队列
+    l_seed_queue.front = 0; l_seed_queue.rear = 7; r_seed_queue.front = 0; r_seed_queue.rear = 7;
+    uint8 change_lr_flag=0,left_finish=0,right_finish=0;//change_lr_flag=0:左边生长 change_lr_flag=1:右边生长
 	do
 	{
-		LCDDrawPoint(left_seed.Y, left_seed.X);
-		if (EightAreasSeedGrown(&left_seed, &l_seed_queue, &seed_l_flag[0]) == 1)
-		{
-			//记录最高到哪行，对种子行进行记录，可用来判断直弯道
-			if (left_seed.Y < track_top_row)
-			{
-                track_top_row = left_seed.Y;
-			}
-            //判断是否目前种子是在左边线还是右边线
-            if(left_seed.Y==0)  seed_grow_top_flag=1;
-            else if(left_seed.X==right_border[left_seed.Y]) seed_grow_right_flag=1;
-			//判断是否是边线,对种子列进行记录
-			if (seed_grow_top_flag==0 && seed_grow_right_flag==0)//还在赛道左边界
-			{
-				if (use_image[left_seed.Y][left_seed.X + 1] == IMAGE_WHITE && use_image[left_seed.Y][left_seed.X + 2] == IMAGE_WHITE)
-				{
-					if (left_seed.X > left_line_x[left_seed.Y])
-					{
-                        left_line_x[left_seed.Y] = left_seed.X;
-					}
-				}
-				if (left_seed.X == left_border[left_seed.Y])//判断是否丢线
-				{
-					l_lostline_num++;
-				}
-			}
-			else//种子在赛道右边界的判断
-			{
-				if (use_image[left_seed.Y][left_seed.X - 1] == IMAGE_WHITE && use_image[left_seed.Y][left_seed.X - 2] == IMAGE_WHITE)
-				{
-					if (left_seed.X < right_line_x[left_seed.Y])
-					{
-                        right_line_x[left_seed.Y] = left_seed.X;
-					}
-					if (left_seed.X == right_border[left_seed.Y])//判断是否丢线
-					{
-						r_lostline_num++;
-					}
-				}
-			}
-			if (left_seed.Y < USE_IMAGE_H - 2 && left_seed.Y>2)
-			{
-				if (use_image[left_seed.Y + 1][left_seed.X] == IMAGE_WHITE)
-				{
-					left_line_y[left_seed.X] = left_seed.Y;
-				}
-				if (use_image[left_seed.Y - 1][left_seed.X] == IMAGE_WHITE)
-				{
-					right_line_y[left_seed.X] = left_seed.Y;
-				}
-			}
-		}
-		else
-		{
-			break;//种子生长失败了跳出循环,避免卡死
-		}
-	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当种子从左下角生长到了右种子则跳出循环
+        if(change_lr_flag == 0 && left_finish==0)
+        {
+            if (EightAreasSeedGrown(&left_seed, &l_seed_queue, seed_l_flag) == 1)//生长一次
+            {
+                LCDDrawPoint(left_seed.Y, left_seed.X);
+                if(left_seed.Y==0 || left_seed.X==right_border[left_seed.Y])//左种子生长到了图像上边界或右边界说明扫完了左边
+                {
+                    change_lr_flag=!change_lr_flag;
+                    left_finish=1;
+                }
+                else if(left_seed.X==left_border[left_seed.Y] )//左种子生长到了左边界
+                {
+                    if(right_finish!=1)  change_lr_flag=!change_lr_flag;
+                }
+            }
+            else
+            {
+                break;//种子生长失败了跳出循环,避免卡死
+            }
+        }
+        else if(change_lr_flag==1 && right_finish==0)
+        {
+            if (EightAreasSeedGrown(&right_seed, &r_seed_queue, seed_r_flag) == 1)
+            {
+                LCDDrawPoint(right_seed.Y, right_seed.X);
+                if(right_seed.Y==0 || right_seed.X==left_border[right_seed.Y])//左种子生长到了图像上边界，左边界
+                {
+                    change_lr_flag=!change_lr_flag;
+                    right_finish=1;
+                }
+                else if(right_seed.X==right_border[right_seed.Y])//右种子生长到了右边界
+                {
+                    if(left_finish!=1)  change_lr_flag=!change_lr_flag;
+                }
+            }
+            else
+            {
+                break;//种子生长失败了跳出循环,避免卡死
+            }
+        }
+        else break;
+	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当左种子和右种子合并即扫线结束
 }
 
 /***********************************************

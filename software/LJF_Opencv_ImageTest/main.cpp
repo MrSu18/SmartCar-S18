@@ -36,30 +36,23 @@ int main()
         /************************************************************************************************************/
 
         //把三线画出来
-        Point a;
-        for (uint8 i = USE_IMAGE_H - 1; i > 0; i--)//bgr
-        {
-            a.x = left_line_x[i];
-            a.y = i;
-            circle(use_mat, a, 0, Scalar(0, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
-            a.x = right_line_x[i];
-            a.y = i;
-            circle(use_mat, a, 0, Scalar(0, 0, 255), -1);
-            a.x = center_line_x[i];
-            a.y = i;
-            circle(use_mat, a, 0, Scalar(255, 0, 0), -1);
-        }
-//        for (uint8 i = USE_IMAGE_W - 1; i > 0; i--)
+//        Point a;
+//        for (uint8 i = USE_IMAGE_H - 1; i > 0; i--)//bgr
 //        {
-//            a.x = i; a.y = left_line_y[i];
-//            circle(img2, a, 0, Scalar(255, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
-//            a.x = i; a.y = right_line_y[i];
-//            //circle(img2, a, 0, Scalar(255, 255, 0), -1);
+//            a.x = left_line_x[i];
+//            a.y = i;
+//            circle(use_mat, a, 0, Scalar(0, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
+//            a.x = right_line_x[i];
+//            a.y = i;
+//            circle(use_mat, a, 0, Scalar(0, 0, 255), -1);
+//            a.x = center_line_x[i];
+//            a.y = i;
+//            circle(use_mat, a, 0, Scalar(255, 0, 0), -1);
 //        }
         //数组清零
-        memcpy(left_line_x,left_border,sizeof(uint8)*USE_IMAGE_H);
-        memcpy(right_line_x,right_border,sizeof(uint8)*USE_IMAGE_H);
-        memset(center_line_x,USE_IMAGE_W/2,sizeof(uint8)*USE_IMAGE_H);
+//        memcpy(left_line_x,left_border,sizeof(uint8)*USE_IMAGE_H);
+//        memcpy(right_line_x,right_border,sizeof(uint8)*USE_IMAGE_H);
+//        memset(center_line_x,USE_IMAGE_W/2,sizeof(uint8)*USE_IMAGE_H);
         //显示图像
         imshow("use_img", use_mat);
         waitKey(0);//等待键盘按下

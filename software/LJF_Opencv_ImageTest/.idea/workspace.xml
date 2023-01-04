@@ -24,9 +24,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageConversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageWR.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageWR.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageWR.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageWR.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,6 +37,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../../../IDE/OpenCVcpp/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/include/opencv2/core/mat.inl.hpp" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../../IDE/OpenCVcpp/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/include/opencv2/core/types.hpp" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../../IDE/OpenCVcpp/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/include/opencv2/imgproc.hpp" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -89,6 +91,8 @@
       <workItem from="1672404747482" duration="9522000" />
       <workItem from="1672458584079" duration="17407000" />
       <workItem from="1672486555268" duration="1000" />
+      <workItem from="1672813972078" duration="12111000" />
+      <workItem from="1672842781309" duration="1005000" />
     </task>
     <servers />
   </component>
