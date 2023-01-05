@@ -1,14 +1,14 @@
 #include "ImageConversion.h"
 #include "ImageWR.h"
 #include "math.h"//二值化算法里面要用到pow函数
-#include <stdio.h>
+#include <string>
 
 //宏定义
 #define PER_IMG     binary_image//SimBinImage:用于透视变换的图像
 #define IMAGE_BAN   127//逆透视禁止区域的灰度值
 
 //定义变量
-uint8* PerImg_ip[USE_IMAGE_H][USE_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
+uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
 uint8 binary_image[MT9V03X_H][MT9V03X_W]={0};//二值化后的图像
 uint8 left_border[USE_IMAGE_H] = {0};//图像左边界
 uint8 right_border[USE_IMAGE_H] = {USE_IMAGE_W-1};//图像右边界
@@ -96,9 +96,9 @@ void ImagePerspective_Init(void)
     static uint8 BlackColor = IMAGE_BAN;
     double change_un_Mat[3][3] = { {0.316220,-0.232893,2.311183},{0.000132,0.012651,3.418808},{0.000307,-0.002723,0.332779} };
 
-    for (int i = 0; i < USE_IMAGE_W; i++) 
+    for (int i = 0; i < PER_IMAGE_W; i++)
     {
-        for (int j = 0; j < USE_IMAGE_H; j++)
+        for (int j = 0; j < PER_IMAGE_H; j++)
         {
             int local_x = (int)((change_un_Mat[0][0]*i+change_un_Mat[0][1]*j+change_un_Mat[0][2])
                                /(change_un_Mat[2][0]*i+change_un_Mat[2][1]*j+change_un_Mat[2][2]));
