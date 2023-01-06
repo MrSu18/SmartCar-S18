@@ -21,6 +21,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.h" afterDir="false" />
@@ -64,10 +66,12 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/nodeanddata/studio/FSL/Complete/S18/software/LJF_Opencv_ImageTest&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -93,6 +97,14 @@
       <workItem from="1672486555268" duration="1000" />
       <workItem from="1672813972078" duration="12111000" />
       <workItem from="1672842781309" duration="1005000" />
+      <workItem from="1672901980679" duration="1000" />
+      <workItem from="1672902031725" duration="17000" />
+      <workItem from="1672902831792" duration="102000" />
+      <workItem from="1672933841866" duration="85000" />
+      <workItem from="1672978982378" duration="32000" />
+      <workItem from="1672993592177" duration="2957000" />
+      <workItem from="1673019694842" duration="1409000" />
+      <workItem from="1673022520204" duration="443000" />
     </task>
     <servers />
   </component>

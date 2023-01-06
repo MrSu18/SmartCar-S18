@@ -24,6 +24,6 @@ extern uint8 track_top_row;//赛道的最顶行，也可起到最长白列的效果
 //****************************************
 
 void SowSeed(myPoint* left_seed,myPoint* right_seed);//扫线前的播种操作
-uint8 EightAreasSeedGrown(myPoint* seed,SeedGrowAqueue* seed_queue);//八零域种子生长规则：种子生长一次
+uint8 EightAreasSeedGrown(myPoint* seed,char choose,uint8 *seed_count,uint8 *seed_num);//八零域种子生长规则：种子生长一次
 void EdgeDetection(void);//八零域扫线
 void CaculateBlackBlock(void);//计算图像黑色区块

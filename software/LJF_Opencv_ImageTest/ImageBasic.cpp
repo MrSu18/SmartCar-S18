@@ -1,8 +1,6 @@
 #include "ImageBasic.h"
 //============================参数================================
 #define TRACK_HALF_WIDTH	13//赛道半宽像素点
-uint8 const seed_l_flag[8] = { 0,1,2,3,4,5,6,7 };//左种子标号队列数据域
-uint8 const seed_r_flag[8] = { 4,3,2,1,0,7,6,5 };//右种子标号队列数据域
 //===============================================================
 
 //=========================赛道特征变量=============================
@@ -78,134 +76,56 @@ void SowSeed(myPoint* left_seed,myPoint* right_seed)
 /***********************************************
 * @brief : 八零域种子生长的规则，生长一次
 * @param : myPoint* seed:要进行生长的种子
-*		   SeedGrowAqueue* Aqueue：存储生长标号的循环队列
-*		   uint8* queue_data:循环队列的数据域
+*		   char choose: 选择左边还是右边的生长标号表歌
+ *		   uint8 *seed_count: 这个种子已经在八个领域内走了多少次了，如果走完了还没有则说明生长失败了
+ *		   uint8 *seed_num: 八零域的标号
 * @return: 0：生长失败 1：生长成功
-* @date  : 2022.9.14
+* @date  : 2023.1.7
 * @author: 刘骏帆
 ************************************************/
-uint8 EightAreasSeedGrown(myPoint* seed,SeedGrowAqueue* seed_queue,const uint8* queue_data)
+char const eight_area_left[8][2]={{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
+char const eight_area_right[8][2]={{-1,0},{-1,-1},{0,-1},{1,-1},{1,0},{1,1},{0,1},{-1,1}};
+uint8 EightAreasSeedGrown(myPoint* seed,char choose,uint8 *seed_count,uint8 *seed_num)
 {
-	uint8 break_for_flag = 0;//用于判断是否找到黑色的区域从而不继续标号查看生长
-	for (; seed_queue->front != seed_queue->rear; seed_queue->front = (seed_queue->front + 1) % 8)
-	{
-		switch (queue_data[seed_queue->front])
-		{
-		case 0:
-			if (seed->X+1<=USE_IMAGE_W-1)//防止种子生长越界
-			{
-				if (use_image[seed->Y][seed->X + 1] == IMAGE_BLACK)
-				{
-					seed->X++;
-					break_for_flag = 1;
-				}
-			}
-			break;
-		case 1:
-			if (seed->Y-1>=0 && seed->X+1<=USE_IMAGE_W-1)
-			{
-				if (use_image[seed->Y - 1][seed->X + 1] == IMAGE_BLACK)
-				{
-					seed->X++; seed->Y--;
-					break_for_flag = 1;
-				}
-			}
-			break;
-		case 2:
-			if (seed->Y-1>=0)
-			{
-				if (use_image[seed->Y - 1][seed->X] == IMAGE_BLACK)
-				{
-					seed->Y--;
-					break_for_flag = 1;
-				}
-			}
-			break;
-		case 3:
-			if (seed->Y-1>=0 && seed->X-1>=0)
-			{
-				if (use_image[seed->Y - 1][seed->X - 1] == IMAGE_BLACK)
-				{
-					seed->X--; seed->Y--;
-					break_for_flag = 1;
-				}
-			}
-			break;
-		case 4:
-			if(seed->X-1>=0)
-			{
-				if (use_image[seed->Y][seed->X - 1] == IMAGE_BLACK)
-				{
-					seed->X--;
-					break_for_flag = 1;
-				}
-			}
-			break;
-		case 5:
-			if (seed->Y+1<=USE_IMAGE_H-1 && seed->X-1>=0)
-			{
-				if (use_image[seed->Y + 1][seed->X - 1] == IMAGE_BLACK)
-				{
-					seed->X--; seed->Y++;
-					break_for_flag = 1;
-				}
-			}
-			break;
-		case 6:
-			if (seed->Y+1<=USE_IMAGE_H-1)
-			{
-				if (use_image[seed->Y + 1][seed->X] == IMAGE_BLACK)
-				{
-					seed->Y++;
-					break_for_flag = 1;
-				}
-			}
-			break;
-		case 7:
-			if (seed->Y+1<=USE_IMAGE_H-1 && seed->X+1<=USE_IMAGE_W-1)
-			{
-				if (use_image[seed->Y + 1][seed->X + 1] == IMAGE_BLACK)
-				{
-					seed->X++; seed->Y++;
-					break_for_flag = 1;
-				}
-			}
-			break;
-		default:
-			break;
-		}
-		//在这里判断一下前面的switch有没有找到黑色区域
-		if (break_for_flag == 1)
-		{
-			//找到黑点的标号-2作为下一次种子开始的标号
-			char temp = seed_queue->front;
-			if (temp - 2 < 0)//判断是否-2会小于0，会的话要特殊处理
-			{
-				seed_queue->front = 6+temp;
-			}
-			else
-			{
-				seed_queue->front = temp - 2;
-			}
-			seed_queue->rear = (seed_queue->front + 7) % 8;//重置队尾
-			break;//跳出这次的8领域寻找，进入下一个种子8领域搜索
-		}
-	}
-	if (seed_queue->front == seed_queue->rear)//判断是否八个邻域内都没有黑点
-	{
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
+    uint8 next_value=0;
+    char dx=0,dy=0;
+    switch (choose)
+    {
+        case 'l':
+            dx=eight_area_left[*seed_num][0];
+            dy=eight_area_left[*seed_num][1];
+            break;
+        case 'r':
+            dx=eight_area_right[*seed_num][0];
+            dy=eight_area_right[*seed_num][1];
+            break;
+        default:break;
+    }
+    next_value=use_image[seed->Y+dy][seed->X+dx];
+    if (next_value==IMAGE_BLACK)
+    {
+        seed->X += dx;
+        seed->Y += dy;
+        *seed_count=0;
+        if (*seed_num-2<0) *seed_num+=6;
+        else               *seed_num-=2;
+    }
+    else
+    {
+        *seed_num = (*seed_num + 1) % 8;
+        *seed_count++;
+    }
+    if(*seed_count==8)
+        return 0;
+    else
+        return 1;
 }
 
 /***********************************************
 * @brief : 八领域扫线函数
 * @param : 赛道二值化图像
 * @return: 左右边线、左右丢线数
-* @date  : 2022.9.16
+* @date  : 2023.1.7
 * @author: 刘骏帆
 * @note	 :左种子 3 2 1  右种子 1 2 3
 *				4 S 0		 0 S 4
@@ -227,14 +147,13 @@ void EdgeDetection(void)
 		black_block_num++;
 	}
 	/*2.种子从左下角开始生长，生长出一个闭合赛道边缘*/
-    SeedGrowAqueue l_seed_queue,r_seed_queue;//左右线用于标号转移的循环队列
-    l_seed_queue.front = 0; l_seed_queue.rear = 7; r_seed_queue.front = 0; r_seed_queue.rear = 7;
+    uint8 left_seed_num=0,left_seed_count=0,right_seed_num=0,right_seed_count=0;
     uint8 change_lr_flag=0,left_finish=0,right_finish=0;//change_lr_flag=0:左边生长 change_lr_flag=1:右边生长
-	do
+    do
 	{
         if(change_lr_flag == 0 && left_finish==0)
         {
-            if (EightAreasSeedGrown(&left_seed, &l_seed_queue, seed_l_flag) == 1)//生长一次
+            if (EightAreasSeedGrown(&left_seed,'l',&left_seed_count,&left_seed_num) == 1)//生长一次
             {
                 LCDDrawPoint(left_seed.Y, left_seed.X);
                 if(left_seed.Y==0 || left_seed.X==right_border[left_seed.Y])//左种子生长到了图像上边界或右边界说明扫完了左边
@@ -254,7 +173,7 @@ void EdgeDetection(void)
         }
         else if(change_lr_flag==1 && right_finish==0)
         {
-            if (EightAreasSeedGrown(&right_seed, &r_seed_queue, seed_r_flag) == 1)
+            if (EightAreasSeedGrown(&right_seed,'r',&right_seed_count,&right_seed_num) == 1)
             {
                 LCDDrawPoint(right_seed.Y, right_seed.X);
                 if(right_seed.Y==0 || right_seed.X==left_border[right_seed.Y])//左种子生长到了图像上边界，左边界
@@ -275,6 +194,7 @@ void EdgeDetection(void)
         else break;
 	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当左种子和右种子合并即扫线结束
 }
+
 
 /***********************************************
 * @brief :得到图像中赛道分开的黑块区域个数用于初步判定元素 
