@@ -17,8 +17,9 @@ int main()
 	ImagePerspective_Init();
 	ImageBorderInit();
 	BlackBorder();
-    for (int i = 1; i < 42; i++)
+    for (int i = 5; i < 42; i++)
     {
+        printf("l_line_count=%d,r_line_count=%d,",l_line_count,r_line_count);
         /******************************************总钻风获取灰度图***************************************/
         String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\11.30\\%d.bmp", i);
         //String str = "E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\11.30\\10.bmp";
@@ -31,31 +32,32 @@ int main()
         PrintImage(use_mat);
         //扫线
         EdgeDetection();
-        //寻黑块
-        CaculateBlackBlock();
         /************************************************************************************************************/
 
         //把三线画出来
-//        Point a;
-//        for (uint8 i = USE_IMAGE_H - 1; i > 0; i--)//bgr
-//        {
-//            a.x = left_line_x[i];
-//            a.y = i;
-//            circle(use_mat, a, 0, Scalar(0, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
-//            a.x = right_line_x[i];
-//            a.y = i;
-//            circle(use_mat, a, 0, Scalar(0, 0, 255), -1);
-//            a.x = center_line_x[i];
-//            a.y = i;
-//            circle(use_mat, a, 0, Scalar(255, 0, 0), -1);
-//        }
-        //数组清零
-//        memcpy(left_line_x,left_border,sizeof(uint8)*USE_IMAGE_H);
-//        memcpy(right_line_x,right_border,sizeof(uint8)*USE_IMAGE_H);
-//        memset(center_line_x,USE_IMAGE_W/2,sizeof(uint8)*USE_IMAGE_H);
+        Point a;
+        for (uint8 i = 0; i < l_line_count; i++)//bgr
+        {
+            a.x = left_line[i].X;
+            a.y = left_line[i].Y;
+            circle(use_mat, a, 0, Scalar(0, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
+        }
+        for (uint8 i = r_line_count - 1; i > 0; i--)//bgr
+        {
+            a.x = right_line[i].X;
+            a.y = right_line[i].Y;
+            circle(use_mat, a, 0, Scalar(255, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
+        }
+        printf("ls-lostline=%d,r_lostline=%d\n",l_lostline_num,r_lostline_num);
+//        a.x = center_line_x[i];
+//        a.y = i;
+//        circle(use_mat, a, 0, Scalar(255, 0, 0), -1);
         //显示图像
         imshow("use_img", use_mat);
         waitKey(0);//等待键盘按下
+
+        TrackBasicClear();
+
     }
     return 0;
 }

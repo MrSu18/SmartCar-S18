@@ -3,8 +3,8 @@
 //图像转化的宏定义
 #define PER_IMAGE_W     188             //逆透视图像的宽度
 #define PER_IMAGE_H     110             //逆透视图像的高度
-#define USE_IMAGE_W		MT9V03X_W	    //使用的图像宽度
-#define USE_IMAGE_H		MT9V03X_H		//使用的图像高度
+#define USE_IMAGE_W		PER_IMAGE_W	    //使用的图像宽度
+#define USE_IMAGE_H		PER_IMAGE_H		//使用的图像高度
 #define IMAGE_BLACK		0				//二值化的黑点
 #define IMAGE_WHITE		255				//二值化的白点
 

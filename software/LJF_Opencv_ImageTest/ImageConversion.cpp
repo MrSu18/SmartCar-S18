@@ -169,12 +169,6 @@ void ImageBorderInit(void)
             }
         }
     }
-    //找完边界之后重置一下左右两线让他们的初始值等于边界
-    for (uint8 row = 0; row < USE_IMAGE_H; row++)
-    {
-        left_line_x[row] = left_border[row];
-        right_line_x[row] = right_border[row];
-    }
 }
 
 /***********************************************
