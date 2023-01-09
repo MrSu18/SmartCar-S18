@@ -1,4 +1,4 @@
-#include "ImageConversion.h"//二值化图像变量以及宏定义
+#include "main.h"
 
 #define EDGELINE_LENGTH 200//边线数组长度
 

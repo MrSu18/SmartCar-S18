@@ -1,7 +1,5 @@
 #include "ImageBasic.h"
-//============================参数================================
-#define TRACK_HALF_WIDTH	13//赛道半宽像素点
-//===============================================================
+#include "ImageConversion.h"//二值化图像变量以及宏定义
 
 //=========================赛道特征变量=============================
 myPoint left_line[EDGELINE_LENGTH], center_line[EDGELINE_LENGTH], right_line[EDGELINE_LENGTH];//左中右三线
