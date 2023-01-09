@@ -14,5 +14,5 @@ add_executable(LJF_Opencv_ImageTest
         ImageWR.cpp
         ImageWR.h
         main.cpp
-        main.h ImageConversion.cpp)
+        main.h ImageConversion.cpp ImageTrack.cpp ImageTrack.h)
 target_link_libraries(LJF_Opencv_ImageTest ${OpenCV_LIBS})

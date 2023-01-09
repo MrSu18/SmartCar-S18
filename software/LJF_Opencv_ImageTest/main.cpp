@@ -3,9 +3,10 @@
 #include <string>
 #include "main.h"
 #include "ImageConversion.h"
-#include "ImageBasic.h"
+//#include "ImageBasic.h"
 #include"ImageWR.h"
 #include <cstring>
+#include "ImageTrack.h"
 
 using namespace cv;
 
@@ -17,7 +18,7 @@ int main()
 	ImagePerspective_Init();
 	ImageBorderInit();
 	BlackBorder();
-    for (int i = 5; i < 42; i++)
+    for (int i = 2; i < 42; i++)
     {
         printf("l_line_count=%d,r_line_count=%d,",l_line_count,r_line_count);
         /******************************************总钻风获取灰度图***************************************/
@@ -32,26 +33,27 @@ int main()
         PrintImage(use_mat);
         //扫线
         EdgeDetection();
+        myPoint test[EDGELINE_LENGTH];
+        blur_points(left_line,l_line_count,test,7);
+        memcpy(left_line,test,2*EDGELINE_LENGTH*sizeof(uint8));
+        TrackEdgeGetCenterLine('l');
         /************************************************************************************************************/
 
         //把三线画出来
         Point a;
-        for (uint8 i = 0; i < l_line_count; i++)//bgr
+        for (uint8 i = 3; i < l_line_count-3; i++)//bgr
         {
-            a.x = left_line[i].X;
-            a.y = left_line[i].Y;
+            a.x = left_line[i].X;a.y = left_line[i].Y;
             circle(use_mat, a, 0, Scalar(0, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
+            a.x = center_line[i].X;a.y = center_line[i].Y;
+            circle(use_mat, a, 0, Scalar(100, 0, 100), -1); //第五个参数我设为-1，表明这是个实点。
         }
         for (uint8 i = r_line_count - 1; i > 0; i--)//bgr
         {
-            a.x = right_line[i].X;
-            a.y = right_line[i].Y;
+            a.x = right_line[i].X;a.y = right_line[i].Y;
             circle(use_mat, a, 0, Scalar(255, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
         }
         printf("ls-lostline=%d,r_lostline=%d\n",l_lostline_num,r_lostline_num);
-//        a.x = center_line_x[i];
-//        a.y = i;
-//        circle(use_mat, a, 0, Scalar(255, 0, 0), -1);
         //显示图像
         imshow("use_img", use_mat);
         waitKey(0);//等待键盘按下
