@@ -73,3 +73,14 @@ void UseImageDataToUseMat()
     //颜色通道转换 Gray-->BGR!!!!,否则后面会没颜色
     cvtColor(img, use_mat, COLOR_GRAY2BGR);
 }
+
+void LCDDrawPoint(uint8 row, uint8 column,uint8 R,uint8 G,uint8 B)
+{
+    //画点
+    Point a;
+    a.x = column; a.y = row;
+    circle(use_mat, a, 0, Scalar(32, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
+    //显示图像
+    imshow("use_img", use_mat);
+    waitKey(0);//等待键盘按下
+}
