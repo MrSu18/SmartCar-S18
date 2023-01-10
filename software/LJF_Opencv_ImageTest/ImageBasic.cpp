@@ -149,7 +149,7 @@ void EdgeDetection(void)
                     l_lostline_num++;
                 }
                 //切换左右巡线的标志变量
-                if(left_seed.Y==0 || left_seed.X==right_border[left_seed.Y] || l_line_count>=EDGELINE_LENGTH)//左种子生长到了图像上边界或右边界说明扫完了左边
+                if(left_seed.Y==0 || left_seed.X==right_border[left_seed.Y] || l_line_count>=EDGELINE_LENGTH-1)//左种子生长到了图像上边界或右边界说明扫完了左边
                 {
                     change_lr_flag=!change_lr_flag;
                     left_finish=1;
@@ -172,7 +172,7 @@ void EdgeDetection(void)
                     r_lost_line[r_line_count]=LOST_LINE_TURE;
                     r_lostline_num++;
                 }
-                if(right_seed.Y==0 || right_seed.X==left_border[right_seed.Y] || r_line_count>=EDGELINE_LENGTH)//种子生长到了图像上边界，左边界
+                if(right_seed.Y==0 || right_seed.X==left_border[right_seed.Y] || r_line_count>=EDGELINE_LENGTH-1)//种子生长到了图像上边界，左边界
                 {
                     change_lr_flag=!change_lr_flag;
                     right_finish=1;
