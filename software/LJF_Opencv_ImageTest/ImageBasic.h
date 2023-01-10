@@ -1,6 +1,8 @@
 #include "main.h"
 
 #define EDGELINE_LENGTH 200//边线数组长度
+#define LOST_LINE_TURE   1//丢线
+#define LOST_LINE_FALSE  0//没丢线
 
 typedef struct myPoint
 {
@@ -9,8 +11,9 @@ typedef struct myPoint
 }myPoint;//点的结构体
 
 /**************全局变量*****************/
-extern myPoint left_line[EDGELINE_LENGTH], center_line[EDGELINE_LENGTH], right_line[EDGELINE_LENGTH];//左中右三线
-extern uint8 l_line_count,c_line_count,r_line_count;//左中右边线记录总共有多长
+extern myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左中右三线
+extern char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];
+extern uint8 l_line_count,r_line_count;//左中右边线记录总共有多长
 extern uint8 l_lostline_num, r_lostline_num;//左右丢线数
 //****************************************
 

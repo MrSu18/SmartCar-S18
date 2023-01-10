@@ -1,9 +1,11 @@
+#include <string.h>
 #include "ImageBasic.h"
 #include "ImageConversion.h"//二值化图像变量以及宏定义
 
 //=========================赛道特征变量=============================
-myPoint left_line[EDGELINE_LENGTH], center_line[EDGELINE_LENGTH], right_line[EDGELINE_LENGTH];//左中右三线
-uint8 l_line_count=0,c_line_count=0,r_line_count=0;//左中右边线记录总共有多长
+myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左右边线
+char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];//左右线是否丢线的记录数组
+uint8 l_line_count=0,r_line_count=0;//左右边线记录总共有多长
 uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 //================================================================
 
@@ -140,8 +142,12 @@ void EdgeDetection(void)
             {
                 //得到边界数组
                 left_line[l_line_count]=left_seed;l_line_count++;
-                //得到丢线数
-                if(left_seed.X<=left_border[left_seed.Y])   l_lostline_num++;
+                //记录丢线
+                if(left_seed.X<=left_border[left_seed.Y])
+                {
+                    l_lost_line[l_line_count]=LOST_LINE_TURE;
+                    l_lostline_num++;
+                }
                 //切换左右巡线的标志变量
                 if(left_seed.Y==0 || left_seed.X==right_border[left_seed.Y] || l_line_count>=EDGELINE_LENGTH)//左种子生长到了图像上边界或右边界说明扫完了左边
                 {
@@ -161,7 +167,11 @@ void EdgeDetection(void)
             if (EightAreasSeedGrown(&right_seed,'r',&right_seed_num) == 1)
             {
                 right_line[r_line_count]=right_seed;r_line_count++;
-                if(right_seed.X>=right_border[right_seed.Y])    r_lostline_num++;
+                if(right_seed.X>=right_border[right_seed.Y])
+                {
+                    r_lost_line[r_line_count]=LOST_LINE_TURE;
+                    r_lostline_num++;
+                }
                 if(right_seed.Y==0 || right_seed.X==left_border[right_seed.Y] || r_line_count>=EDGELINE_LENGTH)//种子生长到了图像上边界，左边界
                 {
                     change_lr_flag=!change_lr_flag;
@@ -189,6 +199,9 @@ void EdgeDetection(void)
 ************************************************/
 void TrackBasicClear(void)
 {
-    l_line_count=0;c_line_count=0;r_line_count=0;//边线的计数指针清零
+    //边线丢线数组清零
+    memset(l_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
+    memset(r_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
+    l_line_count=0;r_line_count=0;//边线的计数指针清零
     l_lostline_num=0;r_lostline_num=0;//丢线数清零
 }
