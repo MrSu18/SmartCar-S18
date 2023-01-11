@@ -7,4 +7,4 @@ typedef unsigned short      uint16;
 
 extern uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];
 
-void LCDDrawPoint(uint8 row, uint8 column);
+void LCDDrawPoint(uint8 row, uint8 column,uint8 R,uint8 G,uint8 B);//»­µãRGBµ÷É«

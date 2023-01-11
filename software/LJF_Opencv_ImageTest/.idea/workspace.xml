@@ -20,12 +20,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="修改一下规范">
-      <change afterPath="$PROJECT_DIR$/ImageTrack.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageTrack.h" afterDir="false" />
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="封装了画点画线的函数">
+      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageTrack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageTrack.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageWR.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageWR.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/main.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,11 +78,6 @@
   }
 }</component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="LJF_Opencv_ImageTest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$/../../../../../../../IDE/OpenCVcpp/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/x64/mingw/bin" PASS_PARENT_ENVS_2="true" PROJECT_NAME="LJF_Opencv_ImageTest" TARGET_NAME="LJF_Opencv_ImageTest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="LJF_Opencv_ImageTest" RUN_TARGET_NAME="LJF_Opencv_ImageTest">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -111,7 +108,9 @@
       <workItem from="1673022520204" duration="491000" />
       <workItem from="1673157887339" duration="7370000" />
       <workItem from="1673172607682" duration="1499000" />
-      <workItem from="1673244172351" duration="15500000" />
+      <workItem from="1673244172351" duration="15696000" />
+      <workItem from="1673323991553" duration="19818000" />
+      <workItem from="1673406181443" duration="2489000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>
@@ -141,7 +140,35 @@
       <option name="project" value="LOCAL" />
       <updated>1673256793920</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="对边线处理增加了三角滤波，初步尝试了半宽补线（还没封装好），在考虑要不要后续把边线数组变成float类型">
+      <created>1673278544225</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1673278544225</updated>
+    </task>
+    <task id="LOCAL-00006" summary="加入丢线数组，记录边线丢线，这样在后续查看是否丢线的时候不用查询两个数组（边线数组和边界数组）">
+      <created>1673330221059</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1673330221059</updated>
+    </task>
+    <task id="LOCAL-00007" summary="修改bug，避免边线数组存储的时候越界">
+      <created>1673339224768</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1673339224768</updated>
+    </task>
+    <task id="LOCAL-00008" summary="封装了画点画线的函数">
+      <created>1673341081125</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1673341081125</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -163,14 +190,10 @@
     <MESSAGE value="将边线存储的形式修改为链表，加入丢线数的记录，代码结构更加有逻辑" />
     <MESSAGE value="暂时不要赛道黑块区域的赛道信息记录，较为麻烦，并且没有想到好的思路去写，删除了一些无关紧要的变量，提交日记" />
     <MESSAGE value="修改一下规范" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改一下规范" />
-  </component>
-  <component name="XDebuggerManager">
-    <watches-manager>
-      <configuration name="CMakeRunConfiguration">
-        <watch expression="left_line" language="ObjectiveC" />
-        <watch expression="right_line" language="ObjectiveC" />
-      </configuration>
-    </watches-manager>
+    <MESSAGE value="对边线处理增加了三角滤波，初步尝试了半宽补线（还没封装好），在考虑要不要后续把边线数组变成float类型" />
+    <MESSAGE value="加入丢线数组，记录边线丢线，这样在后续查看是否丢线的时候不用查询两个数组（边线数组和边界数组）" />
+    <MESSAGE value="修改bug，避免边线数组存储的时候越界" />
+    <MESSAGE value="封装了画点画线的函数" />
+    <option name="LAST_COMMIT_MESSAGE" value="封装了画点画线的函数" />
   </component>
 </project>

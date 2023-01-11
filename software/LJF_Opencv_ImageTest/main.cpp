@@ -18,9 +18,8 @@ int main()
 	ImagePerspective_Init();
 	ImageBorderInit();
 	BlackBorder();
-    for (int i = 2; i < 42; i++)
+    for (int i = 0; i < 42; i++)
     {
-        printf("l_line_count=%d,r_line_count=%d,",l_line_count,r_line_count);
         /******************************************总钻风获取灰度图***************************************/
         String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\11.30\\%d.bmp", i);
         //String str = "E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\11.30\\10.bmp";
@@ -33,26 +32,34 @@ int main()
         PrintImage(use_mat);
         //扫线
         EdgeDetection();
-        myPoint test[EDGELINE_LENGTH];
-        blur_points(left_line,l_line_count,test,7);
-        memcpy(left_line,test,2*EDGELINE_LENGTH*sizeof(uint8));
-        TrackEdgeGetCenterLine('l');
+        //对边线进行滤波
+        myPoint_f f_left_line[EDGELINE_LENGTH],f_right_line[EDGELINE_LENGTH];
+        BlurPoints(left_line, l_line_count, f_left_line, 5);
+        BlurPoints(right_line, r_line_count, f_right_line, 5);
+        //等距采样
+        myPoint_f f_left_line1[EDGELINE_LENGTH],f_right_line1[EDGELINE_LENGTH];
+        int l_count=200,r_count=200;
+        resample_points(f_left_line,l_line_count,f_left_line1, &l_count, 2);
+        resample_points(f_right_line,r_line_count,f_right_line1, &r_count, 2);
+        //局部曲率
+        float l_angle[l_count];
+        local_angle_points(f_left_line1,l_count,l_angle,10);
+        float l_angle_1[l_count];
+        nms_angle(l_angle,l_count,l_angle_1,21);
         /************************************************************************************************************/
 
+        for (int j = 0; j < l_count; ++j)
+        {
+            if (fabs(l_angle_1[j])>=1)
+            {
+                LCDDrawPoint(f_left_line1[j].Y,f_left_line1[j].X,0,255,0);
+            }
+        }
+
         //把三线画出来
-        Point a;
-        for (uint8 i = 3; i < l_line_count-3; i++)//bgr
-        {
-            a.x = left_line[i].X;a.y = left_line[i].Y;
-            circle(use_mat, a, 0, Scalar(0, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
-            a.x = center_line[i].X;a.y = center_line[i].Y;
-            circle(use_mat, a, 0, Scalar(100, 0, 100), -1); //第五个参数我设为-1，表明这是个实点。
-        }
-        for (uint8 i = r_line_count - 1; i > 0; i--)//bgr
-        {
-            a.x = right_line[i].X;a.y = right_line[i].Y;
-            circle(use_mat, a, 0, Scalar(255, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
-        }
+//        PrintEdgeLine(f_left_line1,0,l_count,0,255,0);
+//        PrintEdgeLine(f_right_line1,0,r_count,0,255,255);
+        //PrintEdgeLine(center_line,0,l_count,255,0,0);
         printf("ls-lostline=%d,r_lostline=%d\n",l_lostline_num,r_lostline_num);
         //显示图像
         imshow("use_img", use_mat);
@@ -62,15 +69,4 @@ int main()
 
     }
     return 0;
-}
-
-void LCDDrawPoint(uint8 row, uint8 column)
-{
-    //画点
-    Point a;
-    a.x = column; a.y = row;
-    circle(use_mat, a, 0, Scalar(32, 255, 0), -1); //第五个参数我设为-1，表明这是个实点。
-	//显示图像
-	imshow("use_img", use_mat);
-	waitKey(0);//等待键盘按下
 }
