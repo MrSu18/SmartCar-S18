@@ -1,10 +1,9 @@
 #include "ImageConversion.h"
 #include "ImageWR.h"
 #include "math.h"//二值化算法里面要用到pow函数
-#include <string>
 
 //宏定义
-#define PER_IMG     binary_image//SimBinImage:用于透视变换的图像
+#define PER_IMG     mt9v03x_image//SimBinImage:用于透视变换的图像
 #define IMAGE_BAN   127//逆透视禁止区域的灰度值
 
 //定义变量
@@ -66,8 +65,13 @@ uint8 otsuThreshold(uint8* image, uint16 width, uint16 height)
     }
     return threshold;
 }
-
-//根据场地条件调用大津法或谷底最小值得到二值化阈值然后根据灰度图得到黑白图像
+/***********************************************
+* @brief : 全图计算阈值对全图进行二值化
+* @param : 原图像（全局变量）
+* @return: 二值化图（全局变量）
+* @date  : 2021.12.15
+* @author: 刘骏帆
+************************************************/
 void ImageBinary(void)
 {
     //压缩图像的二值化
@@ -84,6 +88,63 @@ void ImageBinary(void)
     }
 }
 
+//畸变参数
+double cameraMatrix[3][3]={{98.714732,0.000000,96.615801},{0.000000,96.048846,42.830425},{0.000000,0.000000,1.000000}};
+double distCoeffs[5]={-0.399098,0.276966,-0.002000,0.001255,-0.101486};
+int move_xy[2]={10,10};
+//逆透视参数
+double change_un_Mat[3][3] ={{-0.361576,0.295462,-4.619205},{0.001450,0.014793,-7.354235},{-0.000156,0.003115,-0.380499}};
+void find_xy(int x, int y, int local[2])
+{
+    double fx = cameraMatrix[0][0],
+           fy = cameraMatrix[1][1],
+           ux = cameraMatrix[0][2],
+           uy = cameraMatrix[1][2],
+           k1 = distCoeffs[0],
+           k2 = distCoeffs[1],
+           k3 = distCoeffs[4],
+           p1 = distCoeffs[2],
+           p2 = distCoeffs[3];
+    double xCorrected = (x - ux) / fx;
+    double yCorrected = (y - uy) / fy;
+    double xDistortion, yDistortion;
+    double r2 = xCorrected * xCorrected + yCorrected * yCorrected;
+    double deltaRa = 1. + k1 * r2 + k2 * r2 * r2 + k3 * r2 * r2 * r2;
+    double deltaRb = 1 / (1.);
+    double deltaTx = 2. * p1 * xCorrected * yCorrected + p2 * (r2 + 2. * xCorrected * xCorrected);
+    double deltaTy = p1 * (r2 + 2. * yCorrected * yCorrected) + 2. * p2 * xCorrected * yCorrected;
+    xDistortion = xCorrected * deltaRa * deltaRb + deltaTx;
+    yDistortion = yCorrected * deltaRa * deltaRb + deltaTy;
+    xDistortion = xDistortion * fx + ux;
+    yDistortion = yDistortion * fy + uy;
+    if (yDistortion >= 0 && yDistortion < MT9V03X_H && xDistortion >= 0 && xDistortion < MT9V03X_W)
+    {
+        local[0] = (int) yDistortion;
+        local[1] = (int) xDistortion;
+    }
+    else
+    {
+        local[0] = -1;
+        local[1] = -1;
+    }
+}
+void find_xy1(int x, int y, int local[2])
+{
+    int local_x = (int) ((change_un_Mat[0][0] * x + change_un_Mat[0][1] * y + change_un_Mat[0][2])
+                        /(change_un_Mat[2][0] * x + change_un_Mat[2][1] * y + change_un_Mat[2][2]));
+    int local_y = (int) ((change_un_Mat[1][0] * x + change_un_Mat[1][1] * y + change_un_Mat[1][2])
+                        /(change_un_Mat[2][0] * x + change_un_Mat[2][1] * y + change_un_Mat[2][2]));
+    if (local_x >= 0 && local_x<210 && local_y >= 0 && local_y<120)
+    {
+        local[0] = local_y;
+        local[1] = local_x;
+    }
+    else
+    {
+        local[0] = -1;
+        local[1] = -1;
+    }
+}
 /***********************************************
 * @brief : 初始化逆透视指针数组，得到对应的图像像素点映射
 * @param : 原图像（全局变量）
@@ -91,6 +152,31 @@ void ImageBinary(void)
 * @date  : 2022.8.28
 * @author: 萝狮虎
 ************************************************/
+
+void ImageChange_Init(void)
+{
+    static uint8 BlackColor = IMAGE_BAN;
+    for (int i = 0; i < USE_IMAGE_H; i++)
+    {
+        for (int j = 0; j < USE_IMAGE_W; j++)
+        {
+            int local_xy[2] = {-1};
+            find_xy1(j, i, local_xy);
+            if (local_xy[0] != -1 && local_xy[0] != -1)
+            {
+                int local_xy1[2] = {-1};
+                find_xy(local_xy[1] - move_xy[0], local_xy[0] - move_xy[1], local_xy1);
+                if (local_xy1[0] != -1 && local_xy1[1] != -1)
+                {
+                    PerImg_ip[i][j] = &PER_IMG[local_xy1[0]][local_xy1[1]];
+                }
+                else PerImg_ip[i][j] = &BlackColor;
+            }
+            else PerImg_ip[i][j] = &BlackColor;
+        }
+    }
+}
+
 void ImagePerspective_Init(void) 
 {
     static uint8 BlackColor = IMAGE_BAN;
@@ -183,9 +269,7 @@ void BlackBorder(void)
     static uint8 black=IMAGE_BLACK;//要给个静态局部变量，确保内存不会被释放
     //涂黑左右两边的边界
     for (uint8 row = 0; row < USE_IMAGE_H; row++)
-    {   
-        //LCDDrawPoint(row, left_border[row]);
-        //LCDDrawPoint(row, right_border[row]);
+    {
         PerImg_ip[row][left_border[row]]=&black;
         PerImg_ip[row][right_border[row]]=&black;
     }
