@@ -1,3 +1,6 @@
+#ifndef _IMAGE_WR_H
+#define _IMAGE_WR_H
+
 #include "main.h"
 #include<opencv2/opencv.hpp>
 
@@ -28,3 +31,4 @@ void PrintEdgeLine(T* line,int star,int end,uint8 R,uint8 G,uint8 B)
     }
 }
 
+#endif

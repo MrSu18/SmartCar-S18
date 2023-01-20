@@ -2,8 +2,8 @@
 // Created by 30516 on 2023/1/9.
 //
 
-#ifndef LJF_OPENCV_IMAGETEST_IMAGETRACK_H
-#define LJF_OPENCV_IMAGETEST_IMAGETRACK_H
+#ifndef _IMAGE_TRACK_H
+#define _IMAGE_TRACK_H
 
 #include "ImageBasic.h"//mypoint½á¹¹Ìå
 
