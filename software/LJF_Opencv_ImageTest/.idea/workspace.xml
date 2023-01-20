@@ -20,14 +20,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="加入去畸变">
-      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="增加防止头文件重复包含">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageConversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageConversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageTrack.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageWR.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageWR.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +121,7 @@
       <workItem from="1673789728378" duration="266000" />
       <workItem from="1674188241936" duration="43000" />
       <workItem from="1674205189629" duration="360000" />
-      <workItem from="1674205908706" duration="314000" />
+      <workItem from="1674205908706" duration="984000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>
@@ -194,7 +193,14 @@
       <option name="project" value="LOCAL" />
       <updated>1673789765213</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="增加防止头文件重复包含">
+      <created>1674206314080</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1674206314080</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,6 +228,7 @@
     <MESSAGE value="封装了画点画线的函数" />
     <MESSAGE value="等距边线重采样，局部角度变化率计算，非极大值抑制得到角点角度" />
     <MESSAGE value="加入去畸变" />
-    <option name="LAST_COMMIT_MESSAGE" value="加入去畸变" />
+    <MESSAGE value="增加防止头文件重复包含" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加防止头文件重复包含" />
   </component>
 </project>

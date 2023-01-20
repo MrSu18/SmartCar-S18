@@ -3,8 +3,9 @@
 #include "math.h"//二值化算法里面要用到pow函数
 
 //宏定义
-#define PER_IMG     mt9v03x_image//SimBinImage:用于透视变换的图像
+#define PER_IMG     binary_image//SimBinImage:用于透视变换的图像
 #define IMAGE_BAN   127//逆透视禁止区域的灰度值
+#define PERSPECTIVE 2//透视处理程度选择
 
 //定义变量
 uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
@@ -88,6 +89,7 @@ void ImageBinary(void)
     }
 }
 
+#if PERSPECTIVE==2  //先去畸变后逆透视
 //畸变参数
 double cameraMatrix[3][3]={{98.714732,0.000000,96.615801},{0.000000,96.048846,42.830425},{0.000000,0.000000,1.000000}};
 double distCoeffs[5]={-0.399098,0.276966,-0.002000,0.001255,-0.101486};
@@ -152,8 +154,7 @@ void find_xy1(int x, int y, int local[2])
 * @date  : 2022.8.28
 * @author: 萝狮虎
 ************************************************/
-
-void ImageChange_Init(void)
+void ImagePerspective_Init(void)
 {
     static uint8 BlackColor = IMAGE_BAN;
     for (int i = 0; i < USE_IMAGE_H; i++)
@@ -176,10 +177,11 @@ void ImageChange_Init(void)
         }
     }
 }
-
+#elif PERSPECTIVE==1    //只进行逆透视不进行去畸变，注意逆透视矩阵是否正确
 void ImagePerspective_Init(void) 
 {
     static uint8 BlackColor = IMAGE_BAN;
+    //逆透视矩阵
     double change_un_Mat[3][3] = { {0.316220,-0.232893,2.311183},{0.000132,0.012651,3.418808},{0.000307,-0.002723,0.332779} };
 
     for (int i = 0; i < PER_IMAGE_W; i++)
@@ -201,6 +203,7 @@ void ImagePerspective_Init(void)
         }
     }
 }
+#endif  //PERSPECTIVE
 
 /***********************************************
 * @brief : 逆透视图像边界初始化

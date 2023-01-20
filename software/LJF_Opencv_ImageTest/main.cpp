@@ -3,7 +3,7 @@
 #include <string>
 #include "main.h"
 #include "ImageConversion.h"
-//#include "ImageBasic.h"
+#include "ImageBasic.h"
 #include"ImageWR.h"
 #include <cstring>
 #include "ImageTrack.h"
@@ -15,7 +15,7 @@ uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];
 int main()
 {
 	//初始化逆透视图像并压缩
-    ImageChange_Init();
+    ImagePerspective_Init();
 	ImageBorderInit();
 	BlackBorder();
     for (int i = 0; i < 42; i++)
