@@ -2,8 +2,9 @@
 #define _IMAGE_BASIC_H
 
 #include "main.h"
+#include "ImageConversion.h"//二值化图像变量以及宏定义
 
-#define EDGELINE_LENGTH 200//边线数组长度
+#define EDGELINE_LENGTH USE_IMAGE_H//边线数组长度
 #define LOST_LINE_TURE   1//丢线
 #define LOST_LINE_FALSE  0//没丢线
 

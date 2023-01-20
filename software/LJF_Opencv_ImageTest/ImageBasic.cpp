@@ -1,6 +1,5 @@
 #include <string.h>
 #include "ImageBasic.h"
-#include "ImageConversion.h"//二值化图像变量以及宏定义
 
 //=========================赛道特征变量=============================
 myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左右边线
