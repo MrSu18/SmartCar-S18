@@ -104,6 +104,14 @@ uint8 EightAreasSeedGrown(myPoint* seed,char choose,uint8 *seed_num)
             else               *seed_num-=2;
             return 1;
         }
+        else if (seed->Y+dy<=0 || seed->Y+dy>=USE_IMAGE_H-1 || seed->X+dx<=left_border[seed->Y+dy] || seed->X+dx>=right_border[seed->Y+dy])//这边的判断是判断种子生长到了图像边缘，但是由于上一次判断了不是黑点，所以就不用再次判断该点是不是白点了
+        {
+            seed->X += dx;
+            seed->Y += dy;
+            if (*seed_num-2<0) *seed_num+=6;
+            else               *seed_num-=2;
+            return 1;
+        }
         else
         {
             *seed_num = (*seed_num + 1) % 8;
