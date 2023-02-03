@@ -17,7 +17,6 @@ int main()
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-	BlackBorder();
     for (int i = 0; i < 42; i++)
     {
         /******************************************总钻风获取灰度图***************************************/

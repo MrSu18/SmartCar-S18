@@ -3,9 +3,9 @@
 #include "math.h"//二值化算法里面要用到pow函数
 
 //宏定义
-#define PER_IMG     binary_image//SimBinImage:用于透视变换的图像
-#define IMAGE_BAN   127//逆透视禁止区域的灰度值
-#define PERSPECTIVE 2//透视处理程度选择
+#define PER_IMG     binary_image    //用于透视变换的图像
+#define IMAGE_BAN   127             //逆透视禁止区域的灰度值
+#define PERSPECTIVE 2               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
 
 //定义变量
 uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
@@ -203,6 +203,8 @@ void ImagePerspective_Init(void)
         }
     }
 }
+#else
+void ImagePerspective_Init(void){;}
 #endif  //PERSPECTIVE
 
 /***********************************************
@@ -214,6 +216,10 @@ void ImagePerspective_Init(void)
 ************************************************/
 void ImageBorderInit(void)
 {
+#if PERSPECTIVE==0
+    memset(left_border,0,sizeof(left_border[0])*USE_IMAGE_H);
+    memset(right_border,USE_IMAGE_W-1,sizeof(right_border[0])*USE_IMAGE_H);
+#else
     static uint8 black=IMAGE_BLACK;//要给个静态局部变量，确保内存不会被释放
     //静态局部变量用于靠近边界减少运算量
     static uint8 left_x=USE_IMAGE_W/2,right_x=USE_IMAGE_W/2;
@@ -226,11 +232,6 @@ void ImageBorderInit(void)
             {
                 left_x = l_column + 2;//更新列坐标用于边界追踪
                 left_border[row]= l_column + 1;
-                //找到边界之后把剩下的灰色区域涂黑，否则种子生长可能会有BUG
-                for (int i = left_border[row]; i > 0; i--)
-                {
-                    PerImg_ip[row][i]=&black;
-                }
                 break;
             }
             else if (l_column - 1 == 0)//如果读到最左边了还是没找到边界，那么就把1作为左边界
@@ -245,11 +246,6 @@ void ImageBorderInit(void)
             {
                 right_x = r_column - 2;
                 right_border[row]= r_column - 1;
-                //找到边界之后把剩下的灰色区域涂黑，否则种子生长可能会有BUG
-                for (int i = right_border[row]; i < USE_IMAGE_W - 1; i++)
-                {
-                    PerImg_ip[row][i]=&black;
-                }
                 break;
             }
             else if (r_column + 1 == USE_IMAGE_W - 1)//同理读到最右边还没有读到就用W-1作为右边界
@@ -258,28 +254,6 @@ void ImageBorderInit(void)
             }
         }
     }
+#endif  //PERSPECTIVE透视程度
 }
 
-/***********************************************
-* @brief : 把图像边界涂黑，在初始化的时候运行一遍即可，指针变量指向的地址就一直是黑色那一圈了
-* @param : 逆透视之后的二值化图像
-* @return: 边界一圈是黑的二值化图像
-* @date  : 2022.9.15
-* @author: 刘骏帆
-************************************************/
-void BlackBorder(void)
-{
-    static uint8 black=IMAGE_BLACK;//要给个静态局部变量，确保内存不会被释放
-    //涂黑左右两边的边界
-    for (uint8 row = 0; row < USE_IMAGE_H; row++)
-    {
-        PerImg_ip[row][left_border[row]]=&black;
-        PerImg_ip[row][right_border[row]]=&black;
-    }
-    //涂黑顶部边界
-    for (uint8 column = 0; column < USE_IMAGE_W; column++)
-    {
-        PerImg_ip[0][column] = &black;
-        PerImg_ip[USE_IMAGE_H-1][column] = &black;
-    }
-}

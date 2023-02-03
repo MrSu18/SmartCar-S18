@@ -21,6 +21,5 @@ extern uint8 right_border[USE_IMAGE_H];//图像右边界
 void ImageBinary(void);//图像二值化
 void ImagePerspective_Init(void);//图像逆透视地址映射
 void ImageBorderInit(void);//逆透视图像边界初始化
-void BlackBorder(void);//把图像边界都涂黑，初始化使用一次即可
 
 #endif

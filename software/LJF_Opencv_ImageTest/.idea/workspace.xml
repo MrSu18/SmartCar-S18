@@ -20,10 +20,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="增加防止头文件重复包含">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="封装了一下是否选择去畸变">
+      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageConversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageConversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
@@ -121,7 +121,9 @@
       <workItem from="1673789728378" duration="266000" />
       <workItem from="1674188241936" duration="43000" />
       <workItem from="1674205189629" duration="360000" />
-      <workItem from="1674205908706" duration="984000" />
+      <workItem from="1674205908706" duration="2982000" />
+      <workItem from="1675000666246" duration="440000" />
+      <workItem from="1675398043559" duration="3232000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>
@@ -200,7 +202,21 @@
       <option name="project" value="LOCAL" />
       <updated>1674206314080</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="把边线数组长度设定为图像高度">
+      <created>1674207008940</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1674207008940</updated>
+    </task>
+    <task id="LOCAL-00013" summary="封装了一下是否选择去畸变">
+      <created>1674207033523</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1674207033523</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,6 +245,8 @@
     <MESSAGE value="等距边线重采样，局部角度变化率计算，非极大值抑制得到角点角度" />
     <MESSAGE value="加入去畸变" />
     <MESSAGE value="增加防止头文件重复包含" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加防止头文件重复包含" />
+    <MESSAGE value="把边线数组长度设定为图像高度" />
+    <MESSAGE value="封装了一下是否选择去畸变" />
+    <option name="LAST_COMMIT_MESSAGE" value="封装了一下是否选择去畸变" />
   </component>
 </project>
