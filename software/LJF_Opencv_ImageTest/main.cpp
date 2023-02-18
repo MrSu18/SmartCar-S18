@@ -38,28 +38,31 @@ int main()
         //等距采样
         myPoint_f f_left_line1[EDGELINE_LENGTH],f_right_line1[EDGELINE_LENGTH];
         int l_count=200,r_count=200;
-        resample_points(f_left_line,l_line_count,f_left_line1, &l_count, 2);
-        resample_points(f_right_line,r_line_count,f_right_line1, &r_count, 2);
+        ResamplePoints(f_left_line, l_line_count, f_left_line1, &l_count, 2);
+        ResamplePoints(f_right_line, r_line_count, f_right_line1, &r_count, 2);
         //局部曲率
         float l_angle[l_count];
-        local_angle_points(f_left_line1,l_count,l_angle,10);
+        local_angle_points(f_left_line1,l_count,l_angle,5);
         float l_angle_1[l_count];
-        nms_angle(l_angle,l_count,l_angle_1,21);
+        nms_angle(l_angle,l_count,l_angle_1,5*2+1);
+        //跟踪左线
+        track_leftline(f_left_line1, l_count, center_line, 10, 22.5);
         /************************************************************************************************************/
 
-//        for (int j = 0; j < l_count; ++j)
-//        {
-//            if (fabs(l_angle_1[j])>=1)
-//            {
-//                LCDDrawPoint(f_left_line1[j].Y,f_left_line1[j].X,0,255,0);
-//            }
-//        }
+        for (int j = 0; j < l_count; ++j)
+        {
+            if (-1.57<=l_angle_1[j] && l_angle_1[j]<=-1)
+            {
+                printf("l_angle_1[%d]=%f\n",j,l_angle_1[j]);
+                LCDDrawPoint(f_left_line1[j].Y,f_left_line1[j].X,0,255,0);
+            }
+        }
 
         //把三线画出来
-        PrintEdgeLine(f_left_line1,0,l_count,0,255,0);
-        PrintEdgeLine(f_right_line1,0,r_count,0,255,255);
-        //PrintEdgeLine(center_line,0,l_count,255,0,0);
-        printf("ls-lostline=%d,r_lostline=%d\n",l_lostline_num,r_lostline_num);
+//        PrintEdgeLine(f_left_line1,0,l_count,0,255,0);
+//        PrintEdgeLine(f_right_line1,0,r_count,0,255,255);
+//        PrintEdgeLine(center_line,0,l_count,255,0,0);
+//        printf("ls-lostline=%d,r_lostline=%d\n",l_lostline_num,r_lostline_num);
         //显示图像
         imshow("use_img", use_mat);
         waitKey(0);//等待键盘按下

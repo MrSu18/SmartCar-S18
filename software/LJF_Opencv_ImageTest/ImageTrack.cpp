@@ -27,7 +27,7 @@ inline int Min(int a,int b) {return a<b?a:b;}//求ab最小值
  *         uint8 kernel: 滤波一维线性卷积核大小（必须为奇数）
 * @return: 无
 * @date  : 2023.1.10
-* @author: 刘骏帆
+* @author: 上交大开源
 ************************************************/
 void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel)
 {
@@ -48,7 +48,18 @@ void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel)
     }
 }
 
-void resample_points(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist)
+/***********************************************
+* @brief : 对边线进行重新等距采样
+* @param : myPoint_f* in_line:三角滤波之后的边线
+*          int num1:输入边线的长度
+*          myPoint_f* out_line: 等距采样后的边线（边线两点之间的实际距离相等）
+*          int *num2: 输出边线的长度
+*          float dist: 采样的实际距离（单位cm）
+* @return: 无
+* @date  : 2023.1.12
+* @author: 上交大开源
+************************************************/
+void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist)
 {
     if (num1 < 0)
     {
@@ -93,6 +104,16 @@ void resample_points(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num
     *num2 = len;
 }
 
+/***********************************************
+* @brief : 边线局部角度变化率
+* @param : myPoint_f* in_line: 输入边线
+*          int num: 长度
+*          float angle_out[]: 局部角度变化率数组
+*          int dist
+* @return: 无
+* @date  : 2023.1.15
+* @author: 上交大开源
+************************************************/
 void local_angle_points(myPoint_f* in_line, int num, float angle_out[], int dist)
 {
     for (int i = 0; i < num; i++)
