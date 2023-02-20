@@ -40,3 +40,19 @@ int fgetc(FILE* f)
 {
     return uart_read_byte(BLUETOOTH);
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      总钻风摄像头图像发送至上位机查看图像
+//  @param      uartn           使用的串口号
+//  @param      image           需要发送的图像地址
+//  @param      width           图像的列
+//  @param      height          图像的行
+//  @return     void
+//  @since      v1.0
+//  Sample usage:seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
+//-------------------------------------------------------------------------------------------------------------------
+void seekfree_sendimg_03x(uart_index_enum uartn, uint8 *image, uint16 width, uint16 height)
+{
+    uart_putchar(uartn,0x00);uart_putchar(uartn,0xff);uart_putchar(uartn,0x01);uart_putchar(uartn,0x01);//发送命令
+    uart_putbuff(uartn, image, width*height);  //发送图像
+}

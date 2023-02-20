@@ -75,7 +75,7 @@
 #define TFT180_CS_PIN                   (P15_2)                                 // CS 片选引脚
 #define TFT180_BL_PIN                   (P15_4)                                 // 液晶背光引脚定义
 
-#define TFT180_DEFAULT_DISPLAY_DIR      (TFT180_PORTAIT)                        // 默认的显示方向
+#define TFT180_DEFAULT_DISPLAY_DIR      (TFT180_CROSSWISE_180)                        // 默认的显示方向
 #define TFT180_DEFAULT_PENCOLOR         (RGB565_RED)                            // 默认的画笔颜色
 #define TFT180_DEFAULT_BGCOLOR          (RGB565_WHITE)                          // 默认的背景颜色
 #define TFT180_DEFAULT_DISPLAY_FONT     (TFT180_8X16_FONT)                      // 默认的字体模式

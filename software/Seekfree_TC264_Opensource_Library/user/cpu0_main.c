@@ -56,7 +56,9 @@ int core0_main(void)
     debug_init();                   // 初始化默认调试串口
     // 此处编写用户代码 例如外设初始化代码等
 
-
+    mt9v03x_init();//初始化摄像头
+    tft180_init();//初始化tft
+    bluetooth_ch9141_init();//初始化蓝牙模块
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
