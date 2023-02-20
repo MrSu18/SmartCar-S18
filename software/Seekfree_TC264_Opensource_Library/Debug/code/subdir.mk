@@ -4,16 +4,32 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../code/ZwPlus_lib.c 
+../code/ZwPlus_lib.c \
+../code/bluetooth.c \
+../code/filter.c \
+../code/key.c \
+../code/motor.c 
 
 OBJS += \
-./code/ZwPlus_lib.o 
+./code/ZwPlus_lib.o \
+./code/bluetooth.o \
+./code/filter.o \
+./code/key.o \
+./code/motor.o 
 
 COMPILED_SRCS += \
-./code/ZwPlus_lib.src 
+./code/ZwPlus_lib.src \
+./code/bluetooth.src \
+./code/filter.src \
+./code/key.src \
+./code/motor.src 
 
 C_DEPS += \
-./code/ZwPlus_lib.d 
+./code/ZwPlus_lib.d \
+./code/bluetooth.d \
+./code/filter.d \
+./code/key.d \
+./code/motor.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
