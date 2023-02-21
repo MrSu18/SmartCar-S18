@@ -3,7 +3,7 @@
 #include "math.h"//二值化算法里面要用到pow函数
 
 //宏定义
-#define PER_IMG     binary_image    //用于透视变换的图像
+#define PER_IMG     mt9v03x_image    //用于透视变换的图像
 #define IMAGE_BAN   127             //逆透视禁止区域的灰度值
 #define PERSPECTIVE 2               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
 
@@ -90,12 +90,13 @@ void ImageBinary(void)
 }
 
 #if PERSPECTIVE==2  //先去畸变后逆透视
+//140度
 //畸变参数
-double cameraMatrix[3][3]={{98.714732,0.000000,96.615801},{0.000000,96.048846,42.830425},{0.000000,0.000000,1.000000}};
-double distCoeffs[5]={-0.399098,0.276966,-0.002000,0.001255,-0.101486};
-int move_xy[2]={10,10};
+double cameraMatrix[3][3]={{59.727551,0.000000,89.234010},{0.000000,60.159434,50.691969},{0.000000,0.000000,1.000000}};
+double distCoeffs[5]={0.239129,-0.289288,-0.001345,-0.001779,0.090761};
+int move_xy[2]={-1,-1};
 //逆透视参数
-double change_un_Mat[3][3] ={{-0.361576,0.295462,-4.619205},{0.001450,0.014793,-7.354235},{-0.000156,0.003115,-0.380499}};
+double change_un_Mat[3][3] ={{-2.124767,3.123039,-217.537647},{-0.087254,1.274068,-194.734797},{-0.000566,0.034856,-4.575237}};
 void find_xy(int x, int y, int local[2])
 {
     double fx = cameraMatrix[0][0],
@@ -136,7 +137,7 @@ void find_xy1(int x, int y, int local[2])
                         /(change_un_Mat[2][0] * x + change_un_Mat[2][1] * y + change_un_Mat[2][2]));
     int local_y = (int) ((change_un_Mat[1][0] * x + change_un_Mat[1][1] * y + change_un_Mat[1][2])
                         /(change_un_Mat[2][0] * x + change_un_Mat[2][1] * y + change_un_Mat[2][2]));
-    if (local_x >= 0 && local_x<210 && local_y >= 0 && local_y<120)
+    if (local_x >= 0 && local_x<181 && local_y >= 0 && local_y<114)
     {
         local[0] = local_y;
         local[1] = local_x;
@@ -182,7 +183,7 @@ void ImagePerspective_Init(void)
 {
     static uint8 BlackColor = IMAGE_BAN;
     //逆透视矩阵
-    double change_un_Mat[3][3] = { {0.316220,-0.232893,2.311183},{0.000132,0.012651,3.418808},{0.000307,-0.002723,0.332779} };
+    double change_un_Mat[3][3] ={{-2.235653,3.031698,-194.764227},{-0.143198,1.211048,-181.479647},{-0.001724,0.032765,-4.207195}};
 
     for (int i = 0; i < PER_IMAGE_W; i++)
     {

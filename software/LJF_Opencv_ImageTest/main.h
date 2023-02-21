@@ -3,7 +3,7 @@
 
 //配置摄像头参数
 #define MT9V03X_W               188             	//图像宽度 	范围1-188 //对封装库的修改：适配LCD屏幕的大小
-#define MT9V03X_H               90             	//图像高度	范围1-120
+#define MT9V03X_H               120             	//图像高度	范围1-120
 
 typedef unsigned char       uint8;
 typedef unsigned short      uint16;

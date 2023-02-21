@@ -5,6 +5,7 @@
 #include "ImageTrack.h"
 #include "math.h"
 #include "stdint.h"
+#include "stdio.h"
 
 //============================参数================================
 #define TRACK_HALF_WIDTH	22.5//赛道半宽像素点
@@ -145,6 +146,7 @@ void nms_angle(float angle_in[], int num, float angle_out[], int kernel)
         angle_out[i] = angle_in[i];
         for (int j = -half; j <= half; j++)
         {
+            //前后如果有绝对值大于这个点的，那么这个点就设置位0
             if (fabs(angle_in[Limit(i + j, 0, num - 1)]) > fabs(angle_out[i]))
             {
                 angle_out[i] = 0;
