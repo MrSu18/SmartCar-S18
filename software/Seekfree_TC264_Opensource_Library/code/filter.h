@@ -21,13 +21,11 @@ typedef struct
     float gain;                 //¿¨¶ûÂüÔöÒæ
 }kalman_filter_1;
 
-#define  FIRST_ORDER    0.8
+extern kalman_filter_1 kalman_adc;
 
-void KalmanInit(kalman_filter_1* state,float Q,float R);
-int16 KalmanFilter(kalman_filter_1* state,float z);
-int16 FirstOrderRCFilter_L(int16 value);
-int16 FirstOrderRCFilter_R(int16 value);
-int16 SecondOrderFilter_L(int16 value);
-int16 SecondOrderFilter_R(int16 value);
+void KalmanInit(kalman_filter_1* state,float Q,float R);                //³õÊ¼»¯¿¨¶ûÂüÂË²¨µÄÏµÊı
+int16 KalmanFilter(kalman_filter_1* state,float z);                     //¿¨¶ûÂüÂË²¨
+int16 SecondOrderFilter_L(int16 value);                                 //×ó±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
+int16 SecondOrderFilter_R(int16 value);                                 //ÓÒ±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
 
 #endif /* CODE_FILTER_H_ */

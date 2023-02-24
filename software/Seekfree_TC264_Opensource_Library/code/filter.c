@@ -6,8 +6,9 @@
  */
 #include "filter.h"
 
-int16 last_left = 0,last_2_left = 0;
-int16 last_right = 0,last_2_right = 0;
+kalman_filter_1 kalman_adc;                         //ADC卡尔曼滤波系数
+int16 last_left = 0,last_2_left = 0;                //左编码器二阶低通滤波的过去值
+int16 last_right = 0,last_2_right = 0;              //右编码器二阶低通滤波的过去值
 /***********************************************
 * @brief : 卡尔曼滤波初始化
 * @param : state:卡尔曼滤波数据的结构体指针
@@ -50,34 +51,6 @@ int16 KalmanFilter(kalman_filter_1* state,float z)
 
     return state->x;
 }
-///***********************************************
-//* @brief : 一阶RC低通滤波,左编码器
-//* @param : value:需要滤波的值
-//* @return: 滤波后的值
-//* @date  : 2023.1.18
-//* @author: L
-//************************************************/
-//int16 FirstOrderRCFilter_L(int16 value)
-//{
-//    value = FIRST_ORDER*value+(1-FIRST_ORDER)*last_value_left;
-//    last_value_left = value;
-//
-//    return value;
-//}
-///***********************************************
-//* @brief : 一阶RC低通滤波,右编码器
-//* @param : value:需要滤波的值
-//* @return: 滤波后的值
-//* @date  : 2023.1.18
-//* @author: L
-//************************************************/
-//int16 FirstOrderRCFilter_R(int16 value)
-//{
-//    value = FIRST_ORDER*value+(1-FIRST_ORDER)*last_value_right;
-//    last_value_right = value;
-//
-//    return value;
-//}
 /***********************************************
 * @brief : 二阶低通滤波,左编码器
 * @param : value:需要滤波的值

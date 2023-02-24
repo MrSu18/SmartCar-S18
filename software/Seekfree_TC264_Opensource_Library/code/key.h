@@ -18,6 +18,6 @@
 #define  KEY4  gpio_get_level(P33_13)
 #define  KEY5  gpio_get_level(P32_4)
 
-void KEYInit(void);
+void KEYInit(void);                             //初始化按键引脚
 
 #endif /* CODE_KEY_H_ */
