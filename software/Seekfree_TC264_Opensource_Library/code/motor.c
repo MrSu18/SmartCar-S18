@@ -162,6 +162,7 @@ void MotorCtrl(void)
 * @date  : 2023.1.31
 * @author: L
 ************************************************/
+#define PI 3.14
 float EncoderGetDistance(void)
 {
     float dis = 0.0,data_mid = 0.0,circle = 0.0;

@@ -36,7 +36,8 @@
 #include "zf_common_headfile.h"
 #pragma section all "cpu1_dsram"
 // 将本语句与#pragma section all restore语句之间的全局变量都放在CPU1的RAM中
-
+#include "ImageConversion.h"
+#include "ImageBasic.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -46,7 +47,6 @@
 // 对于TC系列默认是不支持中断嵌套的，希望支持中断嵌套需要在中断内使用 enableInterrupts(); 来开启中断嵌套
 // 简单点说实际上进入中断后TC系列的硬件自动调用了 disableInterrupts(); 来拒绝响应任何的中断，因此需要我们自己手动调用 enableInterrupts(); 来开启中断的响应。
 
-
 // **************************** 代码区域 ****************************
 void core1_main(void)
 {
@@ -55,7 +55,8 @@ void core1_main(void)
     // 此处编写用户代码 例如外设初始化代码等
 
 
-
+    ImagePerspective_Init();//逆透视初始化
+    ImageBorderInit();//透视后的图像边界初始化
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
@@ -63,7 +64,19 @@ void core1_main(void)
     {
         // 此处编写需要循环执行的代码
 
+        if(mt9v03x_finish_flag!=0)
+        {
+            ImageBinary();
+            EdgeDetection();
+            tft180_show_gray_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 160, 120, 0);
+//            for(int i=0;i<l_line_count;i++)
+//            {
+//                ;
+                //tft180_draw_point(left_line[i].X, left_line[i].Y, RGB565_GREEN);
+//            }
 
+            mt9v03x_finish_flag=0;
+        }
 
 
         // 此处编写需要循环执行的代码

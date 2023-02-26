@@ -95,22 +95,24 @@ void AutoPID(void)
     int temp=0;
     int16 data1=0,data2=0;
 
-    while(1){
-    if(KEY1){
-        system_delay_ms(1000);
-        encoder_clear_count(ENCODER_LEFT);
-        encoder_clear_count(ENCODER_RIGHT);
-        MotorSetPWM(1500,1500);
-        while(1)
+    while(1)
+    {
+        if(KEY1)
         {
-            EncoderGetCount(&data1,&data2);
-            printf("%d      ",data1);
-            printf("%d\n",data2);
-            if(temp>=300)
-                MotorSetPWM(0,0);
-            temp++;
-            system_delay_ms(10);
+            system_delay_ms(1000);
+            encoder_clear_count(ENCODER_LEFT);
+            encoder_clear_count(ENCODER_RIGHT);
+            MotorSetPWM(1500,1500);
+            while(1)
+            {
+                EncoderGetCount(&data1,&data2);
+                printf("%d      ",data1);
+                printf("%d\n",data2);
+                if(temp>=300)
+                    MotorSetPWM(0,0);
+                temp++;
+                system_delay_ms(10);
+            }
         }
-    }
     }
 }

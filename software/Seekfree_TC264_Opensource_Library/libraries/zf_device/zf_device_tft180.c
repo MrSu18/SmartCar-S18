@@ -55,6 +55,7 @@
 #include "zf_driver_soft_spi.h"
 #include "zf_driver_spi.h"
 #include "zf_device_tft180.h"
+#include "ImageConversion.h"
 
 static uint16                   tft180_pencolor     = TFT180_DEFAULT_PENCOLOR;
 static uint16                   tft180_bgcolor      = TFT180_DEFAULT_BGCOLOR;
@@ -682,7 +683,8 @@ void tft180_show_gray_image (uint16 x, uint16 y, const uint8 *image, uint16 widt
         for(i = 0; i < dis_width; i ++)
         {
             width_index = i * width / dis_width;
-            temp = *(image + height_index * width + width_index);               // 读取像素点
+            temp=use_image[height_index][width_index];
+            //temp = *(image + height_index * width + width_index);               // 读取像素点
             if(threshold == 0)
             {
                 color = (0x001f & ((temp) >> 3)) << 11;

@@ -3,17 +3,14 @@
 #include "math.h"//二值化算法里面要用到pow函数
 
 //宏定义
-#define PER_IMG     mt9v03x_image    //用于透视变换的图像
+#define PER_IMG     mt9v03x_image   //用于透视变换的图像
 #define IMAGE_BAN   127             //逆透视禁止区域的灰度值
-#define PERSPECTIVE 2               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
+#define PERSPECTIVE 1               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
 
 //定义变量
 uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
-uint8 binary_image[MT9V03X_H][MT9V03X_W]={0};//二值化后的图像
 uint8 left_border[USE_IMAGE_H] = {0};//图像左边界
 uint8 right_border[USE_IMAGE_H] = {USE_IMAGE_W-1};//图像右边界
-
-extern uint8 left_line_x[USE_IMAGE_H], right_line_x[USE_IMAGE_H];//左中右三线
 
 /***********************************************
 * @brief : 大津法二值化0.8ms程序（实际测试4ms在TC264中）
@@ -68,8 +65,8 @@ uint8 otsuThreshold(uint8* image, uint16 width, uint16 height)
 }
 /***********************************************
 * @brief : 全图计算阈值对全图进行二值化
-* @param : 原图像（全局变量）
-* @return: 二值化图（全局变量）
+* @param : 灰度图像（全局变量）
+* @return: 灰度图像变成二值化图像（全局变量）
 * @date  : 2021.12.15
 * @author: 刘骏帆
 ************************************************/
@@ -82,9 +79,9 @@ void ImageBinary(void)
         for (int j = 0; j < MT9V03X_W; j++)
         {
             if (mt9v03x_image[i][j] <= Image_Threshold)//进行二值化之前只是得到阈值
-                binary_image[i][j] = IMAGE_BLACK;//0是黑色  //图像原点不变
+                mt9v03x_image[i][j] = IMAGE_BLACK;//0是黑色  //图像原点不变
             else
-                binary_image[i][j] = IMAGE_WHITE;//1是白色  //图像原点不变
+                mt9v03x_image[i][j] = IMAGE_WHITE;//1是白色  //图像原点不变
         }
     }
 }
@@ -183,7 +180,8 @@ void ImagePerspective_Init(void)
 {
     static uint8 BlackColor = IMAGE_BAN;
     //逆透视矩阵
-    double change_un_Mat[3][3] ={{-2.235653,3.031698,-194.764227},{-0.143198,1.211048,-181.479647},{-0.001724,0.032765,-4.207195}};
+    double change_un_Mat[3][3] ={{-2.772306,2.000855,-8.856205},{-0.133493,0.497165,-47.409243},{-0.003104,0.022771,-1.416382}};
+//     double change_un_Mat[3][3] ={{-1.904429,1.744630,-57.988360},{-0.050270,0.519909,-89.636933},{-0.001169,0.019907,-2.537938}};
 
     for (int i = 0; i < PER_IMAGE_W; i++)
     {
@@ -221,7 +219,7 @@ void ImageBorderInit(void)
     memset(left_border,0,sizeof(left_border[0])*USE_IMAGE_H);
     memset(right_border,USE_IMAGE_W-1,sizeof(right_border[0])*USE_IMAGE_H);
 #else
-    static uint8 black=IMAGE_BLACK;//要给个静态局部变量，确保内存不会被释放
+    //static uint8 black=IMAGE_BLACK;//要给个静态局部变量，确保内存不会被释放
     //静态局部变量用于靠近边界减少运算量
     static uint8 left_x=USE_IMAGE_W/2,right_x=USE_IMAGE_W/2;
     for (uint8 row = USE_IMAGE_H - 1; row > 0; row--)

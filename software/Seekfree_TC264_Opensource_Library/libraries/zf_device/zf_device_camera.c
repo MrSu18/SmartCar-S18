@@ -39,8 +39,6 @@
 #include "zf_driver_dma.h"
 #include "zf_driver_exti.h"
 #include "zf_device_mt9v03x.h"
-#include "zf_device_ov7725.h"
-#include "zf_device_scc8660.h"
 #include "zf_device_camera.h"
 
 
@@ -119,20 +117,6 @@ uint8 camera_init (uint8 *source_addr, uint8 *destination_addr, uint16 image_siz
     uint8 link_list_num;
     switch(camera_type)
     {
-        case CAMERA_BIN_IIC:                                                    // IIC 小钻风
-        case CAMERA_BIN_UART:                                                   // UART 小钻风
-            for(num = 0; num < 8; num ++)
-            {
-                gpio_init((gpio_pin_enum)(OV7725_DATA_PIN + num), GPI, GPIO_LOW, GPI_FLOATING_IN);
-            }
-            link_list_num = dma_init(OV7725_DMA_CH,
-                                     source_addr,
-                                     destination_addr,
-                                     OV7725_PCLK_PIN,
-                                     EXTI_TRIGGER_FALLING,
-                                     image_size);
-            exti_init(OV7725_VSYNC_PIN, EXTI_TRIGGER_FALLING);                  //初始化场中断，并设置为下降沿触发中断
-            break;
         case CAMERA_GRAYSCALE:                                                  // 总钻风
             for(num = 0; num < 8; num ++)
             {
@@ -147,21 +131,7 @@ uint8 camera_init (uint8 *source_addr, uint8 *destination_addr, uint16 image_siz
 
             exti_init(MT9V03X_VSYNC_PIN, EXTI_TRIGGER_FALLING);                 // 初始化场中断，并设置为下降沿触发中断
             break;
-        case CAMERA_COLOR:                                                      // 凌瞳
-            for(num=0; num<8; num++)
-            {
-                gpio_init((gpio_pin_enum)(SCC8660_DATA_PIN + num), GPI, GPIO_LOW, GPI_FLOATING_IN);
-            }
 
-            link_list_num = dma_init(SCC8660_DMA_CH,
-                                     source_addr,
-                                     destination_addr,
-                                     SCC8660_PCLK_PIN,
-                                     EXTI_TRIGGER_RISING,
-                                     image_size);                               // 如果超频到300M 倒数第二个参数请设置为FALLING
-
-            exti_init(SCC8660_VSYNC_PIN, EXTI_TRIGGER_FALLING);                  // 初始化场中断，并设置为下降沿触发中断
-            break;
         default:
             break;
     }

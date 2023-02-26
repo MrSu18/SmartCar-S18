@@ -1188,7 +1188,7 @@ uint8 wifi_uart_init (char *wifi_ssid, char *pass_word, wifi_uart_mode_enum wifi
         }
 #endif
 #if WIFI_UART_AUTO_CONNECT == 2
-        if(wifi_uart_connect_udp_transfer(WIFI_UART_TARGET_IP, WIFI_UART_TARGET_PORT, WIFI_UART_MINE_PORT, WIFI_UART_SERIANET)) // 建立UDP连接
+        if(wifi_uart_connect_udp_client(WIFI_UART_TARGET_IP, WIFI_UART_TARGET_PORT, WIFI_UART_LOCAL_PORT, WIFI_UART_COMMAND)) // 建立UDP连接
         {
             zf_log(0, "connect UDP server failed");
             return_state = 1;
@@ -1196,7 +1196,7 @@ uint8 wifi_uart_init (char *wifi_ssid, char *pass_word, wifi_uart_mode_enum wifi
         }
 #endif
 #if WIFI_UART_AUTO_CONNECT == 3
-        if(wifi_uart_creat_tcp_servers(WIFI_UART_MINE_PORT))                                                                    // 建立TCP服务器
+        if(wifi_uart_entry_tcp_servers(WIFI_UART_LOCAL_PORT))                                                                    // 建立TCP服务器
         {
             zf_log(0, "build TCP server failed");
             return_state = 1;

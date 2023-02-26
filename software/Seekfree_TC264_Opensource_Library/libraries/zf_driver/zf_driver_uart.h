@@ -142,7 +142,6 @@ void    uart_init                           (uart_index_enum uartn, uint32 baud,
 //====================================================串口 基础函数====================================================
 
 //=================================================兼容旧版本开源库接口名称=================================================
-#define COMPATIBLE_WITH_OLDER_VERSIONS
 #ifdef  COMPATIBLE_WITH_OLDER_VERSIONS
 #define uart_putchar(uart_n, dat)           (uart_write_byte((uart_n), (dat)))
 #define uart_putbuff(uart_n, buff, len)     (uart_write_buffer((uart_n), (buff), (len)))

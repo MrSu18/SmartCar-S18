@@ -41,44 +41,44 @@
 // 此枚举定义不允许用户修改
 typedef enum // 枚举编码器引脚
 {
-    TIM2_ENCOEDER_CH1_P00_7,      // T2定时器 计数引脚可选范围
-    TIM2_ENCOEDER_CH1_P33_7,
+    TIM2_ENCODER_CH1_P00_7,      // T2定时器 计数引脚可选范围
+    TIM2_ENCODER_CH1_P33_7,
 
-    TIM3_ENCOEDER_CH1_P02_6,      // T3定时器 计数引脚可选范围
+    TIM3_ENCODER_CH1_P02_6,      // T3定时器 计数引脚可选范围
 
-    TIM4_ENCOEDER_CH1_P02_8,      // T4定时器 计数引脚可选范围
+    TIM4_ENCODER_CH1_P02_8,      // T4定时器 计数引脚可选范围
 
-    TIM5_ENCOEDER_CH1_P21_7,      // T5定时器 计数引脚可选范围
-    TIM5_ENCOEDER_CH1_P10_3,
+    TIM5_ENCODER_CH1_P21_7,      // T5定时器 计数引脚可选范围
+    TIM5_ENCODER_CH1_P10_3,
 
-    TIM6_ENCOEDER_CH1_P20_3,      // T6定时器 计数引脚可选范围
-    TIM6_ENCOEDER_CH1_P10_2,
+    TIM6_ENCODER_CH1_P20_3,      // T6定时器 计数引脚可选范围
+    TIM6_ENCODER_CH1_P10_2,
 }encoder_channel1_enum;
 
 // 此枚举定义不允许用户修改
 typedef enum // 枚举编码器引脚
 {
-    TIM2_ENCOEDER_CH2_P00_8,     // T2定时器 计数方向引脚可选范围
-    TIM2_ENCOEDER_CH2_P33_6,
+    TIM2_ENCODER_CH2_P00_8,     // T2定时器 计数方向引脚可选范围
+    TIM2_ENCODER_CH2_P33_6,
 
-    TIM3_ENCOEDER_CH2_P02_7,     // T3定时器 计数方向引脚可选范围
+    TIM3_ENCODER_CH2_P02_7,     // T3定时器 计数方向引脚可选范围
 
-    TIM4_ENCOEDER_CH2_P00_9,     // T4定时器 计数方向引脚可选范围
-    TIM4_ENCOEDER_CH2_P33_5,
+    TIM4_ENCODER_CH2_P00_9,     // T4定时器 计数方向引脚可选范围
+    TIM4_ENCODER_CH2_P33_5,
 
-    TIM5_ENCOEDER_CH2_P21_6,     // T5定时器 计数方向引脚可选范围
-    TIM5_ENCOEDER_CH2_P10_1,
+    TIM5_ENCODER_CH2_P21_6,     // T5定时器 计数方向引脚可选范围
+    TIM5_ENCODER_CH2_P10_1,
 
-    TIM6_ENCOEDER_CH2_P20_0,     // T6定时器 计数方向引脚可选范围
+    TIM6_ENCODER_CH2_P20_0,     // T6定时器 计数方向引脚可选范围
 }encoder_channel2_enum;
 
 typedef enum  // 枚举 定时器编号
 {
-    TIM2_ENCOEDER,
-    TIM3_ENCOEDER,
-    TIM4_ENCOEDER,
-    TIM5_ENCOEDER,
-    TIM6_ENCOEDER,
+    TIM2_ENCODER,
+    TIM3_ENCODER,
+    TIM4_ENCODER,
+    TIM5_ENCODER,
+    TIM6_ENCODER,
 }encoder_index_enum;
 
 //====================================================编码器 基础函数====================================================

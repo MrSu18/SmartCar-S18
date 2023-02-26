@@ -59,7 +59,7 @@
 #define WIFI_UART_RTS_PIN       (P10_2)                                         // 定义流控位引脚  指示当前模块是否可以接受数据  0-可以继续接收  1-不可以继续接收
 #define WIFI_UART_HARDWARE_RST  (1)                                             // 定义是否使用硬件复位引脚 0-使用软件复位 1-使用硬件 RST
 #if WIFI_UART_HARDWARE_RST                                                      // 建议使用硬件复位引脚 否则容易出现单片机复位后无法正常初始化模块
-#define WIFI_UART_RST_PIN       (P02_8)                                         // 定义硬件复位引脚
+#define WIFI_UART_RST_PIN       (P11_6)                                         // 定义硬件复位引脚
 #endif
 //=================================================WIFI_UART 驱动配置====================================================
 
@@ -71,7 +71,7 @@
 #if     (WIFI_UART_AUTO_CONNECT > 3)
 #error "WIFI_UART_AUTO_CONNECT 的值只能为 [0,1,2,3]"
 #else
-#define WIFI_UART_TARGET_IP     "192.168.2.152"                                 // 连接目标的 IP
+#define WIFI_UART_TARGET_IP     "192.168.137.1"                                 // 连接目标的 IP
 #define WIFI_UART_TARGET_PORT   "8080"                                          // 连接目标的端口
 #define WIFI_UART_LOCAL_PORT    "8080"                                          // 本机端口
 #endif

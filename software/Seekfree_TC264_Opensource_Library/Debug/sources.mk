@@ -24,7 +24,6 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-.metadata/.plugins/org.eclipse.cdt.make.core \
 code \
 libraries/infineon_libraries/Infra/Platform/Tricore/Compilers \
 libraries/infineon_libraries/Service/CpuGeneric/If \

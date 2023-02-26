@@ -960,14 +960,14 @@ void spi_transfer_16bit (spi_index_enum spi_n, const uint16 *write_buffer, uint1
 //-------------------------------------------------------------------------------------------------------------------
 //  函数简介      SPI初始化
 //  参数说明      spi_n           选择SPI模块(SPI_1-SPI_4)
+//  参数说明      mode            SPI模式 0：CPOL=0 CPHA=0    1：CPOL=0 CPHA=1   2：CPOL=1 CPHA=0   3：CPOL=1 CPHA=1  // 具体细节可自行查阅资料
+//  参数说明      baud            设置SPI的波特率
 //  参数说明      cs_pin          选择SPI片选引脚
 //  参数说明      sck_pin         选择SPI时钟引脚
 //  参数说明      mosi_pin        选择SPI MOSI引脚
 //  参数说明      miso_pin        选择SPI MISO引脚
-//  参数说明      mode            SPI模式 0：CPOL=0 CPHA=0    1：CPOL=0 CPHA=1   2：CPOL=1 CPHA=0   3：CPOL=1 CPHA=1  // 具体细节可自行查阅资料
-//  参数说明      baud            设置SPI的波特率
 //  返回参数      void
-//  使用示例      spi_init(SPI_2, SPI2_SCLK_P15_3, SPI2_MOSI_P15_5, SPI2_MISO_P15_4, SPI2_CS0_P15_2, 0, 1*1000*1000); // 硬件SPI初始化  模式0 波特率为1Mhz
+//  使用示例      spi_init(SPI_2, SPI_MODE0, 1*1000*1000, SPI2_SCLK_P15_3, SPI2_MOSI_P15_5, SPI2_MISO_P15_4, SPI2_CS0_P15_2); // 硬件SPI初始化  模式0 波特率为1Mhz
 //  备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void spi_init (spi_index_enum spi_n, spi_mode_enum mode, uint32 baud, spi_sck_pin_enum sck_pin, spi_mosi_pin_enum mosi_pin, spi_miso_pin_enum miso_pin, spi_cs_pin_enum cs_pin)
