@@ -68,13 +68,16 @@ void core1_main(void)
         {
             ImageBinary();
             tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
-            //EdgeDetection();
-            //tft180_show_gray_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60, 0);
-//            for(int i=0;i<l_line_count;i++)
-//            {
-//                tft180_draw_point(left_line[i].X, left_line[i].Y, RGB565_GREEN);
-//            }
-
+            EdgeDetection();
+            for(int i=0;i<l_line_count;i++)
+            {
+                tft180_draw_point(left_line[i].X, left_line[i].Y, RGB565_GREEN);
+            }
+            for(int i=0;i<l_line_count;i++)
+            {
+                tft180_draw_point(right_line[i].X, right_line[i].Y, RGB565_YELLOW);
+            }
+            TrackBasicClear();
             mt9v03x_finish_flag=0;
         }
 

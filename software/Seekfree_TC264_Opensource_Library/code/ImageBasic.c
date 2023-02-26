@@ -194,8 +194,6 @@ void EdgeDetection(void)
                 break;//种子生长失败了跳出循环,避免卡死
         }
         else break;
-        gpio_toggle_level(P20_8);
-        system_delay_ms(100);
 	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当左种子和右种子合并即扫线结束
 }
 
