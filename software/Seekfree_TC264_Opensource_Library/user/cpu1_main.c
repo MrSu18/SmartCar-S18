@@ -64,15 +64,15 @@ void core1_main(void)
     {
         // 此处编写需要循环执行的代码
 
-        if(mt9v03x_finish_flag!=0)
+        if(mt9v03x_finish_flag)
         {
             ImageBinary();
-            EdgeDetection();
-            tft180_show_gray_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 160, 120, 0);
+            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
+            //EdgeDetection();
+            //tft180_show_gray_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60, 0);
 //            for(int i=0;i<l_line_count;i++)
 //            {
-//                ;
-                //tft180_draw_point(left_line[i].X, left_line[i].Y, RGB565_GREEN);
+//                tft180_draw_point(left_line[i].X, left_line[i].Y, RGB565_GREEN);
 //            }
 
             mt9v03x_finish_flag=0;

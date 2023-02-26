@@ -1,9 +1,10 @@
 #include <string.h>
 #include "ImageBasic.h"
+#include "zf_common_headfile.h"
 
 //=========================赛道特征变量=============================
-myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左右边线
-char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];//左右线是否丢线的记录数组
+myPoint left_line[EDGELINE_LENGTH]={0},right_line[EDGELINE_LENGTH]={0};//左右边线
+char l_lost_line[EDGELINE_LENGTH]={0},r_lost_line[EDGELINE_LENGTH]={0};//左右线是否丢线的记录数组
 uint8 l_line_count=0,r_line_count=0;//左右边线记录总共有多长
 uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 //================================================================
@@ -193,6 +194,8 @@ void EdgeDetection(void)
                 break;//种子生长失败了跳出循环,避免卡死
         }
         else break;
+        gpio_toggle_level(P20_8);
+        system_delay_ms(100);
 	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当左种子和右种子合并即扫线结束
 }
 

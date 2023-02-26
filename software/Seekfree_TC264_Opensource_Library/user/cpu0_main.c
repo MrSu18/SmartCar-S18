@@ -59,7 +59,8 @@ int core0_main(void)
     mt9v03x_init();//初始化摄像头
     tft180_init();//初始化tft
     bluetooth_ch9141_init();//初始化蓝牙模块
-
+    gpio_init(P20_8, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    pit_ms_init(CCU60_CH0, 5);//电机中断初始化
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
     while (TRUE)

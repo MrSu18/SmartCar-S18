@@ -300,3 +300,9 @@ user/isr.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Open
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_wifi_uart.h :
 user/isr.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_wireless_uart.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_wireless_uart.h :
+user/isr.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/code/bluetooth.h
+e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/code/bluetooth.h :
+user/isr.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_uart.h
+e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_uart.h :
+user/isr.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_headfile.h
+e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_headfile.h :

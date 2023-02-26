@@ -638,7 +638,8 @@ void tft180_show_binary_image (uint16 x, uint16 y, const uint8 *image, uint16 wi
         for(i = 0; i < dis_width; i ++)
         {
             width_index = i * width / dis_width;
-            temp = *(image + height_index * width / 8 + width_index / 8);       // 读取像素点
+            temp=use_image[height_index][width_index];
+            //temp = *(image + height_index * width / 8 + width_index / 8);       // 读取像素点
             if(0x80 & (temp << (width_index % 8)))
                 tft180_write_16bit_data(RGB565_WHITE);
             else
