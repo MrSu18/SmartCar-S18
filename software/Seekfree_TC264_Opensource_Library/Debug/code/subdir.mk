@@ -6,6 +6,7 @@
 C_SRCS += \
 ../code/ImageBasic.c \
 ../code/ImageConversion.c \
+../code/ImageTrack.c \
 ../code/ZwPlus_lib.c \
 ../code/adc.c \
 ../code/bluetooth.c \
@@ -17,6 +18,7 @@ C_SRCS += \
 OBJS += \
 ./code/ImageBasic.o \
 ./code/ImageConversion.o \
+./code/ImageTrack.o \
 ./code/ZwPlus_lib.o \
 ./code/adc.o \
 ./code/bluetooth.o \
@@ -28,6 +30,7 @@ OBJS += \
 COMPILED_SRCS += \
 ./code/ImageBasic.src \
 ./code/ImageConversion.src \
+./code/ImageTrack.src \
 ./code/ZwPlus_lib.src \
 ./code/adc.src \
 ./code/bluetooth.src \
@@ -39,6 +42,7 @@ COMPILED_SRCS += \
 C_DEPS += \
 ./code/ImageBasic.d \
 ./code/ImageConversion.d \
+./code/ImageTrack.d \
 ./code/ZwPlus_lib.d \
 ./code/adc.d \
 ./code/bluetooth.d \

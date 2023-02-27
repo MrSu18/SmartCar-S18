@@ -300,3 +300,5 @@ user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC26
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/code/ImageConversion.h :
 user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/code/ImageBasic.h
 e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/code/ImageBasic.h :
+user/cpu1_main.o :	e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/code/ImageTrack.h
+e:/nodeanddata/studio/FSL/Complete/S18/software/Seekfree_TC264_Opensource_Library/code/ImageTrack.h :
