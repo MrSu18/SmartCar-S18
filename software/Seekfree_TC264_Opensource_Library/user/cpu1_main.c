@@ -68,7 +68,8 @@ void core1_main(void)
 
         if(mt9v03x_finish_flag)
         {
-#if 0
+#if 1
+            system_start();
             ImageBinary();
 //            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
             EdgeDetection();
