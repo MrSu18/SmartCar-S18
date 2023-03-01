@@ -199,14 +199,61 @@ void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int appro
     }
 }
 
-float GetAnchorPointCurvature(myPoint_f b, myPoint_f c)//得到循迹锚点的曲率
+/***********************************************
+* @brief : 得到循迹预锚点的循迹偏差
+* @param : float aim_distance: 预瞄距离
+*          uint8 track_line_count: 跟踪线的长度
+*          myPoint_f *track_line: 跟踪的边线（左中线还是右中线）
+* @return: 无
+* @date  : 2023.3.1
+* @author: 上交大开源
+************************************************/
+float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line)
 {
-    myPoint_f a;
-    a.X=USE_IMAGE_W/2;a.Y=USE_IMAGE_H-1;//屏幕的中间下面
-    float S=((b.Y-a.Y)*(c.X-a.X)-(c.Y-a.Y)*(b.X-a.X))/2;//ABC三点三角形面积
-    float AB=sqrt((b.X-a.X) * (b.X-a.X) + (b.Y-a.Y) * (b.X-a.X));
-    float BC=sqrt((c.X-b.X) * (c.X-b.X) + (c.Y-b.Y) * (c.X-b.X));
-    float AC=sqrt((c.X-a.X) * (c.X-a.X) + (c.Y-a.Y) * (c.X-a.X));
-    float K=4*S/(AB*BC*AC);
-    return K;
+    // 车轮对应点(纯跟踪起始点)
+    float cx = USE_IMAGE_W/2;
+    float cy = USE_IMAGE_H;
+    float pure_angle=0;
+
+    // 找最近点(起始点中线归一化)
+    float min_dist = 1e10;
+    int begin_id = -1;
+    for (int i = 0; i < track_line_count; i++)
+    {
+        float dx = track_line[i].X - cx;
+        float dy = track_line[i].Y - cy;
+        float dist = sqrt(dx * dx + dy * dy);
+        if (dist < min_dist)
+        {
+            min_dist = dist;
+            begin_id = i;
+        }
+    }
+    // 中线有点，同时最近点不是最后几个点
+    if (begin_id >= 0 && track_line_count - begin_id >= 3)
+    {
+        // 归一化中线
+        track_line[begin_id].X = cx;
+        track_line[begin_id].Y = cy;
+        c_line_count = sizeof(center_line) / sizeof(center_line[0]);
+        ResamplePoints(track_line + begin_id, track_line_count - begin_id, center_line, &c_line_count, 0.04*50);
+
+        // 远预锚点位置
+        int aim_idx = Limit(round(aim_distance / 0.04), 0, c_line_count - 1);
+
+        // 计算远锚点偏差值
+        float dx = center_line[aim_idx].X - cx;
+        float dy = cy - center_line[aim_idx].Y + 0.2 * 50;
+        float dn = sqrt(dx * dx + dy * dy);
+        //float error = -atan2f(dx, dy) * 180 / 3.14;
+
+        // 纯跟踪算法(只考虑远点)
+        pure_angle = -atanf(50 * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
+    }
+    else
+    {
+        // 中线点过少(出现问题)，则不控制舵机
+        c_line_count = 0;
+    }
+    return pure_angle;
 }

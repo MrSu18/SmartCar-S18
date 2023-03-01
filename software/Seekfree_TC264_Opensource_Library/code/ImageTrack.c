@@ -11,8 +11,9 @@
 #define TRACK_HALF_WIDTH	22.5//赛道半宽像素点
 //===============================================================
 
-myPoint_f center_line[EDGELINE_LENGTH];//赛道中线
-uint8 c_line_count=0;//中线长度
+myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0},center_line[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线,归一化中线
+uint8 cl_line_count=0,cr_line_count=0;//中线长度
+int c_line_count=0;
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
@@ -156,6 +157,17 @@ void nms_angle(float angle_in[], int num, float angle_out[], int kernel)
     }
 }
 
+/***********************************************
+* @brief : 左边线半宽补线得到右边线
+* @param : myPoint_f* in_line: 输入的边线
+*          int num: 输入边线的长度
+*          myPoint_f* out_line: 输出的中线
+*          int approx_num:求法线斜率使用的前后点的个数
+*          float dist:赛道半宽宽度
+* @return: 无
+* @date  : 2023.1.15
+* @author: 上交大开源
+************************************************/
 void track_leftline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist)
 {
     for (int i = 0; i < num; i++)
@@ -168,4 +180,78 @@ void track_leftline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx
         out_line[i].X = in_line[i].X - dy * dist;
         out_line[i].Y = in_line[i].Y + dx * dist;
     }
+}
+
+// 右边线跟踪中线
+void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist)
+{
+    for (int i = 0; i < num; i++)
+    {
+        float dx = in_line[Limit(i + approx_num, 0, num - 1)].X - in_line[Limit(i - approx_num, 0, num - 1)].X;
+        float dy = in_line[Limit(i + approx_num, 0, num - 1)].Y - in_line[Limit(i - approx_num, 0, num - 1)].Y;
+        float dn = sqrt(dx * dx + dy * dy);
+        dx /= dn;
+        dy /= dn;
+        out_line[i].X = in_line[i].X + dy * dist;
+        out_line[i].Y = in_line[i].Y - dx * dist;
+    }
+}
+
+/***********************************************
+* @brief : 得到循迹预锚点的循迹偏差
+* @param : float aim_distance: 预瞄距离
+*          uint8 track_line_count: 跟踪线的长度
+*          myPoint_f *track_line: 跟踪的边线（左中线还是右中线）
+* @return: 无
+* @date  : 2023.3.1
+* @author: 上交大开源
+************************************************/
+float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line)
+{
+    // 车轮对应点(纯跟踪起始点)
+    float cx = USE_IMAGE_W/2;
+    float cy = USE_IMAGE_H;
+    float pure_angle=0;
+
+    // 找最近点(起始点中线归一化)
+    float min_dist = 1e10;
+    int begin_id = -1;
+    for (int i = 0; i < track_line_count; i++)
+    {
+        float dx = track_line[i].X - cx;
+        float dy = track_line[i].Y - cy;
+        float dist = sqrt(dx * dx + dy * dy);
+        if (dist < min_dist)
+        {
+            min_dist = dist;
+            begin_id = i;
+        }
+    }
+    // 中线有点，同时最近点不是最后几个点
+    if (begin_id >= 0 && track_line_count - begin_id >= 3)
+    {
+        // 归一化中线
+        track_line[begin_id].X = cx;
+        track_line[begin_id].Y = cy;
+        c_line_count = sizeof(center_line) / sizeof(center_line[0]);
+        ResamplePoints(track_line + begin_id, track_line_count - begin_id, center_line, &c_line_count, 0.04*50);
+
+        // 远预锚点位置
+        int aim_idx = Limit(round(aim_distance / 0.04), 0, c_line_count - 1);
+
+        // 计算远锚点偏差值
+        float dx = center_line[aim_idx].X - cx;
+        float dy = cy - center_line[aim_idx].Y + 0.2 * 50;
+        float dn = sqrt(dx * dx + dy * dy);
+        //float error = -atan2f(dx, dy) * 180 / 3.14;
+
+        // 纯跟踪算法(只考虑远点)
+        pure_angle = -atanf(50 * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
+    }
+    else
+    {
+        // 中线点过少(出现问题)，则不控制舵机
+        c_line_count = 0;
+    }
+    return pure_angle;
 }

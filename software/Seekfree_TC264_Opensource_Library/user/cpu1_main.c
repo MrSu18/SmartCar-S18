@@ -68,34 +68,40 @@ void core1_main(void)
         if(mt9v03x_finish_flag)
         {
             ImageBinary();
-            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
+//            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
             EdgeDetection();
             //对边线进行滤波
             myPoint_f f_left_line[EDGELINE_LENGTH],f_right_line[EDGELINE_LENGTH];
-            BlurPoints(left_line, l_line_count, f_left_line, 7);
-            BlurPoints(right_line, r_line_count, f_right_line, 7);
+            BlurPoints(left_line, l_line_count, f_left_line, 5);
+            BlurPoints(right_line, r_line_count, f_right_line, 5);
             //等距采样
             myPoint_f f_left_line1[EDGELINE_LENGTH],f_right_line1[EDGELINE_LENGTH];
             int l_count=200,r_count=200;
-            ResamplePoints(f_left_line, l_line_count, f_left_line1, &l_count, 2);
-            ResamplePoints(f_right_line, r_line_count, f_right_line1, &r_count, 2);
+            ResamplePoints(f_left_line, l_line_count, f_left_line1, &l_count, 0.04*50);
+            ResamplePoints(f_right_line, r_line_count, f_right_line1, &r_count, 0.04*50);
             //局部曲率
             float l_angle[l_count],r_angle[r_count];
-            local_angle_points(f_left_line1,l_count,l_angle,5);
-            local_angle_points(f_right_line1,r_count,r_angle,5);
+            local_angle_points(f_left_line1,l_count,l_angle,0.1/0.04);
+            local_angle_points(f_right_line1,r_count,r_angle,0.1/0.04);
+            //极大值点抑制
             float l_angle_1[l_count],r_angle_1[r_count];
-            nms_angle(l_angle,l_count,l_angle_1,5*2+1);
-            nms_angle(r_angle,r_count,r_angle_1,5*2+1);
-            //跟踪左线
-            track_leftline(f_left_line1, l_count, center_line, 10, 22.5);
-            for(int i=0;i<l_line_count;i++)
-            {
-                tft180_draw_point((uint16)f_left_line1[i].X, (uint16)f_left_line1[i].Y, RGB565_GREEN);
-            }
-            for(int i=0;i<l_line_count;i++)
-            {
-                tft180_draw_point((uint16)f_right_line1[i].X, (uint16)f_right_line1[i].Y, RGB565_YELLOW);
-            }
+            nms_angle(l_angle,l_count,l_angle_1,(0.1/0.04)*2+1);
+            nms_angle(r_angle,r_count,r_angle_1,(0.1/0.04)*2+1);
+            //跟踪左右边线
+            track_leftline(f_left_line1, l_count, center_line_l, (int) round(0.1/0.04), 50*(0.4/2));
+            track_rightline(f_right_line1, r_count, center_line_r, (int) round(0.1/0.04), 50*(0.4/2));
+            cl_line_count=l_count;cr_line_count=r_count;
+            // 预瞄点求偏差
+            float Bias=GetAnchorPointBias(0.3,cr_line_count,center_line_r);
+//            tft180_show_float(0, 0, Bias, 3, 3);
+//            for(int i=0;i<cl_line_count;i++)
+//            {
+//                tft180_draw_point((uint16)center_line_l[i].X, (uint16)center_line_l[i].Y, RGB565_BLUE);
+//            }
+//            for(int i=0;i<cr_line_count;i++)
+//            {
+//                tft180_draw_point((uint16)center_line_r[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
+//            }
             TrackBasicClear();
             mt9v03x_finish_flag=0;
         }

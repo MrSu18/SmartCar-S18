@@ -23,6 +23,6 @@ void local_angle_points(myPoint_f* in_line, int num, float angle_out[], int dist
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void track_leftline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist);
 void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist);
-float GetAnchorPointCurvature(myPoint_f b, myPoint_f c);//得到循迹锚点的曲率
+float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line);//得到循迹预锚点的循迹偏差
 
 #endif //LJF_OPENCV_IMAGETEST_IMAGETRACK_H
