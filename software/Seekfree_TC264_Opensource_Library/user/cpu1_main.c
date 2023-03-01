@@ -39,6 +39,7 @@
 #include "ImageConversion.h"
 #include "ImageBasic.h"
 #include "ImageTrack.h"
+#include "bluetooth.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -67,6 +68,7 @@ void core1_main(void)
 
         if(mt9v03x_finish_flag)
         {
+#if 0
             ImageBinary();
 //            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
             EdgeDetection();
@@ -103,8 +105,13 @@ void core1_main(void)
 //                tft180_draw_point((uint16)center_line_r[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
 //            }
             TrackBasicClear();
+#else
+            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
+#endif
             mt9v03x_finish_flag=0;
         }
+
+
 
 
         // 此处编写需要循环执行的代码
