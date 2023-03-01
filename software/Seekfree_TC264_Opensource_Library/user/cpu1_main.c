@@ -40,6 +40,7 @@
 #include "ImageBasic.h"
 #include "ImageTrack.h"
 #include "bluetooth.h"
+#include "ImageProcess.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -69,7 +70,9 @@ void core1_main(void)
         if(mt9v03x_finish_flag)
         {
 #if 1
-            system_start();
+            //出界保护
+            OutProtect();
+
             ImageBinary();
 //            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
             EdgeDetection();
