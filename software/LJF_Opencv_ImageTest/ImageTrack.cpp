@@ -11,8 +11,9 @@
 #define TRACK_HALF_WIDTH	22.5//赛道半宽像素点
 //===============================================================
 
-myPoint_f center_line[EDGELINE_LENGTH];//赛道中线
-uint8 c_line_count=0;//中线长度
+myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0},center_line[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线,归一化中线
+uint8 cl_line_count=0,cr_line_count=0;//中线长度
+int c_line_count=0;
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
@@ -62,6 +63,7 @@ void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel)
 ************************************************/
 void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist)
 {
+    //程序异常检测
     if (num1 < 0)
     {
         *num2 = 0;
@@ -69,7 +71,8 @@ void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2
     }
     out_line[0].X = in_line[0].X;
     out_line[0].Y = in_line[0].Y;
-    int len = 1;
+    int len = 1;//输出边线的长度计数值
+    //开始等距采样
     for (int i = 0; i < num1 - 1 && len < *num2; i++)
     {
         float x0 = in_line[i].X;
@@ -156,6 +159,17 @@ void nms_angle(float angle_in[], int num, float angle_out[], int kernel)
     }
 }
 
+/***********************************************
+* @brief : 左边线半宽补线得到右边线
+* @param : myPoint_f* in_line: 输入的边线
+*          int num: 输入边线的长度
+*          myPoint_f* out_line: 输出的中线
+*          int approx_num:求法线斜率使用的前后点的个数
+*          float dist:赛道半宽宽度
+* @return: 无
+* @date  : 2023.1.15
+* @author: 上交大开源
+************************************************/
 void track_leftline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist)
 {
     for (int i = 0; i < num; i++)
@@ -168,4 +182,31 @@ void track_leftline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx
         out_line[i].X = in_line[i].X - dy * dist;
         out_line[i].Y = in_line[i].Y + dx * dist;
     }
+}
+
+// 右边线跟踪中线
+void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist)
+{
+    for (int i = 0; i < num; i++)
+    {
+        float dx = in_line[Limit(i + approx_num, 0, num - 1)].X - in_line[Limit(i - approx_num, 0, num - 1)].X;
+        float dy = in_line[Limit(i + approx_num, 0, num - 1)].Y - in_line[Limit(i - approx_num, 0, num - 1)].Y;
+        float dn = sqrt(dx * dx + dy * dy);
+        dx /= dn;
+        dy /= dn;
+        out_line[i].X = in_line[i].X + dy * dist;
+        out_line[i].Y = in_line[i].Y - dx * dist;
+    }
+}
+
+float GetAnchorPointCurvature(myPoint_f b, myPoint_f c)//得到循迹锚点的曲率
+{
+    myPoint_f a;
+    a.X=USE_IMAGE_W/2;a.Y=USE_IMAGE_H-1;//屏幕的中间下面
+    float S=((b.Y-a.Y)*(c.X-a.X)-(c.Y-a.Y)*(b.X-a.X))/2;//ABC三点三角形面积
+    float AB=sqrt((b.X-a.X) * (b.X-a.X) + (b.Y-a.Y) * (b.X-a.X));
+    float BC=sqrt((c.X-b.X) * (c.X-b.X) + (c.Y-b.Y) * (c.X-b.X));
+    float AC=sqrt((c.X-a.X) * (c.X-a.X) + (c.Y-a.Y) * (c.X-a.X));
+    float K=4*S/(AB*BC*AC);
+    return K;
 }

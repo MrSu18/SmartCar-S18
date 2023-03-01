@@ -20,15 +20,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="把师弟的摄像头参数输入，现在工程的测试图片是140摄像头，曝光太低，二值化出问题，打算试试灰度扫线算法">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="上传边线处理函数，但是还没验证，有点问题">
+      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageConversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageTrack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageTrack.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/Seekfree_TC264_Opensource_Library.elf" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/Seekfree_TC264_Opensource_Library.elf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/Seekfree_TC264_Opensource_Library.hex" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/Seekfree_TC264_Opensource_Library.hex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/Seekfree_TC264_Opensource_Library.map" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/Seekfree_TC264_Opensource_Library.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/Seekfree_TC264_Opensource_Library.mdf" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/Seekfree_TC264_Opensource_Library.mdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/code/ZwPlus_lib.o" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/code/ZwPlus_lib.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/code/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/code/subdir.mk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/user/cpu1_main.d" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/user/cpu1_main.d" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/user/cpu1_main.o" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Debug/user/cpu1_main.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
     </list>
@@ -152,7 +153,10 @@
       <workItem from="1677395052420" duration="3657000" />
       <workItem from="1677409443214" duration="1817000" />
       <workItem from="1677418764074" duration="1050000" />
-      <workItem from="1677502177825" duration="4000" />
+      <workItem from="1677502177825" duration="138000" />
+      <workItem from="1677553617297" duration="8508000" />
+      <workItem from="1677644003879" duration="6201000" />
+      <workItem from="1677651449957" duration="1000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>
@@ -266,7 +270,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676968090901</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="上传边线处理函数，但是还没验证，有点问题">
+      <created>1677502297463</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1677502297463</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -300,6 +311,7 @@
     <MESSAGE value="修改扫线，现在边界不涂黑也可以了" />
     <MESSAGE value="增加边线处理函数注释，理解局部曲率计算函数，极大值抑制后，能够较好的找出直角拐点，但是还会存在一定程度的误判" />
     <MESSAGE value="把师弟的摄像头参数输入，现在工程的测试图片是140摄像头，曝光太低，二值化出问题，打算试试灰度扫线算法" />
-    <option name="LAST_COMMIT_MESSAGE" value="把师弟的摄像头参数输入，现在工程的测试图片是140摄像头，曝光太低，二值化出问题，打算试试灰度扫线算法" />
+    <MESSAGE value="上传边线处理函数，但是还没验证，有点问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="上传边线处理函数，但是还没验证，有点问题" />
   </component>
 </project>

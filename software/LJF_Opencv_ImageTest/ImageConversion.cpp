@@ -73,7 +73,7 @@ uint8 otsuThreshold(uint8* image, uint16 width, uint16 height)
 void ImageBinary(void)
 {
     //压缩图像的二值化
-    uint8 Image_Threshold = otsuThreshold(mt9v03x_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
+    uint8 Image_Threshold = otsuThreshold(mt9v03x_image[0], MT9V03X_W, MT9V03X_H)-10 ;//使用大津法得到二值化阈值
     for (int i = 0; i < MT9V03X_H; i++)
     {
         for (int j = 0; j < MT9V03X_W; j++)
@@ -180,8 +180,8 @@ void ImagePerspective_Init(void)
 {
     static uint8 BlackColor = IMAGE_BAN;
     //逆透视矩阵
-    double change_un_Mat[3][3] ={{-2.772306,2.000855,-8.856205},{-0.133493,0.497165,-47.409243},{-0.003104,0.022771,-1.416382}};
-//     double change_un_Mat[3][3] ={{-1.904429,1.744630,-57.988360},{-0.050270,0.519909,-89.636933},{-0.001169,0.019907,-2.537938}};
+//    double change_un_Mat[3][3] ={{-2.772306,2.000855,-8.856205},{-0.133493,0.497165,-47.409243},{-0.003104,0.022771,-1.416382}};
+    double change_un_Mat[3][3] ={{-4.832042,6.360634,-192.619123},{-0.304166,2.614860,-192.622203},{-0.003682,0.069950,-4.453241}};
 
     for (int i = 0; i < PER_IMAGE_W; i++)
     {

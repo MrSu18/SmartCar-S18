@@ -90,11 +90,11 @@ void core1_main(void)
             track_leftline(f_left_line1, l_count, center_line, 10, 22.5);
             for(int i=0;i<l_line_count;i++)
             {
-                tft180_draw_point(f_left_line1[i].X, f_left_line1[i].Y, RGB565_GREEN);
+                tft180_draw_point((uint16)f_left_line1[i].X, (uint16)f_left_line1[i].Y, RGB565_GREEN);
             }
             for(int i=0;i<l_line_count;i++)
             {
-                tft180_draw_point(f_right_line1[i].X, f_right_line1[i].Y, RGB565_YELLOW);
+                tft180_draw_point((uint16)f_right_line1[i].X, (uint16)f_right_line1[i].Y, RGB565_YELLOW);
             }
             TrackBasicClear();
             mt9v03x_finish_flag=0;

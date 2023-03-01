@@ -147,7 +147,7 @@ void EdgeDetection(void)
         {
             if (EightAreasSeedGrown(&left_seed,'l',&left_seed_num) == 1)//生长一次
             {
-                LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
+//                LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
                 //得到边界数组
                 left_line[l_line_count]=left_seed;l_line_count++;
                 //记录丢线
@@ -174,7 +174,7 @@ void EdgeDetection(void)
         {
             if (EightAreasSeedGrown(&right_seed,'r',&right_seed_num) == 1)
             {
-                LCDDrawPoint(right_seed.Y,right_seed.X,255,255,0);
+//                LCDDrawPoint(right_seed.Y,right_seed.X,255,255,0);
                 right_line[r_line_count]=right_seed;r_line_count++;
                 if(right_seed.X>=right_border[right_seed.Y])
                 {
