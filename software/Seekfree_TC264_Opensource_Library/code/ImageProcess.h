@@ -12,7 +12,7 @@
 #include "zf_device_mt9v03x.h"
 #include "motor.h"
 
-#define OUT_THRESHOLD    180                //出界判断阈值
+#define OUT_THRESHOLD    255                //出界判断阈值
 
 void OutProtect(void);                      //出界保护程序
 

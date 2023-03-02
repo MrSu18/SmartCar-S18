@@ -99,34 +99,6 @@ void MotorSetPWM(int pwm_left,int pwm_right)
     }
 }
 /***********************************************
-* @brief : 获取目标速度
-* @param : target_left:左边电机目标速度
-*          target_right:右边电机目标速度
-* @return: void
-* @date  : 2023.1.15
-* @author: L
-************************************************/
-void MotorSetTarget(int16* target_left,int16* target_right)
-{
-    int err = 0;
-    err = PIDTurn(&turnpid);
-
-    //通过一个基础速度加减pid计算后的偏差分别赋给右左电机的目标速度
-    *target_left = MOTOR_SPEED_BASE-err;
-    *target_right = MOTOR_SPEED_BASE+err;
-
-    //对目标速度进行限幅
-    if(*target_left>MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT)
-        *target_left = MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT;
-    else if(*target_left<MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT)
-        *target_left = MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT;
-    if(*target_right>MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT)
-        *target_right = MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT;
-    else if(*target_right<MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT)
-        *target_right = MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT;
-
-}
-/***********************************************
 * @brief : 增量式PI控制电机转速
 * @param : void
 * @return: void
@@ -140,7 +112,7 @@ void MotorCtrl(void)
     int16 target_left = 0,target_right = 0;                 //左右轮的目标速度的值
 
     EncoderGetCount(&speed_left,&speed_right);              //获取编码器的值
-    MotorSetTarget(&target_left,&target_right);             //获取目标速度
+    PIDTurn(&target_left,&target_right,&turnpid);           //方向环PID
 
     //当为环岛时，对当前读到的速度进行强制修改
     if(circle_flag!=0)

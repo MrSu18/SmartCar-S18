@@ -29,9 +29,9 @@
 
 #define  MOTOR_PWM_MAX      8000                        //电机PWM限幅
 
-#define  MOTOR_SPEED_LIMIT  280                         //速度限幅
+#define  MOTOR_SPEED_LIMIT  50                         //速度限幅
 
-#define  MOTOR_SPEED_BASE   120                         //基础速度
+#define  MOTOR_SPEED_BASE   60                         //基础速度
 //电机PWM引脚
 #define  MOTOR_LEFT_1   ATOM0_CH4_P02_4
 #define  MOTOR_LEFT_2   ATOM0_CH6_P02_6

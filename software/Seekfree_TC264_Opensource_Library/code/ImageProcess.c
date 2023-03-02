@@ -15,12 +15,15 @@
 ************************************************/
 void OutProtect(void)
 {
-    int16 over_count = 0;                                   //存放超过阈值的像素点的数量
+    int over_count = 0;                                   //存放超过阈值的像素点的数量
 
-    for(int8 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
+    for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
     {
-        if(mt9v03x_image[MT9V03X_H][i] >= OUT_THRESHOLD)
-            over_count++;
+        for(int16 j = MT9V03X_H;j < MT9V03X_H - 3;j--)
+        {
+            if(mt9v03x_image[j][i] <= OUT_THRESHOLD)
+                over_count++;
+        }
     }
 
     if(over_count >= MT9V03X_W)                             //如果全部超过阈值则停止

@@ -340,3 +340,5 @@ user/cpu1_main.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library
 e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/bluetooth.h :
 user/cpu1_main.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/filter.h
 e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/filter.h :
+user/cpu1_main.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/pid.h
+e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/pid.h :

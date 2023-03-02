@@ -35,7 +35,14 @@
 #include "zf_common_headfile.h"
 #pragma section all "cpu0_dsram"
 // 将本语句与#pragma section all restore语句之间的全局变量都放在CPU0的RAM中
-
+#include "zf_driver_gpio.h"
+#include "motor.h"
+#include "adc.h"
+#include "filter.h"
+#include "bluetooth.h"
+#include "pid.h"
+#include "key.h"
+//#include "icm20602.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -53,24 +60,45 @@
 int core0_main(void)
 {
     clock_init();                   // 获取时钟频率<务必保留>
-    debug_init();                   // 初始化默认调试串口
+    //debug_init();                   // 初始化默认调试串口
     // 此处编写用户代码 例如外设初始化代码等
 
+/*************************模块初始化***************************/
+    UARTInit();
+    MotorInit();
+    EncoderInit();
+    ADCInit();
+    KEYInit();
     mt9v03x_init();//初始化摄像头
     tft180_init();//初始化tft
-    bluetooth_ch9141_init();//初始化蓝牙模块
-
+    UARTInit();//初始化蓝牙模块
+//    icm20602_init();
+//    GyroOffsetInit();
+//    dl1a_init();
     //初始化debug的led
     gpio_init(P20_8, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(P20_9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    //给蜂鸣器低电平
+    gpio_init(P11_12,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
+    pit_ms_init(CCU60_CH0,5);
+    pit_disable(CCU60_CH0);
+/*************************参数初始化***************************/
+    KalmanInit(&kalman_adc,25,5);
+    PIDInit(&speedpid_left,157.93,1.65,0);
+    PIDInit(&speedpid_right,161.40,1.65,0);
+    PIDInit(&turnpid,2.5,0,1);
 
-    pit_ms_init(CCU60_CH0, 5);//电机中断初始化
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
     while (TRUE)
     {
         // 此处编写需要循环执行的代码
-
+        if(KEY1)
+        {
+            while(KEY1);
+            system_delay_ms(1000);
+            pit_enable(CCU60_CH0);
+        }
 
         // 此处编写需要循环执行的代码
     }

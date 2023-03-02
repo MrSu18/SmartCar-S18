@@ -41,6 +41,7 @@
 #include "ImageTrack.h"
 #include "bluetooth.h"
 #include "ImageProcess.h"
+#include "pid.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -70,8 +71,8 @@ void core1_main(void)
         if(mt9v03x_finish_flag)
         {
 #if 1
-            //出界保护
-            OutProtect();
+//            //出界保护
+//            OutProtect();
 
             ImageBinary();
 //            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
@@ -98,7 +99,7 @@ void core1_main(void)
             track_rightline(f_right_line1, r_count, center_line_r, (int) round(0.1/0.04), 50*(0.4/2));
             cl_line_count=l_count;cr_line_count=r_count;
             // 预瞄点求偏差
-            float Bias=GetAnchorPointBias(0.3,cr_line_count,center_line_r);
+            Bias=GetAnchorPointBias(0.3,cr_line_count,center_line_r);
 //            tft180_show_float(0, 0, Bias, 3, 3);
 //            for(int i=0;i<cl_line_count;i++)
 //            {

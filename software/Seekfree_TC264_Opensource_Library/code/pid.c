@@ -9,6 +9,7 @@
 PID speedpid_left;                          //左轮速度环PID
 PID speedpid_right;                         //右轮速度环PID
 PID turnpid;                                //转向环PID
+float Bias = 0;
 
 /***********************************************
 * @brief : 初始化PID参数
@@ -69,19 +70,31 @@ int PIDSpeedRight(int16 encoder_speed,int16 target_speed,PID* pid)
 * @brief : 转向环位置式PD控制
 * @param : pid:转向环的PID
 * @return: out:左右轮目标速度的变化量
-* @date  : 2023.2.2
+* @date  : 2023.3.2
 * @author: L
 ************************************************/
-int PIDTurn(PID* pid)
+void PIDTurn(int16* target_left,int16* target_right,PID* pid)
 {
-    //获取此时偏差
-    ADCGetValue(adc_value);
-    ChaBiHe(&pid->err,TRACK);
+//    //获取此时偏差
+//    ADCGetValue(adc_value);
+//    ChaBiHe(&pid->err,TRACK);
+    pid->err = Bias;
 
     pid->out = pid->P*pid->err+pid->D*(pid->err-pid->last_err);
     pid->last_err = pid->err;                                               //保存上一次的值
 
-    return pid->out;
+    *target_left = MOTOR_SPEED_BASE - pid->out;
+    *target_right = MOTOR_SPEED_BASE + pid->out;
+
+    //对目标速度进行限幅
+    if(*target_left>MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT)
+        *target_left = MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT;
+    else if(*target_left<MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT)
+        *target_left = MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT;
+    if(*target_right>MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT)
+        *target_right = MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT;
+    else if(*target_right<MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT)
+        *target_right = MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT;
 }
 /***********************************************
 * @brief : 开环获取两个编码器加速到稳定的值，并以一定时序发送到串口
