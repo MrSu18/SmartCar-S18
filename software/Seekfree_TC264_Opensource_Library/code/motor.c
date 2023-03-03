@@ -112,6 +112,7 @@ void MotorCtrl(void)
     int16 target_left = 0,target_right = 0;                 //左右轮的目标速度的值
 
     EncoderGetCount(&speed_left,&speed_right);              //获取编码器的值
+    printf("%d,%d\r\n",speed_left,speed_right);
     PIDTurn(&target_left,&target_right,&turnpid);           //方向环PID
 
     //当为环岛时，对当前读到的速度进行强制修改

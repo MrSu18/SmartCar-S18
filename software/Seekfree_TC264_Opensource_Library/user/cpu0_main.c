@@ -80,25 +80,21 @@ int core0_main(void)
     gpio_init(P20_9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     //给蜂鸣器低电平
     gpio_init(P11_12,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
-    pit_ms_init(CCU60_CH0,5);
-    pit_disable(CCU60_CH0);
+    //初始化电机中断
+    pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
-    PIDInit(&speedpid_left,157.93,1.65,0);
+    PIDInit(&speedpid_left,157.93,1.65,0);//157.93
     PIDInit(&speedpid_right,161.40,1.65,0);
-    PIDInit(&turnpid,2.5,0,1);
+    PIDInit(&turnpid,10,0,1);
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
+
     while (TRUE)
     {
         // 此处编写需要循环执行的代码
-        if(KEY1)
-        {
-            while(KEY1);
-            system_delay_ms(1000);
-            pit_enable(CCU60_CH0);
-        }
+
 
         // 此处编写需要循环执行的代码
     }

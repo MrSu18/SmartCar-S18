@@ -80,21 +80,19 @@ void PIDTurn(int16* target_left,int16* target_right,PID* pid)
 //    ChaBiHe(&pid->err,TRACK);
     pid->err = Bias;
 
-    pid->out = pid->P*pid->err+pid->D*(pid->err-pid->last_err);
+    pid->out = (int)(pid->P*pid->err+pid->D*(pid->err-pid->last_err));
     pid->last_err = pid->err;                                               //保存上一次的值
 
-    *target_left = MOTOR_SPEED_BASE - pid->out;
-    *target_right = MOTOR_SPEED_BASE + pid->out;
-
-    //对目标速度进行限幅
-    if(*target_left>MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT)
-        *target_left = MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT;
-    else if(*target_left<MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT)
-        *target_left = MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT;
-    if(*target_right>MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT)
-        *target_right = MOTOR_SPEED_BASE+MOTOR_SPEED_LIMIT;
-    else if(*target_right<MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT)
-        *target_right = MOTOR_SPEED_BASE-MOTOR_SPEED_LIMIT;
+    if(pid->out>0)//左转
+    {
+        *target_left = MOTOR_SPEED_BASE - pid->out;
+        *target_right = MOTOR_SPEED_BASE;
+    }
+    else
+    {
+        *target_left = MOTOR_SPEED_BASE;
+        *target_right = MOTOR_SPEED_BASE + pid->out;
+    }
 }
 /***********************************************
 * @brief : 开环获取两个编码器加速到稳定的值，并以一定时序发送到串口

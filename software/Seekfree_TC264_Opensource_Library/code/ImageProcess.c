@@ -5,13 +5,15 @@
  *      Author: L
  */
 #include "ImageProcess.h"
+#include "zf_device_tft180.h"
+#include "zf_driver_pit.h"
 
 /***********************************************
 * @brief : 出界保护程序，通过遍历图像最后一行的像素点
 * @param : void
 * @return: void
 * @date  : 2023.3.1
-* @author: L
+* @author: L & 刘骏帆
 ************************************************/
 void OutProtect(void)
 {
@@ -19,15 +21,21 @@ void OutProtect(void)
 
     for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
     {
-        for(int16 j = MT9V03X_H;j < MT9V03X_H - 3;j--)
-        {
-            if(mt9v03x_image[j][i] <= OUT_THRESHOLD)
+        if(mt9v03x_image[MT9V03X_H-1][i] <= OUT_THRESHOLD)
                 over_count++;
-        }
     }
 
     if(over_count >= MT9V03X_W)                             //如果全部超过阈值则停止
-        MotorSetPWM(0,0);
+    {
+
+        while(1)
+        {
+            pit_disable(CCU60_CH0);//关闭电机中断
+            MotorSetPWM(0,0);
+//            tft180_show_int(0, 0, over_count, 3);
+        }
+    }
+
 }
 
 

@@ -13,21 +13,15 @@ using namespace cv;
 
 uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];
 
-inline int Limit(int x, int low, int up)//给x设置上下限幅
-{
-    return x > up ? up : x < low ? low : x;
-}
-inline int Min(int a,int b) {return a<b?a:b;}//求ab最小值
-
 int main()
 {
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-    for (int i = 1; i < 35; i++)
+    for (int i = 0; i < 35; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
-        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\140度师弟摄像头2.20\\%d.bmp", i);
+        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\140无极变摄像头2.25\\%d.bmp", i);
         //String str = "E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\11.30\\10.bmp";
         ScanImage(str);
         /************************************************************************************************/

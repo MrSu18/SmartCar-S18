@@ -64,6 +64,18 @@ void core1_main(void)
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
+
+    while(1)
+    {
+        if(KEY1)
+        {
+            while(KEY1);
+            system_delay_ms(1000);
+            pit_enable(CCU60_CH0);
+            break;
+        }
+    }
+
     while (TRUE)
     {
         // 此处编写需要循环执行的代码
@@ -72,10 +84,11 @@ void core1_main(void)
         {
 #if 1
 //            //出界保护
-//            OutProtect();
+            OutProtect();
 
             ImageBinary();
 //            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
+            gpio_toggle_level(P20_8);
             EdgeDetection();
             //对边线进行滤波
             myPoint_f f_left_line[EDGELINE_LENGTH],f_right_line[EDGELINE_LENGTH];
@@ -99,7 +112,7 @@ void core1_main(void)
             track_rightline(f_right_line1, r_count, center_line_r, (int) round(0.1/0.04), 50*(0.4/2));
             cl_line_count=l_count;cr_line_count=r_count;
             // 预瞄点求偏差
-            Bias=GetAnchorPointBias(0.3,cr_line_count,center_line_r);
+            Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
 //            tft180_show_float(0, 0, Bias, 3, 3);
 //            for(int i=0;i<cl_line_count;i++)
 //            {
