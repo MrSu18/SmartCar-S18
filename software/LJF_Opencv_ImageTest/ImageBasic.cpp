@@ -110,7 +110,7 @@ uint8 EightAreasSeedGrown(myPoint* seed,char choose,uint8 *seed_num)
             seed->Y += dy;
             if (*seed_num-2<0) *seed_num+=6;
             else               *seed_num-=2;
-            return 1;
+            return 2;
         }
         else
         {
@@ -168,7 +168,10 @@ void EdgeDetection(void)
                 }
             }
             else
-                break;//种子生长失败了跳出循环,避免卡死
+            {
+                change_lr_flag=!change_lr_flag;
+                left_finish=1;
+            }
         }
         else if(change_lr_flag==1 && right_finish==0)
         {
@@ -192,7 +195,10 @@ void EdgeDetection(void)
                 }
             }
             else
-                break;//种子生长失败了跳出循环,避免卡死
+            {
+                change_lr_flag=!change_lr_flag;
+                right_finish=1;
+            }
         }
         else break;
 	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当左种子和右种子合并即扫线结束

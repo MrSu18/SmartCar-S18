@@ -18,7 +18,7 @@ int main()
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-    for (int i = 0; i < 35; i++)
+    for (int i = 5; i < 35; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
         String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\140无极变摄像头2.25\\%d.bmp", i);
@@ -53,8 +53,33 @@ int main()
         track_leftline(f_left_line1, l_count, center_line_l, (int) round(0.1/0.04), 50*(0.45/2));
         track_rightline(f_right_line1, r_count, center_line_r, (int) round(0.1/0.04), 50*(0.45/2));
         cl_line_count=l_count;cr_line_count=r_count;
+
+        float Bias=0;
+
+        // 单侧线少，切换巡线方向  切外向圆
+        if (l_count < r_count / 2 && l_count < 10)
+        {
+            Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
+        }
+        else if (r_count < l_count / 2 && r_count < 10)
+        {
+            Bias=GetAnchorPointBias(0.4,cl_line_count,center_line_l);
+        }
+        else if (l_count < 5 && r_count > l_count)
+        {
+            Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
+        }
+        else if (r_count < 5 && l_count > r_count)
+        {
+            Bias=GetAnchorPointBias(0.4,cl_line_count,center_line_l);
+        }
+        else
+        {
+            Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
+        }
+
         // 预瞄点求偏差
-        float Bias=GetAnchorPointBias(0.3,cl_line_count,center_line_l);
+
         printf("%f\r\n",Bias);
         /************************************************************************************************************/
 

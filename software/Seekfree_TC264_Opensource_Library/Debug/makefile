@@ -151,7 +151,7 @@ main-build: Seekfree_TC264_Opensource_Library.elf secondary-outputs
 Seekfree_TC264_Opensource_Library.elf: $(OBJS) makefile objects.mk $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: TASKING Linker'
-	cctc -lrt -lfp_fpu -lcs_fpu  -Wl-Oc -Wl-OL -Wl-Ot -Wl-Ox -Wl-Oy "E:\github\smartcar\SmartCar-S18\software\Seekfree_TC264_Opensource_Library\libraries\zf_device\zf_device_config.a" -Wl--map-file="Seekfree_TC264_Opensource_Library.map" -Wl-mc -Wl-mf -Wl-mi -Wl-mk -Wl-ml -Wl-mm -Wl-md -Wl-mr -Wl-mu --no-warnings= -Wl--error-limit=42 --exceptions --strict --anachronisms --force-c++ -Ctc26xb   -o"Seekfree_TC264_Opensource_Library.elf" -Wl-o"Seekfree_TC264_Opensource_Library.hex:IHEX" --lsl-core=vtc  --lsl-file=../Lcf_Tasking_Tricore_Tc.lsl $(OBJS)
+	cctc -lrt -lfp_fpu -lcs_fpu  -Wl-Oc -Wl-OL -Wl-Ot -Wl-Ox -Wl-Oy "E:\nodeanddata\studio\FSL\Complete\S18\software\Seekfree_TC264_Opensource_Library\libraries\zf_device\zf_device_config.a" -Wl--map-file="Seekfree_TC264_Opensource_Library.map" -Wl-mc -Wl-mf -Wl-mi -Wl-mk -Wl-ml -Wl-mm -Wl-md -Wl-mr -Wl-mu --no-warnings= -Wl--error-limit=42 --exceptions --strict --anachronisms --force-c++ -Ctc26xb   -o"Seekfree_TC264_Opensource_Library.elf" -Wl-o"Seekfree_TC264_Opensource_Library.hex:IHEX" --lsl-core=vtc  --lsl-file=../Lcf_Tasking_Tricore_Tc.lsl $(OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

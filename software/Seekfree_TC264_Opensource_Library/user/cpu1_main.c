@@ -84,10 +84,10 @@ void core1_main(void)
         {
 #if 1
 //            //出界保护
-            OutProtect();
+//            OutProtect();
 
             ImageBinary();
-//            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
+            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
             gpio_toggle_level(P20_8);
             EdgeDetection();
             //对边线进行滤波
@@ -112,7 +112,27 @@ void core1_main(void)
             track_rightline(f_right_line1, r_count, center_line_r, (int) round(0.1/0.04), 50*(0.4/2));
             cl_line_count=l_count;cr_line_count=r_count;
             // 预瞄点求偏差
-            Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
+            // 单侧线少，切换巡线方向  切外向圆
+            if (l_count < r_count / 2 && l_count < 10)
+            {
+                Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
+            }
+            else if (r_count < l_count / 2 && r_count < 10)
+            {
+                Bias=GetAnchorPointBias(0.4,cl_line_count,center_line_l);
+            }
+            else if (l_count < 5 && r_count > l_count)
+            {
+                Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
+            }
+            else if (r_count < 5 && l_count > r_count)
+            {
+                Bias=GetAnchorPointBias(0.4,cl_line_count,center_line_l);
+            }
+            else
+            {
+                Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
+            }
 //            tft180_show_float(0, 0, Bias, 3, 3);
 //            for(int i=0;i<cl_line_count;i++)
 //            {
@@ -122,6 +142,10 @@ void core1_main(void)
 //            {
 //                tft180_draw_point((uint16)center_line_r[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
 //            }
+            for(int i=0;i<c_line_count;i++)
+            {
+                tft180_draw_point((uint16)center_line[i].X, (uint16)center_line[i].Y, RGB565_RED);
+            }
             TrackBasicClear();
 #else
             seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);

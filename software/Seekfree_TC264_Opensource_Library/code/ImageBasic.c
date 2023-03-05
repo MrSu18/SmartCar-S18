@@ -140,7 +140,7 @@ void EdgeDetection(void)
     left_line[l_line_count]=left_seed;l_line_count++;//将这个点存入边线数组中
     right_line[r_line_count]=right_seed;r_line_count++;
 	/*2.种子从左下角开始生长，生长出一个闭合赛道边缘*/
-    uint8 left_seed_num=0,left_seed_count=0,right_seed_num=0,right_seed_count=0;
+    uint8 left_seed_num=0,right_seed_num=0;
     uint8 change_lr_flag=0,left_finish=0,right_finish=0;//change_lr_flag=0:左边生长 change_lr_flag=1:右边生长
     do
 	{
@@ -167,8 +167,11 @@ void EdgeDetection(void)
                     if(right_finish!=1)  change_lr_flag=!change_lr_flag;
                 }
             }
-            else
-                break;//种子生长失败了跳出循环,避免卡死
+            else//种子生长失败就结束这一边
+            {
+                change_lr_flag=!change_lr_flag;
+                left_finish=1;
+            }
         }
         else if(change_lr_flag==1 && right_finish==0)
         {
@@ -190,8 +193,11 @@ void EdgeDetection(void)
                     if(left_finish!=1)  change_lr_flag=!change_lr_flag;
                 }
             }
-            else
-                break;//种子生长失败了跳出循环,避免卡死
+            else//种子生长失败就结束这一边
+            {
+                change_lr_flag=!change_lr_flag;
+                right_finish=1;
+            }
         }
         else break;
 	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当左种子和右种子合并即扫线结束
