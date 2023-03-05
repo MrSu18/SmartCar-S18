@@ -27,14 +27,14 @@ uint8 otsuThreshold(uint8* image, uint16 width, uint16 height)
     int pixelCount[GrayScale] = { 0 };//每个灰度值所占像素个数
     float pixelPro[GrayScale] = { 0 };//每个灰度值所占总像素比例
     int i, j;
-    int Sumpix = width * height;   //总像素点
+    int Sumpix = (width * height)/4;   //总像素点
     uint8 threshold = 0;
     uint8* data = image;  //指向像素数据的指针
 
     //统计灰度级中每个像素在整幅图像中的个数
-    for (i = 0; i < height; i++)
+    for (i = 0; i < height; i+=2)
     {
-        for (j = 0; j < width; j++)
+        for (j = 0; j < width; j+=2)
         {
             pixelCount[(int)data[i * width + j]]++;  //将像素值作为计数数组的下标
           //   pixelCount[(int)image[i][j]]++;    若不用指针用这个
