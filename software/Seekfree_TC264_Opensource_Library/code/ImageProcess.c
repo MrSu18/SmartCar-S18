@@ -74,41 +74,20 @@ void ImageProcess(void)
 
     // 预瞄点求偏差
     // 单侧线少，切换巡线方向  切外向圆
-    if (l_line_count < r_line_count / 2 && l_line_count < 10)
+    float aim_distance=0.25;
+    if(l_line_count < 20)
     {
-        tft180_show_int(0, 62, 1, 1);
-        tft180_show_int(10, 62, l_line_count, 3);
-        tft180_show_int(20, 62, r_line_count, 3);
-        image_bias=GetAnchorPointBias(0.4,r_line_count,center_line_r);
+        image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);
     }
-    else if (l_line_count < l_line_count / 2 && r_line_count < 10)
+    else if(r_line_count < 20)
     {
-        tft180_show_int(0, 65, 2, 1);
-        tft180_show_int(10, 65, l_line_count, 3);
-        tft180_show_int(20, 65, r_line_count, 3);
-        image_bias=GetAnchorPointBias(0.4,l_line_count,center_line_l);
-    }
-    else if (l_line_count < 5 && r_line_count > l_line_count)
-    {
-        tft180_show_int(0, 68, 3, 1);
-        tft180_show_int(10, 68, l_line_count, 3);
-        tft180_show_int(20, 68, r_line_count, 3);
-        image_bias=GetAnchorPointBias(0.4,r_line_count,center_line_r);
-    }
-    else if (r_line_count < 5 && l_line_count > r_line_count)
-    {
-        tft180_show_int(0, 71, 4, 1);
-        tft180_show_int(10, 71, l_line_count, 3);
-        tft180_show_int(20, 71, r_line_count, 3);
-        image_bias=GetAnchorPointBias(0.4,l_line_count,center_line_l);
+        image_bias = GetAnchorPointBias(aim_distance, l_line_count, center_line_l);
     }
     else
     {
-        tft180_show_int(0, 74, 5, 1);
-        tft180_show_int(10, 74, l_line_count, 3);
-        tft180_show_int(20, 74, r_line_count, 3);
-        image_bias=GetAnchorPointBias(0.4,r_line_count,center_line_r);
+        image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);
     }
+
 }
 
 /***********************************************

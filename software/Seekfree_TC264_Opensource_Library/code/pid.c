@@ -5,6 +5,7 @@
  *      Author: L
  */
 #include "pid.h"
+#include "ImageTrack.h"
 
 PID speedpid_left;                          //左轮速度环PID
 PID speedpid_right;                         //右轮速度环PID

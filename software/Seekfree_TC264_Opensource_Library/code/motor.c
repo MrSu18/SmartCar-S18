@@ -112,7 +112,7 @@ void MotorCtrl(void)
     int16 target_left = 0,target_right = 0;                 //左右轮的目标速度的值
 
     EncoderGetCount(&speed_left,&speed_right);              //获取编码器的值
-    printf("%d,%d\r\n",speed_left,speed_right);
+//    printf("%d,%d\r\n",speed_left,speed_right);
     PIDTurn(&target_left,&target_right,&turnpid);           //方向环PID
 
     //当为环岛时，对当前读到的速度进行强制修改
@@ -126,7 +126,7 @@ void MotorCtrl(void)
     pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取左电机PWM
     pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取右电机PWM
 
-//    MotorSetPWM(pwm_left,pwm_right);                                            //将两个PWM值赋给电机
+    MotorSetPWM(pwm_left,pwm_right);                                            //将两个PWM值赋给电机
 }
 /***********************************************
 * @brief : 计算一段时间走过的路程

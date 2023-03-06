@@ -86,7 +86,7 @@ int core0_main(void)
     KalmanInit(&kalman_adc,25,5);
     PIDInit(&speedpid_left,157.93,1.65,0);//157.93
     PIDInit(&speedpid_right,161.40,1.65,0);
-    PIDInit(&turnpid,12,0,1);
+    PIDInit(&turnpid,10,0,0);
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
