@@ -4,7 +4,7 @@
 
 //宏定义
 #define PER_IMG     mt9v03x_image   //用于透视变换的图像
-#define IMAGE_BAN   127             //逆透视禁止区域的灰度值
+#define IMAGE_BAN   255             //逆透视禁止区域的灰度值
 #define PERSPECTIVE 1               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
 
 //定义变量

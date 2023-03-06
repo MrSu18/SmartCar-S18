@@ -9,7 +9,6 @@
 PID speedpid_left;                          //左轮速度环PID
 PID speedpid_right;                         //右轮速度环PID
 PID turnpid;                                //转向环PID
-float Bias = 0;
 
 /***********************************************
 * @brief : 初始化PID参数
@@ -60,7 +59,7 @@ void PIDTurn(int16* target_left,int16* target_right,PID* pid)
 //    //获取此时偏差
 //    ADCGetValue(adc_value);
 //    ChaBiHe(&pid->err,TRACK);
-    pid->err = Bias;
+    pid->err = image_bias;
 
     pid->out = (int)(pid->P*pid->err+pid->D*(pid->err-pid->last_err));
     pid->last_err = pid->err;                                               //保存上一次的值

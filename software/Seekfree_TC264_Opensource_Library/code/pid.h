@@ -27,7 +27,7 @@ typedef struct
 extern PID speedpid_left;
 extern PID speedpid_right;
 extern PID turnpid;
-extern float Bias;
+extern float image_bias;
 
 void PIDInit(PID* pid,float P,float I,float D);                                 //初始化PID参数
 int PIDSpeed(int16 encoder_data,int16 target_data,PID* pid);                    //速度环PID计算

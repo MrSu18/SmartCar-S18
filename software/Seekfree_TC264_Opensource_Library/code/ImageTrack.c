@@ -8,9 +8,21 @@
 #include "stdint.h"
 #include "stdio.h"
 
-myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0},center_line[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线,归一化中线
-uint8 cl_line_count=0,cr_line_count=0;//左右跟踪出来中线的长度
-int c_line_count=0;//实际上用于最终巡线的中线长度
+//图像循迹偏差
+float image_bias=0;
+// 变换后左右边线+滤波
+myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
+// 变换后左右边线+等距采样
+myPoint_f f_left_line1[EDGELINE_LENGTH]={0},f_right_line1[EDGELINE_LENGTH]={0};
+// 左右边线局部角度变化率
+float l_angle[EDGELINE_LENGTH]={0},r_angle[EDGELINE_LENGTH]={0};
+// 左右边线局部角度变化率+非极大抑制
+float l_angle_1[EDGELINE_LENGTH]={0},r_angle_1[EDGELINE_LENGTH]={0};//左右边线的非极大值抑制之后的角点数组
+// 左/右中线
+myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线
+// 归一化中线
+myPoint_f center_line[EDGELINE_LENGTH]={0};//归一化中线
+int c_line_count=0;//归一化中线长度
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
@@ -245,16 +257,7 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         ResamplePoints(track_line + begin_id, track_line_count - begin_id, center_line, &c_line_count, 0.04*50);
 
         // 远预锚点位置
-        int aim_idx = Limit(round(aim_distance / 0.04), 0, c_line_count - 1);
-
-        for(int i = -10;i < 10;i++)
-        {
-            tft180_draw_point(center_line[aim_idx + i].X, center_line[aim_idx + i].Y, RGB565_GREEN);
-        }
-        for(int j = -10;j < 10;j++)
-        {
-            tft180_draw_point(center_line[aim_idx].X + j, center_line[aim_idx].Y + j, RGB565_GREEN);
-        }
+        int aim_idx = Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count - 1);
 
         // 计算远锚点偏差值
         float dx = center_line[aim_idx].X - cx;
@@ -263,7 +266,7 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         //float error = -atan2f(dx, dy) * 180 / 3.14;
 
         // 纯跟踪算法(只考虑远点)
-        pure_angle = -atanf(50 * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
+        pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
     }
     else
     {
