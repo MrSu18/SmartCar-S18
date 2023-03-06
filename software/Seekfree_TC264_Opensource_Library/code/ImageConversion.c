@@ -3,8 +3,8 @@
 
 //宏定义
 #define PER_IMG     mt9v03x_image   //用于透视变换的图像
-#define IMAGE_BAN   127             //逆透视禁止区域的灰度值
-#define PERSPECTIVE 1               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
+#define IMAGE_BAN   255             //逆透视禁止区域的灰度值
+#define PERSPECTIVE 1               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视
 
 //定义变量
 uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
@@ -85,96 +85,7 @@ void ImageBinary(void)
     }
 }
 
-#if PERSPECTIVE==2  //先去畸变后逆透视
-//140度
-//畸变参数
-double cameraMatrix[3][3]={{59.727551,0.000000,89.234010},{0.000000,60.159434,50.691969},{0.000000,0.000000,1.000000}};
-double distCoeffs[5]={0.239129,-0.289288,-0.001345,-0.001779,0.090761};
-int move_xy[2]={-1,-1};
-//逆透视参数
-double change_un_Mat[3][3] ={{-2.124767,3.123039,-217.537647},{-0.087254,1.274068,-194.734797},{-0.000566,0.034856,-4.575237}};
-void find_xy(int x, int y, int local[2])
-{
-    double fx = cameraMatrix[0][0],
-           fy = cameraMatrix[1][1],
-           ux = cameraMatrix[0][2],
-           uy = cameraMatrix[1][2],
-           k1 = distCoeffs[0],
-           k2 = distCoeffs[1],
-           k3 = distCoeffs[4],
-           p1 = distCoeffs[2],
-           p2 = distCoeffs[3];
-    double xCorrected = (x - ux) / fx;
-    double yCorrected = (y - uy) / fy;
-    double xDistortion, yDistortion;
-    double r2 = xCorrected * xCorrected + yCorrected * yCorrected;
-    double deltaRa = 1. + k1 * r2 + k2 * r2 * r2 + k3 * r2 * r2 * r2;
-    double deltaRb = 1 / (1.);
-    double deltaTx = 2. * p1 * xCorrected * yCorrected + p2 * (r2 + 2. * xCorrected * xCorrected);
-    double deltaTy = p1 * (r2 + 2. * yCorrected * yCorrected) + 2. * p2 * xCorrected * yCorrected;
-    xDistortion = xCorrected * deltaRa * deltaRb + deltaTx;
-    yDistortion = yCorrected * deltaRa * deltaRb + deltaTy;
-    xDistortion = xDistortion * fx + ux;
-    yDistortion = yDistortion * fy + uy;
-    if (yDistortion >= 0 && yDistortion < MT9V03X_H && xDistortion >= 0 && xDistortion < MT9V03X_W)
-    {
-        local[0] = (int) yDistortion;
-        local[1] = (int) xDistortion;
-    }
-    else
-    {
-        local[0] = -1;
-        local[1] = -1;
-    }
-}
-void find_xy1(int x, int y, int local[2])
-{
-    int local_x = (int) ((change_un_Mat[0][0] * x + change_un_Mat[0][1] * y + change_un_Mat[0][2])
-                        /(change_un_Mat[2][0] * x + change_un_Mat[2][1] * y + change_un_Mat[2][2]));
-    int local_y = (int) ((change_un_Mat[1][0] * x + change_un_Mat[1][1] * y + change_un_Mat[1][2])
-                        /(change_un_Mat[2][0] * x + change_un_Mat[2][1] * y + change_un_Mat[2][2]));
-    if (local_x >= 0 && local_x<181 && local_y >= 0 && local_y<114)
-    {
-        local[0] = local_y;
-        local[1] = local_x;
-    }
-    else
-    {
-        local[0] = -1;
-        local[1] = -1;
-    }
-}
-/***********************************************
-* @brief : 初始化逆透视指针数组，得到对应的图像像素点映射
-* @param : 原图像（全局变量）
-* @return: 逆透视之后的二维指针映射（全局变量）
-* @date  : 2022.8.28
-* @author: 萝狮虎
-************************************************/
-void ImagePerspective_Init(void)
-{
-    static uint8 BlackColor = IMAGE_BAN;
-    for (int i = 0; i < USE_IMAGE_H; i++)
-    {
-        for (int j = 0; j < USE_IMAGE_W; j++)
-        {
-            int local_xy[2] = {-1};
-            find_xy1(j, i, local_xy);
-            if (local_xy[0] != -1 && local_xy[0] != -1)
-            {
-                int local_xy1[2] = {-1};
-                find_xy(local_xy[1] - move_xy[0], local_xy[0] - move_xy[1], local_xy1);
-                if (local_xy1[0] != -1 && local_xy1[1] != -1)
-                {
-                    PerImg_ip[i][j] = &PER_IMG[local_xy1[0]][local_xy1[1]];
-                }
-                else PerImg_ip[i][j] = &BlackColor;
-            }
-            else PerImg_ip[i][j] = &BlackColor;
-        }
-    }
-}
-#elif PERSPECTIVE==1    //只进行逆透视不进行去畸变，注意逆透视矩阵是否正确
+#if PERSPECTIVE==1    //只进行逆透视不进行去畸变，注意逆透视矩阵是否正确
 void ImagePerspective_Init(void) 
 {
     static uint8 BlackColor = IMAGE_BAN;
