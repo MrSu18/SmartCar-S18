@@ -123,10 +123,10 @@ void MotorCtrl(void)
         circle_flag = 0;
     }
 
-    pwm_left = PIDSpeedLeft(speed_left,target_left,&speedpid_left);             //获取左电机PWM
-    pwm_right = PIDSpeedRight(speed_right,target_right,&speedpid_right);        //获取右电机PWM
+    pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取左电机PWM
+    pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取右电机PWM
 
-    MotorSetPWM(pwm_left,pwm_right);                                            //将两个PWM值赋给电机
+//    MotorSetPWM(pwm_left,pwm_right);                                            //将两个PWM值赋给电机
 }
 /***********************************************
 * @brief : 计算一段时间走过的路程

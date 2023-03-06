@@ -115,25 +115,45 @@ void core1_main(void)
             // 单侧线少，切换巡线方向  切外向圆
             if (l_count < r_count / 2 && l_count < 10)
             {
+                tft180_show_int(0, 62, 1, 1);
+                tft180_show_int(10, 62, l_count, 3);
+                tft180_show_int(20, 62, r_count, 3);
+
                 Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
             }
             else if (r_count < l_count / 2 && r_count < 10)
             {
+                tft180_show_int(0, 65, 2, 1);
+                tft180_show_int(10, 65, l_count, 3);
+                tft180_show_int(20, 65, r_count, 3);
+
                 Bias=GetAnchorPointBias(0.4,cl_line_count,center_line_l);
             }
             else if (l_count < 5 && r_count > l_count)
             {
+                tft180_show_int(0, 68, 3, 1);
+                tft180_show_int(10, 68, l_count, 3);
+                tft180_show_int(20, 68, r_count, 3);
+
                 Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
             }
             else if (r_count < 5 && l_count > r_count)
             {
+                tft180_show_int(0, 71, 4, 1);
+                tft180_show_int(10, 71, l_count, 3);
+                tft180_show_int(20, 71, r_count, 3);
                 Bias=GetAnchorPointBias(0.4,cl_line_count,center_line_l);
             }
             else
             {
+                tft180_show_int(0, 74, 5, 1);
+                tft180_show_int(10, 74, l_count, 3);
+                tft180_show_int(20, 74, r_count, 3);
+
                 Bias=GetAnchorPointBias(0.4,cr_line_count,center_line_r);
             }
-//            tft180_show_float(0, 0, Bias, 3, 3);
+
+            tft180_show_float(98, 0, Bias, 3, 3);
 //            for(int i=0;i<cl_line_count;i++)
 //            {
 //                tft180_draw_point((uint16)center_line_l[i].X, (uint16)center_line_l[i].Y, RGB565_BLUE);

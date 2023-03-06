@@ -2,6 +2,7 @@
 // Created by 30516 on 2023/1/9.
 //
 
+#include "zf_common_headfile.h"
 #include "ImageTrack.h"
 #include "math.h"
 #include "stdint.h"
@@ -245,6 +246,15 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
 
         // Ô¶Ô¤ÃªµãÎ»ÖÃ
         int aim_idx = Limit(round(aim_distance / 0.04), 0, c_line_count - 1);
+
+        for(int i = -10;i < 10;i++)
+        {
+            tft180_draw_point(center_line[aim_idx + i].X, center_line[aim_idx + i].Y, RGB565_GREEN);
+        }
+        for(int j = -10;j < 10;j++)
+        {
+            tft180_draw_point(center_line[aim_idx].X + j, center_line[aim_idx].Y + j, RGB565_GREEN);
+        }
 
         // ¼ÆËãÔ¶ÃªµãÆ«²îÖµ
         float dx = center_line[aim_idx].X - cx;
