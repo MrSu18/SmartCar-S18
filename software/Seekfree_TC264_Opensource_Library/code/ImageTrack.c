@@ -7,13 +7,9 @@
 #include "stdint.h"
 #include "stdio.h"
 
-//============================参数================================
-#define TRACK_HALF_WIDTH	22.5//赛道半宽像素点
-//===============================================================
-
 myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0},center_line[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线,归一化中线
-uint8 cl_line_count=0,cr_line_count=0;//中线长度
-int c_line_count=0;
+uint8 cl_line_count=0,cr_line_count=0;//左右跟踪出来中线的长度
+int c_line_count=0;//实际上用于最终巡线的中线长度
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
@@ -63,6 +59,7 @@ void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel)
 ************************************************/
 void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist)
 {
+    //程序异常检测
     if (num1 < 0)
     {
         *num2 = 0;
@@ -70,7 +67,8 @@ void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2
     }
     out_line[0].X = in_line[0].X;
     out_line[0].Y = in_line[0].Y;
-    int len = 1;
+    int len = 1;//输出边线的长度计数值
+    //开始等距采样
     for (int i = 0; i < num1 - 1 && len < *num2; i++)
     {
         float x0 = in_line[i].X;
@@ -109,9 +107,9 @@ void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2
 /***********************************************
 * @brief : 边线局部角度变化率
 * @param : myPoint_f* in_line: 输入边线
-*          int num: 长度
-*          float angle_out[]: 局部角度变化率数组
-*          int dist
+*          int num: 输入边线的长度
+*          float angle_out[]: 局部角度变化率数组（单位：弧度制）
+*          int dist: 三个点求曲率的两点之间的间隔的数量
 * @return: 无
 * @date  : 2023.1.15
 * @author: 上交大开源
@@ -138,7 +136,16 @@ void local_angle_points(myPoint_f* in_line, int num, float angle_out[], int dist
         angle_out[i] = atan2f(c1 * s2 - c2 * s1, c2 * c1 + s2 * s1);
     }
 }
-
+/***********************************************
+* @brief : 角度局部极大值抑制
+* @param : float angle_in[]：存储边线的每点的角度
+*          int num：数组长度
+*          float angle_out[]：极大值抑制之后的曲率数组
+*          int kernel：局部求极大值的范围
+* @return: 无
+* @date  : 2023.1.15
+* @author: 上交大开源
+************************************************/
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel)
 {
     int half = kernel / 2;
@@ -204,7 +211,7 @@ void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int appro
 *          myPoint_f *track_line: 跟踪的边线（左中线还是右中线）
 * @return: 无
 * @date  : 2023.3.1
-* @author: 上交大开源
+* @author: 上交大开源 & 刘骏帆
 ************************************************/
 float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line)
 {

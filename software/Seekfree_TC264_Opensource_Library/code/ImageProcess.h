@@ -12,7 +12,10 @@
 #include "zf_device_mt9v03x.h"
 #include "motor.h"
 
-#define OUT_THRESHOLD    100                //出界判断阈值
+//============================参数================================
+#define TRACK_HALF_WIDTH    22.5            //赛道半宽像素点
+#define OUT_THRESHOLD       100             //出界判断阈值
+//===============================================================
 
 void OutProtect(void);                      //出界保护程序
 
