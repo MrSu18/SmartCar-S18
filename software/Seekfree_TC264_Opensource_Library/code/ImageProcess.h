@@ -17,6 +17,7 @@
 #define OUT_THRESHOLD       100             //出界判断阈值
 //===============================================================
 
+void OutProtect(void);
 void ImageProcess(void);
 void TrackBasicClear(void);//赛道基础信息变量重置，为下一帧做准备
 

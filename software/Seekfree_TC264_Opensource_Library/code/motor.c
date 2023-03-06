@@ -110,16 +110,16 @@ void MotorSetPWM(int pwm_left,int pwm_right)
 void MotorCtrl(void)
 {
     int pwm_left = 0,pwm_right = 0;                         //左右电机PWM
-    int16 target_left = 100,target_right = 100;                 //左右轮的目标速度的值
+    int16 target_left = 0,target_right = 0;                 //左右轮的目标速度的值
 
     EncoderGetCount(&speed_left,&speed_right);              //获取编码器的值
-//    PIDTurn(&target_left,&target_right,&turnpid);           //方向环PID
+    PIDTurn(&target_left,&target_right,&turnpid);           //方向环PID
 
-//    pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取左电机PWM
-//    pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取右电机PWM
+    pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取左电机PWM
+    pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取右电机PWM
 
     c0h0_isr_flag=1;
-//    MotorSetPWM(pwm_left,pwm_right);                                            //将两个PWM值赋给电机
+    MotorSetPWM(pwm_left,pwm_right);                                            //将两个PWM值赋给电机
 }
 /***********************************************
 * @brief : 计算一段时间走过的路程

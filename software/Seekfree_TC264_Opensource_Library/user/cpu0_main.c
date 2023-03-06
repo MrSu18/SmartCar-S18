@@ -84,8 +84,8 @@ int core0_main(void)
     pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
-    PIDInit(&speedpid_left,157.93,1.65,0);//157.93
-    PIDInit(&speedpid_right,161.40,1.65,0);
+    PIDInit(&speedpid_left,288.71,2.33,0);
+    PIDInit(&speedpid_right,300.39,2.34,0);
     PIDInit(&turnpid,12,0,0);
 
     // 此处编写用户代码 例如外设初始化代码等

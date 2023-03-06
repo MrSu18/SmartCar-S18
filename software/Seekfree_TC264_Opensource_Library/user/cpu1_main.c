@@ -82,7 +82,7 @@ void core1_main(void)
 
         if(mt9v03x_finish_flag)
         {
-#if 0
+#if 1
 //            //出界保护
             OutProtect();
 
