@@ -82,7 +82,7 @@ void core1_main(void)
 
         if(mt9v03x_finish_flag)
         {
-#if 1
+#if 0
 //            //出界保护
             OutProtect();
 
@@ -108,7 +108,13 @@ void core1_main(void)
 //            }
             TrackBasicClear();
 #else
-            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
+            MotorSetPWM(1500, 1500);
+            system_delay_ms(4000);
+            while(1)
+            {
+                MotorSetPWM(0, 0);
+            }
+//            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
             mt9v03x_finish_flag=0;
         }

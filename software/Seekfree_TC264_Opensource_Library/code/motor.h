@@ -18,6 +18,7 @@
 #include "filter.h"
 
 extern int16 speed_left,speed_right;
+extern uint8 c0h0_isr_flag;
 
 //编码器使用的引脚
 #define ENCODER_RIGHT   (TIM6_ENCODER)
@@ -32,7 +33,7 @@ extern int16 speed_left,speed_right;
 
 #define  MOTOR_SPEED_LIMIT  90                          //速度限幅
 
-#define  MOTOR_SPEED_BASE   120                         //基础速度
+#define  MOTOR_SPEED_BASE   140                         //基础速度
 //电机PWM引脚
 #define  MOTOR_LEFT_1   ATOM0_CH4_P02_4
 #define  MOTOR_LEFT_2   ATOM0_CH6_P02_6
