@@ -17,6 +17,7 @@
 #include "bluetooth.h"
 #include "filter.h"
 
+extern int16 speed_left,speed_right;
 
 //编码器使用的引脚
 #define ENCODER_RIGHT   (TIM6_ENCODER)

@@ -94,7 +94,11 @@ int core0_main(void)
     while (TRUE)
     {
         // 此处编写需要循环执行的代码
-
+       if(speed_left!=0 && speed_right!=0)
+       {
+           printf("%d,%d\r\n",speed_left,speed_right);
+           speed_left=0;speed_right=0;
+       }
 
         // 此处编写需要循环执行的代码
     }
