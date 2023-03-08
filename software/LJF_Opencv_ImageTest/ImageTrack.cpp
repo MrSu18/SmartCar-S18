@@ -7,13 +7,21 @@
 #include "stdint.h"
 #include "stdio.h"
 
-//============================参数================================
-#define TRACK_HALF_WIDTH	22.5//赛道半宽像素点
-//===============================================================
-
-myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0},center_line[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线,归一化中线
-uint8 cl_line_count=0,cr_line_count=0;//中线长度
-int c_line_count=0;
+//图像循迹偏差
+float image_bias=0;
+// 变换后左右边线+滤波
+myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
+// 变换后左右边线+等距采样
+myPoint_f f_left_line1[EDGELINE_LENGTH]={0},f_right_line1[EDGELINE_LENGTH]={0};
+// 左右边线局部角度变化率
+float l_angle[EDGELINE_LENGTH]={0},r_angle[EDGELINE_LENGTH]={0};
+// 左右边线局部角度变化率+非极大抑制
+float l_angle_1[EDGELINE_LENGTH]={0},r_angle_1[EDGELINE_LENGTH]={0};//左右边线的非极大值抑制之后的角点数组
+// 左/右中线
+myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线
+// 归一化中线
+myPoint_f center_line[EDGELINE_LENGTH]={0};//归一化中线
+int c_line_count=0;//归一化中线长度
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
@@ -111,9 +119,9 @@ void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2
 /***********************************************
 * @brief : 边线局部角度变化率
 * @param : myPoint_f* in_line: 输入边线
-*          int num: 长度
-*          float angle_out[]: 局部角度变化率数组
-*          int dist
+*          int num: 输入边线的长度
+*          float angle_out[]: 局部角度变化率数组（单位：弧度制）
+*          int dist: 三个点求曲率的两点之间的间隔的数量
 * @return: 无
 * @date  : 2023.1.15
 * @author: 上交大开源
@@ -140,7 +148,16 @@ void local_angle_points(myPoint_f* in_line, int num, float angle_out[], int dist
         angle_out[i] = atan2f(c1 * s2 - c2 * s1, c2 * c1 + s2 * s1);
     }
 }
-
+/***********************************************
+* @brief : 角度局部极大值抑制
+* @param : float angle_in[]：存储边线的每点的角度
+*          int num：数组长度
+*          float angle_out[]：极大值抑制之后的曲率数组
+*          int kernel：局部求极大值的范围
+* @return: 无
+* @date  : 2023.1.15
+* @author: 上交大开源
+************************************************/
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel)
 {
     int half = kernel / 2;
@@ -206,7 +223,7 @@ void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int appro
 *          myPoint_f *track_line: 跟踪的边线（左中线还是右中线）
 * @return: 无
 * @date  : 2023.3.1
-* @author: 上交大开源
+* @author: 上交大开源 & 刘骏帆
 ************************************************/
 float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line)
 {
@@ -239,7 +256,7 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         ResamplePoints(track_line + begin_id, track_line_count - begin_id, center_line, &c_line_count, 0.04*50);
 
         // 远预锚点位置
-        int aim_idx = Limit(round(aim_distance / 0.04), 0, c_line_count - 1);
+        int aim_idx = Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count - 1);
 
         // 计算远锚点偏差值
         float dx = center_line[aim_idx].X - cx;
@@ -248,7 +265,7 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         //float error = -atan2f(dx, dy) * 180 / 3.14;
 
         // 纯跟踪算法(只考虑远点)
-        pure_angle = -atanf(50 * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
+        pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
     }
     else
     {

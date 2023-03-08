@@ -12,8 +12,13 @@
 #include "zf_device_mt9v03x.h"
 #include "motor.h"
 
-#define OUT_THRESHOLD    100                //出界判断阈值
+//============================参数================================
+#define TRACK_WIDTH         0.4             //赛道宽度(m)
+#define OUT_THRESHOLD       100             //出界判断阈值
+//===============================================================
 
-void OutProtect(void);                      //出界保护程序
+void OutProtect(void);
+void ImageProcess(void);
+void TrackBasicClear(void);//赛道基础信息变量重置，为下一帧做准备
 
 #endif /* CODE_IMAGEPROCESS_H_ */

@@ -1,10 +1,10 @@
-#include <string.h>
 #include "ImageBasic.h"
 
 //=========================赛道特征变量=============================
+//扫线得到的左右边线
 myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左右边线
-char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];//左右线是否丢线的记录数组
 uint8 l_line_count=0,r_line_count=0;//左右边线记录总共有多长
+char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];//左右线是否丢线的记录数组
 uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 //================================================================
 
@@ -202,21 +202,4 @@ void EdgeDetection(void)
         }
         else break;
 	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当左种子和右种子合并即扫线结束
-}
-
-/***********************************************
-* @brief : 赛道基础信息变量重置，为下一帧做准备
-* @param : 全局变量
-* @return: 初始化为0的全局变量
-* @date  : 2023.1.8
-* @author: 刘骏帆
-* @note	 :  无
-************************************************/
-void TrackBasicClear(void)
-{
-    //边线丢线数组清零
-    memset(l_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
-    memset(r_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
-    l_line_count=0;r_line_count=0;//边线的计数指针清零
-    l_lostline_num=0;r_lostline_num=0;//丢线数清零
 }

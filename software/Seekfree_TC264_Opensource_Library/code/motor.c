@@ -9,6 +9,8 @@
 
 int16 last_data_l = 0,last_data_r = 0;
 int8 circle_flag = 0;                                   //圆环标志位，1为检测到环岛
+int16 speed_left = 0,speed_right = 0;                   //左右轮当前编码器的值
+uint8 c0h0_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 
 /***********************************************
 * @brief : 初始化左右两个编码器
@@ -108,24 +110,15 @@ void MotorSetPWM(int pwm_left,int pwm_right)
 void MotorCtrl(void)
 {
     int pwm_left = 0,pwm_right = 0;                         //左右电机PWM
-    int16 speed_left = 0,speed_right = 0;                   //左右轮当前编码器的值
     int16 target_left = 0,target_right = 0;                 //左右轮的目标速度的值
 
     EncoderGetCount(&speed_left,&speed_right);              //获取编码器的值
-    printf("%d,%d\r\n",speed_left,speed_right);
     PIDTurn(&target_left,&target_right,&turnpid);           //方向环PID
 
-    //当为环岛时，对当前读到的速度进行强制修改
-    if(circle_flag!=0)
-    {
-        speed_left = (speed_left+last_data_l)/2;
-        speed_right = (speed_right+last_data_r)/2;
-        circle_flag = 0;
-    }
+    pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取左电机PWM
+    pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取右电机PWM
 
-    pwm_left = PIDSpeedLeft(speed_left,target_left,&speedpid_left);             //获取左电机PWM
-    pwm_right = PIDSpeedRight(speed_right,target_right,&speedpid_right);        //获取右电机PWM
-
+    c0h0_isr_flag=1;
     MotorSetPWM(pwm_left,pwm_right);                                            //将两个PWM值赋给电机
 }
 /***********************************************

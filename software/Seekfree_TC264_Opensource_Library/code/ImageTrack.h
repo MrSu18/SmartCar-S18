@@ -7,15 +7,34 @@
 
 #include "ImageBasic.h"//mypoint结构体
 
+//============================参数================================
+#define LINE_BLUR_KERNEL    3               //边线三角滤波核的大小
+#define SAMPLE_DIST         0.02            //实际采样间距(m)
+#define PIXEL_PER_METER     50              //每一米有多少像素点
+#define ANGLE_DIST          0.1             //算角度的时候隔多少点去进行计算(m)
+//===============================================================
+
 typedef struct myPoint_f
 {
     float X;
     float Y;
 }myPoint_f;//浮点数精度点的结构体，防止精度丢失
 
-extern myPoint_f center_line_l[EDGELINE_LENGTH],center_line_r[EDGELINE_LENGTH],center_line[EDGELINE_LENGTH];//左右边线跟踪得到的赛道中线
-extern uint8 cl_line_count,cr_line_count;//中线长度
-extern int c_line_count;
+//图像循迹偏差
+extern float image_bias;
+// 变换后左右边线+滤波
+extern myPoint_f f_left_line[EDGELINE_LENGTH],f_right_line[EDGELINE_LENGTH];
+// 变换后左右边线+等距采样
+extern myPoint_f f_left_line1[EDGELINE_LENGTH],f_right_line1[EDGELINE_LENGTH];
+// 左右边线局部角度变化率
+extern float l_angle[EDGELINE_LENGTH],r_angle[EDGELINE_LENGTH];
+// 左右边线局部角度变化率+非极大抑制
+extern float l_angle_1[EDGELINE_LENGTH],r_angle_1[EDGELINE_LENGTH];//左右边线的非极大值抑制之后的角点数组
+// 左/右中线
+extern myPoint_f center_line_l[EDGELINE_LENGTH],center_line_r[EDGELINE_LENGTH];//左右边线跟踪得到的赛道中线
+// 归一化中线
+extern myPoint_f center_line[EDGELINE_LENGTH];//归一化中线
+extern int c_line_count;//归一化中线长度
 
 void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel);
 void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist);

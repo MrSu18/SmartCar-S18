@@ -24,6 +24,5 @@ extern uint8 l_lostline_num, r_lostline_num;//左右丢线数
 void SowSeed(myPoint* left_seed,myPoint* right_seed);//扫线前的播种操作
 uint8 EightAreasSeedGrown(myPoint* seed,char choose,uint8 *seed_num);//八零域种子生长规则：种子生长一次
 void EdgeDetection(void);//八零域扫线
-void TrackBasicClear(void);//赛道基础信息变量重置，为下一帧做准备
 
 #endif

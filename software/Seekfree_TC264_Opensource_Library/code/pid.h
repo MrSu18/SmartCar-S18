@@ -27,12 +27,10 @@ typedef struct
 extern PID speedpid_left;
 extern PID speedpid_right;
 extern PID turnpid;
-extern float Bias;
+extern float image_bias;
 
 void PIDInit(PID* pid,float P,float I,float D);                                 //初始化PID参数
-int PIDSpeedLeft(int16 encoder_data,int16 target_data,PID* pid);                //左轮PID计算
-int PIDSpeedRight(int16 encoder_data,int16 target_data,PID* pid);               //右轮PID计算
+int PIDSpeed(int16 encoder_data,int16 target_data,PID* pid);                    //速度环PID计算
 void PIDTurn(int16* target_left,int16* target_right,PID* pid);                  //转向环PID
-void AutoPID(void);                                                             //用于速度环PID自动调整获取值
 
 #endif /* CODE_PID_H_ */
