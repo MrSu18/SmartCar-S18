@@ -67,12 +67,12 @@ void PIDTurn(int16* target_left,int16* target_right,PID* pid)
 
     if(pid->out>0)//×ó×ª
     {
-        *target_left = MOTOR_SPEED_BASE - pid->out;
-        *target_right = MOTOR_SPEED_BASE;
+        *target_left = base_speed - pid->out;
+        *target_right = base_speed;
     }
     else
     {
-        *target_left = MOTOR_SPEED_BASE;
-        *target_right = MOTOR_SPEED_BASE + pid->out;
+        *target_left = base_speed;
+        *target_right = base_speed + pid->out;
     }
 }

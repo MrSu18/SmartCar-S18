@@ -12,6 +12,7 @@
 #include "ImageBasic.h"
 #include "ImageTrack.h"
 #include "math.h"
+#include "ImageCross.h"
 #include <string.h>
 
 /***********************************************
@@ -68,13 +69,15 @@ void ImageProcess(void)
     //曲率极大值抑制
     nms_angle(l_angle,l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
     nms_angle(r_angle,r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+
+    CrossIdentify();
+
     //跟踪左线
     track_leftline(f_left_line, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
     track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
 
     // 预瞄点求偏差
     // 单侧线少，切换巡线方向  切外向圆
-    float aim_distance=0.25;
     if(l_line_count < 20)
     {
         image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);

@@ -35,6 +35,8 @@ extern myPoint_f center_line_l[EDGELINE_LENGTH],center_line_r[EDGELINE_LENGTH];/
 // 归一化中线
 extern myPoint_f center_line[EDGELINE_LENGTH];//归一化中线
 extern int c_line_count;//归一化中线长度
+//预瞄点
+extern float aim_distance;
 
 void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel);
 void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist);
