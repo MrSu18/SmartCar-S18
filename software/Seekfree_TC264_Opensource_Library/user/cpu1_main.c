@@ -67,9 +67,9 @@ void core1_main(void)
 
     while(1)
     {
-        if(KEY1)
+        if(KEY5)
         {
-            while(KEY1);
+            while(KEY5);
             system_delay_ms(1000);
             pit_enable(CCU60_CH0);
             break;
@@ -88,6 +88,7 @@ void core1_main(void)
 
             ImageBinary();
 //            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
+//            tft180_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, 96, 60, 0);
             gpio_toggle_level(P20_8);
             ImageProcess();
 
@@ -108,13 +109,13 @@ void core1_main(void)
 //            }
             TrackBasicClear();
 #else
-            MotorSetPWM(1500, 1500);
-            system_delay_ms(4000);
-            while(1)
-            {
-                MotorSetPWM(0, 0);
-            }
-//            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
+//            MotorSetPWM(1500, 1500);
+//            system_delay_ms(4000);
+//            while(1)
+//            {
+//                MotorSetPWM(0, 0);
+//            }
+            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
             mt9v03x_finish_flag=0;
         }

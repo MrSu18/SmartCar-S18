@@ -6,6 +6,7 @@
 C_SRCS += \
 ../code/ImageBasic.c \
 ../code/ImageConversion.c \
+../code/ImageCross.c \
 ../code/ImageProcess.c \
 ../code/ImageTrack.c \
 ../code/ZwPlus_lib.c \
@@ -19,6 +20,7 @@ C_SRCS += \
 OBJS += \
 ./code/ImageBasic.o \
 ./code/ImageConversion.o \
+./code/ImageCross.o \
 ./code/ImageProcess.o \
 ./code/ImageTrack.o \
 ./code/ZwPlus_lib.o \
@@ -32,6 +34,7 @@ OBJS += \
 COMPILED_SRCS += \
 ./code/ImageBasic.src \
 ./code/ImageConversion.src \
+./code/ImageCross.src \
 ./code/ImageProcess.src \
 ./code/ImageTrack.src \
 ./code/ZwPlus_lib.src \
@@ -45,6 +48,7 @@ COMPILED_SRCS += \
 C_DEPS += \
 ./code/ImageBasic.d \
 ./code/ImageConversion.d \
+./code/ImageCross.d \
 ./code/ImageProcess.d \
 ./code/ImageTrack.d \
 ./code/ZwPlus_lib.d \
