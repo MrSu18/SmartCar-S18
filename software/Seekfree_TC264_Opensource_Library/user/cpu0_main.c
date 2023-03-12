@@ -78,6 +78,8 @@ int core0_main(void)
     //初始化debug的led
     gpio_init(P20_8, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(P20_9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    gpio_init(P21_5, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     //给蜂鸣器低电平
     gpio_init(P11_12,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
     //初始化电机中断
@@ -86,7 +88,8 @@ int core0_main(void)
     KalmanInit(&kalman_adc,25,5);
     PIDInit(&speedpid_left,288.71,2.33,0);
     PIDInit(&speedpid_right,300.39,2.34,0);
-    PIDInit(&turnpid,12,0,0);
+    PIDInit(&turnpid,10,0,0);
+    base_speed=100;
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕

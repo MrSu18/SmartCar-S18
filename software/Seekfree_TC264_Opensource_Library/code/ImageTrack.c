@@ -23,6 +23,8 @@ myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0};
 // 归一化中线
 myPoint_f center_line[EDGELINE_LENGTH]={0};//归一化中线
 int c_line_count=0;//归一化中线长度
+//预瞄点
+float aim_distance = 0.16;
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
