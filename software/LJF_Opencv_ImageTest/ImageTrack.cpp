@@ -9,6 +9,8 @@
 
 //图像循迹偏差
 float image_bias=0;
+//预瞄点
+float aim_distance = 0.16;
 // 变换后左右边线+滤波
 myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
 // 变换后左右边线+等距采样
@@ -22,6 +24,8 @@ myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0};
 // 归一化中线
 myPoint_f center_line[EDGELINE_LENGTH]={0};//归一化中线
 int c_line_count=0;//归一化中线长度
+//当前的巡线方向
+enum TrackType track_type=kTrackRight;
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {

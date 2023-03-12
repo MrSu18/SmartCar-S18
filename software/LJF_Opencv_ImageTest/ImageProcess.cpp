@@ -35,28 +35,30 @@ void ImageProcess(void)
     //跟踪左线
     track_leftline(f_left_line, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
     track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-    CircleIslandStatus();
-    // 预瞄点求偏差
-    // 单侧线少，切换巡线方向  切外向圆
-    if (l_line_count < r_line_count / 2 && l_line_count < 10)
+    CircleIslandRStatus();
+
+    //切换左右巡线
+    if(l_line_count < 20)
     {
-        image_bias=GetAnchorPointBias(0.4,r_line_count,center_line_r);
+        track_type=kTrackRight;
     }
-    else if (l_line_count < l_line_count / 2 && r_line_count < 10)
+    else if(r_line_count < 20)
     {
-        image_bias=GetAnchorPointBias(0.4,l_line_count,center_line_l);
-    }
-    else if (l_line_count < 5 && r_line_count > l_line_count)
-    {
-        image_bias=GetAnchorPointBias(0.4,r_line_count,center_line_r);
-    }
-    else if (r_line_count < 5 && l_line_count > r_line_count)
-    {
-        image_bias=GetAnchorPointBias(0.4,l_line_count,center_line_l);
+        track_type=kTrackLeft;
     }
     else
     {
-        image_bias=GetAnchorPointBias(0.4,r_line_count,center_line_r);
+        track_type=kTrackRight;
+    }
+
+    //预瞄点求偏差
+    if(track_type==kTrackRight)
+    {
+        image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);
+    }
+    else if(track_type==kTrackLeft)
+    {
+        image_bias = GetAnchorPointBias(aim_distance, l_line_count, center_line_l);
     }
 }
 

@@ -20,8 +20,16 @@ typedef struct myPoint_f
     float Y;
 }myPoint_f;//浮点数精度点的结构体，防止精度丢失
 
+typedef enum TrackType//跟踪左右线切换的枚举类型变量
+{
+    kTrackLeft=0,
+    kTrackRight,
+}TrackType;
+
 //图像循迹偏差
 extern float image_bias;
+//预瞄点
+extern float aim_distance;
 // 变换后左右边线+滤波
 extern myPoint_f f_left_line[EDGELINE_LENGTH],f_right_line[EDGELINE_LENGTH];
 // 变换后左右边线+等距采样
@@ -35,6 +43,8 @@ extern myPoint_f center_line_l[EDGELINE_LENGTH],center_line_r[EDGELINE_LENGTH];/
 // 归一化中线
 extern myPoint_f center_line[EDGELINE_LENGTH];//归一化中线
 extern int c_line_count;//归一化中线长度
+//当前的巡线方向
+extern enum TrackType track_type;
 
 void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel);
 void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist);
