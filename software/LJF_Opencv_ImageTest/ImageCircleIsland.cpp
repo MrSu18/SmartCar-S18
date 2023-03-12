@@ -27,6 +27,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         default:
             break;
     }
+    return 0;
 }
 
 
@@ -40,4 +41,5 @@ uint8 CircleIslandDetection()//检测右环岛
             return 1;//右环岛入口
         }
     }
+    return 0;
 }

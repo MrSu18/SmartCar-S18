@@ -76,21 +76,29 @@ void ImageProcess(void)
     track_leftline(f_left_line, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
     track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
 
-    // 预瞄点求偏差
-    // 单侧线少，切换巡线方向  切外向圆
+    //切换左右巡线
     if(l_line_count < 20)
     {
-        image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);
+        track_type=kTrackRight;
     }
     else if(r_line_count < 20)
     {
-        image_bias = GetAnchorPointBias(aim_distance, l_line_count, center_line_l);
+        track_type=kTrackLeft;
     }
     else
     {
-        image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);
+        track_type=kTrackRight;
     }
 
+    //预瞄点求偏差
+    if(track_type==kTrackRight)
+    {
+        image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);
+    }
+    else if(track_type==kTrackLeft)
+    {
+        image_bias = GetAnchorPointBias(aim_distance, l_line_count, center_line_l);
+    }
 }
 
 /***********************************************

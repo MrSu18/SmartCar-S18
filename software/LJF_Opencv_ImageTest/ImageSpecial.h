@@ -8,7 +8,7 @@
 #include "main.h"
 
 //»·µºÔªËØº¯Êý
-uint8 CircleIslandStatus();//»·µº×´Ì¬×´Ì¬»ú
-uint8 CircleIslandDetection();//¼ì²â»·µº
+uint8 CircleIslandRStatus(void);//»·µº×´Ì¬×´Ì¬»ú
+uint8 CircleIslandDetection(void);//¼ì²â»·µº
 
 #endif //LJF_OPENCV_IMAGETEST_IMAGESPECIAL_H
