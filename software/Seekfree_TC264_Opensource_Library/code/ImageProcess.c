@@ -70,7 +70,8 @@ void ImageProcess(void)
     nms_angle(l_angle,l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
     nms_angle(r_angle,r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
 
-    CrossIdentify();
+   // CrossIdentify();
+    CutIdentify();
 
     //¸ú×Ù×óÏß
     track_leftline(f_left_line, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));

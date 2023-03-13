@@ -12,19 +12,21 @@
 
 typedef enum Cross_Type
 {
-    CROSS_NONE = 0,
-    CROSS_BEGIN,
-    CROSS_IN,
-    CROSS_IN_CUT,
-    CROSS_OUT_CUT,
+    CROSS_IN = 0,
     CROSS_OUT,
 }Cross_Type;
 
-extern Cross_Type cross_type;
-extern bool cross_found_l, cross_found_r;
-extern float distance;
+typedef enum Cut_Type
+{
+    CUT_IN = 0,//判断是否为断路，是就跳到CUT_IN
+    CUT_OUT,//切换为电磁循迹,判断是否为断路出口，是则跳到CUT_IN,回到摄像头循迹
+}Cut_Type;
 
-uint8 CrossFindCorner(void);
+extern Cross_Type cross_type;
+extern Cut_Type   cut_type;
+
+uint8 CutIdentify(void);
+uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r);
 uint8 CrossIdentify(void);
 void EdgeDetection_Cross(void);
 
