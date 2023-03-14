@@ -4,13 +4,25 @@
  *  Created on: 2023年3月10日
  *      Author: L
  */
-#include "ImageCross.h"
+#include "ImageSpecial.h"
 #include "ImageTrack.h"
 #include <math.h>
 #include "ImageBasic.h"
 #include "ImageProcess.h"
 #include "motor.h"
 #include "zf_device_tft180.h"
+
+typedef enum Cross_Type
+{
+    CROSS_IN = 0,
+    CROSS_OUT,
+}Cross_Type;
+
+typedef enum Cut_Type
+{
+    CUT_IN = 0,
+    CUT_OUT,
+}Cut_Type;
 
 Cross_Type cross_type = CROSS_IN;
 Cut_Type cut_type = CUT_IN;
@@ -30,21 +42,23 @@ uint8 CutIdentify(void)
     case CUT_IN:
     {
         int  corner_id_l = 0, corner_id_r = 0;
-        int over_count = 0;
-
-        for (int i = 0; i < MT9V03X_W; i++)
+        if (CrossFindCorner(&corner_id_l, &corner_id_r) == 1 && (f_left_line[corner_id_l + 4].X > f_left_line[corner_id_l].X || f_right_line[corner_id_r + 4].X < f_right_line[corner_id_r].X))
         {
-            if (mt9v03x_image[MT9V03X_H - 1][i] <= 100)
-                over_count++;
+            if (l_line_count + r_line_count < 15)
+            {
+                cut_type = CUT_OUT;
+                aim_distance = 0.16;
+            }
+            else
+            {
+                if (corner_id_l == 0 && corner_id_r != 0)
+                    aim_distance = (float)corner_id_r * SAMPLE_DIST;
+                else if (corner_id_l != 0 && corner_id_r == 0)
+                    aim_distance = (float)corner_id_l * SAMPLE_DIST;
+                else
+                    aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
+            }
         }
-        if (over_count >= MT9V03X_W)
-        {
-            gpio_set_level(P20_9,0);
-            aim_distance = 0.16;
-            cut_type = CUT_OUT;
-        }
-        else if (CrossFindCorner(&corner_id_l, &corner_id_r) == 1 && (f_left_line[corner_id_l + 4].X > f_left_line[corner_id_l].X || f_right_line[corner_id_r + 4].X < f_right_line[corner_id_r].X))
-            aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
         break;
     }
     case CUT_OUT:
@@ -77,16 +91,26 @@ uint8 CrossIdentify(void)
         case CROSS_IN:
         {
             int  corner_id_l = 0, corner_id_r = 0;
-            if ( CrossFindCorner(&corner_id_l,&corner_id_r) == 1 &&                             \
-                    (f_left_line[corner_id_l + 4].X < f_left_line[corner_id_l].X ||             \
-                     f_right_line[corner_id_r + 4].X > f_right_line[corner_id_r].X))
+            int white_count = 0;
+
+            for (int i = 0; i < MT9V03X_W; i++)
             {
-                aim_distance = ((float)(corner_id_l + corner_id_r)-5) * SAMPLE_DIST / 2;
-                if (aim_distance < 0.05)
-                {
-                    cross_type = CROSS_OUT;
-                    aim_distance = 0.16;
-                }
+                if (mt9v03x_image[MT9V03X_H - 30][i] >= 250)
+                    white_count++;
+            }
+            if (white_count >= MT9V03X_W)
+            {
+                cross_type = CROSS_OUT;
+                aim_distance = 0.16;
+            }
+            else if (CrossFindCorner(&corner_id_l,&corner_id_r) == 1 && (f_left_line[corner_id_l + 4].X < f_left_line[corner_id_l].X || f_right_line[corner_id_r + 4].X > f_right_line[corner_id_r].X))
+            {
+                if (corner_id_l == 0 && corner_id_r != 0)
+                    aim_distance = (float)corner_id_r * SAMPLE_DIST;
+                else if (corner_id_l != 0 && corner_id_r == 0)
+                    aim_distance = (float)corner_id_l * SAMPLE_DIST;
+                else
+                    aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
             }
             break;
         }
@@ -120,7 +144,14 @@ uint8 CrossIdentify(void)
                     return 1;
                 }
                 else
-                    aim_distance = ((float)(corner_id_l + corner_id_r)+5) * SAMPLE_DIST / 2;
+                {
+                    if (corner_id_l == 0 && corner_id_r != 0)
+                        aim_distance = (float)corner_id_r * SAMPLE_DIST;
+                    else if (corner_id_l != 0 && corner_id_r == 0)
+                        aim_distance = (float)corner_id_l * SAMPLE_DIST;
+                    else
+                        aim_distance = ((float)(corner_id_l + corner_id_r + 5)) * SAMPLE_DIST / 2;
+                }
             }
             break;
         }
@@ -131,7 +162,8 @@ uint8 CrossIdentify(void)
 
 /***********************************************
 * @brief : 找十字角点
-* @param : void
+* @param : corner_id_l:左角点在第几个点
+*          corner_id_r:右角点在第几个点
 * @return: 0：没有角点
 *          1:找到角点
 * @date  : 2023.3.7
@@ -144,7 +176,7 @@ uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r)
     for (int i = 0; i < l_line_count; i++)
     {
         if (l_angle_1[i] == 0) continue;
-        if (cross_found_l == false && fabs(l_angle_1[i]) > 80 * 3.14 / 180 && fabs(l_angle_1[i]) < 110 * 3.14 / 180)
+        if (cross_found_l == false && fabs(l_angle_1[i]) > 70 * 3.14 / 180 && fabs(l_angle_1[i]) < 120 * 3.14 / 180)
         {
 //            tft180_show_float(100, 80,l_angle_1[i], 2, 3);
             *corner_id_l = i;
@@ -156,7 +188,7 @@ uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r)
     for (int i = 0; i < r_line_count; i++)
     {
         if (r_angle_1[i] == 0) continue;
-        if (cross_found_r == false && fabs(r_angle_1[i]) > 80 * 3.14 / 180 && fabs(r_angle_1[i]) < 110 * 3.14 / 180)
+        if (cross_found_r == false && fabs(r_angle_1[i]) > 70 * 3.14 / 180 && fabs(r_angle_1[i]) < 120 * 3.14 / 180)
         {
 //            tft180_show_float(100, 100,r_angle_1[i], 2, 3);
             *corner_id_r = i;

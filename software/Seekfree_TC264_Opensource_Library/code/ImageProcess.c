@@ -12,7 +12,7 @@
 #include "ImageBasic.h"
 #include "ImageTrack.h"
 #include "math.h"
-#include "ImageCross.h"
+#include "ImageSpecial.h"
 #include <string.h>
 
 /***********************************************
