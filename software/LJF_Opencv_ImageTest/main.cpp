@@ -19,7 +19,7 @@ int main()
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-    for (int i = 0; i < 35; i++)
+    for (int i = 48; i < 68; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
         String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\3.10\\%d.bmp", i);

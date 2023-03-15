@@ -12,6 +12,7 @@
 #define SAMPLE_DIST         0.02            //实际采样间距(m)
 #define PIXEL_PER_METER     50              //每一米有多少像素点
 #define ANGLE_DIST          0.1             //算角度的时候隔多少点去进行计算(m)
+#define TRACK_WIDTH         0.4             //赛道宽度(m)
 //===============================================================
 
 typedef struct myPoint_f

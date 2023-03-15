@@ -35,7 +35,6 @@ void ImageProcess(void)
     //¸ú×Ù×óÏß
     track_leftline(f_left_line, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
     track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-    CircleIslandRStatus();
 
     //ÇÐ»»×óÓÒÑ²Ïß
     if(l_line_count < 20)
@@ -50,6 +49,8 @@ void ImageProcess(void)
     {
         track_type=kTrackRight;
     }
+
+    CircleIslandLInDetection();
 
     //Ô¤ÃéµãÇóÆ«²î
     if(track_type==kTrackRight)
