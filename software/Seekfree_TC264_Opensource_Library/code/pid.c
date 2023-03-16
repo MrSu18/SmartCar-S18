@@ -9,7 +9,8 @@
 
 PID speedpid_left;                          //左轮速度环PID
 PID speedpid_right;                         //右轮速度环PID
-PID turnpid;                                //转向环PID
+PID turnpid_image;                          //图像转向环PID
+PID turnpid_adc;                            //电磁转向环PID
 
 /***********************************************
 * @brief : 初始化PID参数
@@ -49,17 +50,14 @@ int PIDSpeed(int16 encoder_speed,int16 target_speed,PID* pid)
     return pid->out;
 }
 /***********************************************
-* @brief : 转向环位置式PD控制
-* @param : pid:转向环的PID
+* @brief : 摄像头转向环位置式PD控制
+* @param : pid:图像转向环的PID
 * @return: out:左右轮目标速度的变化量
 * @date  : 2023.3.2
 * @author: L
 ************************************************/
-void PIDTurn(int16* target_left,int16* target_right,PID* pid)
+void PIDTurnImage(int16* target_left,int16* target_right,PID* pid)
 {
-//    //获取此时偏差
-//    ADCGetValue(adc_value);
-//    ChaBiHe(&pid->err,TRACK);
     pid->err = image_bias;
 
     pid->out = (int)(pid->P*pid->err+pid->D*(pid->err-pid->last_err));
@@ -75,4 +73,31 @@ void PIDTurn(int16* target_left,int16* target_right,PID* pid)
         *target_left = base_speed;
         *target_right = base_speed + pid->out;
     }
+}
+/***********************************************
+* @brief : 电磁转向环位置式PD控制
+* @param : pid:电磁转向环的PID
+* @return: out:左右轮目标速度的变化量
+* @date  : 2023.3.16
+* @author: L
+************************************************/
+void PIDTurnADC(int16* target_left,int16* target_right,PID* pid)
+{
+        //获取此时电磁偏差
+        ADCGetValue(adc_value);
+        ChaBiHe(&pid->err,TRACK);
+
+        pid->out = (int)(pid->P*pid->err+pid->D*(pid->err-pid->last_err));
+        pid->last_err = pid->err;                                               //保存上一次的值
+
+        if(pid->out>0)//左转
+        {
+            *target_left = base_speed - pid->out;
+            *target_right = base_speed;
+        }
+        else
+        {
+            *target_left = base_speed;
+            *target_right = base_speed + pid->out;
+        }
 }

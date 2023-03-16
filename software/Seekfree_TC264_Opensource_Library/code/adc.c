@@ -5,11 +5,12 @@
  *      Author: L
  */
 #include "adc.h"
+#include "zf_device_tft180.h"
 
 int16 adc_value[5] = {0};                           //存取获取到的ADC的值
 //赛道扫描时得到的最大值和最小值
-int16 adc_max[5] = {3436,3524,3634,3684};
-int16 adc_min[5] = {151,133,144,132};
+int16 adc_max[5] = {3201,3959,3542,4022,3259};
+int16 adc_min[5] = {81,128,113,69,96};
 
 adc_channel_enum my_adc_pin[5]=
 {
@@ -49,9 +50,9 @@ void ADCGetValue(int16* value)
         *value = 100*(*value-adc_min[i])/(adc_max[i]-adc_min[i]);       //归一化处理
         for(int j=0;j<4;j++)
             *value = KalmanFilter(&kalman_adc,*value);                  //卡尔曼滤波
+//        tft180_show_int(0, 15*i, *value, 4);
         value++;
     }
-
 }
 /***********************************************
 * @brief : 差比和差算法
@@ -67,7 +68,7 @@ void ChaBiHe(float* err,int8 flag)
     {
         case TRACK:
         {
-            *err=(float)20*(LM-RM)/(LM+RM);                 //循迹用的电磁偏差的差比和计算
+            *err=(float)30*(LM-RM)/(LM+RM);                 //循迹用的电磁偏差的差比和计算
             break;
         }
         case JUDGE:
@@ -98,9 +99,11 @@ void ADCScan(void)
             if(min[i]>temp)
                 min[i] = temp;
         }
-        printf("\n");
-        for(int8 i = 0;i<5;i++)                                             //串口打印
-            printf("max_%d=%d    min_%d=%d\n",i,max[i],i,min[i]);
+        for(int8 i = 0;i<5;i++)                                             //tft显示
+        {
+            tft180_show_int(0, 15*i, max[i], 4);
+            tft180_show_int(100, 15*i, min[i], 4);
+        }
         system_delay_ms(100);
     }
 }

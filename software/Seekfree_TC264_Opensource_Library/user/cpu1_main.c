@@ -83,26 +83,26 @@ void core1_main(void)
         if(mt9v03x_finish_flag)
         {
 #if 1
-//            //出界保护
-//            OutProtect();
+            //出界保护
+            OutProtect();
 
             ImageBinary();
-            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
+//            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 96, 60);
 //            tft180_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, 96, 60, 0);
             gpio_toggle_level(P20_8);
             ImageProcess();
 
 
 //            tft180_show_float(98, 15, aim_distance, 1, 3);
-            tft180_show_float(98, 0, image_bias, 1, 3);
-            for(int i=0;i<l_line_count;i++)
-            {
-                tft180_draw_point((uint16)f_left_line[i].X, (uint16)center_line_l[i].Y, RGB565_BLUE);
-            }
-            for(int i=0;i<r_line_count;i++)
-            {
-                tft180_draw_point((uint16)f_right_line[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
-            }
+//            tft180_show_float(98, 0, image_bias, 1, 3);
+//            for(int i=0;i<l_line_count;i++)
+//            {
+//                tft180_draw_point((uint16)f_left_line[i].X, (uint16)center_line_l[i].Y, RGB565_BLUE);
+//            }
+//            for(int i=0;i<r_line_count;i++)
+//            {
+//                tft180_draw_point((uint16)f_right_line[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
+//            }
 //            tft180_show_int(30, 62, l_line_count, 3);
 //            tft180_show_int(60, 62, r_line_count, 3);
 //            for(int i=0;i<c_line_count;i++)
@@ -125,7 +125,7 @@ void core1_main(void)
 
 
 
-        // 此处编写需要循环执行的代码
+         //此处编写需要循环执行的代码
     }
 }
 #pragma section all restore

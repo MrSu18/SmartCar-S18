@@ -306,3 +306,11 @@ user/isr.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/libra
 e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/libraries/zf_driver/zf_driver_uart.h :
 user/isr.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_headfile.h
 e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_headfile.h :
+user/isr.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/adc.h
+e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/adc.h :
+user/isr.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_headfile.h
+e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_headfile.h :
+user/isr.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/filter.h
+e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/code/filter.h :
+user/isr.o :	e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_headfile.h
+e:/github/smartcar/software/Seekfree_TC264_Opensource_Library/libraries/zf_common/zf_common_headfile.h :
