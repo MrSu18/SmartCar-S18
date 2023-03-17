@@ -18,12 +18,6 @@ typedef enum Cross_Type
     CROSS_OUT,
 }Cross_Type;
 
-typedef enum Cut_Type
-{
-    CUT_IN = 0,
-    CUT_OUT,
-}Cut_Type;
-
 Cross_Type cross_type = CROSS_IN;
 Cut_Type cut_type = CUT_IN;
 
@@ -95,10 +89,10 @@ uint8 CrossIdentify(void)
 
             for (int i = 0; i < MT9V03X_W; i++)
             {
-                if (mt9v03x_image[MT9V03X_H - 30][i] >= 250)
+                if (mt9v03x_image[MT9V03X_H - 58][i] >= 240)
                     white_count++;
             }
-            if (white_count >= MT9V03X_W)
+            if (white_count >= MT9V03X_W - 8)
             {
                 cross_type = CROSS_OUT;
                 aim_distance = 0.16;
@@ -179,7 +173,8 @@ uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r)
         if (cross_found_l == false && fabs(l_angle_1[i]) > 70 * 3.14 / 180 && fabs(l_angle_1[i]) < 120 * 3.14 / 180)
         {
 //            tft180_show_float(100, 80,l_angle_1[i], 2, 3);
-            *corner_id_l = i;
+//            *corner_id_l = i;
+            *corner_id_l = USE_IMAGE_H - f_left_line[i].Y;
             cross_found_l = true;
         }
         else
@@ -191,7 +186,8 @@ uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r)
         if (cross_found_r == false && fabs(r_angle_1[i]) > 70 * 3.14 / 180 && fabs(r_angle_1[i]) < 120 * 3.14 / 180)
         {
 //            tft180_show_float(100, 100,r_angle_1[i], 2, 3);
-            *corner_id_r = i;
+//            *corner_id_r = i;
+            *corner_id_r = USE_IMAGE_H - f_right_line[i].Y;
             cross_found_r = true;
         }
         else

@@ -10,6 +10,14 @@
 
 #include "zf_common_headfile.h"
 
+typedef enum Cut_Type
+{
+    CUT_IN = 0,
+    CUT_OUT,
+}Cut_Type;
+
+extern Cut_Type cut_type;
+
 //³µ¿âº¯Êý
 uint8 GarageFindCorner(void);
 uint8 GarageIdentify_L(void);
