@@ -115,10 +115,11 @@ void MotorCtrl(void)
     int16 target_left = 0,target_right = 0;                                         //左右轮的目标速度的值
 
     EncoderGetCount(&speed_left,&speed_right);                                      //获取编码器的值
-    if(cut_type == CUT_IN)
-        PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
-    else
-        PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //电磁方向环PID
+    PIDTurnImage(&target_left,&target_right,&turnpid_image);
+//    if(cut_type == CUT_IN)
+//        PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
+//    else
+//        PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //电磁方向环PID
 
     pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                     //获取左电机PWM
     pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);                 //获取右电机PWM

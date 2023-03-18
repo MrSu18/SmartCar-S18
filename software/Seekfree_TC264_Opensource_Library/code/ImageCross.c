@@ -41,7 +41,7 @@ uint8 CutIdentify(void)
             if (l_line_count + r_line_count < 15)
             {
                 cut_type = CUT_OUT;
-                aim_distance = 0.16;
+                aim_distance = 0.32;
             }
             else
             {
@@ -59,7 +59,7 @@ uint8 CutIdentify(void)
     {
         if (l_line_count > 10 || r_line_count > 10)
         {
-            gpio_set_level(P21_4,0);
+//            gpio_set_level(P21_4,0);
             cut_type = CUT_IN;
             return 1;
         }
@@ -95,9 +95,10 @@ uint8 CrossIdentify(void)
             if (white_count >= MT9V03X_W - 8)
             {
                 cross_type = CROSS_OUT;
-                aim_distance = 0.16;
+                aim_distance = 0.32;
             }
-            else if (CrossFindCorner(&corner_id_l,&corner_id_r) == 1 && (f_left_line[corner_id_l + 4].X < f_left_line[corner_id_l].X || f_right_line[corner_id_r + 4].X > f_right_line[corner_id_r].X))
+
+            if (CrossFindCorner(&corner_id_l,&corner_id_r) == 1 && (f_left_line[corner_id_l + 4].X < f_left_line[corner_id_l].X || f_right_line[corner_id_r + 4].X > f_right_line[corner_id_r].X))
             {
                 if (corner_id_l == 0 && corner_id_r != 0)
                     aim_distance = (float)corner_id_r * SAMPLE_DIST;
@@ -105,6 +106,8 @@ uint8 CrossIdentify(void)
                     aim_distance = (float)corner_id_l * SAMPLE_DIST;
                 else
                     aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
+
+
             }
             break;
         }
@@ -128,12 +131,12 @@ uint8 CrossIdentify(void)
 
                 if(CrossFindCorner(&corner_id_l,&corner_id_r) == 0)
                 {
-//                    while(1)
-//                    {
-//                        gpio_set_level(P21_4,0);
-//                        base_speed = 0;
-//                        image_bias=0;
-//                    }
+                    while(1)
+                    {
+                        gpio_set_level(P21_4,0);
+                        base_speed = 0;
+                        image_bias=0;
+                    }
                     cross_type = CROSS_IN;
                     return 1;
                 }

@@ -11,7 +11,7 @@
 //图像循迹偏差
 float image_bias=0;
 //预瞄点
-float aim_distance = 0.16;
+float aim_distance = 0.32;
 // 变换后左右边线+滤波
 myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
 // 变换后左右边线+等距采样
@@ -258,7 +258,7 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         track_line[begin_id].X = cx;
         track_line[begin_id].Y = cy;
         c_line_count = sizeof(center_line) / sizeof(center_line[0]);
-        ResamplePoints(track_line + begin_id, track_line_count - begin_id, center_line, &c_line_count, 0.04*50);
+        ResamplePoints(track_line + begin_id, track_line_count - begin_id, center_line, &c_line_count, SAMPLE_DIST*PIXEL_PER_METER);
 
         // 远预锚点位置
         int aim_idx = Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count - 1);

@@ -28,7 +28,7 @@ void OutProtect(void)
 
     for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
     {
-        if(mt9v03x_image[MT9V03X_H-3][i] <= OUT_THRESHOLD)
+        if(mt9v03x_image[MT9V03X_H-50][i] <= OUT_THRESHOLD)
                 over_count++;
     }
 
@@ -70,9 +70,6 @@ void ImageProcess(void)
     nms_angle(l_angle,l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
     nms_angle(r_angle,r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
 
-   // CrossIdentify();
-//    CutIdentify();
-
     //跟踪左线
     track_leftline(f_left_line, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
     track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
@@ -90,6 +87,17 @@ void ImageProcess(void)
     {
         track_type=kTrackRight;
     }
+
+//    CrossIdentify();
+
+//    if(CrossIdentify())
+//    {
+//
+//    }
+//    else if(CutIdentify())
+//    {
+//
+//    }
 
     //预瞄点求偏差
     if(track_type==kTrackRight)
