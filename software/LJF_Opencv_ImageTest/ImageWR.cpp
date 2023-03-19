@@ -84,3 +84,19 @@ void LCDDrawPoint(uint8 row, uint8 column,uint8 R,uint8 G,uint8 B)
     imshow("use_img", use_mat);
     waitKey(0);//µÈ´ı¼üÅÌ°´ÏÂ
 }
+
+void LCDDrowColumn(uint8 column,uint8 R,uint8 G,uint8 B)
+{
+    for (int i = 0; i < USE_IMAGE_H; ++i)
+    {
+        LCDDrawPoint(i,column,R,G,B);
+    }
+}
+
+void LCDDrowRow(uint8 row,uint8 R,uint8 G,uint8 B)
+{
+    for (int i = 0; i < USE_IMAGE_W; ++i)
+    {
+        LCDDrawPoint(row,i,R,G,B);
+    }
+}

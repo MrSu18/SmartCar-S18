@@ -15,7 +15,7 @@ uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 * @date  : 2022.9.7
 * @author: 刘骏帆
 ************************************************/
-#define BLACK_CONTINUE_WIDTH_THR	5//从中间往两边的黑色连续的阈值
+#define BLACK_CONTINUE_WIDTH_THR	3//从中间往两边的黑色连续的阈值
 void SowSeed(myPoint* left_seed,myPoint* right_seed)
 {
 	//找到左边种子

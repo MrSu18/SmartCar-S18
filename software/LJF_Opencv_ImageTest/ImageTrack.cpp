@@ -257,14 +257,14 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         track_line[begin_id].X = cx;
         track_line[begin_id].Y = cy;
         c_line_count = sizeof(center_line) / sizeof(center_line[0]);
-        ResamplePoints(track_line + begin_id, track_line_count - begin_id, center_line, &c_line_count, 0.04*50);
+        ResamplePoints(track_line + begin_id, track_line_count - begin_id, center_line, &c_line_count, SAMPLE_DIST*PIXEL_PER_METER);
 
         // Ô¶Ô¤ÃªµãÎ»ÖÃ
         int aim_idx = Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count - 1);
 
         // ¼ÆËãÔ¶ÃªµãÆ«²îÖµ
         float dx = center_line[aim_idx].X - cx;
-        float dy = cy - center_line[aim_idx].Y + 0.2 * 50;
+        float dy = cy - center_line[aim_idx].Y + 0.2 * PIXEL_PER_METER;
         float dn = sqrt(dx * dx + dy * dy);
         //float error = -atan2f(dx, dy) * 180 / 3.14;
 

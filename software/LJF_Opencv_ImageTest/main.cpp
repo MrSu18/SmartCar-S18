@@ -19,11 +19,10 @@ int main()
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-    for (int i = 48; i < 68; i++)
+    for (int i = 42; i < 68; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
         String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\3.10\\%d.bmp", i);
-        //String str = "E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\11.30\\10.bmp";
         ScanImage(str);
         /************************************************************************************************/
 
@@ -39,7 +38,8 @@ int main()
         //把三线画出来
         PrintEdgeLine(f_left_line,0,l_line_count,0,255,0);
         PrintEdgeLine(f_right_line,0,r_line_count,0,255,255);
-        PrintEdgeLine(center_line,0,c_line_count,255,0,0);
+        PrintEdgeLine(center_line_l,0,l_line_count,0,0,255);//左边跟踪出来的中线
+        PrintEdgeLine(center_line,0,c_line_count,255,0,0);//循迹的中线
 
         //显示图像
         imshow("use_img", use_mat);

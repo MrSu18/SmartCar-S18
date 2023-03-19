@@ -8,6 +8,7 @@
 #include "math.h"
 #include <string.h>
 #include "ImageSpecial.h"
+#include "ImageWR.h"
 
 /***********************************************
 * @brief : 图像处理和元素识别
@@ -35,7 +36,8 @@ void ImageProcess(void)
     //跟踪左线
     track_leftline(f_left_line, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
     track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-
+//    LCDDrowColumn(f_right_line[19].X,100,100,0);
+//    LCDDrowRow(f_right_line[19].Y,100,100,0);
     //切换左右巡线
     if(l_line_count < 20)
     {
@@ -50,7 +52,8 @@ void ImageProcess(void)
         track_type=kTrackRight;
     }
 
-    CircleIslandLInDetection();
+    if(CircleIslandLIn()==1)
+        while(1);
 
     //预瞄点求偏差
     if(track_type==kTrackRight)
