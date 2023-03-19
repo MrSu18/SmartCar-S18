@@ -40,6 +40,11 @@ uint8 CutIdentify(void)
         {
             if (l_line_count + r_line_count < 15)
             {
+                while(1)
+                {
+                    base_speed = 0;
+                    image_bias = 0;
+                }
                 cut_type = CUT_OUT;
                 aim_distance = 0.32;
             }
@@ -131,12 +136,12 @@ uint8 CrossIdentify(void)
 
                 if(CrossFindCorner(&corner_id_l,&corner_id_r) == 0)
                 {
-                    while(1)
-                    {
-                        gpio_set_level(P21_4,0);
-                        base_speed = 0;
-                        image_bias=0;
-                    }
+//                    while(1)
+//                    {
+//                        gpio_set_level(P21_4,0);
+//                        base_speed = 0;
+//                        image_bias=0;
+//                    }
                     cross_type = CROSS_IN;
                     return 1;
                 }
@@ -173,7 +178,7 @@ uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r)
     for (int i = 0; i < l_line_count; i++)
     {
         if (l_angle_1[i] == 0) continue;
-        if (cross_found_l == false && fabs(l_angle_1[i]) > 70 * 3.14 / 180 && fabs(l_angle_1[i]) < 120 * 3.14 / 180)
+        if (cross_found_l == false && fabs(l_angle_1[i]) > 80 * 3.14 / 180 && fabs(l_angle_1[i]) < 110 * 3.14 / 180)
         {
 //            tft180_show_float(100, 80,l_angle_1[i], 2, 3);
 //            *corner_id_l = i;
@@ -186,7 +191,7 @@ uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r)
     for (int i = 0; i < r_line_count; i++)
     {
         if (r_angle_1[i] == 0) continue;
-        if (cross_found_r == false && fabs(r_angle_1[i]) > 70 * 3.14 / 180 && fabs(r_angle_1[i]) < 120 * 3.14 / 180)
+        if (cross_found_r == false && fabs(r_angle_1[i]) > 80 * 3.14 / 180 && fabs(r_angle_1[i]) < 110 * 3.14 / 180)
         {
 //            tft180_show_float(100, 100,r_angle_1[i], 2, 3);
 //            *corner_id_r = i;

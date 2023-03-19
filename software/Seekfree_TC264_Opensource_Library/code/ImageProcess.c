@@ -87,7 +87,9 @@ void ImageProcess(void)
     {
         track_type=kTrackRight;
     }
-
+//
+//    GarageIdentify_L();
+//    GarageIdentify_R();
 //    CrossIdentify();
 
 //    if(CrossIdentify())

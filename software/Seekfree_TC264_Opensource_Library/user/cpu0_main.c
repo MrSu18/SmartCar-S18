@@ -64,7 +64,6 @@ int core0_main(void)
     // 此处编写用户代码 例如外设初始化代码等
 
 /*************************模块初始化***************************/
-    UARTInit();
     MotorInit();
     EncoderInit();
     ADCInit();
@@ -86,8 +85,8 @@ int core0_main(void)
     pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
-    PIDInit(&speedpid_left,288.71,2.33,0);
-    PIDInit(&speedpid_right,300.39,2.34,0);
+    PIDInit(&speedpid_left,301.85,2.62,0);      //zf 288.71 2.33
+    PIDInit(&speedpid_right,301.85,2.62,0);     //zf 300.39 2.34        lq 299.02 2.34
     PIDInit(&turnpid_image,10,0,0);
     PIDInit(&turnpid_adc,9,0,0);
     base_speed=100;
@@ -102,6 +101,7 @@ int core0_main(void)
        {
            printf("%d,%d\r\n",speed_left,speed_right);
            c0h0_isr_flag=0;
+           speed_left = 0;speed_right = 0;
        }
 
         // 此处编写需要循环执行的代码

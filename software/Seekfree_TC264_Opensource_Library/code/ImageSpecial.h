@@ -19,9 +19,10 @@ typedef enum Cut_Type
 extern Cut_Type cut_type;
 
 //车库函数
-uint8 GarageFindCorner(void);
+uint8 GarageFindCorner(int* corner_id);
 uint8 GarageIdentify_L(void);
 uint8 GarageIdentify_R(void);
+void EdgeDetection_Garage(uint8 flag);
 //十字路口和断路函数
 uint8 CutIdentify(void);
 uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r);
