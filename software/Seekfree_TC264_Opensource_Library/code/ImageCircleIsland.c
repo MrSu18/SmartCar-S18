@@ -4,7 +4,6 @@
 #include "ImageSpecial.h"
 #include "ImageTrack.h"
 #include <stdio.h>
-#include "ImageWR.h"
 
 uint8 CircleIslandLStatus()//ÓÒ±ß»·µº×´Ì¬×´Ì¬»ú
 {
@@ -240,7 +239,7 @@ uint8 CircleIslandLOut(void)
             local_angle_points(f_right_line,r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
             nms_angle(r_angle,r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
         }
-        for (int i = 0; i < r_line_count; ++i)
+        for (uint8 i = 0; i < r_line_count; ++i)
         {
             if (1.5<r_angle_1[i] && r_angle_1[i]<1.8)//³ö»·ÓÒ±ß½Çµã
             {
