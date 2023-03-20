@@ -16,15 +16,15 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
             if(CircleIslandLDetection()==1)
             {
                 printf("CircleIslandDetection success\r\n");
-                status=2;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
+                status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
                 track_type=kTrackRight;
             }
             break;
         case 1: //路过环岛第一个入口
             track_type=kTrackRight;//这个状态默认是寻右边直线
-            if(l_line_count<2)//如果左边一开始就丢线就再次扫线
+            if(CircleIslandLInDetection()==1)
             {
-                LeftLineDetectionAgain();
+                status=2;
             }
             break;
         case 2: //进入环岛
@@ -81,7 +81,29 @@ uint8 CircleIslandLDetection()//检测左环岛
 ************************************************/
 uint8 CircleIslandLInDetection(void)
 {
-    ;
+    if(l_line_count<2)//如果左边一开始就丢线就再次扫线
+    {
+        myPoint left_seed=left_line[l_line_count-1];//左种子
+        uint8 left_seed_num=0;//左种子八零域标号
+        uint8 seed_grown_result=0;//种子生长的结果
+        uint8 count=0;//记录左边丢线多少才到不丢线
+        while(count<3)
+        {
+            seed_grown_result=EightAreasSeedGrown(&left_seed,'l',&left_seed_num);
+            if(seed_grown_result==1)
+            {
+                return 1;
+            }
+            else if(seed_grown_result==2)
+            {
+                count++;
+                continue;
+            }
+            else break;
+        }
+        return 0;
+    }
+    return 0;
 }
 
 /***********************************************
