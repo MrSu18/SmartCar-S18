@@ -33,9 +33,24 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
                 status=3;
             }
             break;
-        case 3: //出环
-
+        case 3: //检测出环
+            if(CircleIslandLOutDetection()==1)
+            {
+                track_type=kTrackRight;
+                status=4;
+            }
             break;
+        case 4://出环
+            if (CircleIslandLOut()==1)
+            {
+                status=5;
+            }
+        case 5://检测环岛是否结束
+            if (CircleIslandLEnd()==1)
+            {
+                status=0;
+                return 1;
+            }
         default:
             break;
     }
@@ -55,6 +70,18 @@ uint8 CircleIslandLDetection()//检测左环岛
         }
     }
     return 0;
+}
+
+/***********************************************
+* @brief : 检测是否到了需要入环的状态
+* @param : 无
+* @return: 是否入环 1：入环 0：入环还不用入环
+* @date  : 2023.3.17
+* @author: 刘骏帆
+************************************************/
+uint8 CircleIslandLInDetection(void)
+{
+    ;
 }
 
 /***********************************************
@@ -120,21 +147,117 @@ uint8 CircleIslandLIn()//入环状态
 }
 
 /***********************************************
-* @brief : 左环岛出环状态
+* @brief : 左环岛检测出环
 * @param : 无
-* @return: 是否入环结束 1：入环结束 0：入环未结束
-* @date  : 2023.3.17
+* @return: 是否到出环状态 1：环岛出口 0：还在环中
+* @date  : 2023.3.19
 * @author: 刘骏帆
 ************************************************/
-#define OUT_R_INFLECTION_ROW_THR
-//uint8 CircleIslandLOut()//出环状态
-//{
-//    1.5~1.8
-//    for (int i = 0; i < ; ++i)
-//    {
-//
-//    }
-//}
+uint8 CircleIslandLOutDetection()//左环岛出环状态
+{
+    if (r_line_count<2)//右边一开始就丢线
+    {
+        //重新扫线
+        RightLineDetectionAgain();
+        BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
+        local_angle_points(f_right_line,r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
+        nms_angle(r_angle,r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+        track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+    }
+    //进行角点判断
+    for (int i = 0; i < r_line_count; ++i)
+    {
+        if (1.5<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/***********************************************
+* @brief : 左环岛出环
+* @param : 无
+* @return: 0：出环未结束 1：出环结束
+* @date  : 2023.3.19
+* @author: 刘骏帆
+************************************************/
+#define TRACK_RIGHTLINE_OUT_THR  20  //寻左边线出环
+uint8 CircleIslandLOut(void)
+{
+    static uint8 status=0;//右边线从不丢线，到丢线，再到不丢线，即环岛结束
+    //对循迹偏差进行处理
+    if(r_line_count>TRACK_RIGHTLINE_OUT_THR)
+    {
+        if (status==0)
+        {
+            status=1;
+        }
+        else if(status==2)
+        {
+            status=0;
+            return 1;
+        }
+        track_type=kTrackRight;
+    }
+    else//如果左边线太少了需要补线出环
+    {
+        if (status=1)
+        {
+            status=2;
+        }
+        myPoint_f left_inflection={0},right_inflection={0};//补线的左右点
+        //先找到右角点
+        if (r_line_count<2)//右边一开始就丢线
+        {
+            //重新扫线
+            RightLineDetectionAgain();
+            BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
+            local_angle_points(f_right_line,r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
+            nms_angle(r_angle,r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+            track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        }
+        for (int i = 0; i < r_line_count; ++i)
+        {
+            if (1.5<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
+            {
+                right_inflection=f_right_line[i];
+                break;
+            }
+        }
+        //找左拐点
+        if (l_line_count<2 && right_inflection.Y!=0 && right_inflection.X!=0)//如果左边一开始就丢线,并且找到了右拐点
+        {
+            myPoint left_seed=left_line[l_line_count-1];//左种子
+            uint8 left_seed_num=0;//左种子八零域标号
+            uint8 seed_grown_result=0;//种子生长的结果
+            while(seed_grown_result!=1)
+            {
+                seed_grown_result=EightAreasSeedGrown(&left_seed,'l',&left_seed_num);
+            }
+            left_inflection.X=(float)left_seed.X;left_inflection.Y=(float)left_seed.Y;
+        }
+        //左右两点连线之后再对右边线进行处理
+        track_type=kTrackRight;
+    }
+    return 0;
+}
+
+/***********************************************
+* @brief : 判断左环岛是否结束
+* @param : 无
+* @return: 无
+* @date  : 2023.3.19
+* @author: 刘骏帆
+************************************************/
+uint8 CircleIslandLEnd(void)
+{
+    track_type=kTrackRight;//寻右线出去即可
+    if(abs(r_line_count-l_line_count)<10)
+        return 1;
+    else
+        return 0;
+}
 
 /***********************************************
 * @brief : 从丢线找到不丢线再记录边线，左边线重新扫线
@@ -157,6 +280,37 @@ void LeftLineDetectionAgain()
         {
             flag=1;
             left_line[l_line_count]=left_seed;l_line_count++;
+        }
+        else if(seed_grown_result==2)
+        {
+            if(flag==0) continue;
+            else        break;
+        }
+        else break;
+    }
+}
+
+/***********************************************
+* @brief : 从丢线找到不丢线再记录边线，右边线重新扫线
+* @param : 无
+* @return: 无
+* @date  : 2023.3.19
+* @author: 刘骏帆
+************************************************/
+void RightLineDetectionAgain()
+{
+    myPoint right_seed=right_line[r_line_count-1];//右种子
+    r_line_count=0;//用完之后就重置清除之前扫线的错误数据
+    uint8 right_seed_num=0;//左种子八零域标号
+    uint8 seed_grown_result=0;//种子生长的结果
+    uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
+    while(r_line_count<EDGELINE_LENGTH)
+    {
+        seed_grown_result=EightAreasSeedGrown(&right_seed,'r',&right_seed_num);
+        if(seed_grown_result==1)
+        {
+            flag=1;
+            right_line[r_line_count]=right_seed;r_line_count++;
         }
         else if(seed_grown_result==2)
         {

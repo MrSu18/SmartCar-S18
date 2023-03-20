@@ -51,10 +51,8 @@ void ImageProcess(void)
     {
         track_type=kTrackRight;
     }
-
-    if(CircleIslandLIn()==1)
-        while(1);
-
+    if(CircleIslandLStatus()==1)
+        while (1);
     //‘§√Èµ„«Û∆´≤Ó
     if(track_type==kTrackRight)
     {
