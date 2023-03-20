@@ -167,14 +167,13 @@ void EdgeDetection_Cross(void)
     myPoint left_seed, right_seed;
     left_seed.X = left_line[l_line_count - 1].X; left_seed.Y = left_line[l_line_count - 1].Y; right_seed.X = right_line[r_line_count - 1].X; right_seed.Y = right_line[r_line_count - 1].Y;
     l_line_count = 0; r_line_count = 0;
-    uint8 l_seed_num = 0, r_seed_num = 0;
     uint8 change_lr_flag = 0, left_finish = 0, right_finish = 0;//change_lr_flag=0:左边生长 change_lr_flag=1:右边生长
     uint8 is_loseline = 0;
     do
     {
         if (change_lr_flag == 0 && left_finish == 0)
         {
-            is_loseline = EightAreasSeedGrown(&left_seed, 'l', &l_seed_num);
+            is_loseline = EightAreasSeedGrown(&left_seed, 'l', &left_seed_num);
             if (is_loseline == 2)
             {
                 //切换左右巡线的标志变量
@@ -210,7 +209,7 @@ void EdgeDetection_Cross(void)
         }
         else if (change_lr_flag == 1 && right_finish == 0)
         {
-            is_loseline = EightAreasSeedGrown(&right_seed, 'r', &r_seed_num);
+            is_loseline = EightAreasSeedGrown(&right_seed, 'r', &right_seed_num);
             if (is_loseline == 2)
             {
                 //切换左右巡线的标志变量
