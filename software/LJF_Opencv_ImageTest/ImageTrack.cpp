@@ -10,7 +10,7 @@
 //图像循迹偏差
 float image_bias=0;
 //预瞄点
-float aim_distance = 0.16;
+float aim_distance = 0.32;
 // 变换后左右边线+滤波
 myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
 // 变换后左右边线+等距采样
@@ -31,7 +31,8 @@ inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
     return x > up ? up : x < low ? low : x;
 }
-inline int Min(int a,int b) {return a<b?a:b;}//求ab最小值
+inline float Min(float a,float b) {return a<b?a:b;}//求ab最小值
+inline float Max(float a,float b) {return a>b?a:b;}//求ab最大值
 
 /***********************************************
 * @brief : 对边线进行三角平滑滤波
@@ -277,4 +278,61 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         c_line_count = 0;
     }
     return pure_angle;
+}
+
+/***********************************************
+* @brief : 根据两点补线（直线）
+* @param : char choose
+*          myPoint_f point1
+*          myPoint_f point2
+* @return: 无
+* @date  : 2023.3.20
+* @author: 刘骏帆
+************************************************/
+void FillingLine(char choose, myPoint_f point1, myPoint_f point2)
+{
+    float K;//斜率为浮点型，否则K<1时，K=0
+    float B,Y,X;
+    float start_row=Max(point1.Y,point2.Y),end_row=Min(point1.Y,point2.Y);
+    /*特殊情况：当要补的线是一条垂线的时候*/
+    if(point2.X == point1.X)
+    {
+        for (float Y = start_row; Y > end_row; Y--)
+        {
+            switch(choose)
+            {
+                case 'l':
+                    f_left_line[l_line_count].X=X;f_left_line[l_line_count].Y=Y;l_line_count++;
+                    break;
+                case 'r':
+                    f_right_line[r_line_count].X=X;f_right_line[r_line_count].Y=Y;r_line_count++;
+                    break;
+                default:break;
+            }
+            if (l_line_count>=EDGELINE_LENGTH && r_line_count>=EDGELINE_LENGTH)
+                break;
+        }
+        return;
+    }
+
+    K= (-point2.Y + point1.Y) / (point2.X - point1.X);//k=(y2-y1)/(x2-x1)，强制类型转化否则会损失精度仍然为0
+    B= -point1.Y - K * point1.X;//b=y-kx
+
+    for (float Y = start_row; Y > end_row; Y--)
+    {
+        X=((-Y-B)/K);          //强制类型转化：指针索引的时候只能是整数
+        X > USE_IMAGE_W-1 ? USE_IMAGE_W-1 : X < 0 ? 0 : X;
+        switch(choose)
+        {
+            case 'l':
+                f_left_line[l_line_count].X=X;f_left_line[l_line_count].Y=Y;l_line_count++;
+                break;
+            case 'r':
+                f_right_line[r_line_count].X=X;f_right_line[r_line_count].Y=Y;r_line_count++;
+                break;
+            default:break;
+        }
+        if (l_line_count>=EDGELINE_LENGTH && r_line_count>=EDGELINE_LENGTH)
+            break;
+    }
 }

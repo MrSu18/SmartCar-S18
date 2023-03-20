@@ -45,12 +45,14 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
             {
                 status=5;
             }
+            break;
         case 5://检测环岛是否结束
             if (CircleIslandLEnd()==1)
             {
                 status=0;
                 return 1;
             }
+            break;
         default:
             break;
     }
@@ -204,7 +206,7 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
 * @date  : 2023.3.19
 * @author: 刘骏帆
 ************************************************/
-#define TRACK_RIGHTLINE_OUT_THR  20  //寻左边线出环
+#define TRACK_RIGHTLINE_OUT_THR  (aim_distance/SAMPLE_DIST+5)  //寻左边线出环
 uint8 CircleIslandLOut(void)
 {
     static uint8 status=0;//右边线从不丢线，到丢线，再到不丢线，即环岛结束
@@ -237,12 +239,12 @@ uint8 CircleIslandLOut(void)
             BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
             local_angle_points(f_right_line,r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
             nms_angle(r_angle,r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
-            track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
         }
         for (int i = 0; i < r_line_count; ++i)
         {
             if (1.5<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
             {
+                r_line_count=i;//截断
                 right_inflection=f_right_line[i];
                 break;
             }
@@ -258,8 +260,10 @@ uint8 CircleIslandLOut(void)
                 seed_grown_result=EightAreasSeedGrown(&left_seed,'l',&left_seed_num);
             }
             left_inflection.X=(float)left_seed.X;left_inflection.Y=(float)left_seed.Y;
+            FillingLine('r',left_inflection,right_inflection);
         }
         //左右两点连线之后再对右边线进行处理
+        track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
         track_type=kTrackRight;
     }
     return 0;

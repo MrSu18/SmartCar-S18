@@ -54,5 +54,6 @@ void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void track_leftline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist);
 void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist);
 float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line);//µÃµ½Ñ­¼£Ô¤ÃªµãµÄÑ­¼£Æ«²î
+void FillingLine(char choose, myPoint_f point1, myPoint_f point2);
 
 #endif //LJF_OPENCV_IMAGETEST_IMAGETRACK_H
