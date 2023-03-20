@@ -9,6 +9,7 @@
 #include "ImageSpecial.h"
 #include <math.h>
 #include "motor.h"
+#include "pid.h"
 #include "zf_driver_pit.h"
 
 typedef enum GarageType_l
@@ -27,6 +28,8 @@ typedef enum GarageType_r
 
 GarageType_l garage_type_l = kGarage_Begin_l;
 GarageType_r garage_type_r = kGarage_Begin_r;
+uint8 flag = 0;
+int temp = 0;
 
 uint8 GarageIdentify_L(void)
 {
@@ -37,39 +40,60 @@ uint8 GarageIdentify_L(void)
     {
         if (GarageFindCorner(&corner_id) == 1)//判断角点还有电磁偏差是否为0左右
         {
+            gpio_set_level(P21_5,0);
             track_type = kTrackRight;
-            if (corner_id < 4)
+            if (corner_id < 12)
                 garage_type_l = kGarage_In_l;
         }
         break;
     }
     case kGarage_In_l:
     {
+
+        gpio_set_level(P20_9,0);
+
 //        EdgeDetection_Garage('l');
 //
 //        BlurPoints(left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
 //        local_angle_points(f_left_line, l_line_count, l_angle, ANGLE_DIST / SAMPLE_DIST);
 //        nms_angle(l_angle, l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
 //
-//        //uint8 temp = GarageFindCorner(&corner_id);
+//        track_type = kTrackLeft;
+
 //        if (GarageFindCorner(&corner_id) == 1)
-//        {
-//            l_line_count = corner_id;
-//            track_type = kTrackLeft;
-//        }
-        if (r_line_count < 2)
-            garage_type_l = kGarage_End_l;
+//            aim_distance = (float)corner_id * SAMPLE_DIST;
+
+        MotorSetPWM(-1500,4000);
+        pit_disable(CCU60_CH0);
+        system_delay_ms(100);
+        pit_enable(CCU60_CH0);
+        garage_type_l = kGarage_End_l;
+//        system_start();
+//        PIDClear();
+//        if (r_line_count < 2 && flag == 0)
+//            flag = 1;
+//        if(flag == 1 && r_line_count>5)
+//            garage_type_l = kGarage_End_l;
         break;
     }
     case kGarage_End_l://出现两个角点，停车
     {
-        track_type = kTrackRight;
-        if (GarageFindCorner(&corner_id) == 3)
-        {
-          base_speed = 0;
-          pit_disable(CCU60_CH0);
-            return 1;
-        }
+//        pit_enable(CCU60_CH0);
+//
+//        temp += system_getval_ms();
+//        if (temp >=10)
+//        {
+//          gpio_set_level(P21_4,0);
+//          while(1){
+//          image_bias = 0;
+//          base_speed = 0;
+//          pit_disable(CCU60_CH0);
+//          }
+//            return 1;
+//        }
+        PIDClear();
+        base_speed = 0;
+        pit_disable(CCU60_CH0);
         break;
     }
     default:break;
@@ -167,45 +191,45 @@ void EdgeDetection_Garage(uint8 flag)
     {
         //进行重新扫线
         myPoint left_seed = left_line[l_line_count - 1];//左种子
-        myPoint last_left_seed = left_seed;
+//        myPoint last_left_seed = left_seed;
         l_line_count = 0;//用完之后就重置清除之前扫线的错误数据
         uint8 left_seed_num = 0;//左种子八零域标号
-        uint8 last_seed_num_l = 0;
+//        uint8 last_seed_num_l = 0;
         uint8 seed_grown_result = 0;//种子生长的结果
         uint8 flag = 0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
-        uint8 zebra_flag = 0;
-        while (l_line_count < EDGELINE_LENGTH)
+//        uint8 zebra_flag = 0;
+        while (l_line_count < EDGELINE_LENGTH - 1)
         {
             seed_grown_result = EightAreasSeedGrown(&left_seed, 'l', &left_seed_num);
             if (seed_grown_result == 1)
             {
-                if (zebra_flag == 0)
-                {
-                    int black_count = 1;
-                    int black_high = 0;
-                    for (int i = 0; i < 20; i++)
-                    {
-                        if (use_image[USE_IMAGE_H - left_seed.Y][i] == IMAGE_BLACK)
-                            black_count++;
-                        if (black_count >= 4)
-                        {
-                            black_high++;
-                            left_seed = last_left_seed;
-                            left_seed_num = last_seed_num_l;
-                            l_line_count = 0;
-                            break;
-                        }
-                        if (black_high >= 8)
-                            zebra_flag = 1;
-                    }
-                    last_left_seed = left_seed;
-                    last_seed_num_l = left_seed_num;
-                }
-                else
-                {
+//                if (zebra_flag == 0)
+//                {
+//                    int black_count = 1;
+//                    int black_high = 0;
+//                    for (int i = 0; i < 20; i++)
+//                    {
+//                        if (use_image[USE_IMAGE_H - left_seed.Y][i] == IMAGE_BLACK)
+//                            black_count++;
+//                        if (black_count >= 4)
+//                        {
+//                            black_high++;
+//                            left_seed = last_left_seed;
+//                            left_seed_num = last_seed_num_l;
+//                            l_line_count = 0;
+//                            break;
+//                        }
+//                        if (black_high >= 8)
+//                            zebra_flag = 1;
+//                    }
+//                    last_left_seed = left_seed;
+//                    last_seed_num_l = left_seed_num;
+//                }
+//                else
+//                {
                     flag = 1;
                     left_line[l_line_count] = left_seed; l_line_count++;
-                }
+//                }
             }
             else if (seed_grown_result == 2)
             {
