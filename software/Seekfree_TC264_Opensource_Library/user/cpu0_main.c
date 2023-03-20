@@ -101,7 +101,6 @@ int core0_main(void)
        {
            printf("%d,%d\r\n",speed_left,speed_right);
            c0h0_isr_flag=0;
-           speed_left = 0;speed_right = 0;
        }
 
         // 此处编写需要循环执行的代码

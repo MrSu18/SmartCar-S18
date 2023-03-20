@@ -17,10 +17,6 @@
 #include "bluetooth.h"
 #include "filter.h"
 
-extern int16 speed_left,speed_right;
-extern uint8 c0h0_isr_flag;
-extern uint16 base_speed;
-
 //编码器使用的引脚
 #define ENCODER_RIGHT   (TIM6_ENCODER)
 #define ENCODER_RIGHT_A (TIM6_ENCODER_CH1_P20_3)
@@ -42,6 +38,17 @@ extern uint16 base_speed;
 //左右环岛的判断标志位
 #define  CIRCLE_LEFT    1
 #define  CIRCLE_RIGHT   2
+
+typedef enum TrackMode
+{
+    kTrackImage = 0,
+    kTrackADC,
+}TrackMode;
+
+extern int16 speed_left,speed_right;
+extern uint8 c0h0_isr_flag;
+extern uint16 base_speed;
+extern TrackMode track_mode;
 
 void EncoderInit(void);                                                 //初始化左右两个编码器
 void EncoderGetCount(int16* data_left,int16* data_right);               //获取左右两个编码器的值

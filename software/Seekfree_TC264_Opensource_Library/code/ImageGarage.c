@@ -45,22 +45,19 @@ uint8 GarageIdentify_L(void)
     }
     case kGarage_In_l:
     {
-        track_type = kTrackRight;
-        int corner_id = 0;
-
-        EdgeDetection_Garage('l');
-
-        BlurPoints(left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
-        local_angle_points(f_left_line, l_line_count, l_angle, ANGLE_DIST / SAMPLE_DIST);
-        nms_angle(l_angle, l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
-
-        //uint8 temp = GarageFindCorner(&corner_id);
-        if (GarageFindCorner(&corner_id) == 1)
-        {
-            l_line_count = corner_id;
-            track_type = kTrackLeft;
-        }
-        else if (r_line_count < 2)
+//        EdgeDetection_Garage('l');
+//
+//        BlurPoints(left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+//        local_angle_points(f_left_line, l_line_count, l_angle, ANGLE_DIST / SAMPLE_DIST);
+//        nms_angle(l_angle, l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
+//
+//        //uint8 temp = GarageFindCorner(&corner_id);
+//        if (GarageFindCorner(&corner_id) == 1)
+//        {
+//            l_line_count = corner_id;
+//            track_type = kTrackLeft;
+//        }
+        if (r_line_count < 2)
             garage_type_l = kGarage_End_l;
         break;
     }
@@ -97,22 +94,19 @@ uint8 GarageIdentify_R(void)
     }
     case kGarage_In_r:
     {
-        track_type = kTrackLeft;
-        int corner_id = 0;
-
-        EdgeDetection_Garage('r');
-
-        BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
-        local_angle_points(f_right_line, r_line_count, r_angle, ANGLE_DIST / SAMPLE_DIST);
-        nms_angle(r_angle, r_line_count, r_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
-
-        //uint8 temp = GarageFindCorner(&corner_id);
-        if (GarageFindCorner(&corner_id) == 1)
-        {
-            r_line_count = corner_id;
-            track_type = kTrackRight;
-        }
-        else if (l_line_count < 2)
+//        EdgeDetection_Garage('r');
+//
+//        BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
+//        local_angle_points(f_right_line, r_line_count, r_angle, ANGLE_DIST / SAMPLE_DIST);
+//        nms_angle(r_angle, r_line_count, r_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
+//
+//        //uint8 temp = GarageFindCorner(&corner_id);
+//        if (GarageFindCorner(&corner_id) == 1)
+//        {
+//            r_line_count = corner_id;
+//            track_type = kTrackRight;
+//        }
+        if (l_line_count < 2)
             garage_type_r = kGarage_End_r;
         break;
     }

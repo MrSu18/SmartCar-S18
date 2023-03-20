@@ -13,6 +13,7 @@ int8 circle_flag = 0;                                   //Ô²»·±êÖ¾Î»£¬1Îª¼ì²âµ½»
 int16 speed_left = 0,speed_right = 0;                   //×óÓÒÂÖµ±Ç°±àÂëÆ÷µÄÖµ
 uint8 c0h0_isr_flag=0;                                  //0ºËÍ¨µÀ0µÄ±êÖ¾Î» 0:Ã»½øÖĞ¶Ï 1:ÖĞ¶Ï
 uint16 base_speed = 0;
+TrackMode track_mode = kTrackImage;
 
 /***********************************************
 * @brief : ³õÊ¼»¯×óÓÒÁ½¸ö±àÂëÆ÷
@@ -116,10 +117,17 @@ void MotorCtrl(void)
 
     EncoderGetCount(&speed_left,&speed_right);                                      //»ñÈ¡±àÂëÆ÷µÄÖµ
     PIDTurnImage(&target_left,&target_right,&turnpid_image);
-//    if(cut_type == CUT_IN)
-//        PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //ÉãÏñÍ··½Ïò»·PID
-//    else
-//        PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //µç´Å·½Ïò»·PID
+
+    if(track_mode == kTrackImage)
+    {
+        PIDClear();
+        PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //ÉãÏñÍ··½Ïò»·PID
+    }
+    else if(track_mode == kTrackADC)
+    {
+        PIDClear();
+        PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //µç´Å·½Ïò»·PID
+    }
 
     pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                     //»ñÈ¡×óµç»úPWM
     pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);                 //»ñÈ¡ÓÒµç»úPWM

@@ -101,3 +101,17 @@ void PIDTurnADC(int16* target_left,int16* target_right,PID* pid)
             *target_right = base_speed + pid->out;
         }
 }
+/***********************************************
+* @brief : 对PID的参数复位
+* @param : void
+* @return: void
+* @date  : 2023.3.20
+* @author: L
+************************************************/
+void PIDClear(void)
+{
+    PIDInit(&speedpid_left,301.85,2.62,0);
+    PIDInit(&speedpid_right,301.85,2.62,0);
+    PIDInit(&turnpid_image,10,0,0);
+    PIDInit(&turnpid_adc,9,0,0);
+}
