@@ -89,7 +89,7 @@ int core0_main(void)
     PIDInit(&speedpid_right,301.85,2.62,0);     //zf 300.39 2.34        lq 299.02 2.34
     PIDInit(&turnpid_image,10,0,0);
     PIDInit(&turnpid_adc,9,0,0);
-    base_speed=100;
+    base_speed=120;
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕

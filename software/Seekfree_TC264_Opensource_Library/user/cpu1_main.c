@@ -47,7 +47,10 @@
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
 // 然后在右侧的窗口中找到C/C++ Compiler->Optimization->Optimization level处设置优化等级
 // 一般默认新建立的工程都会默认开2级优化，因此大家也可以设置为2级优化
-
+inline int Limit(int x, int low, int up)//给x设置上下限幅
+{
+    return x > up ? up : x < low ? low : x;
+}
 // 对于TC系列默认是不支持中断嵌套的，希望支持中断嵌套需要在中断内使用 enableInterrupts(); 来开启中断嵌套
 // 简单点说实际上进入中断后TC系列的硬件自动调用了 disableInterrupts(); 来拒绝响应任何的中断，因此需要我们自己手动调用 enableInterrupts(); 来开启中断的响应。
 
@@ -107,7 +110,7 @@ void core1_main(void)
 //            }
 //            tft180_show_int(30, 62, l_line_count, 3);
 //            tft180_show_int(60, 62, r_line_count, 3);
-//            for(int i=0;i<c_line_count;i++)
+//            for(int i=0;i<Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);i++)
 //            {
 //                tft180_draw_point((uint16)center_line[i].X, (uint16)center_line[i].Y, RGB565_RED);
 //            }
