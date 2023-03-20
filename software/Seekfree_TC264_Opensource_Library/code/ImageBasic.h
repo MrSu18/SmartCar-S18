@@ -18,6 +18,7 @@ extern myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左中右三
 extern char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];
 extern uint8 l_line_count,r_line_count;//左中右边线记录总共有多长
 extern uint8 l_lostline_num, r_lostline_num;//左右丢线数
+extern uint8 left_seed_num,right_seed_num;//八零域的种子生长标号
 //****************************************
 
 void SowSeed(myPoint* left_seed,myPoint* right_seed);//扫线前的播种操作

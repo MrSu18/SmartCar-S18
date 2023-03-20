@@ -130,6 +130,7 @@ uint8 EightAreasSeedGrown(myPoint* seed,char choose,uint8 *seed_num)
 *				4 S 0		 0 S 4
 *				5 6 7	     7 6 5
 ************************************************/
+uint8 left_seed_num=0,right_seed_num=0;//八零域的种子生长标号，设置成全局变量，为了给再次生长的时候找到标号
 void EdgeDetection(void)
 {
     /*1.播种找到左右种子*/
@@ -139,7 +140,7 @@ void EdgeDetection(void)
     left_line[l_line_count]=left_seed;l_line_count++;//将这个点存入边线数组中
     right_line[r_line_count]=right_seed;r_line_count++;
 	/*2.种子从左下角开始生长，生长出一个闭合赛道边缘*/
-    uint8 left_seed_num=0,left_seed_count=0,right_seed_num=0,right_seed_count=0;
+    left_seed_num=0,right_seed_num=0;
     uint8 change_lr_flag=0,left_finish=0,right_finish=0;//change_lr_flag=0:左边生长 change_lr_flag=1:右边生长
     do
 	{

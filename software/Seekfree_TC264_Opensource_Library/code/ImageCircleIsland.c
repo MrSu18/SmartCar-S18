@@ -85,7 +85,7 @@ uint8 CircleIslandLInDetection(void)
     if(l_line_count<2)//如果左边一开始就丢线就再次扫线
     {
         myPoint left_seed=left_line[l_line_count-1];//左种子
-        uint8 left_seed_num=0;//左种子八零域标号
+//        uint8 left_seed_num=0;//左种子八零域标号
         uint8 seed_grown_result=0;//种子生长的结果
         uint8 count=0;//记录左边丢线多少才到不丢线
         while(count<3)
@@ -252,7 +252,7 @@ uint8 CircleIslandLOut(void)
         if (l_line_count<2 && right_inflection.Y!=0 && right_inflection.X!=0)//如果左边一开始就丢线,并且找到了右拐点
         {
             myPoint left_seed=left_line[l_line_count-1];//左种子
-            uint8 left_seed_num=0;//左种子八零域标号
+//            uint8 left_seed_num=0;//左种子八零域标号
             uint8 seed_grown_result=0;//种子生长的结果
             while(seed_grown_result!=1)
             {
@@ -295,7 +295,7 @@ void LeftLineDetectionAgain()
 {
     myPoint left_seed=left_line[l_line_count-1];//左种子
     l_line_count=0;//用完之后就重置清除之前扫线的错误数据
-    uint8 left_seed_num=0;//左种子八零域标号
+//    uint8 left_seed_num=0;//左种子八零域标号
     uint8 seed_grown_result=0;//种子生长的结果
     uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
     while(l_line_count<EDGELINE_LENGTH)
@@ -326,7 +326,7 @@ void RightLineDetectionAgain()
 {
     myPoint right_seed=right_line[r_line_count-1];//右种子
     r_line_count=0;//用完之后就重置清除之前扫线的错误数据
-    uint8 right_seed_num=0;//左种子八零域标号
+//    uint8 right_seed_num=0;//左种子八零域标号
     uint8 seed_grown_result=0;//种子生长的结果
     uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
     while(r_line_count<EDGELINE_LENGTH)
