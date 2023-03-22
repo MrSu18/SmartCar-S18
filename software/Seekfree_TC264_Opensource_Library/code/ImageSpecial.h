@@ -10,15 +10,19 @@
 
 #include "zf_common_headfile.h"
 
+//#define TRUE        1
+//#define FALSE       0
+
 //车库函数
 uint8 GarageFindCorner(int* corner_id);
 uint8 GarageIdentify_L(void);
 uint8 GarageIdentify_R(void);
 void EdgeDetection_Garage(uint8 flag);
-//十字路口和断路函数
+//断路函数
 uint8 CutIdentify(void);
-uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r);
+//十字路口函数
 uint8 CrossIdentify(void);
+uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r);
 void EdgeDetection_Cross(void);
 //左环岛元素函数
 void LeftLineDetectionAgain(void);

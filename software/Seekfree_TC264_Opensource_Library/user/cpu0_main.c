@@ -68,8 +68,8 @@ int core0_main(void)
     EncoderInit();
     ADCInit();
     KEYInit();
-    mt9v03x_init();//初始化摄像头
-    tft180_init();//初始化tft
+//    mt9v03x_init();//初始化摄像头
+//    tft180_init();//初始化tft
     UARTInit();//初始化蓝牙模块
 //    icm20602_init();
 //    GyroOffsetInit();
@@ -80,7 +80,7 @@ int core0_main(void)
     gpio_init(P21_5, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     //给蜂鸣器低电平
-    gpio_init(P11_12,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
+//    gpio_init(P11_12,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
     //初始化电机中断
     pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
 /*************************参数初始化***************************/

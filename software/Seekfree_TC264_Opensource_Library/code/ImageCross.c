@@ -12,98 +12,107 @@
 #include "motor.h"
 #include "zf_device_tft180.h"
 
-typedef enum Cross_Type
+typedef enum CrossType
 {
-    CROSS_IN = 0,
-    CROSS_OUT,
-}Cross_Type;
+    kCrossBegin = 0,
+    kCrossIn,
+    kCrossOut,
+}CrossType;
 
-Cross_Type cross_type = CROSS_IN;
+CrossType cross_type = kCrossBegin;
 
 /***********************************************
 * @brief : 十字路口状态机
 * @param : void
 * @return: 0:不是十字
 *          1:识别到十字
-* @date  : 2023.3.10
+* @date  : 2023.3.21
 * @author: L
 ************************************************/
 uint8 CrossIdentify(void)
 {
     switch (cross_type)
     {
-        case CROSS_IN:
+    case kCrossBegin:
+    {
+        int16 corner_id_l = 0, corner_id_r = 0;
+        if ((CrossFindCorner(&corner_id_l, &corner_id_r) != 0) && (f_left_line[l_line_count - 1].X < f_left_line[corner_id_l].X || f_right_line[r_line_count - 1].X > f_right_line[corner_id_r].X))
         {
-            int  corner_id_l = 0, corner_id_r = 0;
-            int white_count = 0;
+            if ((corner_id_l == 0) && (corner_id_r != 0))
+                aim_distance = (float)corner_id_r * SAMPLE_DIST;
+            else if ((corner_id_l != 0) && (corner_id_r == 0))
+                aim_distance = (float)corner_id_l * SAMPLE_DIST;
+            else
+                aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
 
-            for (int i = 0; i < MT9V03X_W; i++)
-            {
-                if (mt9v03x_image[MT9V03X_H - 58][i] >= 240)
-                    white_count++;
-            }
-            if (white_count >= MT9V03X_W - 8)
-            {
-                cross_type = CROSS_OUT;
-                aim_distance = 0.32;
-            }
-
-            if (CrossFindCorner(&corner_id_l,&corner_id_r) == 1 && (f_left_line[corner_id_l + 4].X < f_left_line[corner_id_l].X || f_right_line[corner_id_r + 4].X > f_right_line[corner_id_r].X))
-            {
-                if (corner_id_l == 0 && corner_id_r != 0)
-                    aim_distance = (float)corner_id_r * SAMPLE_DIST;
-                else if (corner_id_l != 0 && corner_id_r == 0)
-                    aim_distance = (float)corner_id_l * SAMPLE_DIST;
-                else
-                    aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
-
-
-            }
-            break;
+            if (corner_id_l < 8 && corner_id_r < 8)
+                cross_type = kCrossIn;
         }
-        case CROSS_OUT:
+        else
+            aim_distance = 0.32;
+        break;
+    }
+    case kCrossIn:
+    {
+        uint8 change_lr_flag = 0;
+        uint8 corner_find = 0;
+
+        EdgeDetection_Cross();
+
+        BlurPoints(left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+        BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
+
+        local_angle_points(f_left_line, l_line_count, l_angle, ANGLE_DIST / SAMPLE_DIST);
+        local_angle_points(f_right_line, r_line_count, r_angle, ANGLE_DIST / SAMPLE_DIST);
+
+        nms_angle(l_angle, l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
+        nms_angle(r_angle, r_line_count, r_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
+
+        for (int i = 0; i < r_line_count; i++)
         {
-//            gpio_toggle_level(P20_9);
-            int corner_id_l = 0, corner_id_r = 0;
-            CrossFindCorner(&corner_id_l, &corner_id_r);
-
-            if (corner_id_l < 3 && corner_id_r < 3)
+            if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
             {
-                EdgeDetection_Cross();
-
-                BlurPoints(left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
-                BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
-
-                local_angle_points(f_left_line, l_line_count, l_angle, ANGLE_DIST / SAMPLE_DIST);
-                local_angle_points(f_right_line, r_line_count, r_angle, ANGLE_DIST / SAMPLE_DIST);
-
-                nms_angle(l_angle, l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
-                nms_angle(r_angle, r_line_count, r_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
-
-                if(CrossFindCorner(&corner_id_l,&corner_id_r) == 0)
+                track_rightline(f_right_line, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                track_type = kTrackRight;
+                aim_distance = (float)i * SAMPLE_DIST;
+                change_lr_flag = 1;
+                corner_find = 1;
+                break;
+            }
+        }
+        if (change_lr_flag == 0)
+        {
+            for (int i = 0; i < l_line_count; i++)
+            {
+                if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
                 {
-//                    while(1)
-//                    {
-//                        gpio_set_level(P21_4,0);
-//                        base_speed = 0;
-//                        image_bias=0;
-//                    }
-                    cross_type = CROSS_IN;
-                    return 1;
-                }
-                else
-                {
-                    if (corner_id_l == 0 && corner_id_r != 0)
-                        aim_distance = (float)corner_id_r * SAMPLE_DIST;
-                    else if (corner_id_l != 0 && corner_id_r == 0)
-                        aim_distance = (float)corner_id_l * SAMPLE_DIST;
-                    else
-                        aim_distance = ((float)(corner_id_l + corner_id_r + 5)) * SAMPLE_DIST / 2;
+                    track_leftline(f_left_line, l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                    track_type = kTrackLeft;
+                    aim_distance = (float)i * SAMPLE_DIST;
+                    corner_find = 1;
+                    break;
                 }
             }
-            break;
         }
-        default:break;
+        if (corner_find == 0)
+        {
+            track_rightline(f_right_line, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+            cross_type = kCrossOut;
+        }
+
+        break;
+    }
+    case kCrossOut:
+    {
+        if (l_line_count > 10 && r_line_count > 10)
+        {
+            aim_distance = 0.32;
+            cross_type = kCrossBegin;
+            return 1;
+        }
+        break;
+    }
+    default:break;
     }
     return 0;
 }
@@ -113,44 +122,38 @@ uint8 CrossIdentify(void)
 * @param : corner_id_l:左角点在第几个点
 *          corner_id_r:右角点在第几个点
 * @return: 0：没有角点
-*          1:找到角点
-* @date  : 2023.3.7
+*          1:找到两个角点
+*          2:找到一个角点，且另一边丢线
+* @date  : 2023.3.21
 * @author: L
 ************************************************/
-uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r)
+uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
 {
-    bool cross_found_l = false, cross_found_r = false;
+    uint8 cross_find_l = FALSE, cross_find_r = FALSE;
 
-    for (int i = 0; i < l_line_count; i++)
+    for (int16 i = 0; i < l_line_count; i++)
     {
-        if (l_angle_1[i] == 0) continue;
-        if (cross_found_l == false && fabs(l_angle_1[i]) > 80 * 3.14 / 180 && fabs(l_angle_1[i]) < 110 * 3.14 / 180)
+        if (cross_find_l == FALSE &&((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180)))
         {
-//            tft180_show_float(100, 80,l_angle_1[i], 2, 3);
-//            *corner_id_l = i;
-            *corner_id_l = USE_IMAGE_H - f_left_line[i].Y;
-            cross_found_l = true;
+            *corner_id_l = i;
+            cross_find_l = TRUE;
+            break;
         }
-        else
-           *corner_id_l = 0;
     }
     for (int i = 0; i < r_line_count; i++)
     {
-        if (r_angle_1[i] == 0) continue;
-        if (cross_found_r == false && fabs(r_angle_1[i]) > 80 * 3.14 / 180 && fabs(r_angle_1[i]) < 110 * 3.14 / 180)
+        if (cross_find_r == FALSE && ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180)))
         {
-//            tft180_show_float(100, 100,r_angle_1[i], 2, 3);
-//            *corner_id_r = i;
-            *corner_id_r = USE_IMAGE_H - f_right_line[i].Y;
-            cross_found_r = true;
+            *corner_id_r = i;
+            cross_find_r = TRUE;
+            break;
         }
-        else
-            *corner_id_r = 0;
     }
-    if (cross_found_l && cross_found_r)
+
+    if (cross_find_l == TRUE && cross_find_r == TRUE)
         return 1;
-    else if ((cross_found_l && r_line_count < 5) || (cross_found_r && l_line_count < 5))
-        return 1;
+    else if ((cross_find_l == TRUE && (r_line_count < 10)) || (cross_find_r == TRUE && (l_line_count < 10)))
+        return 2;
     else
         return 0;
 }
@@ -159,13 +162,13 @@ uint8 CrossFindCorner(int* corner_id_l,int* corner_id_r)
 * @brief : 十字扫线
 * @param : void
 * @return: void
-* @date  : 2023.3.8
+* @date  : 2023.3.21
 * @author: L
 ************************************************/
 void EdgeDetection_Cross(void)
 {
     myPoint left_seed, right_seed;
-    left_seed.X = left_line[l_line_count - 1].X; left_seed.Y = left_line[l_line_count - 1].Y; right_seed.X = right_line[r_line_count - 1].X; right_seed.Y = right_line[r_line_count - 1].Y;
+    left_seed = left_line[l_line_count - 1]; right_seed = right_line[r_line_count - 1];
     l_line_count = 0; r_line_count = 0;
     uint8 change_lr_flag = 0, left_finish = 0, right_finish = 0;//change_lr_flag=0:左边生长 change_lr_flag=1:右边生长
     uint8 is_loseline = 0;
@@ -246,8 +249,4 @@ void EdgeDetection_Cross(void)
         else break;
     } while (left_seed.Y != right_seed.Y || left_seed.X != right_seed.X);
 }
-
-
-
-
 
