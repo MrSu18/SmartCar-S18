@@ -14,8 +14,7 @@
 
 typedef enum GarageType_l
 {
-    kGarage_Begin_l = 0,
-    kGarage_In_l,
+    kGarage_In_l = 0,
     kGarage_End_l,
 }GarageType_l;
 
@@ -26,74 +25,40 @@ typedef enum GarageType_r
     kGarage_End_r,
 }GarageType_r;
 
-GarageType_l garage_type_l = kGarage_Begin_l;
+GarageType_l garage_type_l = kGarage_In_l;
 GarageType_r garage_type_r = kGarage_Begin_r;
 uint8 flag = 0;
 int temp = 0;
 
 uint8 GarageIdentify_L(void)
 {
-    int corner_id = 0;
     switch (garage_type_l)
     {
-    case kGarage_Begin_l://判断是否有左下角点，且右边线存在，寻左线，切换到kGarare_In_l
+    case kGarage_In_l://判断是否有左下角点，且右边线存在，寻左线，切换到kGarare_In_l
     {
+        int corner_id = 0;
         if (GarageFindCorner(&corner_id) == 1)//判断角点还有电磁偏差是否为0左右
         {
             gpio_set_level(P21_5,0);
             track_type = kTrackRight;
             if (corner_id < 12)
-                garage_type_l = kGarage_In_l;
+                garage_type_l = kGarage_End_l;
         }
         break;
     }
-    case kGarage_In_l:
+    case kGarage_End_l:
     {
 
         gpio_set_level(P20_9,0);
 
-//        EdgeDetection_Garage('l');
-//
-//        BlurPoints(left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
-//        local_angle_points(f_left_line, l_line_count, l_angle, ANGLE_DIST / SAMPLE_DIST);
-//        nms_angle(l_angle, l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
-//
-//        track_type = kTrackLeft;
+        image_bias = 20;
+        system_delay_ms(1000);
 
-//        if (GarageFindCorner(&corner_id) == 1)
-//            aim_distance = (float)corner_id * SAMPLE_DIST;
-
-        MotorSetPWM(-1500,4000);
-        pit_disable(CCU60_CH0);
-        system_delay_ms(100);
-        pit_enable(CCU60_CH0);
-        garage_type_l = kGarage_End_l;
-//        system_start();
-//        PIDClear();
-//        if (r_line_count < 2 && flag == 0)
-//            flag = 1;
-//        if(flag == 1 && r_line_count>5)
-//            garage_type_l = kGarage_End_l;
-        break;
-    }
-    case kGarage_End_l://出现两个角点，停车
-    {
-//        pit_enable(CCU60_CH0);
-//
-//        temp += system_getval_ms();
-//        if (temp >=10)
-//        {
-//          gpio_set_level(P21_4,0);
-//          while(1){
-//          image_bias = 0;
-//          base_speed = 0;
-//          pit_disable(CCU60_CH0);
-//          }
-//            return 1;
-//        }
-        PIDClear();
-        base_speed = 0;
-        pit_disable(CCU60_CH0);
+        while(1)
+        {
+            base_speed = 0;
+            image_bias = 0;
+        }
         break;
     }
     default:break;

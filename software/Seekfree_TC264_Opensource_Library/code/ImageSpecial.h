@@ -20,6 +20,7 @@ uint8 GarageIdentify_R(void);
 void EdgeDetection_Garage(uint8 flag);
 //断路函数
 uint8 CutIdentify(void);
+uint8 CutFindCorner(int16 corner_id[2],uint8 lr_flag);
 //十字路口函数
 uint8 CrossIdentify(void);
 uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r);
