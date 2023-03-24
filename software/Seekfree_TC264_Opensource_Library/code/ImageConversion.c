@@ -26,12 +26,12 @@ uint8 otsuThreshold(uint8* image, uint16 width, uint16 height)
     int pixelCount[GrayScale] = { 0 };//每个灰度值所占像素个数
     float pixelPro[GrayScale] = { 0 };//每个灰度值所占总像素比例
     int i, j;
-    int Sumpix = (width * height)/4;   //总像素点
+    int Sumpix = (width/2 * (106-55));   //总像素点
     uint8 threshold = 0;
     uint8* data = image;  //指向像素数据的指针
 
     //统计灰度级中每个像素在整幅图像中的个数
-    for (i = 0; i < height; i+=2)
+    for (i = 55; i < 106; i++)
     {
         for (j = 0; j < width; j+=2)
         {
@@ -90,8 +90,7 @@ void ImagePerspective_Init(void)
 {
     static uint8 BlackColor = IMAGE_BAN;
     //逆透视矩阵
-    double change_un_Mat[3][3] ={{-3.413225,2.943237,-46.382657},{-0.062986,0.797989,-77.232124},{-0.001500,0.032568,-2.232342}};
-
+    double change_un_Mat[3][3] ={{-5.646070,6.116770,-158.737697},{0.282977,2.882744,-258.992498},{0.004492,0.066291,-4.829664}};
     for (int i = 0; i < PER_IMAGE_W; i++)
     {
         for (int j = 0; j < PER_IMAGE_H; j++)

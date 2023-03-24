@@ -4,7 +4,7 @@
 #include "zf_device_mt9v03x.h"
 
 //图像转化的宏定义
-#define PER_IMAGE_W     96             //逆透视图像的宽度
+#define PER_IMAGE_W     94             //逆透视图像的宽度
 #define PER_IMAGE_H     60             //逆透视图像的高度
 #define USE_IMAGE_W		PER_IMAGE_W	    //使用的图像宽度
 #define USE_IMAGE_H		PER_IMAGE_H		//使用的图像高度

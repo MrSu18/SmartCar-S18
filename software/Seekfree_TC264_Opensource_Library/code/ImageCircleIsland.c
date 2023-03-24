@@ -4,17 +4,18 @@
 #include "ImageSpecial.h"
 #include "ImageTrack.h"
 #include <stdio.h>
+#include "zf_device_tft180.h"
 
 uint8 CircleIslandLStatus()//右边环岛状态状态机
 {
     static uint8 status;//环岛状态转移变量
-
+    tft180_show_int(120, 0, status,2);
     switch (status)
     {
         case 0: //检测左环岛
             if(CircleIslandLDetection()==1)
             {
-                printf("CircleIslandDetection success\r\n");
+//                printf("CircleIslandDetection success\r\n");
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
                 track_type=kTrackRight;
             }
@@ -221,7 +222,10 @@ uint8 CircleIslandLOut(void)
             status=0;
             return 1;
         }
-        track_type=kTrackRight;
+        if(l_line_count>TRACK_RIGHTLINE_OUT_THR)
+            track_type=kTrackLeft;
+        else
+            track_type=kTrackRight;
     }
     else//如果左边线太少了需要补线出环
     {
