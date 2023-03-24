@@ -133,7 +133,7 @@ void MotorCtrl(void)
     pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);                 //获取右电机PWM
 
     c0h0_isr_flag=1;
-    MotorSetPWM(pwm_left,pwm_right);                                                //将两个PWM值赋给电机
+//    MotorSetPWM(pwm_left,pwm_right);                                                //将两个PWM值赋给电机
 }
 /***********************************************
 * @brief : 计算一段时间走过的路程
