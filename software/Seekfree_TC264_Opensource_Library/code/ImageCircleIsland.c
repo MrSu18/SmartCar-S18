@@ -9,7 +9,7 @@
 uint8 CircleIslandLStatus()//ÓÒ±ß»·µº×´Ì¬×´Ì¬»ú
 {
     static uint8 status;//»·µº×´Ì¬×ªÒÆ±äÁ¿
-    tft180_show_int(120, 0, status,2);
+    //tft180_show_int(120, 0, status,2);
     switch (status)
     {
         case 0: //¼ì²â×ó»·µº

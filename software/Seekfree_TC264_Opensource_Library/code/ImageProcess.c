@@ -28,7 +28,7 @@ void OutProtect(void)
 
     for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
     {
-        if(mt9v03x_image[MT9V03X_H-50][i] <= OUT_THRESHOLD)
+        if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
                 over_count++;
     }
 
@@ -55,6 +55,7 @@ void OutProtect(void)
 ************************************************/
 void ImageProcess(void)
 {
+    static uint8 status=1;
     //扫线
     EdgeDetection();
     //对边线进行滤波
@@ -92,6 +93,27 @@ void ImageProcess(void)
 //    GarageIdentify_R();
 //    CrossIdentify();
 
+//    switch(status)
+//    {
+//        case 1:
+//            if(CircleIslandLStatus()==1)
+//            {
+//               status=2;
+//            }
+//            break;
+//        case 2:
+//            if(CrossIdentify() == 1)
+//            {
+//                while(1)
+//                {
+//                    pit_disable(CCU60_CH0);//关闭电机中断
+//                    MotorSetPWM(0,0);
+//                }
+//            }
+//            break;
+//        default:break;
+//    }
+
 //    if(CrossIdentify() == 1)
 //    {
 //        while(1)
@@ -105,14 +127,14 @@ void ImageProcess(void)
 //
 //    }
       //环岛状态机测试
-    if(CircleIslandLStatus()==1)
-    {
-        while(1)
-        {
-            pit_disable(CCU60_CH0);//关闭电机中断
-            MotorSetPWM(0,0);
-        }
-    }
+//    if(CircleIslandLStatus()==1)
+//    {
+//        while(1)
+//        {
+//            pit_disable(CCU60_CH0);//关闭电机中断
+//            MotorSetPWM(0,0);
+//        }
+//    }
 
     //预瞄点求偏差
     if(track_type==kTrackRight)

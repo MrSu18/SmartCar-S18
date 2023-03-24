@@ -85,11 +85,12 @@ int core0_main(void)
     pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
-    PIDInit(&speedpid_left,301.85,2.62,0);      //zf 288.71 2.33
-    PIDInit(&speedpid_right,301.85,2.62,0);     //zf 300.39 2.34        lq 299.02 2.34
-    PIDInit(&turnpid_image,10,0,0);
+    PIDInit(&speedpid_left,208.0045,1.46,0);      //zf 301.85 2.62
+    PIDInit(&speedpid_right,219.84,1.59,0);       //zf 301.85 2.62
+                                //l: 233.58  1.95       r:173.23  1.36
+    PIDInit(&turnpid_image,12,0,0);
     PIDInit(&turnpid_adc,9,0,0);
-    base_speed=120;
+    base_speed=130;
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕

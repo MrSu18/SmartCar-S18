@@ -76,7 +76,7 @@ void core1_main(void)
             system_delay_ms(1000);
             encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
             encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
-//            pit_enable(CCU60_CH0);
+            pit_enable(CCU60_CH0);
             break;
         }
     }
@@ -89,10 +89,10 @@ void core1_main(void)
         {
 #if 1
             //出界保护
-//            OutProtect();
+            OutProtect();
 
             ImageBinary();
-            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 94, 60);
+//            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 94, 60);
 //            tft180_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
             gpio_toggle_level(P20_8);
             ImageProcess();
@@ -104,10 +104,10 @@ void core1_main(void)
 //            {
 //                tft180_draw_point((uint16)f_left_line[i].X, (uint16)center_line_l[i].Y, RGB565_BLUE);
 //            }
-            for(int i=0;i<r_line_count;i++)
-            {
-                tft180_draw_point((uint16)f_right_line[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
-            }
+//            for(int i=0;i<r_line_count;i++)
+//            {
+//                tft180_draw_point((uint16)f_right_line[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
+//            }
 //            tft180_show_int(30, 62, l_line_count, 3);
 //            tft180_show_int(60, 62, r_line_count, 3);
 //            for(int i=0;i<Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);i++)
@@ -116,13 +116,13 @@ void core1_main(void)
 //            }
             TrackBasicClear();
 #else
-//            MotorSetPWM(1500, 1500);
-//            system_delay_ms(4000);
-//            while(1)
-//            {
-//                MotorSetPWM(0, 0);
-//            }
-            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
+            MotorSetPWM(2000,2000);
+            system_delay_ms(4000);
+            while(1)
+            {
+                MotorSetPWM(0, 0);
+            }
+//            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
             mt9v03x_finish_flag=0;
         }
