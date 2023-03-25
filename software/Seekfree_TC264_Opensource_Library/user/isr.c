@@ -45,7 +45,6 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-//    ADCGetValue(adc_value);
 }
 
 

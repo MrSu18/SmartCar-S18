@@ -116,8 +116,8 @@ void core1_main(void)
 //            }
             TrackBasicClear();
 #else
-            MotorSetPWM(2000,2000);
-            system_delay_ms(4000);
+            MotorSetPWM(1000,2000);
+            system_delay_ms(3000);
             while(1)
             {
                 MotorSetPWM(0, 0);

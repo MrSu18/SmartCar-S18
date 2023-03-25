@@ -14,7 +14,7 @@ int16 speed_left = 0,speed_right = 0;                   //左右轮当前编码器的值
 uint8 c0h0_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 uint16 base_speed = 0;
 TrackMode track_mode = kTrackImage;
-TrackMode last_track_mode = track_mode;
+TrackMode last_track_mode = kTrackImage;
 
 /***********************************************
 * @brief : 初始化左右两个编码器
@@ -118,26 +118,26 @@ void MotorCtrl(void)
 
     EncoderGetCount(&speed_left,&speed_right);                                      //获取编码器的值
 
-    if(track_mode == kTrackImage)                                                   //当前为摄像头循迹
-    {
-        if(last_track_mode == kTrackADC)                                            //上一次循迹为电磁循迹则复位PID参数
-            PIDClear();
-
+//    if(track_mode == kTrackImage)                                                   //当前为摄像头循迹
+//    {
+//        if(last_track_mode == kTrackADC)                                            //上一次循迹为电磁循迹则复位PID参数
+//            PIDClear();
+//
         PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
-
+        printf("%d,%d\n",target_left,target_right);
         pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
         pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
-    }
-    else if(track_mode == kTrackADC)                                                //当前为电磁循迹
-    {
-        if(last_track_mode == kTrackImage)                                          //上一次循迹为摄像头循迹则复位PID参数
-            PIDClear();
-
-        PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //电磁方向环PID
-
-        pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left_1);               //获取蓝布上左电机PWM
-        pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right_1);           //获取蓝布上右电机PWM
-    }
+//    }
+//    else if(track_mode == kTrackADC)                                                //当前为电磁循迹
+//    {
+//        if(last_track_mode == kTrackImage)                                          //上一次循迹为摄像头循迹则复位PID参数
+//            PIDClear();
+//
+//        PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //电磁方向环PID
+//
+//        pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left_1);               //获取蓝布上左电机PWM
+//        pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right_1);           //获取蓝布上右电机PWM
+//    }
 
     c0h0_isr_flag=1;
     MotorSetPWM(pwm_left,pwm_right);                                                //将两个PWM值赋给电机
