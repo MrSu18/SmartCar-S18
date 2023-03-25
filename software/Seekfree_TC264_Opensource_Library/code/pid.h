@@ -26,6 +26,8 @@ typedef struct
 
 extern PID speedpid_left;
 extern PID speedpid_right;
+extern PID speedpid_left_1;
+extern PID speedpid_right_1;
 extern PID turnpid_image;
 extern PID turnpid_adc;
 extern float image_bias;

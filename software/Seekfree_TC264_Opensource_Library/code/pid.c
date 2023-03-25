@@ -7,8 +7,10 @@
 #include "pid.h"
 #include "ImageTrack.h"
 
-PID speedpid_left;                          //左轮速度环PID
-PID speedpid_right;                         //右轮速度环PID
+PID speedpid_left;                          //赛道左轮速度环PID
+PID speedpid_right;                         //赛道右轮速度环PID
+PID speedpid_left_1;                        //蓝布左轮速度环PID
+PID speedpid_right_1;                       //蓝布右轮速度环PID
 PID turnpid_image;                          //图像转向环PID
 PID turnpid_adc;                            //电磁转向环PID
 
@@ -112,6 +114,8 @@ void PIDClear(void)
 {
     PIDInit(&speedpid_left,301.85,2.62,0);
     PIDInit(&speedpid_right,301.85,2.62,0);
+    PIDInit(&turnpid_image,10,0,0);
+    PIDInit(&turnpid_adc,9,0,0);
     PIDInit(&turnpid_image,10,0,0);
     PIDInit(&turnpid_adc,9,0,0);
 }

@@ -47,6 +47,7 @@ uint8 CutIdentify(void)
             }
             if (corner_id[0] < 8)
             {
+                last_track_mode = track_mode;
                 track_mode = kTrackADC;
                 cut_type = kCutOut;
                 aim_distance = 0.32;
@@ -67,6 +68,7 @@ uint8 CutIdentify(void)
                 }
                 if (corner_id[0] < 8)
                 {
+                    last_track_mode = track_mode;
                     track_mode = kTrackADC;
                     cut_type = kCutOut;
                     aim_distance = 0.32;
@@ -79,6 +81,7 @@ uint8 CutIdentify(void)
     {
         if (l_line_count > 20 && r_line_count > 20)
         {
+            last_track_mode = track_mode;
             track_mode = kTrackImage;
             cut_type = kCutIn;
             return 1;

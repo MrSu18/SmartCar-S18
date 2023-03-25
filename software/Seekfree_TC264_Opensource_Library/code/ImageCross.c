@@ -33,11 +33,13 @@ uint8 CrossIdentify(void)
 {
     switch (cross_type)
     {
+     //识别有角点，且边线向左右两边分开，则更改预瞄点，当角点离得很近的时候表示已经要进入十字，切换状态
     case kCrossBegin:
     {
-        int16 corner_id_l = 0, corner_id_r = 0;
+        int16 corner_id_l = 0, corner_id_r = 0;         //角点在边线的第几个点
         if ((CrossFindCorner(&corner_id_l, &corner_id_r) != 0) && (f_left_line[l_line_count - 1].X < f_left_line[corner_id_l].X || f_right_line[r_line_count - 1].X > f_right_line[corner_id_r].X))
         {
+            //如果只有一边有角点，则不用求平均值，如果有两个角点，则求平均值
             if ((corner_id_l == 0) && (corner_id_r != 0))
                 aim_distance = (float)corner_id_r * SAMPLE_DIST;
             else if ((corner_id_l != 0) && (corner_id_r == 0))
@@ -45,6 +47,7 @@ uint8 CrossIdentify(void)
             else
                 aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
 
+            //角点很近，切换下一个状态
             if (corner_id_l < 8 && corner_id_r < 8)
                 cross_type = kCrossIn;
         }
@@ -52,10 +55,11 @@ uint8 CrossIdentify(void)
             aim_distance = 0.32;
         break;
     }
+    //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，如果没有找到角点，则表示已经要出了十字，切换状态
     case kCrossIn:
     {
-        uint8 change_lr_flag = 0;
-        uint8 corner_find = 0;
+        uint8 change_lr_flag = 0;               //切换寻找左右边线角点的标志位，默认右线找角点，没找到则从左线找
+        uint8 corner_find = 0;                  //是否找到角点的标志位
 
         EdgeDetection_Cross();
 
@@ -68,42 +72,50 @@ uint8 CrossIdentify(void)
         nms_angle(l_angle, l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
         nms_angle(r_angle, r_line_count, r_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
 
+        //找右线角点
         for (int i = 0; i < r_line_count; i++)
         {
+            //找到角点则寻右线，不寻左线，改变预瞄点
             if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
             {
                 track_rightline(f_right_line, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                 track_type = kTrackRight;
                 aim_distance = (float)i * SAMPLE_DIST;
-                change_lr_flag = 1;
-                corner_find = 1;
+                change_lr_flag = 1;                             //等于1则不从左线找角点
+                corner_find = 1;                                //等于0是默认寻右线，这里是寻右线
                 break;
             }
         }
+        //右线没找到角点，从左线找
         if (change_lr_flag == 0)
         {
             for (int i = 0; i < l_line_count; i++)
             {
+                //找到角点则寻左线，改变预瞄点
                 if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
                 {
                     track_leftline(f_left_line, l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackLeft;
                     aim_distance = (float)i * SAMPLE_DIST;
-                    corner_find = 1;
+                    corner_find = 1;                                //等于0是默认寻右线，这里是寻左线线
                     break;
                 }
             }
         }
+        //没有找到角点，默认寻右线，切换下一个状态
         if (corner_find == 0)
         {
             track_rightline(f_right_line, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+            track_type = kTrackRight;
             cross_type = kCrossOut;
         }
 
         break;
     }
+    //判断是否已经出了十字
     case kCrossOut:
     {
+        //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
         if (l_line_count > 10 && r_line_count > 10)
         {
             aim_distance = 0.32;
@@ -129,8 +141,9 @@ uint8 CrossIdentify(void)
 ************************************************/
 uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
 {
-    uint8 cross_find_l = FALSE, cross_find_r = FALSE;
+    uint8 cross_find_l = FALSE, cross_find_r = FALSE;                       //是否找到角点标志位
 
+    //找左角点
     for (int16 i = 0; i < l_line_count; i++)
     {
         if (cross_find_l == FALSE &&((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180)))
@@ -140,6 +153,7 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
             break;
         }
     }
+    //找右角点
     for (int i = 0; i < r_line_count; i++)
     {
         if (cross_find_r == FALSE && ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180)))
@@ -150,6 +164,7 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
         }
     }
 
+    //如果两边都找到角点，返回1，一边找到角点且另一边丢线，返回2，否则返回0
     if (cross_find_l == TRUE && cross_find_r == TRUE)
         return 1;
     else if ((cross_find_l == TRUE && (r_line_count < 10)) || (cross_find_r == TRUE && (l_line_count < 10)))
@@ -167,16 +182,17 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
 ************************************************/
 void EdgeDetection_Cross(void)
 {
-    myPoint left_seed, right_seed;
+    myPoint left_seed, right_seed;              //左右种子
     left_seed = left_line[l_line_count - 1]; right_seed = right_line[r_line_count - 1];
-    l_line_count = 0; r_line_count = 0;
+    l_line_count = 0; r_line_count = 0;         //对原边线清零
     uint8 change_lr_flag = 0, left_finish = 0, right_finish = 0;//change_lr_flag=0:左边生长 change_lr_flag=1:右边生长
-    uint8 is_loseline = 0;
+    uint8 is_loseline = 0;                      //是否丢线的标志位，丢线则继续生长，不丢线就计入边线
     do
     {
         if (change_lr_flag == 0 && left_finish == 0)
         {
             is_loseline = EightAreasSeedGrown(&left_seed, 'l', &left_seed_num);
+            //丢线，不计入边线
             if (is_loseline == 2)
             {
                 //切换左右巡线的标志变量
@@ -190,6 +206,7 @@ void EdgeDetection_Cross(void)
                     if (right_finish != 1)  change_lr_flag = !change_lr_flag;
                 }
             }
+            //找到边线
             else if (is_loseline == 1)
             {
                 left_line[l_line_count] = left_seed; l_line_count++;
@@ -213,6 +230,7 @@ void EdgeDetection_Cross(void)
         else if (change_lr_flag == 1 && right_finish == 0)
         {
             is_loseline = EightAreasSeedGrown(&right_seed, 'r', &right_seed_num);
+            //丢线，不计入边线
             if (is_loseline == 2)
             {
                 //切换左右巡线的标志变量
@@ -226,6 +244,7 @@ void EdgeDetection_Cross(void)
                     if (left_finish != 1)  change_lr_flag = !change_lr_flag;
                 }
             }
+            //找到边线
             else if (is_loseline == 1)
             {
                 right_line[r_line_count] = right_seed; r_line_count++;

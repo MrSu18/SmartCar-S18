@@ -85,10 +85,11 @@ int core0_main(void)
     pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
-    PIDInit(&speedpid_left,208.0045,1.46,0);      //zf 301.85 2.62
-    PIDInit(&speedpid_right,219.84,1.59,0);       //zf 301.85 2.62
-                                //l: 233.58  1.95       r:173.23  1.36
-    PIDInit(&turnpid_image,12,0,0);
+    PIDInit(&speedpid_left,176.04,1.11,0);              //301.85 2.62
+    PIDInit(&speedpid_right,219.10,1.62,0);             //301.85 2.62
+    PIDInit(&speedpid_left_1,244.24,1.99,0);            //233.58  1.95
+    PIDInit(&speedpid_right_1,297.87,2.92,0);           //173.23  1.36
+    PIDInit(&turnpid_image,10,0,0);
     PIDInit(&turnpid_adc,9,0,0);
     base_speed=130;
 

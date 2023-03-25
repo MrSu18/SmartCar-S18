@@ -49,6 +49,7 @@ extern int16 speed_left,speed_right;
 extern uint8 c0h0_isr_flag;
 extern uint16 base_speed;
 extern TrackMode track_mode;
+extern TrackMode last_track_mode;
 
 void EncoderInit(void);                                                 //初始化左右两个编码器
 void EncoderGetCount(int16* data_left,int16* data_right);               //获取左右两个编码器的值
