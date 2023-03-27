@@ -11,7 +11,7 @@
 //图像循迹偏差
 float image_bias=0;
 //预瞄点
-float aim_distance = 0.32;
+float aim_distance = 0.45;
 // 变换后左右边线+滤波
 myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
 // 变换后左右边线+等距采样
@@ -236,7 +236,7 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
     // 车轮对应点(纯跟踪起始点)
     float cx = USE_IMAGE_W/2;
     float cy = USE_IMAGE_H;
-    float pure_angle=0;
+    float pure_angle=image_bias;
 
     // 找最近点(起始点中线归一化)
     float min_dist = 1e10;

@@ -44,6 +44,7 @@
 #include "key.h"
 //#include "icm20602.h"
 
+extern int temp1;
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
 // 然后在右侧的窗口中找到C/C++ Compiler->Optimization->Optimization level处设置优化等级
@@ -83,17 +84,16 @@ int core0_main(void)
     gpio_init(P11_12,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
     //初始化电机中断
     pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
+    pit_ms_init(CCU60_CH1,10);pit_disable(CCU60_CH1);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
-//    PIDInit(&speedpid_left,176.04,1.11,0);              //301.85 2.62
-//    PIDInit(&speedpid_right,219.10,1.62,0);             //301.85 2.62
-    PIDInit(&speedpid_left,136.13,0.68,0);
-    PIDInit(&speedpid_right,144.62,0.71,0);
-    PIDInit(&speedpid_left_1,244.24,1.99,0);            //233.58  1.95
-    PIDInit(&speedpid_right_1,297.87,2.92,0);           //173.23  1.36
-    PIDInit(&turnpid_image,14,0,0);
+    PIDInit(&speedpid_left,136.13,0.68,0);              //136.13  0.68
+    PIDInit(&speedpid_right,144.62,0.71,0);             //144.62  0.71
+    PIDInit(&speedpid_left_1,108.53,0.78,0);            //244.24  1.99
+    PIDInit(&speedpid_right_1,149.41,1.12,0);           //297.87  2.92
+    PIDInit(&turnpid_image,25,0,5);
     PIDInit(&turnpid_adc,10,0,0);
-    base_speed=140;
+    base_speed=160;
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
@@ -101,12 +101,16 @@ int core0_main(void)
     while (TRUE)
     {
         // 此处编写需要循环执行的代码
-       if(c0h0_isr_flag==1)
+//       if(c0h0_isr_flag==1)
+//       {
+//           printf("%d,%d,%d,%d\r\n",speed_left,target_left,speed_right,target_right);
+//           c0h0_isr_flag=0;
+//       }
+       if(c0h1_isr_flag==1)
        {
-           printf("%d,%d\r\n",speed_left,speed_right);
-           c0h0_isr_flag=0;
+           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
+           c0h1_isr_flag=0;
        }
-
         // 此处编写需要循环执行的代码
     }
 }

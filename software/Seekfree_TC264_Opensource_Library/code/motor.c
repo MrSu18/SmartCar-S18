@@ -11,7 +11,8 @@
 int16 last_data_l = 0,last_data_r = 0;
 int8 circle_flag = 0;                                   //圆环标志位，1为检测到环岛
 int16 speed_left = 0,speed_right = 0;                   //左右轮当前编码器的值
-uint8 c0h0_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
+int16 target_left = 0,target_right = 0;                 //左右轮的目标速度的值
+uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 uint16 base_speed = 0;
 TrackMode track_mode = kTrackImage;
 TrackMode last_track_mode = kTrackImage;
@@ -114,7 +115,6 @@ void MotorSetPWM(int pwm_left,int pwm_right)
 void MotorCtrl(void)
 {
     int pwm_left = 0,pwm_right = 0;                                                 //左右电机PWM
-    int16 target_left = 0,target_right = 0;                                         //左右轮的目标速度的值
 
     EncoderGetCount(&speed_left,&speed_right);                                      //获取编码器的值
 
@@ -123,8 +123,8 @@ void MotorCtrl(void)
 //        if(last_track_mode == kTrackADC)                                            //上一次循迹为电磁循迹则复位PID参数
 //            PIDClear();
 //
-        PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
-        printf("%d,%d\n",target_left,target_right);
+//        PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
+//        printf("%d,%d\n",target_left,target_right);
         pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
         pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
 //    }

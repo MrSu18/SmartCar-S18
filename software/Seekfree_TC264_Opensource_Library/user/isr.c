@@ -37,6 +37,7 @@
 #include "isr.h"
 #include "bluetooth.h"
 #include "adc.h"
+#include "motor.h"
 
 // **************************** PIT中断函数 ****************************
 IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
@@ -53,6 +54,8 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU60_CH1);
 
+    PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
+    c0h1_isr_flag=1;
 }
 
 IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)

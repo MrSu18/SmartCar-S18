@@ -51,8 +51,8 @@ uint8 GarageIdentify_L(void)
 
         gpio_set_level(P20_9,0);
 
-        image_bias = 20;
-        system_delay_ms(1000);
+        image_bias = 15;
+        system_delay_ms(800);
 
         while(1)
         {

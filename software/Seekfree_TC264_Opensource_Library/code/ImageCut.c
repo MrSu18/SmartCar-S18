@@ -50,7 +50,7 @@ uint8 CutIdentify(void)
                 last_track_mode = track_mode;
                 track_mode = kTrackADC;
                 cut_type = kCutOut;
-                aim_distance = 0.32;
+                aim_distance = 0.45;
             }
         }
         else if (r_corner_result == 0)
@@ -71,7 +71,7 @@ uint8 CutIdentify(void)
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
                     cut_type = kCutOut;
-                    aim_distance = 0.32;
+                    aim_distance = 0.45;
                 }
             }
         }

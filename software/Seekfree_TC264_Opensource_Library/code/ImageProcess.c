@@ -76,11 +76,19 @@ void ImageProcess(void)
     track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
 
     //切换左右巡线
-    if(l_line_count < 20)
+    if(r_line_count > 2 && l_line_count < 20)
     {
         track_type=kTrackRight;
     }
-    else if(r_line_count < 20)
+    else if(l_line_count>2 && r_line_count < 20)
+    {
+        track_type=kTrackLeft;
+    }
+    else if(l_line_count < 2 && r_line_count > 2)
+    {
+        track_type = kTrackRight;
+    }
+    else if(l_line_count > 2 && r_line_count < 2)
     {
         track_type=kTrackLeft;
     }
@@ -127,14 +135,14 @@ void ImageProcess(void)
 //
 //    }
       //环岛状态机测试
-    if(CircleIslandLStatus()==1)
-    {
-        while(1)
-        {
-            pit_disable(CCU60_CH0);//关闭电机中断
-            MotorSetPWM(0,0);
-        }
-    }
+//    if(CircleIslandLStatus()==1)
+//    {
+//        while(1)
+//        {
+//            pit_disable(CCU60_CH0);//关闭电机中断
+//            MotorSetPWM(0,0);
+//        }
+//    }
 
     //预瞄点求偏差
     if(track_type==kTrackRight)

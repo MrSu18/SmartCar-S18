@@ -52,7 +52,7 @@ uint8 CrossIdentify(void)
                 cross_type = kCrossIn;
         }
         else
-            aim_distance = 0.32;
+            aim_distance = 0.45;
         break;
     }
     //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，如果没有找到角点，则表示已经要出了十字，切换状态
@@ -118,7 +118,7 @@ uint8 CrossIdentify(void)
         //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
         if (l_line_count > 10 && r_line_count > 10)
         {
-            aim_distance = 0.32;
+            aim_distance = 0.45;
             cross_type = kCrossBegin;
             return 1;
         }
@@ -158,7 +158,6 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
     {
         if (cross_find_r == FALSE && ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180)))
         {
-            *corner_id_r = i;
             cross_find_r = TRUE;
             break;
         }

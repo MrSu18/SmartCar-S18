@@ -77,6 +77,7 @@ void core1_main(void)
             encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
             encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
             pit_enable(CCU60_CH0);
+            pit_enable(CCU60_CH1);
             break;
         }
     }
@@ -99,7 +100,7 @@ void core1_main(void)
 
 
 //            tft180_show_float(98, 15, aim_distance, 1, 3);
-//            tft180_show_float(98, 0, image_bias, 1, 3);
+//            tft180_show_float(98, 0, image_bias, 2, 3);
 //            for(int i=0;i<l_line_count;i++)
 //            {
 //                tft180_draw_point((uint16)f_left_line[i].X, (uint16)center_line_l[i].Y, RGB565_BLUE);
@@ -116,13 +117,13 @@ void core1_main(void)
 //            }
             TrackBasicClear();
 #else
-            MotorSetPWM(1000,2000);
-            system_delay_ms(3000);
-            while(1)
-            {
-                MotorSetPWM(0, 0);
-            }
-//            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
+//            MotorSetPWM(1500,3500);
+//            system_delay_ms(3000);
+//            while(1)
+//            {
+//                MotorSetPWM(0, 0);
+//            }
+            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
             mt9v03x_finish_flag=0;
         }
