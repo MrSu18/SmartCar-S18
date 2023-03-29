@@ -103,6 +103,43 @@ void ImageProcess(void)
 
 //    switch(status)
 //    {
+//    case 1:
+//    {
+//        if(CrossIdentify() == 1)
+//        {
+//           status = 2;
+//        }
+//        break;
+//    }
+//    case 2:
+//    {
+//        if(CutIdentify() == 1)
+//        {
+//            status = 3;
+//        }
+//        break;
+//    }
+//    case 3:
+//    {
+//        if(CrossIdentify() == 1)
+//        {
+//            status = 4;
+//        }
+//        break;
+//    }
+//    case 4:
+//    {
+//        if(GarageIdentify_L() == 1)
+//        {
+//            status = 5;
+//        }
+//        break;
+//    }
+//    default:break;
+//    }
+
+//    switch(status)
+//    {
 //        case 1:
 //            if(CircleIslandLStatus()==1)
 //            {

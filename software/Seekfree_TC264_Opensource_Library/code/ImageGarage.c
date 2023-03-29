@@ -51,13 +51,17 @@ uint8 GarageIdentify_L(void)
 
         gpio_set_level(P20_9,0);
 
-        image_bias = 15;
-        system_delay_ms(800);
+        image_bias = 25;
+        system_delay_ms(450);
 
         while(1)
         {
             base_speed = 0;
             image_bias = 0;
+            system_delay_ms(250);
+            pit_disable(CCU60_CH0);
+            pit_disable(CCU60_CH1);
+            MotorSetPWM(0,0);
         }
         break;
     }
@@ -131,7 +135,7 @@ uint8 GarageFindCorner(int* corner_id)
     for (int i = 0; i < r_line_count; i++)
     {
         if (r_angle_1[i] == 0) continue;
-        if (garage_find_r = false && (fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
+        if (garage_find_r == false && (fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
         {
             garage_find_r = true;
             *corner_id = i;

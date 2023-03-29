@@ -44,7 +44,6 @@
 #include "key.h"
 //#include "icm20602.h"
 
-extern int temp1;
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
 // 然后在右侧的窗口中找到C/C++ Compiler->Optimization->Optimization level处设置优化等级
@@ -91,7 +90,7 @@ int core0_main(void)
     PIDInit(&speedpid_right,144.62,0.71,0);             //144.62  0.71
     PIDInit(&speedpid_left_1,108.53,0.78,0);            //244.24  1.99
     PIDInit(&speedpid_right_1,149.41,1.12,0);           //297.87  2.92
-    PIDInit(&turnpid_image,25,0,5);
+    PIDInit(&turnpid_image,25,0,5);                     //25   5
     PIDInit(&turnpid_adc,10,0,0);
     base_speed=160;
 
