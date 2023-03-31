@@ -65,6 +65,12 @@ void PIDTurnImage(int16* target_left,int16* target_right,PID* pid)
     pid->out = (int)(pid->P*pid->err+pid->D*(pid->err-pid->last_err));
     pid->last_err = pid->err;                                               //保存上一次的值
 
+#if 0
+    //内减外加差速    转向PID P:13 D:0 速度:120 预瞄点:0.32 连续弯道会加速，暂时不采用这种
+    *target_left = base_speed - pid->out;
+    *target_right = base_speed + pid->out;
+#else
+    //内轮减速外轮不变
     if(pid->out>0)//左转
     {
         *target_left = base_speed - pid->out;
@@ -75,6 +81,7 @@ void PIDTurnImage(int16* target_left,int16* target_right,PID* pid)
         *target_left = base_speed;
         *target_right = base_speed + pid->out;
     }
+#endif
 }
 /***********************************************
 * @brief : 电磁转向环位置式PD控制

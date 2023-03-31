@@ -99,8 +99,8 @@ void core1_main(void)
             ImageProcess();
 
 
-//            tft180_show_float(98, 15, aim_distance, 1, 3);
-//            tft180_show_float(98, 0, image_bias, 2, 3);
+//            tft180_show_float(140, 15, aim_distance, 1, 3);
+//            tft180_show_float(98, 90, image_bias, 2, 3);
 //            for(int i=0;i<l_line_count;i++)
 //            {
 //                tft180_draw_point((uint16)f_left_line[i].X, (uint16)center_line_l[i].Y, RGB565_BLUE);
@@ -109,8 +109,8 @@ void core1_main(void)
 //            {
 //                tft180_draw_point((uint16)f_right_line[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
 //            }
-//            tft180_show_int(30, 62, l_line_count, 3);
-//            tft180_show_int(60, 62, r_line_count, 3);
+//            tft180_show_int(98, 30, l_line_count, 3);
+//            tft180_show_int(98, 60, r_line_count, 3);
 //            for(int i=0;i<Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);i++)
 //            {
 //                tft180_draw_point((uint16)center_line[i].X, (uint16)center_line[i].Y, RGB565_RED);

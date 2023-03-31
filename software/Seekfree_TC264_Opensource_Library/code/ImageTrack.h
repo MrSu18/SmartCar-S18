@@ -8,7 +8,7 @@
 #include "ImageBasic.h"//mypoint结构体
 
 //============================参数================================
-#define LINE_BLUR_KERNEL    3               //边线三角滤波核的大小
+#define LINE_BLUR_KERNEL    5               //边线三角滤波核的大小
 #define SAMPLE_DIST         0.02            //实际采样间距(m)
 #define PIXEL_PER_METER     51              //每一米有多少像素点
 #define ANGLE_DIST          0.1             //算角度的时候隔多少点去进行计算(m)
@@ -25,6 +25,7 @@ typedef enum TrackType//跟踪左右线切换的枚举类型变量
 {
     kTrackLeft=0,
     kTrackRight,
+    kTrackSpecial,//在元素里面就有偏差的值了
 }TrackType;
 
 //图像循迹偏差

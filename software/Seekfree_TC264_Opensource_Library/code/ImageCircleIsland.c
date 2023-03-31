@@ -5,17 +5,17 @@
 #include "ImageTrack.h"
 #include <stdio.h>
 #include "zf_device_tft180.h"
+#include "adc.h"
 
 uint8 CircleIslandLStatus()//右边环岛状态状态机
 {
-    static uint8 status;//环岛状态转移变量
-    //tft180_show_int(120, 0, status,2);
+    static uint8 status=0;//环岛状态转移变量
+//    tft180_show_int(120, 0, status,2);
     switch (status)
     {
         case 0: //检测左环岛
             if(CircleIslandLDetection()==1)
             {
-//                printf("CircleIslandDetection success\r\n");
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
                 track_type=kTrackRight;
             }
@@ -43,12 +43,14 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 4://出环
             if (CircleIslandLOut()==1)
             {
+                gpio_set_level(P11_12, GPIO_LOW);
                 status=5;
             }
             break;
         case 5://检测环岛是否结束
             if (CircleIslandLEnd()==1)
             {
+                gpio_set_level(P11_12, GPIO_HIGH);
                 status=0;
                 return 1;
             }
@@ -63,7 +65,8 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
 uint8 CircleIslandLDetection()//检测左环岛
 {
     //用电磁检测环岛
-    uint8 flag=0;
+
+
     for (int i = 0; i < l_line_count/2; ++i)
     {
         if(r_angle_1[i]<1.6&&r_angle_1[i]<1.8)
@@ -191,7 +194,7 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
     //进行角点判断
     for (int i = 0; i < r_line_count; ++i)
     {
-        if (1.5<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
+        if (1.5<r_angle_1[i] && r_angle_1[i]<1.8 && i<=aim_distance/SAMPLE_DIST)//出环右边角点
         {
             return 1;
         }
@@ -203,21 +206,29 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
 * @brief : 左环岛出环
 * @param : 无
 * @return: 0：出环未结束 1：出环结束
-* @date  : 2023.3.19
+* @date  : 2023.3.31
 * @author: 刘骏帆
 ************************************************/
 #define TRACK_RIGHTLINE_OUT_THR  (aim_distance/SAMPLE_DIST+5)  //寻左边线出环
+#define OUT_LISLAND_RIGHTADC_THR    90                         //左环出环最右边电感ADC阈值
+#define OUT_LISLAND_CENTREADC_THR   80                         //左环出环中间电感ADC阈值
 uint8 CircleIslandLOut(void)
 {
-    static uint8 status=0;//右边线从不丢线，到丢线，再到不丢线，即环岛结束
-    //对循迹偏差进行处理
-    if(r_line_count>TRACK_RIGHTLINE_OUT_THR)
+    static uint8 status=0;//电感值有差异，右边线到不丢线，即环岛结束
+//    tft180_show_int(98, 30, adc_value[2], 3);
+//    tft180_show_int(98, 60, adc_value[4], 3);
+    //判断是否出环结束
+    if(adc_value[2]>OUT_LISLAND_CENTREADC_THR)
     {
-        if (status==0)
+        if(status==0)//ADC检测到出环标志就到检测右边线来判断出环
         {
             status=1;
         }
-        else if(status==2)
+    }
+    //对循迹偏差进行处理
+    if(r_line_count>TRACK_RIGHTLINE_OUT_THR)
+    {
+        if(status==2 || status==1)//右边线不丢线即出环结束
         {
             status=0;
             return 1;
@@ -276,16 +287,36 @@ uint8 CircleIslandLOut(void)
 * @brief : 判断左环岛是否结束
 * @param : 无
 * @return: 无
-* @date  : 2023.3.19
+* @date  : 2023.3.31
 * @author: 刘骏帆
 ************************************************/
 uint8 CircleIslandLEnd(void)
 {
-    track_type=kTrackRight;//寻右线出去即可
-    if(abs(r_line_count-l_line_count)<10)
-        return 1;
-    else
+    if(r_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环
+    {
+        track_type=kTrackRight;//寻右线出去即可
+        if(abs(r_line_count-l_line_count)<10)
+            return 1;
+        else
+            return 0;
+    }
+    else//这里对偏差进行处理，避免由于出环的时候就左拐太多，使得右边线不存在而继承上一次的偏差
+    {
+        //重新扫线
+        RightLineDetectionAgain();
+        if(r_line_count>aim_distance/SAMPLE_DIST)
+        {
+            BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
+            track_rightline(f_right_line, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+            track_type=kTrackRight;
+        }
+        else
+        {
+            track_type=kTrackSpecial;//偏差置为0
+            image_bias=0.5;//右拐一点
+        }
         return 0;
+    }
 }
 
 /***********************************************
