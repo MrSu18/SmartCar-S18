@@ -57,14 +57,20 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
     if(track_mode == kTrackImage)                                                   //当前为摄像头循迹
     {
         if(last_track_mode == kTrackADC)                                            //上一次循迹为电磁循迹则复位PID参数
-        PIDClear();
+        {
+            last_track_mode = track_mode;
+            PIDClear();
+        }
 
         PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
     }
     else if(track_mode == kTrackADC)                                                //当前为电磁循迹
     {
         if(last_track_mode == kTrackImage)                                          //上一次循迹为摄像头循迹则复位PID参数
+        {
+            last_track_mode = track_mode;
             PIDClear();
+        }
 
         PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //电磁方向环PID
     }
