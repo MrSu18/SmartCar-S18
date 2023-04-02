@@ -68,19 +68,7 @@ void core1_main(void)
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
 
-    while(1)
-    {
-        if(KEY5)
-        {
-            while(KEY5);
-            system_delay_ms(1000);
-            encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
-            encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
-            pit_enable(CCU60_CH0);
-            pit_enable(CCU60_CH1);
-            break;
-        }
-    }
+    KEYCtrl();//按键控制
 
     while (TRUE)
     {

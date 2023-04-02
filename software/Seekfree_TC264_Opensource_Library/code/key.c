@@ -386,3 +386,34 @@ void ShowImageParameter(void)
     tft180_show_string(0, 10, "base_speed:");
     tft180_show_int(100, 10, base_speed, 3);
 }
+/***********************************************
+* @brief : 按键调参整体控制
+* @param : void
+* @return: void
+* @date  : 2023.4.3
+* @author: L
+************************************************/
+void KEYCtrl(void)
+{
+    while(1)
+    {
+        uint8 exit_flag_2 = 0;//退出按键模式的标志位
+        switch(KEYScan())
+        {
+            case KEY_DOWN:KeyPID();break;//KEY2表示调PID参数
+            case KEY_LEFT:KeyTrack();break;//KEY3表示调循迹参数
+            case KEY_RIGHT:KeyImage();exit_flag_2 = 1;break;//KEY4表示选择显示什么图像
+            case KEY_ENTER://KEY5表示开启中断，车落地跑
+            {
+                system_delay_ms(1000);
+                exit_flag_2 = 1;//退出按键模式
+                encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
+                encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
+                pit_enable(CCU60_CH0);
+                pit_enable(CCU60_CH1);
+                break;
+            }
+        }
+        if(exit_flag_2 == 1) break;
+    }
+}
