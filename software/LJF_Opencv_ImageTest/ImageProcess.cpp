@@ -20,6 +20,9 @@
 void ImageProcess(void)
 {
     //扫线
+//    int pts[EDGELINE_LENGTH][2];
+//    int num=EDGELINE_LENGTH;
+//    Findline_Lefthand_Adaptive(5,2,left_line,&l_line_count);
     EdgeDetection();
     //对边线进行滤波
     BlurPoints(left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
@@ -39,20 +42,24 @@ void ImageProcess(void)
 //    LCDDrowColumn(f_right_line[19].X,100,100,0);
 //    LCDDrowRow(f_right_line[19].Y,100,100,0);
     //切换左右巡线
-    if(l_line_count < 20)
+    if(r_line_count>2 && l_line_count < 20)
     {
         track_type=kTrackRight;
     }
-    else if(r_line_count < 20)
+    else if(l_line_count>2 && r_line_count < 20)
     {
         track_type=kTrackLeft;
     }
-    else
+    else if(r_line_count>2 && l_line_count<2)
     {
         track_type=kTrackRight;
     }
-    if(CircleIslandLStatus()==1)
-        while (1);
+    else if(l_line_count>2 && r_line_count<2)
+    {
+        track_type=kTrackLeft;
+    }
+//    if(CircleIslandLStatus()==1)
+//        while (1);
     //预瞄点求偏差
     if(track_type==kTrackRight)
     {
@@ -77,6 +84,6 @@ void TrackBasicClear(void)
     //边线丢线数组清零
     memset(l_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
     memset(r_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
-    l_line_count=0;r_line_count=0;//边线的计数指针清零
+    l_line_count=EDGELINE_LENGTH;r_line_count=0;//边线的计数指针清零
     l_lostline_num=0;r_lostline_num=0;//丢线数清零
 }

@@ -1,4 +1,6 @@
 #include "ImageBasic.h"
+#include "ImageWR.h"
+#include "main.h"
 
 //=========================赛道特征变量=============================
 //扫线得到的左右边线
@@ -15,7 +17,7 @@ uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 * @date  : 2022.9.7
 * @author: 刘骏帆
 ************************************************/
-#define BLACK_CONTINUE_WIDTH_THR	3//从中间往两边的黑色连续的阈值
+#define BLACK_CONTINUE_WIDTH_THR	0//从中间往两边的黑色连续的阈值
 void SowSeed(myPoint* left_seed,myPoint* right_seed)
 {
 	//找到左边种子
@@ -139,6 +141,8 @@ void EdgeDetection(void)
 	SowSeed(&left_seed,&right_seed);
     left_line[l_line_count]=left_seed;l_line_count++;//将这个点存入边线数组中
     right_line[r_line_count]=right_seed;r_line_count++;
+    LCDDrawPoint(left_seed.Y,left_seed.X,255,0,0);
+    LCDDrawPoint(right_seed.Y,right_seed.X,0,0,255);
 	/*2.种子从左下角开始生长，生长出一个闭合赛道边缘*/
     left_seed_num=0,right_seed_num=0;
     uint8 change_lr_flag=0,left_finish=0,right_finish=0;//change_lr_flag=0:左边生长 change_lr_flag=1:右边生长
@@ -148,7 +152,7 @@ void EdgeDetection(void)
         {
             if (EightAreasSeedGrown(&left_seed,'l',&left_seed_num) == 1)//生长一次
             {
-//                LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
+                LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
                 //得到边界数组
                 left_line[l_line_count]=left_seed;l_line_count++;
                 //记录丢线
@@ -178,7 +182,7 @@ void EdgeDetection(void)
         {
             if (EightAreasSeedGrown(&right_seed,'r',&right_seed_num) == 1)
             {
-//                LCDDrawPoint(right_seed.Y,right_seed.X,255,255,0);
+                LCDDrawPoint(right_seed.Y,right_seed.X,255,255,0);
                 right_line[r_line_count]=right_seed;r_line_count++;
                 if(right_seed.X>=right_border[right_seed.Y])
                 {
@@ -203,4 +207,91 @@ void EdgeDetection(void)
         }
         else break;
 	} while (left_seed.Y!=right_seed.Y || left_seed.X != right_seed.X);//当左种子和右种子合并即扫线结束
+}
+
+#define GRAY_DIF_THRES  10//灰度差比和算法的阈值
+void SowSeed(uint8 half,char dif_thres,myPoint *left_seed,myPoint *right_seed)//通过差比和算法先找到左右种子
+{
+    int dif_gray_value;//灰度值差比和的值
+    for (left_seed->Y=USE_IMAGE_H-half-2,left_seed->X=USE_IMAGE_W/2; left_seed->X>half; left_seed->X--)
+    {
+        //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
+        dif_gray_value=100*(use_image[left_seed->Y][left_seed->X]-use_image[left_seed->Y][left_seed->X-1])
+                       /(use_image[left_seed->Y][left_seed->X]+use_image[left_seed->Y][left_seed->X-1]);
+        if(dif_gray_value>dif_thres) break;
+    }
+    for (right_seed->Y=USE_IMAGE_H-half-2 ,right_seed->X=USE_IMAGE_W/2; right_seed->X<USE_IMAGE_W-half; right_seed->X++)
+    {
+        //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
+        dif_gray_value=100*(use_image[right_seed->Y][right_seed->X]-use_image[right_seed->Y][right_seed->X+1])
+                       /(use_image[right_seed->Y][right_seed->X]+use_image[right_seed->Y][right_seed->X+1]);
+        if(dif_gray_value>dif_thres) break;
+    }
+}
+
+const int dir_front[4][2] = {{0,-1},{1,0},{0,1},{-1,0}};
+const int dir_frontleft[4][2] = {{-1,-1},{1,-1},{1, 1},{-1,1}};
+const int dir_frontright[4][2] = {{1,-1},{1,1},{-1, 1},{-1,-1}};
+void Findline_Lefthand_Adaptive(int block_size, int clip_value,myPoint* pts, uint8 *num)
+{
+    myPoint left_seed,right_seed;
+    int half = block_size / 2;
+
+    SowSeed(half,GRAY_DIF_THRES,&left_seed,&right_seed);
+    int step = 0, dir = 0, turn = 0,point_num=0;
+    while (step < *num && left_border[left_seed.Y]+half < left_seed.X && left_seed.X < right_border[left_seed.Y] - half - 1 && half < left_seed.Y && left_seed.Y < USE_IMAGE_H - half - 1 && turn < 4)
+    {
+        //计算当前局部方块的阈值
+        int local_thres = 0;
+        uint8 gray=0;
+        for (int dy = -half; dy <= half; dy++)
+        {
+            for (int dx = -half; dx <= half; dx++)
+            {
+                gray=use_image[left_seed.Y+dy][left_seed.X+dx];
+                if(gray==IMAGE_BAN) continue;
+                else
+                {
+                    local_thres += gray;
+                    point_num++;
+                }
+            }
+        }
+        local_thres /= point_num;
+        //printf("point_num=%d,",point_num);
+        local_thres -= clip_value;
+        point_num=0;
+        //左手迷宫巡线
+        int current_value = use_image[left_seed.Y][left_seed.X];
+        int front_value = use_image[left_seed.Y+dir_front[dir][1]][left_seed.X+dir_front[dir][0]];
+        int frontleft_value = use_image[left_seed.Y+dir_frontleft[dir][1]][left_seed.X+dir_frontleft[dir][0]];
+        if (front_value < local_thres)
+        {
+            dir = (dir + 1) % 4;
+            turn++;
+        }
+        else if (frontleft_value < local_thres)
+        {
+            left_seed.X += dir_front[dir][0];
+            left_seed.Y += dir_front[dir][1];
+            pts[step].X = left_seed.X;
+            pts[step].Y = left_seed.Y;
+            step++;
+            turn = 0;
+        }
+        else
+        {
+            left_seed.X += dir_frontleft[dir][0];
+            left_seed.Y += dir_frontleft[dir][1];
+            dir = (dir + 3) % 4;
+            pts[step].X = left_seed.X;
+            pts[step].Y = left_seed.Y;
+            step++;
+            turn = 0;
+        }
+        //printf("local_thres=%d,front_value=%d,frontleft_value=%d,dir=%d\n",local_thres,front_value,frontleft_value,dir);
+//        UseImageDataToUseMat();
+//        LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
+    }
+    *num = step;
 }

@@ -222,7 +222,10 @@ uint8 CircleIslandLOut(void)
             status=0;
             return 1;
         }
-        track_type=kTrackRight;
+        if (l_line_count>TRACK_RIGHTLINE_OUT_THR)
+            track_type=kTrackLeft;
+        else
+            track_type=kTrackRight;
     }
     else//如果左边线太少了需要补线出环
     {

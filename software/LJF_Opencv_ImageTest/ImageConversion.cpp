@@ -2,15 +2,11 @@
 #include "ImageWR.h"
 #include "math.h"//二值化算法里面要用到pow函数
 
-//宏定义
-#define PER_IMG     mt9v03x_image   //用于透视变换的图像
-#define IMAGE_BAN   127             //逆透视禁止区域的灰度值
-#define PERSPECTIVE 1               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
-
 //定义变量
 uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
 uint8 left_border[USE_IMAGE_H] = {0};//图像左边界
 uint8 right_border[USE_IMAGE_H] = {USE_IMAGE_W-1};//图像右边界
+uint8 binary_image[MT9V03X_H][MT9V03X_W];
 
 /***********************************************
 * @brief : 大津法二值化0.8ms程序（实际测试4ms在TC264中）
@@ -180,9 +176,7 @@ void ImagePerspective_Init(void)
 {
     static uint8 BlackColor = IMAGE_BAN;
     //逆透视矩阵
-    double change_un_Mat[3][3] ={{-3.413225,2.943237,-46.382657},{-0.062986,0.797989,-77.232124},{-0.001500,0.032568,-2.232342}};
-//    double change_un_Mat[3][3] ={{-4.832042,6.360634,-192.619123},{-0.304166,2.614860,-192.622203},{-0.003682,0.069950,-4.453241}};
-
+    double change_un_Mat[3][3] ={{-5.646070,6.116770,-158.737697},{0.282977,2.882744,-258.992498},{0.004492,0.066291,-4.829664}};
     for (int i = 0; i < PER_IMAGE_W; i++)
     {
         for (int j = 0; j < PER_IMAGE_H; j++)
@@ -255,4 +249,78 @@ void ImageBorderInit(void)
     }
 #endif  //PERSPECTIVE透视程度
 }
+
+/********************************************************************************************
+ ** 函数功能: 自适应阈值二值化图像
+ ** 参    数: uint8* img_data：灰度图像
+ **           uint8* output_data：二值化图像
+ **           int width：图像宽度
+ **           int height：图像高度
+ **           int block：分割局部阈值的方块大小例如7*7
+ **           uint8 clip_value: 局部阈值减去的经验值一般为（2~5）
+ ** 返 回 值: 无
+ ** 作    者: 上海交大16届智能车智能视觉组SJTUAuTop
+ **           https://zhuanlan.zhihu.com/p/391051197
+ ** 注    意：adaptiveThreshold(mt9v03x_image[0],BinaryImage[0],MT9V03X_W,MT9V03X_H,5,1);//但是没d用跟大津法一样
+ *********************************************************************************************/
+void myadaptiveThreshold(uint8 *img_data, uint8 *output_data, int width, int height, int block, uint8 clip_value)
+{
+//  assert(block % 2 == 1); // block必须为奇数
+    int half_block = block / 2;
+    for(int y=half_block; y<height-half_block; y++)
+    {
+        for(int x=half_block; x<width-half_block; x++)
+        {
+            // 计算局部阈值
+            int thres = 0;
+            for(int dy=-half_block; dy<=half_block; dy++)
+            {
+                for(int dx=-half_block; dx<=half_block; dx++)
+                {
+                    thres += img_data[(x+dx)+(y+dy)*width];
+                }
+            }
+            thres = thres / (block * block) - clip_value;
+            // 进行二值化
+            output_data[x+y*width] = img_data[x+y*width]>thres ? 255 : 0;
+        }
+    }
+}
+
+void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W])
+{
+    int tempx=0,tempy=0,temp=0,i=0,j=0;
+    for(i=1;i <MT9V03X_H-1; i++)
+    {
+        for(j=1;j<MT9V03X_W-1;j++)
+        {
+
+            tempx=(-  imag[i-1][j-1])
+                  +(-2*imag[i  ][j-1])
+                  +(-  imag[i+1][j-1])
+                  +(   imag[i-1][j+1])
+                  +( 2*imag[i  ][j+1])
+                  +(   imag[i+1][j+1]);
+            if(tempx<0)
+                tempx=-tempx;
+
+            tempy=(   imag[i+1][j-1])
+                  +( 2*imag[i+1][j  ])
+                  +(   imag[i+1][j+1])
+                  +(-  imag[i-1][j-1])
+                  +(-2*imag[i-1][j  ])
+                  +(-  imag[i-1][j+1]);
+            if(tempy<0)
+                tempy=-tempy;
+            temp=tempx+tempy;
+            if(temp>255)
+                temp=255;
+
+            imag1[i][j]=temp;
+
+        }
+    }
+}
+
+
 
