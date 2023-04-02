@@ -93,28 +93,42 @@ void core1_main(void)
             OutProtect();
 
             ImageBinary();
-//            tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 94, 60);
-//            tft180_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
+            //显示图像
+            if(binary_image_flag == 1)
+            {
+                tft180_show_binary_image(0, 0, mt9v03x_image[0], USE_IMAGE_W, USE_IMAGE_H, 94, 60);
+                tft180_show_float(98, 0, image_bias, 2, 3);
+            }
+            else if(gray_image_flag == 1)
+                tft180_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
             gpio_toggle_level(P20_8);
+
+            //图像处理
             ImageProcess();
 
+            //显示边线和中线
+            if(edgeline_flag == 1)
+            {
+                for(int i=0;i<l_line_count;i++)
+                {
+                    tft180_draw_point((uint16)f_left_line[i].X, (uint16)f_left_line[i].Y, RGB565_BLUE);
+                }
+                for(int i=0;i<r_line_count;i++)
+                {
+                    tft180_draw_point((uint16)f_right_line[i].X, (uint16)f_right_line[i].Y, RGB565_RED);
+                }
+                tft180_show_int(98, 30, l_line_count, 3);
+                tft180_show_int(98, 60, r_line_count, 3);
+            }
+            if(c_line_flag == 1)
+            {
+                for(int i=0;i<Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);i++)
+                {
+                    tft180_draw_point((uint16)center_line[i].X, (uint16)center_line[i].Y, RGB565_RED);
+                }
+            }
 
-//            tft180_show_float(140, 15, aim_distance, 1, 3);
-//            tft180_show_float(98, 90, image_bias, 2, 3);
-//            for(int i=0;i<l_line_count;i++)
-//            {
-//                tft180_draw_point((uint16)f_left_line[i].X, (uint16)center_line_l[i].Y, RGB565_BLUE);
-//            }
-//            for(int i=0;i<r_line_count;i++)
-//            {
-//                tft180_draw_point((uint16)f_right_line[i].X, (uint16)center_line_r[i].Y, RGB565_RED);
-//            }
-//            tft180_show_int(98, 30, l_line_count, 3);
-//            tft180_show_int(98, 60, r_line_count, 3);
-//            for(int i=0;i<Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);i++)
-//            {
-//                tft180_draw_point((uint16)center_line[i].X, (uint16)center_line[i].Y, RGB565_RED);
-//            }
+            //赛道基础信息变量重置
             TrackBasicClear();
 #else
 //            MotorSetPWM(1500,3500);

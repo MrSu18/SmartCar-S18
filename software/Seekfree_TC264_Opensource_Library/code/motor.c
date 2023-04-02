@@ -6,7 +6,6 @@
  */
 #include "motor.h"
 #include "zf_common_headfile.h"
-#include "ImageSpecial.h"
 
 int16 last_data_l = 0,last_data_r = 0;
 int8 circle_flag = 0;                                   //圆环标志位，1为检测到环岛
