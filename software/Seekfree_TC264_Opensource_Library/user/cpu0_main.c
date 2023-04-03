@@ -100,16 +100,16 @@ int core0_main(void)
     while (TRUE)
     {
         // 此处编写需要循环执行的代码
-//       if(c0h0_isr_flag==1)
-//       {
-//           printf("%d,%d,%d,%d\r\n",speed_left,target_left,speed_right,target_right);
-//           c0h0_isr_flag=0;
-//       }
-       if(c0h1_isr_flag==1)
+       if(c0h0_isr_flag==1)
        {
-           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
-           c0h1_isr_flag=0;
+           printf("%d,%d\r\n",speed_left,speed_right);
+           c0h0_isr_flag=0;
        }
+//       if(c0h1_isr_flag==1)
+//       {
+//           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
+//           c0h1_isr_flag=0;
+//       }
         // 此处编写需要循环执行的代码
     }
 }

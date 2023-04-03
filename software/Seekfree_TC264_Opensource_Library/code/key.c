@@ -61,78 +61,100 @@ uint8 KEYScan(void)
 ************************************************/
 uint8 PIDDisplay(uint8 key_num)
 {
-    tft180_clear();
+    system_delay_ms(100);
+
     switch(key_num)
     {
         case KEY_UP://显示左电机速度环PID参数，并可选择调节P或I
         {
+            tft180_clear();
             while(1)
             {
-            tft180_show_string(0, 0, "speedpid_left.P");
-            tft180_show_float(100, 0, speedpid_left.P, 3, 3);
-            tft180_show_string(0, 10, "speedpid_left.I");
-            tft180_show_float(100, 10, speedpid_left.I, 3, 3);
-            tft180_show_string(0, 30, "KEY1:change P");
-            tft180_show_string(0, 40, "KEY2:change I");
-            tft180_show_string(0, 50, "KEY3:exit");
-            if(KEYScan() == KEY_UP) return 1;
-            else if(KEYScan() == KEY_DOWN) return 2;
-            else if(KEYScan() == KEY_LEFT) return 0;
+                tft180_show_string(0, 0, "speedpid_left.P");
+                tft180_show_float(100, 0, speedpid_left.P, 3, 3);
+                tft180_show_string(0, 10, "speedpid_left.I");
+                tft180_show_float(100, 10, speedpid_left.I, 3, 3);
+                tft180_show_string(0, 30, "KEY1:change P");
+                tft180_show_string(0, 40, "KEY2:change I");
+                tft180_show_string(0, 50, "KEY3:exit");
+                switch(KEYScan())
+                {
+                    case KEY_UP:tft180_clear();return 1;
+                    case KEY_DOWN:tft180_clear();return 2;
+                    case KEY_LEFT:tft180_clear();return 0;
+                    default:break;
+                }
             }
             break;
         }
         case KEY_DOWN://显示右电机速度环PID参数，并可选择调节P或I
         {
+            tft180_clear();
             while(1)
             {
-            tft180_show_string(0, 0, "speedpid_right.P");
-            tft180_show_float(100, 0, speedpid_right.P, 3, 3);
-            tft180_show_string(0, 10, "speedpid_right.I");
-            tft180_show_float(100, 10, speedpid_right.I, 3, 3);
-            tft180_show_string(0, 30, "KEY1:change P");
-            tft180_show_string(0, 40, "KEY2:change I");
-            tft180_show_string(0, 50, "KEY3:exit");
-            if(KEYScan() == KEY_UP) return 3;
-            else if(KEYScan() == KEY_DOWN) return 4;
-            else if(KEYScan() == KEY_LEFT) return 0;
+                tft180_show_string(0, 0, "speedpid_right.P");
+                tft180_show_float(100, 0, speedpid_right.P, 3, 3);
+                tft180_show_string(0, 10, "speedpid_right.I");
+                tft180_show_float(100, 10, speedpid_right.I, 3, 3);
+                tft180_show_string(0, 30, "KEY1:change P");
+                tft180_show_string(0, 40, "KEY2:change I");
+                tft180_show_string(0, 50, "KEY3:exit");
+                switch(KEYScan())
+                {
+                    case KEY_UP:tft180_clear();return 3;
+                    case KEY_DOWN:tft180_clear();return 4;
+                    case KEY_LEFT:tft180_clear();return 0;
+                    default:break;
+                }
             }
             break;
         }
         case KEY_LEFT://显示图像方向环PID参数，并可选择调节P或D
         {
+            tft180_clear();
             while(1)
             {
-            tft180_show_string(0, 0, "turnpid_image.P");
-            tft180_show_float(100, 0, turnpid_image.P, 3, 3);
-            tft180_show_string(0, 10, "turnpid_image.D");
-            tft180_show_float(100, 10, turnpid_image.D, 3, 3);
-            tft180_show_string(0, 30, "KEY1:change P");
-            tft180_show_string(0, 40, "KEY2:change D");
-            tft180_show_string(0, 50, "KEY3:exit");
-            if(KEYScan() == KEY_UP) return 5;
-            else if(KEYScan() == KEY_DOWN) return 6;
-            else if(KEYScan() == KEY_LEFT) return 0;
+                tft180_show_string(0, 0, "turnpid_image.P");
+                tft180_show_float(100, 0, turnpid_image.P, 3, 3);
+                tft180_show_string(0, 10, "turnpid_image.D");
+                tft180_show_float(100, 10, turnpid_image.D, 3, 3);
+                tft180_show_string(0, 30, "KEY1:change P");
+                tft180_show_string(0, 40, "KEY2:change D");
+                tft180_show_string(0, 50, "KEY3:exit");
+                switch(KEYScan())
+                {
+                    case KEY_UP:return 5;
+                    case KEY_DOWN:return 6;
+                    case KEY_LEFT:return 0;
+                    default:break;
+                }
             }
             break;
         }
         case KEY_RIGHT://显示电磁方向环PID参数，并可选择调节P或D
         {
+            tft180_clear();
             while(1)
             {
-            tft180_show_string(0, 0, "turnpid_adc.P");
-            tft180_show_float(100, 0, turnpid_adc.P, 3, 3);
-            tft180_show_string(0, 10, "turnpid_adc.D");
-            tft180_show_float(100, 10, turnpid_adc.D, 3, 3);
-            tft180_show_string(0, 30, "KEY1:change P");
-            tft180_show_string(0, 40, "KEY2:change D");
-            tft180_show_string(0, 50, "KEY3:exit");
-            if(KEYScan() == KEY_UP) return 7;
-            else if(KEYScan() == KEY_DOWN) return 8;
-            else if(KEYScan() == KEY_LEFT) return 0;
+                tft180_show_string(0, 0, "turnpid_adc.P");
+                tft180_show_float(100, 0, turnpid_adc.P, 3, 3);
+                tft180_show_string(0, 10, "turnpid_adc.D");
+                tft180_show_float(100, 10, turnpid_adc.D, 3, 3);
+                tft180_show_string(0, 30, "KEY1:change P");
+                tft180_show_string(0, 40, "KEY2:change D");
+                tft180_show_string(0, 50, "KEY3:exit");
+                switch(KEYScan())
+                {
+                    case KEY_UP:return 7;
+                    case KEY_DOWN:return 8;
+                    case KEY_LEFT:return 0;
+                    default:break;
+                }
             }
             break;
         }
         case KEY_ENTER:return 0;//退出
+        default:return 9;
     }
     return 9;
 }
@@ -145,9 +167,10 @@ uint8 PIDDisplay(uint8 key_num)
 ************************************************/
 void KeyPID(void)
 {
+    system_delay_ms(100);
+
     while(1)
     {
-        tft180_clear();
         tft180_show_string(0, 0, "KEY1:speed_pid_left");
         tft180_show_string(0, 10, "KEY2:speed_pid_right");
         tft180_show_string(0, 20, "KEY3:turn_pid_image");
@@ -155,6 +178,8 @@ void KeyPID(void)
         tft180_show_string(0, 40, "KEY5:exit");
 
         uint8 change_parameter = PIDDisplay(KEYScan());//0表示退出调参，9表示没检测到按键按下，1~8表示是哪个参数+或-
+
+        system_delay_ms(100);
         if(change_parameter == 0)//0退出调参
         {
             ShowPIDParameter();
@@ -162,67 +187,168 @@ void KeyPID(void)
         }
         else if(change_parameter != 9)//9继续循环
         {
-        while(1)
-        {
-            uint8 exit_flag = 0;//退出调参的标志
-
             tft180_clear();
-            tft180_show_string(0, 0, "KEY1:P+");
-            tft180_show_string(0, 10, "KEY2:P-");
-            tft180_show_string(0, 20, "KEY3:I+/D+");
-            tft180_show_string(0, 30, "KEY4:I-/D-");
-            tft180_show_string(0, 40, "KEY5:exit");
-        switch(KEYScan())
-        {
-            case KEY_UP://参数P+
+            while(1)
             {
-                switch(change_parameter)//选择哪个PID的P
+                uint8 exit_flag = 0;//退出调参的标志
+
+                tft180_show_string(0, 0, "KEY1:P+1");
+                tft180_show_string(0, 10, "KEY2:P-1");
+                tft180_show_string(0, 20, "KEY3:I+0.1/D+0.5");
+                tft180_show_string(0, 30, "KEY4:I-0.1/D-0.5");
+                tft180_show_string(0, 40, "KEY5:exit");
+                system_delay_ms(100);
+                switch(KEYScan())
                 {
-                    case 1:speedpid_left.P += 1;break;
-                    case 3:speedpid_right.P += 1;break;
-                    case 5:turnpid_image.P += 0.5;break;
-                    case 7:turnpid_adc.P += 0.5;break;
+                    case KEY_UP://参数P+
+                    {
+                        tft180_clear();
+                        switch(change_parameter)//选择哪个PID的P
+                        {
+                            case 1:
+                            {
+                                speedpid_left.P += 1;
+                                tft180_show_string(0, 60, "speedpid_left.P:");
+                                tft180_show_float(100, 60, speedpid_left.P, 3, 3);
+                                break;
+                            }
+                            case 3:
+                            {
+                                speedpid_right.P += 1;
+                                tft180_show_string(0, 60, "speedpid_right.P:");
+                                tft180_show_float(100, 60, speedpid_right.P, 3, 3);
+                                break;
+                            }
+                            case 5:
+                            {
+                                turnpid_image.P += 1;
+                                tft180_show_string(0, 60, "turnpid_image.P:");
+                                tft180_show_float(100, 60, turnpid_image.P, 3, 3);
+                                break;
+                            }
+                            case 7:
+                            {
+                                turnpid_adc.P += 1;
+                                tft180_show_string(0, 60, "turnpid_adc.P:");
+                                tft180_show_float(100, 60, turnpid_adc.P, 3, 3);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case KEY_DOWN://参数P-
+                    {
+                        tft180_clear();
+                        switch(change_parameter)//选择哪个PID的P
+                        {
+                            case 1:
+                            {
+                                speedpid_left.P -= 1;
+                                tft180_show_string(0, 60, "speedpid_left.P:");
+                                tft180_show_float(100, 60, speedpid_left.P, 3, 3);
+                                break;
+                            }
+                            case 3:
+                            {
+                                speedpid_right.P -= 1;
+                                tft180_show_string(0, 60, "speedpid_right.P:");
+                                tft180_show_float(100, 60, speedpid_right.P, 3, 3);
+                                break;
+                            }
+                            case 5:
+                            {
+                                turnpid_image.P -= 1;
+                                tft180_show_string(0, 60, "turnpid_image.P:");
+                                tft180_show_float(100, 60, turnpid_image.P, 3, 3);
+                                break;
+                            }
+                            case 7:
+                            {
+                                turnpid_adc.P -= 1;
+                                tft180_show_string(0, 60, "turnpid_adc.P:");
+                                tft180_show_float(100, 60, turnpid_adc.P, 3, 3);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case KEY_LEFT://参数I+
+                    {
+                        tft180_clear();
+                        switch(change_parameter)//选择哪个PID的I
+                        {
+                            case 2:
+                            {
+                                speedpid_left.I += 0.1;
+                                tft180_show_string(0, 60, "speedpid_left.I:");
+                                tft180_show_float(100, 60, speedpid_left.I, 3, 3);
+                                break;
+                            }
+                            case 4:
+                            {
+                                speedpid_right.I += 0.1;
+                                tft180_show_string(0, 60, "speedpid_right.I:");
+                                tft180_show_float(100, 60, speedpid_right.I, 3, 3);
+                                break;
+                            }
+                            case 6:
+                            {
+                                turnpid_image.D += 0.5;
+                                tft180_show_string(0, 60, "turnpid_image.D:");
+                                tft180_show_float(100, 60, turnpid_image.D, 3, 3);
+                                break;
+                            }
+                            case 8:
+                            {
+                                turnpid_adc.D += 0.5;
+                                tft180_show_string(0, 60, "turnpid_adc.D:");
+                                tft180_show_float(100, 60, turnpid_adc.D, 3, 3);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case KEY_RIGHT://参数I-
+                    {
+                        tft180_clear();
+                        switch(change_parameter)//选择哪个PID的I
+                        {
+                            case 2:
+                            {
+                                speedpid_left.I += 0.1;
+                                tft180_show_string(0, 60, "speedpid_left.I:");
+                                tft180_show_float(100, 60, speedpid_left.I, 3, 3);
+                                break;
+                            }
+                            case 4:
+                            {
+                                speedpid_right.I += 0.1;
+                                tft180_show_string(0, 60, "speedpid_right.I:");
+                                tft180_show_float(100, 60, speedpid_right.I, 3, 3);
+                                break;
+                            }
+                            case 6:
+                            {
+                                turnpid_image.D += 0.5;
+                                tft180_show_string(0, 60, "turnpid_image.D:");
+                                tft180_show_float(100, 60, turnpid_image.D, 3, 3);
+                                break;
+                            }
+                            case 8:
+                            {
+                                turnpid_adc.D += 0.5;
+                                tft180_show_string(0, 60, "turnpid_adc.D:");
+                                tft180_show_float(100, 60, turnpid_adc.D, 3, 3);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case KEY_ENTER:exit_flag = 1;tft180_clear();break;//退出该参数的调参，可继续选择调节下一个参数
                 }
-                break;
+                if(exit_flag == 1) break;
             }
-            case KEY_DOWN://参数P-
-            {
-                switch(change_parameter)//选择哪个PID的P
-                {
-                    case 1:speedpid_left.P -= 1;break;
-                    case 3:speedpid_right.P -= 1;break;
-                    case 5:turnpid_image.P -= 0.5;break;
-                    case 7:turnpid_adc.P -= 0.5;break;
-                }
-                break;
-            }
-            case KEY_LEFT://参数I+
-            {
-                switch(change_parameter)//选择哪个PID的I
-                {
-                    case 2:speedpid_left.I += 1;break;
-                    case 4:speedpid_right.I += 1;break;
-                    case 6:turnpid_image.D += 0.5;break;
-                    case 8:turnpid_adc.D += 0.5;break;
-                }
-                break;
-            }
-            case KEY_RIGHT://参数I-
-            {
-                switch(change_parameter)//选择哪个PID的I
-                {
-                    case 2:speedpid_left.I -= 1;break;
-                    case 4:speedpid_right.I -= 1;break;
-                    case 6:turnpid_image.D -= 0.5;break;
-                    case 8:turnpid_adc.D -= 0.5;break;
-                }
-                break;
-            }
-            case KEY_ENTER:exit_flag = 1;break;//退出该参数的调参，可继续选择调节下一个参数
         }
-        if(exit_flag == 1) break;
-        }
-    }
     }
 }
 /***********************************************
@@ -234,6 +360,8 @@ void KeyPID(void)
 ************************************************/
 void KeyTrack(void)
 {
+    system_delay_ms(500);
+
     while(1)
     {
         uint8 exit_flag = 0;//退出调参的标志
@@ -243,12 +371,13 @@ void KeyTrack(void)
         tft180_show_string(0, 70, "KEY5:exit");
         switch(KEYScan())
         {
+            system_delay_ms(500);
             case KEY_LEFT://修改预瞄点的值
             {
+                tft180_clear();
                 while(1)
                 {
                     uint8 exit_flag_1 = 0;//退出调节预瞄点的标志位
-                    tft180_clear();
                     tft180_show_string(0, 0, "KEY1:aim_distance+0.01");
                     tft180_show_string(0, 10, "KEY2:aim_distance+0.02");
                     tft180_show_string(0, 20, "KEY3:aim_distance-0.01");
@@ -256,11 +385,37 @@ void KeyTrack(void)
                     tft180_show_string(0, 40, "KEY5:exit");
                     switch(KEYScan())
                     {
-                        case KEY_UP:aim_distance+=0.01;break;
-                        case KEY_DOWN:aim_distance+=0.02;break;
-                        case KEY_LEFT:aim_distance-=0.01;break;
-                        case KEY_RIGHT:aim_distance-=0.02;break;
+                        system_delay_ms(500);
+                        case KEY_UP:
+                        {
+                            aim_distance+=0.01;
+                            tft180_show_string(0, 80, "aim_distance:");
+                            tft180_show_float(100, 80, aim_distance, 1, 3);
+                            break;
+                        }
+                        case KEY_DOWN:
+                        {
+                            aim_distance+=0.02;
+                            tft180_show_string(0, 80, "aim_distance:");
+                            tft180_show_float(100, 80, aim_distance, 1, 3);
+                            break;
+                        }
+                        case KEY_LEFT:
+                        {
+                            aim_distance-=0.01;
+                            tft180_show_string(0, 80, "aim_distance:");
+                            tft180_show_float(100, 80, aim_distance, 1, 3);
+                            break;
+                        }
+                        case KEY_RIGHT:
+                        {
+                            aim_distance-=0.02;
+                            tft180_show_string(0, 80, "aim_distance:");
+                            tft180_show_float(100, 80, aim_distance, 1, 3);
+                            break;
+                        }
                         case KEY_ENTER:exit_flag_1=1;break;
+                        dsefault:break;
                     }
                     if(exit_flag_1 == 1) break;
                 }
@@ -268,17 +423,32 @@ void KeyTrack(void)
             }
             case KEY_RIGHT://修改基础速度
             {
+                tft180_clear();
                 while(1)
                 {
                     uint8 exit_flag_1 = 0;//退出调节基础速度的标志
-                    tft180_clear();
                     tft180_show_string(0, 20, "KEY3:base_speed+10");
                     tft180_show_string(0, 30, "KEY4:base_speed-10");
                     tft180_show_string(0, 40, "KEY5:exit");
                     switch(KEYScan())
                     {
-                        case KEY_LEFT:base_speed+=10;break;
-                        case KEY_RIGHT:base_speed-=10;break;
+                        system_delay_ms(500);
+                        tft180_show_string(0, 70, "base_speed:");
+                        tft180_show_int(100, 80, base_speed, 3);
+                        case KEY_LEFT:
+                        {
+                            base_speed+=10;
+                            tft180_show_string(0, 80, "base_speed:");
+                            tft180_show_int(100, 80, base_speed, 3);
+                            break;
+                        }
+                        case KEY_RIGHT:
+                        {
+                            base_speed-=10;
+                            tft180_show_string(0, 80, "base_speed:");
+                            tft180_show_int(100, 80, base_speed, 3);
+                            break;
+                        }
                         case KEY_ENTER:exit_flag_1=1;break;
                     }
                     if(exit_flag_1 == 1) break;
@@ -306,14 +476,15 @@ uint8 binary_image_flag = 0,gray_image_flag = 0;//是否显示灰度或逆透视后的图像，
 uint8 edgeline_flag = 0,c_line_flag = 0;        //是否显示边线或中线，1为显示
 void KeyImage(void)
 {
+    system_delay_ms(500);
     while(1)
     {
         uint8 exit_flag = 0;//退出选择图像显示的标志位
-        tft180_clear();
         tft180_show_string(0, 0, "KEY3:show gray_image");
         tft180_show_string(0, 10, "KEY4:show binary_image");
         switch(KEYScan())
         {
+            system_delay_ms(500);
             case KEY_LEFT://显示灰度图
             {
                 gray_image_flag = 1;//显示灰度图的标志
@@ -322,13 +493,14 @@ void KeyImage(void)
             }
             case KEY_RIGHT://显示逆透视图
             {
+                tft180_clear();
                 while(1)
                 {
                     uint8 exit_flag_1 = 0;//退出选择是否显示边线或中线的标志位
                     binary_image_flag = 1;//显示逆透视图像
-                    tft180_show_string(0, 100, "KEY3:show edge_line");
-                    tft180_show_string(0, 110, "KEY4:show center_line");
-                    tft180_show_string(0, 120, "KEY5:exit");
+                    tft180_show_string(0, 0, "KEY3:show edge_line");
+                    tft180_show_string(0, 10, "KEY4:show center_line");
+                    tft180_show_string(0, 20, "KEY5:exit");
                     switch(KEYScan())
                     {
                         case KEY_LEFT:edgeline_flag=1;break;
@@ -340,8 +512,13 @@ void KeyImage(void)
                 exit_flag = 1;
                 break;
             }
+//            default:break;
         }
-        if(exit_flag == 1) break;
+        if(exit_flag == 1)
+        {
+            tft180_clear();
+            break;
+        }
     }
 }
 /***********************************************
@@ -357,7 +534,7 @@ void ShowPIDParameter(void)
     tft180_show_string(0, 0, "speedpid_left.P:");
     tft180_show_float(100, 0, speedpid_left.P, 3, 3);
     tft180_show_string(0, 10, "speedpid_left.I:");
-    tft180_show_float(100, 10, speedpid_left.P, 3, 3);
+    tft180_show_float(100, 10, speedpid_left.I, 3, 3);
     tft180_show_string(0, 20, "speedpid_right.P:");
     tft180_show_float(100, 20, speedpid_right.P, 3, 3);
     tft180_show_string(0, 30, "speedpid_right.I:");
@@ -380,7 +557,6 @@ void ShowPIDParameter(void)
 ************************************************/
 void ShowImageParameter(void)
 {
-    tft180_clear();
     tft180_show_string(0, 0, "aim_distance:");
     tft180_show_float(100, 0, aim_distance, 1, 2);
     tft180_show_string(0, 10, "base_speed:");
@@ -409,8 +585,9 @@ void KEYCtrl(void)
                 exit_flag_2 = 1;//退出按键模式
                 encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
                 encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
-                pit_enable(CCU60_CH0);
-                pit_enable(CCU60_CH1);
+//                MotorSetPWM(3000, 3000);
+//                pit_enable(CCU60_CH0);
+//                pit_enable(CCU60_CH1);
                 break;
             }
         }

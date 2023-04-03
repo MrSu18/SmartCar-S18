@@ -39,11 +39,16 @@ void EncoderInit(void)
 ************************************************/
 void EncoderGetCount(int16* data_left,int16* data_right)
 {
+    int16 last_data_left = *data_left,last_data_right = *data_right;
+
     *data_left = -encoder_get_count(ENCODER_LEFT);                          //»ñÈ¡×ó±ß±àÂëÆ÷µÄÖµ
     *data_right = encoder_get_count(ENCODER_RIGHT);                         //»ñÈ¡ÓÒ±ß±àÂëÆ÷µÄÖµ
 
     *data_left = SecondOrderFilter_L(*data_left);                           //×ó±àÂëÆ÷Ò»½×µÍÍ¨ÂË²¨
     *data_right = SecondOrderFilter_R(*data_right);                         //ÓÒ±àÂëÆ÷Ò»½×µÍÍ¨ÂË²¨
+
+    if(*data_left > 255 || *data_left < -255) *data_left = last_data_left;
+    if(*data_right > 255 || *data_right < -255) *data_right = last_data_right;
 
     encoder_clear_count(ENCODER_LEFT);                                      //Çå¿Õ×ó±ß±àÂëÆ÷¼ÆÊı
     encoder_clear_count(ENCODER_RIGHT);                                     //Çå¿ÕÓÒ±ß±àÂëÆ÷¼ÆÊı
