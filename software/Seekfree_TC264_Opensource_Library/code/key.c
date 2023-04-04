@@ -586,8 +586,8 @@ void KEYCtrl(void)
                 encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
                 encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
 //                MotorSetPWM(3000, 3000);
-//                pit_enable(CCU60_CH0);
-//                pit_enable(CCU60_CH1);
+                pit_enable(CCU60_CH0);
+                pit_enable(CCU60_CH1);
                 break;
             }
         }

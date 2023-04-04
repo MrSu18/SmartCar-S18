@@ -42,7 +42,7 @@ void EncoderGetCount(int16* data_left,int16* data_right)
     int16 last_data_left = *data_left,last_data_right = *data_right;
 
     *data_left = -encoder_get_count(ENCODER_LEFT);                          //获取左边编码器的值
-    *data_right = encoder_get_count(ENCODER_RIGHT);                         //获取右边编码器的值
+    *data_right = -encoder_get_count(ENCODER_RIGHT);                         //获取右边编码器的值
 
     *data_left = SecondOrderFilter_L(*data_left);                           //左编码器一阶低通滤波
     *data_right = SecondOrderFilter_R(*data_right);                         //右编码器一阶低通滤波

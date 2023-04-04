@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "zf_device_tft180.h"
 #include "adc.h"
+#include "stdlib.h"
 
 uint8 CircleIslandLStatus()//右边环岛状态状态机
 {
@@ -210,7 +211,7 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
 * @author: 刘骏帆
 ************************************************/
 #define TRACK_RIGHTLINE_OUT_THR  (aim_distance/SAMPLE_DIST+5)  //寻左边线出环
-#define OUT_LISLAND_RIGHTADC_THR    90                         //左环出环最右边电感ADC阈值
+#define OUT_LISLAND_RIGHTADC_THR    80                         //左环出环最右边电感ADC阈值
 #define OUT_LISLAND_CENTREADC_THR   80                         //左环出环中间电感ADC阈值
 uint8 CircleIslandLOut(void)
 {
@@ -222,21 +223,41 @@ uint8 CircleIslandLOut(void)
     {
         if(status==0)//ADC检测到出环标志就到检测右边线来判断出环
         {
-            status=1;
+            status=2;
         }
     }
     //对循迹偏差进行处理
     if(r_line_count>TRACK_RIGHTLINE_OUT_THR)
     {
-        if(status==2 || status==1)//右边线不丢线即出环结束
+        if(status==0)
+        {
+            status=1;
+        }
+        else if(status==2)//右边线不丢线即出环结束
         {
             status=0;
             return 1;
         }
         if(l_line_count>TRACK_RIGHTLINE_OUT_THR)
             track_type=kTrackLeft;
-        else
-            track_type=kTrackRight;
+        else//没有左边线就要对右边线进行角点中线抑制，避免循迹用到往右走的边线
+        {
+            for (uint8 i = 0; i < r_line_count; ++i)
+            {
+                if (1.5<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
+                {
+                    r_line_count=i;
+                    track_type=kTrackRight;
+                    break;
+                }
+                else//如果找不到就固定偏差出环
+                {
+                    image_bias=10;
+                    track_type=kTrackSpecial;
+                }
+            }
+
+        }
     }
     else//如果左边线太少了需要补线出环
     {
