@@ -7,10 +7,8 @@
 #include "motor.h"
 #include "zf_common_headfile.h"
 
-int16 last_data_l = 0,last_data_r = 0;
-int8 circle_flag = 0;                                   //圆环标志位，1为检测到环岛
-int16 speed_left = 0,speed_right = 0;                   //左右轮当前编码器的值
-int16 target_left = 0,target_right = 0;                 //左右轮的目标速度的值
+int speed_left = 0,speed_right = 0;                                     //左右轮当前编码器的值
+int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值
 uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 uint16 base_speed = 0;
 TrackMode track_mode = kTrackImage;
@@ -37,9 +35,9 @@ void EncoderInit(void)
 * @date  : 2023.1.2
 * @author: L
 ************************************************/
-void EncoderGetCount(int16* data_left,int16* data_right)
+void EncoderGetCount(int* data_left,int* data_right)
 {
-    int16 last_data_left = *data_left,last_data_right = *data_right;
+    int last_data_left = *data_left,last_data_right = *data_right;
 
     *data_left = -encoder_get_count(ENCODER_LEFT);                          //获取左边编码器的值
     *data_right = -encoder_get_count(ENCODER_RIGHT);                         //获取右边编码器的值
@@ -147,76 +145,13 @@ void MotorCtrl(void)
 float EncoderGetDistance(void)
 {
     float dis = 0.0,data_mid = 0.0,circle = 0.0;
-    int16 data_left = 0,data_right = 0;
+    int data_left = 0,data_right = 0;
 
     EncoderGetCount(&data_left,&data_right);
-    data_mid = (data_left+data_right)/2;
+    data_mid = (float)(data_left+data_right)/2;
 
     circle = PI*64;
     dis = ((data_mid/1024)*30/68)*circle;
     return dis;
 }
-/***********************************************
-* @brief : 判断是否为环岛
-* @param : void
-* @return: 是环岛返回1，不是返回0
-* @date  : 2023.2.1
-* @author: L
-************************************************/
-int8 CircleIsland(void)
-{
-    float err = 0.0,dis = 0.0;
 
-    //获取此时电磁偏差
-    ADCGetValue(adc_value);
-    ChaBiHe(&err,JUDGE);
-
-    //判断是否为环岛，是左环岛还是右环岛
-    if(err>=70)
-    {
-        EncoderGetCount(&last_data_l,&last_data_r);
-        circle_flag = 1;
-    }
-    else if(err<=-70)
-    {
-        EncoderGetCount(&last_data_l,&last_data_r);
-        circle_flag = 2;
-    }
-    else return 0;
-
-    //检测到为环岛，直行，关掉定时中断
-    MotorSetPWM(1500,1500);
-    pit_disable(CCU60_CH0);
-
-    //当直行一段距离后强制打角，入环
-    while(1)
-    {
-        if(dis>400)
-        {
-        switch(circle_flag)
-            {
-                case CIRCLE_LEFT:
-                {
-                    MotorSetPWM(-2000,2000);
-                    system_delay_ms(300);
-                    break;
-                }
-                case CIRCLE_RIGHT:
-                {
-                    MotorSetPWM(2000,-2000);
-                    system_delay_ms(300);
-                    break;
-                }
-                default:break;
-             }
-            break;
-        }
-        else
-        {
-            dis += EncoderGetDistance();                //累积走过的路程
-            system_delay_ms(5);
-        }
-    }
-    pit_enable(CCU60_CH0);                              //开启定时中断
-    return 1;
-}

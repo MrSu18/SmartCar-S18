@@ -43,20 +43,18 @@ typedef enum TrackMode
     kTrackADC,
 }TrackMode;
 
-extern int16 speed_left,speed_right;
-extern int16 target_left,target_right;
+extern int speed_left,speed_right;
+extern int target_left,target_right;
 extern uint8 c0h0_isr_flag,c0h1_isr_flag;
 extern uint16 base_speed;
 extern TrackMode track_mode;
 extern TrackMode last_track_mode;
 
 void EncoderInit(void);                                                 //初始化左右两个编码器
-void EncoderGetCount(int16* data_left,int16* data_right);               //获取左右两个编码器的值
+void EncoderGetCount(int* data_left,int* data_right);                   //获取左右两个编码器的值
 void MotorInit(void);                                                   //初始化左右两个电机
 void MotorSetPWM(int pwm_left,int pwm_right);                           //控制左右电机转速和正反转
-void MotorSetTarget(int16* target_left,int16* target_right);            //获取电机的目标速度
 void MotorCtrl(void);                                                   //实现整一轮的小车控制
-int8 CircleIsland(void);                                                //环岛检测
 float EncoderGetDistance(void);                                         //获取一段时间内小车走过的距离
 
 #endif /* CODE_MOTOR_H_ */

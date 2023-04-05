@@ -32,6 +32,7 @@ extern uint8 edgeline_flag,c_line_flag;
 
 void KEYInit(void);                             //初始化按键引脚
 uint8 KEYScan(void);                            //扫描是否有按键被按下
+uint8 KeyGet(void);                             //确认按键按下并且只执行一次
 uint8 PIDDisplay(uint8 key_num);                //通过按键选择显示哪个PID的参数
 void KeyPID(void);                              //通过按键调节PID参数
 void KeyTrack(void);                            //通过按键调节前瞻和基础速度

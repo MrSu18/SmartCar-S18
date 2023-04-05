@@ -42,9 +42,9 @@ void PIDInit(PID* pid,float P,float I,float D)
 * @date  : 2023.1.17
 * @author: L
 ************************************************/
-int PIDSpeed(int16 encoder_speed,int16 target_speed,PID* pid)
+int PIDSpeed(int encoder_speed,int target_speed,PID* pid)
 {
-    pid->err = target_speed-encoder_speed;                                  //计算偏差
+    pid->err = (float)(target_speed-encoder_speed);                                  //计算偏差
 
     pid->out += (int)(pid->P*(pid->err-pid->last_err)+pid->I*pid->err);
     pid->last_err = pid->err;                                               //保存上一次的值
@@ -58,7 +58,7 @@ int PIDSpeed(int16 encoder_speed,int16 target_speed,PID* pid)
 * @date  : 2023.3.2
 * @author: L
 ************************************************/
-void PIDTurnImage(int16* target_left,int16* target_right,PID* pid)
+void PIDTurnImage(int* target_left,int* target_right,PID* pid)
 {
     pid->err = image_bias;
 
@@ -90,7 +90,7 @@ void PIDTurnImage(int16* target_left,int16* target_right,PID* pid)
 * @date  : 2023.3.16
 * @author: L
 ************************************************/
-void PIDTurnADC(int16* target_left,int16* target_right,PID* pid)
+void PIDTurnADC(int* target_left,int* target_right,PID* pid)
 {
         //获取此时电磁偏差
         ADCGetValue(adc_value);

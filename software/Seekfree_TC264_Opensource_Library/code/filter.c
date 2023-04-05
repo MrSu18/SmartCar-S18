@@ -7,8 +7,8 @@
 #include "filter.h"
 
 kalman_filter_1 kalman_adc;                         //ADC卡尔曼滤波系数
-int16 last_left = 0,last_2_left = 0;                //左编码器二阶低通滤波的过去值
-int16 last_right = 0,last_2_right = 0;              //右编码器二阶低通滤波的过去值
+int last_left = 0,last_2_left = 0;                //左编码器二阶低通滤波的过去值
+int last_right = 0,last_2_right = 0;              //右编码器二阶低通滤波的过去值
 /***********************************************
 * @brief : 卡尔曼滤波初始化
 * @param : state:卡尔曼滤波数据的结构体指针
@@ -58,7 +58,7 @@ int16 KalmanFilter(kalman_filter_1* state,float z)
 * @date  : 2023.1.19
 * @author: L
 ************************************************/
-int16 SecondOrderFilter_L(int16 value)
+int SecondOrderFilter_L(int value)
 {
     value = 0.2*value+0.4*last_left+0.4*last_2_left;
     last_2_left = last_left;
@@ -73,7 +73,7 @@ int16 SecondOrderFilter_L(int16 value)
 * @date  : 2023.1.19
 * @author: L
 ************************************************/
-int16 SecondOrderFilter_R(int16 value)
+int SecondOrderFilter_R(int value)
 {
     value = 0.2*value+0.4*last_right+0.4*last_2_right;
     last_2_right = last_right;

@@ -25,7 +25,7 @@ extern kalman_filter_1 kalman_adc;
 
 void KalmanInit(kalman_filter_1* state,float Q,float R);                //³õÊ¼»¯¿¨¶ûÂüÂË²¨µÄÏµÊı
 int16 KalmanFilter(kalman_filter_1* state,float z);                     //¿¨¶ûÂüÂË²¨
-int16 SecondOrderFilter_L(int16 value);                                 //×ó±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
-int16 SecondOrderFilter_R(int16 value);                                 //ÓÒ±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
+int SecondOrderFilter_L(int value);                                 //×ó±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
+int SecondOrderFilter_R(int value);                                 //ÓÒ±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
 
 #endif /* CODE_FILTER_H_ */

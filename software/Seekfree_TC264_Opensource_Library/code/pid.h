@@ -33,9 +33,9 @@ extern PID turnpid_adc;
 extern float image_bias;
 
 void PIDInit(PID* pid,float P,float I,float D);                                     //初始化PID参数
-int PIDSpeed(int16 encoder_data,int16 target_data,PID* pid);                        //速度环PID计算
-void PIDTurnImage(int16* target_left,int16* target_right,PID* pid);                 //摄像头转向环PID
-void PIDTurnADC(int16* target_left,int16* target_right,PID* pid);                   //电磁转向环PID
+int PIDSpeed(int encoder_data,int target_data,PID* pid);                            //速度环PID计算
+void PIDTurnImage(int* target_left,int* target_right,PID* pid);                     //摄像头转向环PID
+void PIDTurnADC(int* target_left,int* target_right,PID* pid);                       //电磁转向环PID
 void PIDClear(void);                                                                //复位PID的参数
 
 #endif /* CODE_PID_H_ */

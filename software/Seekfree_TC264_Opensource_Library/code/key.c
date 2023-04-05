@@ -53,6 +53,25 @@ uint8 KEYScan(void)
     return 0;
 }
 /***********************************************
+* @brief : 获取哪个按键被按下，可以防止按一次按键出现多次响应的情况
+* @param : void
+* @return: key_down:若有按键按下则返回按下哪个按键，否则返回0
+* @date  : 2023.4.5
+* @author: L
+************************************************/
+uint8 KeyGet(void)
+{
+    static uint8 key_value = 0;
+    static uint8 key_down  = 0;
+    static uint8 key_old   = 0;
+
+    key_value = KEYScan();
+    key_down = key_value & (key_value ^ key_old);
+    key_old = key_value;
+
+    return key_down;
+}
+/***********************************************
 * @brief : 通过按键选择显示哪个PID的参数
 * @param : key_num:按下的是哪个按键
 * @return: void
@@ -61,7 +80,7 @@ uint8 KEYScan(void)
 ************************************************/
 uint8 PIDDisplay(uint8 key_num)
 {
-    system_delay_ms(100);
+//    system_delay_ms(100);
 
     switch(key_num)
     {
@@ -77,7 +96,7 @@ uint8 PIDDisplay(uint8 key_num)
                 tft180_show_string(0, 30, "KEY1:change P");
                 tft180_show_string(0, 40, "KEY2:change I");
                 tft180_show_string(0, 50, "KEY3:exit");
-                switch(KEYScan())
+                switch(KeyGet())
                 {
                     case KEY_UP:tft180_clear();return 1;
                     case KEY_DOWN:tft180_clear();return 2;
@@ -99,7 +118,7 @@ uint8 PIDDisplay(uint8 key_num)
                 tft180_show_string(0, 30, "KEY1:change P");
                 tft180_show_string(0, 40, "KEY2:change I");
                 tft180_show_string(0, 50, "KEY3:exit");
-                switch(KEYScan())
+                switch(KeyGet())
                 {
                     case KEY_UP:tft180_clear();return 3;
                     case KEY_DOWN:tft180_clear();return 4;
@@ -121,7 +140,7 @@ uint8 PIDDisplay(uint8 key_num)
                 tft180_show_string(0, 30, "KEY1:change P");
                 tft180_show_string(0, 40, "KEY2:change D");
                 tft180_show_string(0, 50, "KEY3:exit");
-                switch(KEYScan())
+                switch(KeyGet())
                 {
                     case KEY_UP:return 5;
                     case KEY_DOWN:return 6;
@@ -167,7 +186,7 @@ uint8 PIDDisplay(uint8 key_num)
 ************************************************/
 void KeyPID(void)
 {
-    system_delay_ms(100);
+//    system_delay_ms(100);
 
     while(1)
     {
@@ -177,9 +196,9 @@ void KeyPID(void)
         tft180_show_string(0, 30, "KEY4:turn_pid_adc");
         tft180_show_string(0, 40, "KEY5:exit");
 
-        uint8 change_parameter = PIDDisplay(KEYScan());//0表示退出调参，9表示没检测到按键按下，1~8表示是哪个参数+或-
+        uint8 change_parameter = PIDDisplay(KeyGet());//0表示退出调参，9表示没检测到按键按下，1~8表示是哪个参数+或-
 
-        system_delay_ms(100);
+//        system_delay_ms(100);
         if(change_parameter == 0)//0退出调参
         {
             ShowPIDParameter();
@@ -197,8 +216,8 @@ void KeyPID(void)
                 tft180_show_string(0, 20, "KEY3:I+0.1/D+0.5");
                 tft180_show_string(0, 30, "KEY4:I-0.1/D-0.5");
                 tft180_show_string(0, 40, "KEY5:exit");
-                system_delay_ms(100);
-                switch(KEYScan())
+//                system_delay_ms(100);
+                switch(KeyGet())
                 {
                     case KEY_UP://参数P+
                     {
@@ -360,7 +379,7 @@ void KeyPID(void)
 ************************************************/
 void KeyTrack(void)
 {
-    system_delay_ms(500);
+//    system_delay_ms(500);
 
     while(1)
     {
@@ -369,9 +388,9 @@ void KeyTrack(void)
         tft180_show_string(0, 50, "KEY3:change aim_distance");
         tft180_show_string(0, 60, "KEY4:change base_speed");
         tft180_show_string(0, 70, "KEY5:exit");
-        switch(KEYScan())
+        switch(KeyGet())
         {
-            system_delay_ms(500);
+//            system_delay_ms(500);
             case KEY_LEFT://修改预瞄点的值
             {
                 tft180_clear();
@@ -383,31 +402,31 @@ void KeyTrack(void)
                     tft180_show_string(0, 20, "KEY3:aim_distance-0.01");
                     tft180_show_string(0, 30, "KEY4:aim_distance-0.02");
                     tft180_show_string(0, 40, "KEY5:exit");
-                    switch(KEYScan())
+//                    system_delay_ms(500);
+                    switch(KeyGet())
                     {
-                        system_delay_ms(500);
-                        case KEY_UP:
+                        case KEY_UP://预瞄点+0.01
                         {
                             aim_distance+=0.01;
                             tft180_show_string(0, 80, "aim_distance:");
                             tft180_show_float(100, 80, aim_distance, 1, 3);
                             break;
                         }
-                        case KEY_DOWN:
+                        case KEY_DOWN://预瞄点+0.02
                         {
                             aim_distance+=0.02;
                             tft180_show_string(0, 80, "aim_distance:");
                             tft180_show_float(100, 80, aim_distance, 1, 3);
                             break;
                         }
-                        case KEY_LEFT:
+                        case KEY_LEFT://预瞄点-0.01
                         {
                             aim_distance-=0.01;
                             tft180_show_string(0, 80, "aim_distance:");
                             tft180_show_float(100, 80, aim_distance, 1, 3);
                             break;
                         }
-                        case KEY_RIGHT:
+                        case KEY_RIGHT://预瞄点-0。02
                         {
                             aim_distance-=0.02;
                             tft180_show_string(0, 80, "aim_distance:");
@@ -415,7 +434,7 @@ void KeyTrack(void)
                             break;
                         }
                         case KEY_ENTER:exit_flag_1=1;break;
-                        dsefault:break;
+                        default:break;
                     }
                     if(exit_flag_1 == 1) break;
                 }
@@ -430,9 +449,9 @@ void KeyTrack(void)
                     tft180_show_string(0, 20, "KEY3:base_speed+10");
                     tft180_show_string(0, 30, "KEY4:base_speed-10");
                     tft180_show_string(0, 40, "KEY5:exit");
-                    switch(KEYScan())
+                    switch(KeyGet())
                     {
-                        system_delay_ms(500);
+//                        system_delay_ms(500);
                         tft180_show_string(0, 70, "base_speed:");
                         tft180_show_int(100, 80, base_speed, 3);
                         case KEY_LEFT:
@@ -450,6 +469,7 @@ void KeyTrack(void)
                             break;
                         }
                         case KEY_ENTER:exit_flag_1=1;break;
+                        default:break;
                     }
                     if(exit_flag_1 == 1) break;
                 }
@@ -476,15 +496,15 @@ uint8 binary_image_flag = 0,gray_image_flag = 0;//是否显示灰度或逆透视后的图像，
 uint8 edgeline_flag = 0,c_line_flag = 0;        //是否显示边线或中线，1为显示
 void KeyImage(void)
 {
-    system_delay_ms(500);
+//    system_delay_ms(500);
     while(1)
     {
         uint8 exit_flag = 0;//退出选择图像显示的标志位
         tft180_show_string(0, 0, "KEY3:show gray_image");
         tft180_show_string(0, 10, "KEY4:show binary_image");
-        switch(KEYScan())
+        switch(KeyGet())
         {
-            system_delay_ms(500);
+//            system_delay_ms(500);
             case KEY_LEFT://显示灰度图
             {
                 gray_image_flag = 1;//显示灰度图的标志
@@ -501,7 +521,7 @@ void KeyImage(void)
                     tft180_show_string(0, 0, "KEY3:show edge_line");
                     tft180_show_string(0, 10, "KEY4:show center_line");
                     tft180_show_string(0, 20, "KEY5:exit");
-                    switch(KEYScan())
+                    switch(KeyGet())
                     {
                         case KEY_LEFT:edgeline_flag=1;break;
                         case KEY_RIGHT:c_line_flag=1;break;
@@ -574,7 +594,7 @@ void KEYCtrl(void)
     while(1)
     {
         uint8 exit_flag_2 = 0;//退出按键模式的标志位
-        switch(KEYScan())
+        switch(KeyGet())
         {
             case KEY_DOWN:KeyPID();break;//KEY2表示调PID参数
             case KEY_LEFT:KeyTrack();break;//KEY3表示调循迹参数
