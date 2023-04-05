@@ -25,6 +25,10 @@
 void OutProtect(void)
 {
     int over_count = 0;                                   //存放超过阈值的像素点的数量
+    int adc_sum = 0;
+
+    for(int16 i = 0;i < 5;i++)
+        adc_sum += adc_value[i];
 
     for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
     {
@@ -32,7 +36,7 @@ void OutProtect(void)
                 over_count++;
     }
 
-    if(over_count >= MT9V03X_W)                             //如果全部超过阈值则停止
+    if(over_count >= MT9V03X_W && adc_sum < 10)                             //如果全部超过阈值则停止
     {
 
         while(1)
@@ -172,15 +176,15 @@ void ImageProcess(void)
 //
 //    }
       //环岛状态机测试
-    if(CircleIslandLStatus()==1)
-    {
-        pit_disable(CCU60_CH1);
-        pit_disable(CCU60_CH0);//关闭电机中断
-        while(1)
-        {
-            MotorSetPWM(0,0);
-        }
-    }
+//    if(CircleIslandLStatus()==1)
+//    {
+//        pit_disable(CCU60_CH1);
+//        pit_disable(CCU60_CH0);//关闭电机中断
+//        while(1)
+//        {
+//            MotorSetPWM(0,0);
+//        }
+//    }
 
     //预瞄点求偏差
     if(track_type==kTrackRight)

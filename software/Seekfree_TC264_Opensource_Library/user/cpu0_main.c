@@ -86,12 +86,12 @@ int core0_main(void)
     pit_ms_init(CCU60_CH1,10);pit_disable(CCU60_CH1);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
-    PIDInit(&speedpid_left,136.13,0.68,0);              //136.13  0.68
-    PIDInit(&speedpid_right,144.62,0.71,0);             //144.62  0.71
+    PIDInit(&speedpid_left,187.52,1.16,0);              //136.13  0.68
+    PIDInit(&speedpid_right,179.06,1.23,0);             //144.62  0.71
     PIDInit(&speedpid_left_1,108.53,0.78,0);            //244.24  1.99
     PIDInit(&speedpid_right_1,149.41,1.12,0);           //297.87  2.92
     PIDInit(&turnpid_image,25,0,5);                     //25   5
-    PIDInit(&turnpid_adc,10,0,0);
+    PIDInit(&turnpid_adc,15,0,0);
     base_speed=160;
 
     // 此处编写用户代码 例如外设初始化代码等
@@ -99,6 +99,7 @@ int core0_main(void)
 
     while (TRUE)
     {
+        ADCGetValue(adc_value);
         // 此处编写需要循环执行的代码
        if(c0h0_isr_flag==1)
        {

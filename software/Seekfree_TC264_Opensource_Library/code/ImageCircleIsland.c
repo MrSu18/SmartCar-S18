@@ -334,7 +334,7 @@ uint8 CircleIslandLEnd(void)
         else
         {
             track_type=kTrackSpecial;//偏差置为0
-            image_bias=0.5;//右拐一点
+            image_bias=-0.5;//右拐一点
         }
         return 0;
     }
