@@ -42,11 +42,11 @@ uint8 CrossIdentify(void)
             gpio_toggle_level(P20_9);
             //如果只有一边有角点，则不用求平均值，如果有两个角点，则求平均值
             if ((corner_id_l == 0) && (corner_id_r != 0))
-                aim_distance = (float)corner_id_r * SAMPLE_DIST;
+                aim_distance = (float)(corner_id_r - 4) * SAMPLE_DIST;
             else if ((corner_id_l != 0) && (corner_id_r == 0))
-                aim_distance = (float)corner_id_l * SAMPLE_DIST;
+                aim_distance = (float)(corner_id_l - 4)* SAMPLE_DIST;
             else
-                aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
+                aim_distance = ((float)(corner_id_l + corner_id_r - 8)) * SAMPLE_DIST / 2;
 
             //角点很近，切换下一个状态
             if (corner_id_l < 8 && corner_id_r < 8)

@@ -36,7 +36,7 @@ void OutProtect(void)
                 over_count++;
     }
 
-    if(over_count >= MT9V03X_W && adc_sum < 10)                             //如果全部超过阈值则停止
+    if(over_count >= MT9V03X_W && adc_sum < 6)                             //如果全部超过阈值则停止
     {
 
         while(1)
@@ -163,14 +163,14 @@ void ImageProcess(void)
 //        default:break;
 //    }
 
-//    if(CrossIdentify() == 1)
-//    {
-//        while(1)
-//        {
-//            pit_disable(CCU60_CH0);//关闭电机中断
-//            MotorSetPWM(0,0);
-//        }
-//    }
+    if(CutIdentify() == 1)
+    {
+        while(1)
+        {
+            pit_disable(CCU60_CH0);//关闭电机中断
+            MotorSetPWM(0,0);
+        }
+    }
 //    else if(CutIdentify())
 //    {
 //

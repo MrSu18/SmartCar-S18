@@ -34,14 +34,9 @@ void KEYInit(void)
 ************************************************/
 uint8 KEYScan(void)
 {
-    static uint8 keypress_flag = LOOSE;             //按键松开标志
-
-    //按键为松开状态，但当前有按键被按下，则返回按下的那个按键
-    if(keypress_flag == LOOSE && (KEY1==PRESSDOWN||KEY2==PRESSDOWN||KEY3==PRESSDOWN||KEY4==PRESSDOWN||KEY5==PRESSDOWN))
+    //当前有按键被按下，则返回按下的那个按键
+    if((KEY1==PRESSDOWN||KEY2==PRESSDOWN||KEY3==PRESSDOWN||KEY4==PRESSDOWN||KEY5==PRESSDOWN))
     {
-        system_delay_ms(10);
-        keypress_flag = PRESSDOWN;                  //按键按下标志
-
         if(KEY1==PRESSDOWN) return KEY_UP;
         else if(KEY2==PRESSDOWN) return KEY_DOWN;
         else if(KEY3==PRESSDOWN) return KEY_LEFT;
@@ -49,7 +44,7 @@ uint8 KEYScan(void)
         else if(KEY5==PRESSDOWN) return KEY_ENTER;
     }
     else if(KEY1==LOOSE||KEY2==LOOSE||KEY3==LOOSE||KEY4==LOOSE||KEY5==LOOSE)
-        keypress_flag = LOOSE;                      //按键松开标志
+        return 0;
     return 0;
 }
 /***********************************************
@@ -80,8 +75,6 @@ uint8 KeyGet(void)
 ************************************************/
 uint8 PIDDisplay(uint8 key_num)
 {
-//    system_delay_ms(100);
-
     switch(key_num)
     {
         case KEY_UP://显示左电机速度环PID参数，并可选择调节P或I
@@ -186,8 +179,6 @@ uint8 PIDDisplay(uint8 key_num)
 ************************************************/
 void KeyPID(void)
 {
-//    system_delay_ms(100);
-
     while(1)
     {
         tft180_show_string(0, 0, "KEY1:speed_pid_left");
@@ -198,7 +189,6 @@ void KeyPID(void)
 
         uint8 change_parameter = PIDDisplay(KeyGet());//0表示退出调参，9表示没检测到按键按下，1~8表示是哪个参数+或-
 
-//        system_delay_ms(100);
         if(change_parameter == 0)//0退出调参
         {
             ShowPIDParameter();
@@ -216,7 +206,6 @@ void KeyPID(void)
                 tft180_show_string(0, 20, "KEY3:I+0.1/D+0.5");
                 tft180_show_string(0, 30, "KEY4:I-0.1/D-0.5");
                 tft180_show_string(0, 40, "KEY5:exit");
-//                system_delay_ms(100);
                 switch(KeyGet())
                 {
                     case KEY_UP://参数P+
@@ -334,28 +323,28 @@ void KeyPID(void)
                         {
                             case 2:
                             {
-                                speedpid_left.I += 0.1;
+                                speedpid_left.I -= 0.1;
                                 tft180_show_string(0, 60, "speedpid_left.I:");
                                 tft180_show_float(100, 60, speedpid_left.I, 3, 3);
                                 break;
                             }
                             case 4:
                             {
-                                speedpid_right.I += 0.1;
+                                speedpid_right.I -= 0.1;
                                 tft180_show_string(0, 60, "speedpid_right.I:");
                                 tft180_show_float(100, 60, speedpid_right.I, 3, 3);
                                 break;
                             }
                             case 6:
                             {
-                                turnpid_image.D += 0.5;
+                                turnpid_image.D -= 0.5;
                                 tft180_show_string(0, 60, "turnpid_image.D:");
                                 tft180_show_float(100, 60, turnpid_image.D, 3, 3);
                                 break;
                             }
                             case 8:
                             {
-                                turnpid_adc.D += 0.5;
+                                turnpid_adc.D -= 0.5;
                                 tft180_show_string(0, 60, "turnpid_adc.D:");
                                 tft180_show_float(100, 60, turnpid_adc.D, 3, 3);
                                 break;
@@ -379,110 +368,111 @@ void KeyPID(void)
 ************************************************/
 void KeyTrack(void)
 {
-//    system_delay_ms(500);
-
     while(1)
     {
-        uint8 exit_flag = 0;//退出调参的标志
-        ShowImageParameter();//显示当前参数
-        tft180_show_string(0, 50, "KEY3:change aim_distance");
-        tft180_show_string(0, 60, "KEY4:change base_speed");
-        tft180_show_string(0, 70, "KEY5:exit");
-        switch(KeyGet())
+        uint8 exit_flag_3 = 0;
+        while(1)
         {
-//            system_delay_ms(500);
-            case KEY_LEFT://修改预瞄点的值
+            uint8 exit_flag = 0;//退出调参的标志
+            ShowImageParameter();//显示当前参数
+            tft180_show_string(0, 50, "KEY3:change aim_distance");
+            tft180_show_string(0, 60, "KEY4:change base_speed");
+            tft180_show_string(0, 70, "KEY5:exit");
+            switch(KeyGet())
+            {
+                case KEY_LEFT://修改预瞄点的值
+                {
+                    tft180_clear();
+                    while(1)
+                    {
+                        uint8 exit_flag_1 = 0;//退出调节预瞄点的标志位
+                        tft180_show_string(0, 0, "KEY1:aim_distance+0.01");
+                        tft180_show_string(0, 10, "KEY2:aim_distance+0.02");
+                        tft180_show_string(0, 20, "KEY3:aim_distance-0.01");
+                        tft180_show_string(0, 30, "KEY4:aim_distance-0.02");
+                        tft180_show_string(0, 40, "KEY5:exit");
+                        switch(KeyGet())
+                        {
+                            case KEY_UP://预瞄点+0.01
+                            {
+                                aim_distance+=0.01;
+                                tft180_show_string(0, 80, "aim_distance:");
+                                tft180_show_float(100, 80, aim_distance, 1, 3);
+                                break;
+                            }
+                            case KEY_DOWN://预瞄点+0.02
+                            {
+                                aim_distance+=0.02;
+                                tft180_show_string(0, 80, "aim_distance:");
+                                tft180_show_float(100, 80, aim_distance, 1, 3);
+                                break;
+                            }
+                            case KEY_LEFT://预瞄点-0.01
+                            {
+                                aim_distance-=0.01;
+                                tft180_show_string(0, 80, "aim_distance:");
+                                tft180_show_float(100, 80, aim_distance, 1, 3);
+                                break;
+                            }
+                            case KEY_RIGHT://预瞄点-0。02
+                            {
+                                aim_distance-=0.02;
+                                tft180_show_string(0, 80, "aim_distance:");
+                                tft180_show_float(100, 80, aim_distance, 1, 3);
+                                break;
+                            }
+                            case KEY_ENTER:exit_flag_1=1;tft180_clear();break;
+                            default:break;
+                        }
+                        if(exit_flag_1 == 1) break;
+                    }
+                    break;
+                }
+                case KEY_RIGHT://修改基础速度
+                {
+                    tft180_clear();
+                    while(1)
+                    {
+                        uint8 exit_flag_1 = 0;//退出调节基础速度的标志
+                        tft180_show_string(0, 20, "KEY3:base_speed+10");
+                        tft180_show_string(0, 30, "KEY4:base_speed-10");
+                        tft180_show_string(0, 40, "KEY5:exit");
+                        switch(KeyGet())
+                        {
+                            tft180_show_string(0, 70, "base_speed:");
+                            tft180_show_int(100, 80, base_speed, 3);
+                            case KEY_LEFT:
+                            {
+                                base_speed+=10;
+                                tft180_show_string(0, 80, "base_speed:");
+                                tft180_show_int(100, 80, base_speed, 3);
+                                break;
+                            }
+                            case KEY_RIGHT:
+                            {
+                                base_speed-=10;
+                                tft180_show_string(0, 80, "base_speed:");
+                                tft180_show_int(100, 80, base_speed, 3);
+                                break;
+                            }
+                            case KEY_ENTER:exit_flag_1=1;tft180_clear();break;
+                            default:break;
+                        }
+                        if(exit_flag_1 == 1) break;
+                    }
+                    break;
+                }
+                case KEY_ENTER:exit_flag=1;break;//退出调参
+            }
+            if(exit_flag == 1)
             {
                 tft180_clear();
-                while(1)
-                {
-                    uint8 exit_flag_1 = 0;//退出调节预瞄点的标志位
-                    tft180_show_string(0, 0, "KEY1:aim_distance+0.01");
-                    tft180_show_string(0, 10, "KEY2:aim_distance+0.02");
-                    tft180_show_string(0, 20, "KEY3:aim_distance-0.01");
-                    tft180_show_string(0, 30, "KEY4:aim_distance-0.02");
-                    tft180_show_string(0, 40, "KEY5:exit");
-//                    system_delay_ms(500);
-                    switch(KeyGet())
-                    {
-                        case KEY_UP://预瞄点+0.01
-                        {
-                            aim_distance+=0.01;
-                            tft180_show_string(0, 80, "aim_distance:");
-                            tft180_show_float(100, 80, aim_distance, 1, 3);
-                            break;
-                        }
-                        case KEY_DOWN://预瞄点+0.02
-                        {
-                            aim_distance+=0.02;
-                            tft180_show_string(0, 80, "aim_distance:");
-                            tft180_show_float(100, 80, aim_distance, 1, 3);
-                            break;
-                        }
-                        case KEY_LEFT://预瞄点-0.01
-                        {
-                            aim_distance-=0.01;
-                            tft180_show_string(0, 80, "aim_distance:");
-                            tft180_show_float(100, 80, aim_distance, 1, 3);
-                            break;
-                        }
-                        case KEY_RIGHT://预瞄点-0。02
-                        {
-                            aim_distance-=0.02;
-                            tft180_show_string(0, 80, "aim_distance:");
-                            tft180_show_float(100, 80, aim_distance, 1, 3);
-                            break;
-                        }
-                        case KEY_ENTER:exit_flag_1=1;break;
-                        default:break;
-                    }
-                    if(exit_flag_1 == 1) break;
-                }
-                break;
-            }
-            case KEY_RIGHT://修改基础速度
-            {
-                tft180_clear();
-                while(1)
-                {
-                    uint8 exit_flag_1 = 0;//退出调节基础速度的标志
-                    tft180_show_string(0, 20, "KEY3:base_speed+10");
-                    tft180_show_string(0, 30, "KEY4:base_speed-10");
-                    tft180_show_string(0, 40, "KEY5:exit");
-                    switch(KeyGet())
-                    {
-//                        system_delay_ms(500);
-                        tft180_show_string(0, 70, "base_speed:");
-                        tft180_show_int(100, 80, base_speed, 3);
-                        case KEY_LEFT:
-                        {
-                            base_speed+=10;
-                            tft180_show_string(0, 80, "base_speed:");
-                            tft180_show_int(100, 80, base_speed, 3);
-                            break;
-                        }
-                        case KEY_RIGHT:
-                        {
-                            base_speed-=10;
-                            tft180_show_string(0, 80, "base_speed:");
-                            tft180_show_int(100, 80, base_speed, 3);
-                            break;
-                        }
-                        case KEY_ENTER:exit_flag_1=1;break;
-                        default:break;
-                    }
-                    if(exit_flag_1 == 1) break;
-                }
-                break;
-            }
-            case KEY_ENTER://退出调参
-            {
                 ShowImageParameter();//显示当前参数
-                exit_flag=1;
+                exit_flag_3 = 1;
                 break;
             }
         }
-        if(exit_flag == 1) break;
+        if(exit_flag_3 == 1) break;
     }
 }
 /***********************************************
@@ -496,7 +486,6 @@ uint8 binary_image_flag = 0,gray_image_flag = 0;//是否显示灰度或逆透视后的图像，
 uint8 edgeline_flag = 0,c_line_flag = 0;        //是否显示边线或中线，1为显示
 void KeyImage(void)
 {
-//    system_delay_ms(500);
     while(1)
     {
         uint8 exit_flag = 0;//退出选择图像显示的标志位
@@ -504,7 +493,6 @@ void KeyImage(void)
         tft180_show_string(0, 10, "KEY4:show binary_image");
         switch(KeyGet())
         {
-//            system_delay_ms(500);
             case KEY_LEFT://显示灰度图
             {
                 gray_image_flag = 1;//显示灰度图的标志
@@ -532,7 +520,7 @@ void KeyImage(void)
                 exit_flag = 1;
                 break;
             }
-//            default:break;
+            default:break;
         }
         if(exit_flag == 1)
         {

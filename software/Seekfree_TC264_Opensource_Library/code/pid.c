@@ -121,8 +121,8 @@ void PIDClear(void)
 {
     PIDInit(&speedpid_left,187.52,1.16,0);
     PIDInit(&speedpid_right,179.06,1.23,0);
-    PIDInit(&speedpid_left_1,187.52,1.16,0);
-    PIDInit(&speedpid_right_1,179.06,1.23,0);
+//    PIDInit(&speedpid_left_1,168.46,0.86,0);
+//    PIDInit(&speedpid_right_1,178.62,1.04,0);
     PIDInit(&turnpid_image,25,0,5);
-    PIDInit(&turnpid_adc,15,0,0);
+//    PIDInit(&turnpid_adc,15,0,0);
 }

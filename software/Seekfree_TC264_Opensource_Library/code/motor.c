@@ -117,6 +117,7 @@ void MotorSetPWM(int pwm_left,int pwm_right)
 void MotorCtrl(void)
 {
     int pwm_left = 0,pwm_right = 0;                                                 //左右电机PWM
+    int pwm_left_1 = 0,pwm_right_1 = 0;
 
     EncoderGetCount(&speed_left,&speed_right);                                      //获取编码器的值
 
@@ -124,15 +125,22 @@ void MotorCtrl(void)
     {
         pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
         pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
+
+        pwm_left_1 = PIDSpeed(speed_left,target_left,&speedpid_left_1);
+        pwm_right_1 = PIDSpeed(speed_right,target_right,&speedpid_right_1);
+
+        MotorSetPWM(pwm_left,pwm_right);
     }
     else if(track_mode == kTrackADC)                                                //当前为电磁循迹
     {
-        pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left_1);               //获取蓝布上左电机PWM
-        pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right_1);           //获取蓝布上右电机PWM
+        pwm_left_1 = PIDSpeed(speed_left,target_left,&speedpid_left_1);             //获取蓝布上左电机PWM
+        pwm_right_1 = PIDSpeed(speed_right,target_right,&speedpid_right_1);         //获取蓝布上右电机PWM
+
+        MotorSetPWM(pwm_left_1,pwm_right_1);
     }
 
     c0h0_isr_flag=1;
-    MotorSetPWM(pwm_left,pwm_right);                                                //将两个PWM值赋给电机
+//    MotorSetPWM(pwm_left,pwm_right);                                                //将两个PWM值赋给电机
 }
 /***********************************************
 * @brief : 计算一段时间走过的路程
