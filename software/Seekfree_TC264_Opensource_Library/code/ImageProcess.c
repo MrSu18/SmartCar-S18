@@ -163,7 +163,7 @@ void ImageProcess(void)
 //        default:break;
 //    }
 
-    if(CutIdentify() == 1)
+    if(CrossIdentify() == 1)
     {
         while(1)
         {

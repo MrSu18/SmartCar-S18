@@ -91,15 +91,16 @@ int core0_main(void)
     PIDInit(&speedpid_left_1,168.46,0.86,0);            //244.24  1.99
     PIDInit(&speedpid_right_1,178.62,1.04,0);           //297.87  2.92
     PIDInit(&turnpid_image,25,0,5);                     //25   5
-    PIDInit(&turnpid_adc,12,0,2);
+    PIDInit(&turnpid_adc,7,0,1.5);
     base_speed=160;
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
 
+    ADCScan();
     while (TRUE)
     {
-        ADCGetValue(adc_value);
+//        ADCGetValue(adc_value);
         // 此处编写需要循环执行的代码
        if(c0h0_isr_flag==1)
        {

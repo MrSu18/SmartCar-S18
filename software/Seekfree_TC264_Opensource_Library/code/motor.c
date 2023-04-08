@@ -9,6 +9,7 @@
 
 int speed_left = 0,speed_right = 0;                                     //左右轮当前编码器的值
 int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值
+int target_left_1 = 0,target_right_1 = 0;
 uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 uint16 base_speed = 0;
 TrackMode track_mode = kTrackImage;
@@ -126,15 +127,15 @@ void MotorCtrl(void)
         pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
         pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
 
-        pwm_left_1 = PIDSpeed(speed_left,target_left,&speedpid_left_1);
-        pwm_right_1 = PIDSpeed(speed_right,target_right,&speedpid_right_1);
+        pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left);
+        pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right);
 
         MotorSetPWM(pwm_left,pwm_right);
     }
     else if(track_mode == kTrackADC)                                                //当前为电磁循迹
     {
-        pwm_left_1 = PIDSpeed(speed_left,target_left,&speedpid_left_1);             //获取蓝布上左电机PWM
-        pwm_right_1 = PIDSpeed(speed_right,target_right,&speedpid_right_1);         //获取蓝布上右电机PWM
+        pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left_1);             //获取蓝布上左电机PWM
+        pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right_1);         //获取蓝布上右电机PWM
 
         MotorSetPWM(pwm_left_1,pwm_right_1);
     }

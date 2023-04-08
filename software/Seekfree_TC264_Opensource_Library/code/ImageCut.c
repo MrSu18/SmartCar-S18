@@ -38,6 +38,7 @@ uint8 CutIdentify(void)
 
         if (r_corner_result == 2 || r_corner_result == 1)
         {
+            gpio_toggle_level(P20_9);
             if (f_right_line[corner_id[0]].X > f_right_line[r_line_count - 1].X)
             {
                 r_line_count = (uint8)corner_id[0];
@@ -49,6 +50,7 @@ uint8 CutIdentify(void)
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
                     cut_type = kCutOut;
+                    base_speed = 140;
                     aim_distance = 0.45;
                 }
             }
@@ -59,6 +61,7 @@ uint8 CutIdentify(void)
 
             if (l_corner_result == 2 || l_corner_result == 1)
             {
+                gpio_toggle_level(P21_5);
                 if (f_left_line[corner_id[0]].X < f_left_line[l_line_count - 1].X)
                 {
                     l_line_count = (uint8)corner_id[0];
@@ -70,6 +73,7 @@ uint8 CutIdentify(void)
                         last_track_mode = track_mode;
                         track_mode = kTrackADC;
                         cut_type = kCutOut;
+                        base_speed = 140;
                         aim_distance = 0.45;
                     }
                 }
@@ -79,11 +83,13 @@ uint8 CutIdentify(void)
     }
     case kCutOut:
     {
+        gpio_toggle_level(P21_4);
         if (l_line_count > 20 && r_line_count > 20)
         {
             last_track_mode = track_mode;
             track_mode = kTrackImage;
             cut_type = kCutIn;
+            base_speed = 160;
             return 1;
         }
         break;
