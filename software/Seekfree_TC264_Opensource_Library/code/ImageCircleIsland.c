@@ -316,7 +316,8 @@ uint8 CircleIslandLEnd(void)
     if(r_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环
     {
         track_type=kTrackRight;//寻右线出去即可
-        if(abs(r_line_count-l_line_count)<10)
+//        if(abs(r_line_count-l_line_count)<10)
+        if(l_line_count>30)
             return 1;
         else
             return 0;

@@ -63,7 +63,7 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
         }
 
         PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
-        PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //电磁方向环PID
+        PIDTurnADC(&target_left_1,&target_right_1,&turnpid_adc);                        //电磁方向环PID
     }
     else if(track_mode == kTrackADC)                                                //当前为电磁循迹
     {
@@ -74,7 +74,7 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
 //            PIDClear();
 //        }
 
-        PIDTurnADC(&target_left,&target_right,&turnpid_adc);                        //电磁方向环PID
+        PIDTurnADC(&target_left_1,&target_right_1,&turnpid_adc);                        //电磁方向环PID
     }
 
     c0h1_isr_flag=1;
