@@ -130,6 +130,9 @@ void MotorCtrl(void)
         pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left);
         pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right);
 
+        pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left_1);
+        pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right_1);
+
         MotorSetPWM(pwm_left,pwm_right);
     }
     else if(track_mode == kTrackADC)                                                //当前为电磁循迹

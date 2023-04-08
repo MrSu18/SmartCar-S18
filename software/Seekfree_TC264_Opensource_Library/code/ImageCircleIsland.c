@@ -229,11 +229,12 @@ uint8 CircleIslandLOut(void)
     //对循迹偏差进行处理
     if(r_line_count>TRACK_RIGHTLINE_OUT_THR)
     {
-        if(status==0)
-        {
-            status=1;
-        }
-        else if(status==2)//右边线不丢线即出环结束
+//        if(status==0)
+//        {
+//            status=1;
+//        }
+//        else
+        if(status==2)//右边线不丢线即出环结束
         {
             status=0;
             return 1;
@@ -261,10 +262,10 @@ uint8 CircleIslandLOut(void)
     }
     else//如果左边线太少了需要补线出环
     {
-        if (status==1)
-        {
-            status=2;
-        }
+//        if (status==1)
+//        {
+//            status=2;
+//        }
         myPoint_f left_inflection={0},right_inflection={0};//补线的左右点
         //先找到右角点
         if (r_line_count<2)//右边一开始就丢线
@@ -277,7 +278,7 @@ uint8 CircleIslandLOut(void)
         }
         for (uint8 i = 0; i < r_line_count; ++i)
         {
-            if (1.5<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
+            if (1.4<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
             {
                 r_line_count=i;//截断
                 right_inflection=f_right_line[i];
@@ -313,13 +314,12 @@ uint8 CircleIslandLOut(void)
 ************************************************/
 uint8 CircleIslandLEnd(void)
 {
+    if(l_line_count>30)//判断
+        return 1;
+    //循迹
     if(r_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环
     {
         track_type=kTrackRight;//寻右线出去即可
-        if(abs(r_line_count-l_line_count)<10)
-            return 1;
-        else
-            return 0;
     }
     else//这里对偏差进行处理，避免由于出环的时候就左拐太多，使得右边线不存在而继承上一次的偏差
     {
@@ -336,8 +336,8 @@ uint8 CircleIslandLEnd(void)
             track_type=kTrackSpecial;//偏差置为0
             image_bias=-0.5;//右拐一点
         }
-        return 0;
     }
+    return 0;
 }
 
 /***********************************************
