@@ -136,7 +136,7 @@ void EdgeDetection(void)
 {
     /*1.播种找到左右种子*/
 	myPoint left_seed, right_seed;//左右线的初始种子
-	left_seed.X = left_border[USE_IMAGE_H - 2]; left_seed.Y = USE_IMAGE_H - 2; right_seed.X = right_border[USE_IMAGE_H - 2]; right_seed.Y = USE_IMAGE_H - 2;//初始化为0
+	left_seed.X = left_border[USE_IMAGE_H - 4]; left_seed.Y = USE_IMAGE_H - 4; right_seed.X = right_border[USE_IMAGE_H - 4]; right_seed.Y = USE_IMAGE_H - 4;//初始化为0
 	SowSeed(&left_seed,&right_seed);
     left_line[l_line_count]=left_seed;l_line_count++;//将这个点存入边线数组中
     right_line[r_line_count]=right_seed;r_line_count++;

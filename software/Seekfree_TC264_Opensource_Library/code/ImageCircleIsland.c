@@ -278,7 +278,7 @@ uint8 CircleIslandLOut(void)
         }
         for (uint8 i = 0; i < r_line_count; ++i)
         {
-            if (1.5<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
+            if (1.4<r_angle_1[i] && r_angle_1[i]<1.8)//出环右边角点
             {
                 r_line_count=i;//截断
                 right_inflection=f_right_line[i];
