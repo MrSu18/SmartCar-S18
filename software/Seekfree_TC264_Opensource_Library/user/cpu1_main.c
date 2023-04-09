@@ -42,6 +42,7 @@
 #include "bluetooth.h"
 #include "ImageProcess.h"
 #include "pid.h"
+#include "key.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -121,11 +122,11 @@ void core1_main(void)
             TrackBasicClear();
 #else
             MotorSetPWM(2000,2000);
-            system_delay_ms(3000);
-            while(1)
-            {
-                MotorSetPWM(0, 0);
-            }
+//            system_delay_ms(3000);
+//            while(1)
+//            {
+//                MotorSetPWM(0, 0);
+//            }
 //            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
             mt9v03x_finish_flag=0;

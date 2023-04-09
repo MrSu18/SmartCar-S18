@@ -43,6 +43,9 @@
 #include "pid.h"
 #include "key.h"
 //#include "icm20602.h"
+#include "ZwPlus_lib.h"
+
+extern uint8 binary_image[MT9V03X_H][MT9V03X_W];
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -71,6 +74,7 @@ int core0_main(void)
     mt9v03x_init();//初始化摄像头
     tft180_init();//初始化tft
     UARTInit();//初始化蓝牙模块
+//    uart_init(BLUETOOTH,3000000,BLUETOOTH_TX,BLUETOOTH_RX);//初始化图传
 //    icm20602_init();
 //    GyroOffsetInit();
 //    dl1a_init();
@@ -97,16 +101,22 @@ int core0_main(void)
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
 
-    ADCScan();
+//    ADCScan();
     while (TRUE)
     {
-//        ADCGetValue(adc_value);
+        ADCGetValue(adc_value);
         // 此处编写需要循环执行的代码
        if(c0h0_isr_flag==1)
        {
            printf("%d,%d\r\n",speed_left,speed_right);
            c0h0_isr_flag=0;
        }
+//        if(mt9v03x_finish_flag)
+//        {
+//           gpio_toggle_level(P20_9);
+//           Zw_SendImage(binary_image[0]);
+//           system_delay_ms(10);
+//        }
 //       if(c0h1_isr_flag==1)
 //       {
 //           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);

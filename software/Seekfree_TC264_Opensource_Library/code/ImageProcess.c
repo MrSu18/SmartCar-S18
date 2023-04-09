@@ -163,28 +163,28 @@ void ImageProcess(void)
 //        default:break;
 //    }
 
-    if(CrossIdentify() == 1)
-    {
-        while(1)
-        {
-            pit_disable(CCU60_CH0);//关闭电机中断
-            MotorSetPWM(0,0);
-        }
-    }
+//    if(CrossIdentify() == 1)
+//    {
+//        while(1)
+//        {
+//            pit_disable(CCU60_CH0);//关闭电机中断
+//            MotorSetPWM(0,0);
+//        }
+//    }
 //    else if(CutIdentify())
 //    {
 //
 //    }
       //环岛状态机测试
-//    if(CircleIslandLStatus()==1)
-//    {
-//        pit_disable(CCU60_CH1);
-//        pit_disable(CCU60_CH0);//关闭电机中断
-//        while(1)
-//        {
-//            MotorSetPWM(0,0);
-//        }
-//    }
+    if(CircleIslandLStatus()==1)
+    {
+        pit_disable(CCU60_CH1);
+        pit_disable(CCU60_CH0);//关闭电机中断
+        while(1)
+        {
+            MotorSetPWM(0,0);
+        }
+    }
 
     //预瞄点求偏差
     if(track_type==kTrackRight)

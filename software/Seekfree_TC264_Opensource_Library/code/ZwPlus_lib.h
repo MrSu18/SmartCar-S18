@@ -22,7 +22,7 @@
 #define    Zw_NULL       0
 
 /* UART数据发送宏定义    需要用户更改为自己的UART发送函数 */
-#define    Zw_Putchar(Zw_data)    uart_write_byte(UART_0, Zw_data)
+#define    Zw_Putchar(Zw_data)    uart_write_byte(UART_2, Zw_data)
 
 /* @typedef */
 typedef    unsigned char    Zw_uint8;

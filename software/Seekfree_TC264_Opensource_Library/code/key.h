@@ -39,6 +39,6 @@ void KeyTrack(void);                            //通过按键调节前瞻和基础速度
 void KeyImage(void);                            //通过按键控制显示图像
 void ShowPIDParameter(void);                    //显示当前所有PID的参数
 void ShowImageParameter(void);                  //显示当前前瞻和基础速度
-void KEYCtrl();                                 //按键整体控制
+void KEYCtrl(void);                                 //按键整体控制
 
 #endif /* CODE_KEY_H_ */
