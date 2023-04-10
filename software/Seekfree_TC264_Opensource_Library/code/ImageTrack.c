@@ -11,7 +11,7 @@
 //图像循迹偏差
 float image_bias=0;
 //预瞄点
-float aim_distance = 0.4;
+float aim_distance = 0.36;
 // 变换后左右边线+滤波
 myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
 // 变换后左右边线+等距采样
