@@ -126,12 +126,9 @@ void MotorCtrl(void)
     {
         pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
         pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
-
-//        pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left);
-//        pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right);
 //
-//        pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left_1);
-//        pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right_1);
+        pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left_1);
+        pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right_1);
 
         MotorSetPWM(pwm_left,pwm_right);
     }
@@ -144,7 +141,6 @@ void MotorCtrl(void)
     }
 
     c0h0_isr_flag=1;
-//    MotorSetPWM(pwm_left,pwm_right);                                                //将两个PWM值赋给电机
 }
 /***********************************************
 * @brief : 计算一段时间走过的路程

@@ -42,18 +42,18 @@ uint8 CrossIdentify(void)
             gpio_toggle_level(P20_9);
             //如果只有一边有角点，则不用求平均值，如果有两个角点，则求平均值
             if ((corner_id_l == 0) && (corner_id_r != 0))
-                aim_distance = (float)(corner_id_r - 4) * SAMPLE_DIST;
+                aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
             else if ((corner_id_l != 0) && (corner_id_r == 0))
-                aim_distance = (float)(corner_id_l - 4)* SAMPLE_DIST;
+                aim_distance = (float)(corner_id_l)* SAMPLE_DIST;
             else
-                aim_distance = ((float)(corner_id_l + corner_id_r - 8)) * SAMPLE_DIST / 2;
+                aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
 
             //角点很近，切换下一个状态
             if (corner_id_l < 8 && corner_id_r < 8)
                 cross_type = kCrossIn;
         }
         else
-            aim_distance = 0.45;
+            aim_distance = 0.36;
         break;
     }
     //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，如果没有找到角点，则表示已经要出了十字，切换状态
@@ -94,7 +94,7 @@ uint8 CrossIdentify(void)
             for (int i = 0; i < l_line_count; i++)
             {
                 //找到角点则寻左线，改变预瞄点
-                if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
+                if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
                 {
                     track_leftline(f_left_line, l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackLeft;
@@ -110,6 +110,7 @@ uint8 CrossIdentify(void)
             track_rightline(f_right_line, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
             track_type = kTrackRight;
             cross_type = kCrossOut;
+            aim_distance = 0.36;
         }
 
         break;
@@ -121,7 +122,7 @@ uint8 CrossIdentify(void)
         //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
         if (l_line_count > 10 && r_line_count > 10)
         {
-            aim_distance = 0.45;
+            aim_distance = 0.36;
             cross_type = kCrossBegin;
             return 1;
         }

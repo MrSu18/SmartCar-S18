@@ -152,7 +152,7 @@ void ImageBorderInit(void)
             if (use_image[row][r_column] == IMAGE_BAN)
             {
                 right_x = r_column - 2;
-                right_border[row]= r_column - 1;
+                right_border[row]= r_column - 2;
                 break;
             }
             else if (r_column + 1 == USE_IMAGE_W - 1)//同理读到最右边还没有读到就用W-1作为右边界
