@@ -20,16 +20,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="十字修改八零域标号，实地测试失败">
-      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="灰度扫线">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageCircleIsland.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageCircleIsland.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageConversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageConversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageProcess.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageProcess.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/LJF_Opencv_ImageTest/v16/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/LJF_Opencv_ImageTest/v16/.suo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/LJF_Opencv_ImageTest/v16/Browse.VC.db" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/LJF_Opencv_ImageTest/v16/Browse.VC.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/slnx.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/slnx.sqlite" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -237,6 +233,12 @@
       <workItem from="1680350635977" duration="1317000" />
       <workItem from="1680404110064" duration="23000" />
       <workItem from="1680404209460" duration="2000" />
+      <workItem from="1681054524738" duration="9000" />
+      <workItem from="1681118170745" duration="86000" />
+      <workItem from="1681118304192" duration="444000" />
+      <workItem from="1681123757181" duration="2065000" />
+      <workItem from="1681126469332" duration="6410000" />
+      <workItem from="1681190095425" duration="3055000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>
@@ -434,7 +436,21 @@
       <option name="project" value="LOCAL" />
       <updated>1679323011116</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="0.36的前瞻跑普通赛道效果好，但是环岛会飘出去，不知道为什么，电机控制有注释东西，不知道是不是之前没注释这个就跑不了">
+      <created>1681118236639</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1681118236639</updated>
+    </task>
+    <task id="LOCAL-00030" summary="灰度扫线">
+      <created>1681194170586</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1681194170586</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -452,8 +468,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="暂时不要赛道黑块区域的赛道信息记录，较为麻烦，并且没有想到好的思路去写，删除了一些无关紧要的变量，提交日记" />
-    <MESSAGE value="修改一下规范" />
     <MESSAGE value="对边线处理增加了三角滤波，初步尝试了半宽补线（还没封装好），在考虑要不要后续把边线数组变成float类型" />
     <MESSAGE value="加入丢线数组，记录边线丢线，这样在后续查看是否丢线的时候不用查询两个数组（边线数组和边界数组）" />
     <MESSAGE value="修改bug，避免边线数组存储的时候越界" />
@@ -477,9 +491,20 @@
     <MESSAGE value="将环岛的东西加入到ADS中还没实地测试" />
     <MESSAGE value="把扫线的八零域标号改成全局变量，为了在元素再次扫线的时候保存标号值" />
     <MESSAGE value="十字修改八零域标号，实地测试失败" />
-    <option name="LAST_COMMIT_MESSAGE" value="十字修改八零域标号，实地测试失败" />
+    <MESSAGE value="0.36的前瞻跑普通赛道效果好，但是环岛会飘出去，不知道为什么，电机控制有注释东西，不知道是不是之前没注释这个就跑不了" />
+    <MESSAGE value="灰度扫线" />
+    <option name="LAST_COMMIT_MESSAGE" value="灰度扫线" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/ImageBasic.cpp</url>
+          <line>299</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="r_line_count" language="ObjectiveC" />
