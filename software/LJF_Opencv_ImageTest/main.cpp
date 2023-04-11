@@ -27,12 +27,12 @@ int main()
     for (int i = 0; i < 18; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
-        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\4.1\\%d.bmp", i);
+        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\3.24\\%d.bmp", i);
         ScanImage(str);
         /************************************************************************************************/
 
         //二值化
-        ImageBinary();
+//        ImageBinary();
 //        myadaptiveThreshold(mt9v03x_image[0],binary_image[0],MT9V03X_W,MT9V03X_H,7 ,3);
 //        sobel(mt9v03x_image,binary_image);
         UseImageDataToUseMat();
@@ -44,11 +44,11 @@ int main()
 
         //把三线画出来
         PrintEdgeLine(left_line,0,l_line_count,0,255,0);
-//        PrintEdgeLine(f_right_line,0,r_line_count,0,255,255);
+        PrintEdgeLine(right_line,0,r_line_count,0,255,255);
 //        PrintEdgeLine(center_line_l,0,l_line_count,0,0,255);//左边跟踪出来的中线
 //        PrintEdgeLine(center_line_r,0,r_line_count,255,100,0);//循迹的中线
-        PrintEdgeLine(center_line,0,Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count),255,0,0);//循迹的中线
-        printf("%f\r\n",image_bias);
+//        PrintEdgeLine(center_line,0,Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count),255,0,0);//循迹的中线
+//        printf("%f\r\n",image_bias);
         //显示图像
         imshow("use_img", use_mat);
         waitKey(0);//等待键盘按下

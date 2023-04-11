@@ -6,17 +6,17 @@
 //图像转化的宏定义
 #define PER_IMAGE_W     96             //逆透视图像的宽度
 #define PER_IMAGE_H     60             //逆透视图像的高度
-#define USE_IMAGE_W		PER_IMAGE_W	    //使用的图像宽度
-#define USE_IMAGE_H		PER_IMAGE_H		//使用的图像高度
+#define USE_IMAGE_W		MT9V03X_W	    //使用的图像宽度
+#define USE_IMAGE_H		MT9V03X_H		//使用的图像高度
 #define IMAGE_BLACK		0				//二值化的黑点
 #define IMAGE_WHITE		255				//二值化的白点
 
-#define use_image   *PerImg_ip       //use_image用于巡线和识别的图像
+#define use_image   mt9v03x_image       //use_image用于巡线和识别的图像
 
 //宏定义
 #define PER_IMG     mt9v03x_image   //用于透视变换的图像
 #define IMAGE_BAN   127             //逆透视禁止区域的灰度值
-#define PERSPECTIVE 1               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
+#define PERSPECTIVE 0               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视 2:图像逆透视和去畸变
 
 extern uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];
 extern uint8 left_border[USE_IMAGE_H];//图像左边界

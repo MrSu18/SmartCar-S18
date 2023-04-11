@@ -5,7 +5,7 @@
 //=========================赛道特征变量=============================
 //扫线得到的左右边线
 myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左右边线
-uint8 l_line_count=0,r_line_count=0;//左右边线记录总共有多长
+uint8 l_line_count=EDGELINE_LENGTH,r_line_count=EDGELINE_LENGTH;//左右边线记录总共有多长
 char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];//左右线是否丢线的记录数组
 uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 //================================================================
@@ -18,7 +18,7 @@ uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 * @author: 刘骏帆
 ************************************************/
 #define BLACK_CONTINUE_WIDTH_THR	0//从中间往两边的黑色连续的阈值
-void SowSeed(myPoint* left_seed,myPoint* right_seed)
+void SowSeedBinary(myPoint* left_seed, myPoint* right_seed)
 {
 	//找到左边种子
 	for (uint8 column = USE_IMAGE_W/2; column>left_border[left_seed->Y]+1; column--)
@@ -138,7 +138,7 @@ void EdgeDetection(void)
     /*1.播种找到左右种子*/
 	myPoint left_seed, right_seed;//左右线的初始种子
 	left_seed.X = left_border[USE_IMAGE_H - 2]; left_seed.Y = USE_IMAGE_H - 2; right_seed.X = right_border[USE_IMAGE_H - 2]; right_seed.Y = USE_IMAGE_H - 2;//初始化为0
-	SowSeed(&left_seed,&right_seed);
+    SowSeedBinary(&left_seed, &right_seed);
     left_line[l_line_count]=left_seed;l_line_count++;//将这个点存入边线数组中
     right_line[r_line_count]=right_seed;r_line_count++;
     LCDDrawPoint(left_seed.Y,left_seed.X,255,0,0);
@@ -210,17 +210,17 @@ void EdgeDetection(void)
 }
 
 #define GRAY_DIF_THRES  10//灰度差比和算法的阈值
-void SowSeed(uint8 half,char dif_thres,myPoint *left_seed,myPoint *right_seed)//通过差比和算法先找到左右种子
+void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed)//通过差比和算法先找到左右种子
 {
     int dif_gray_value;//灰度值差比和的值
-    for (left_seed->Y=USE_IMAGE_H-half-2,left_seed->X=USE_IMAGE_W/2; left_seed->X>half; left_seed->X--)
+    for (left_seed->Y=110-half-2,left_seed->X=USE_IMAGE_W/2; left_seed->X>half; left_seed->X--)
     {
         //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
         dif_gray_value=100*(use_image[left_seed->Y][left_seed->X]-use_image[left_seed->Y][left_seed->X-1])
                        /(use_image[left_seed->Y][left_seed->X]+use_image[left_seed->Y][left_seed->X-1]);
         if(dif_gray_value>dif_thres) break;
     }
-    for (right_seed->Y=USE_IMAGE_H-half-2 ,right_seed->X=USE_IMAGE_W/2; right_seed->X<USE_IMAGE_W-half; right_seed->X++)
+    for (right_seed->Y=110-half-2 ,right_seed->X=USE_IMAGE_W/2; right_seed->X<USE_IMAGE_W-half; right_seed->X++)
     {
         //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
         dif_gray_value=100*(use_image[right_seed->Y][right_seed->X]-use_image[right_seed->Y][right_seed->X+1])
@@ -232,12 +232,9 @@ void SowSeed(uint8 half,char dif_thres,myPoint *left_seed,myPoint *right_seed)//
 const int dir_front[4][2] = {{0,-1},{1,0},{0,1},{-1,0}};
 const int dir_frontleft[4][2] = {{-1,-1},{1,-1},{1, 1},{-1,1}};
 const int dir_frontright[4][2] = {{1,-1},{1,1},{-1, 1},{-1,-1}};
-void Findline_Lefthand_Adaptive(int block_size, int clip_value,myPoint* pts, uint8 *num)
+void Findline_Lefthand_Adaptive(int block_size, int clip_value,myPoint left_seed,myPoint* left_line, uint8 *num)
 {
-    myPoint left_seed,right_seed;
     int half = block_size / 2;
-
-    SowSeed(half,GRAY_DIF_THRES,&left_seed,&right_seed);
     int step = 0, dir = 0, turn = 0,point_num=0;
     while (step < *num && left_border[left_seed.Y]+half < left_seed.X && left_seed.X < right_border[left_seed.Y] - half - 1 && half < left_seed.Y && left_seed.Y < USE_IMAGE_H - half - 1 && turn < 4)
     {
@@ -274,8 +271,8 @@ void Findline_Lefthand_Adaptive(int block_size, int clip_value,myPoint* pts, uin
         {
             left_seed.X += dir_front[dir][0];
             left_seed.Y += dir_front[dir][1];
-            pts[step].X = left_seed.X;
-            pts[step].Y = left_seed.Y;
+            left_line[step].X = left_seed.X;
+            left_line[step].Y = left_seed.Y;
             step++;
             turn = 0;
         }
@@ -284,14 +281,71 @@ void Findline_Lefthand_Adaptive(int block_size, int clip_value,myPoint* pts, uin
             left_seed.X += dir_frontleft[dir][0];
             left_seed.Y += dir_frontleft[dir][1];
             dir = (dir + 3) % 4;
-            pts[step].X = left_seed.X;
-            pts[step].Y = left_seed.Y;
+            left_line[step].X = left_seed.X;
+            left_line[step].Y = left_seed.Y;
             step++;
             turn = 0;
         }
         //printf("local_thres=%d,front_value=%d,frontleft_value=%d,dir=%d\n",local_thres,front_value,frontleft_value,dir);
 //        UseImageDataToUseMat();
 //        LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
+    }
+    *num = step;
+}
+
+void Findline_Righthand_Adaptive(int block_size, int clip_value, myPoint right_seed, myPoint* right_line, uint8 *num)
+{
+    int half = block_size / 2;
+    int step = 0, dir = 0, turn = 0,point_num=0;
+    while (step < *num && left_border[right_seed.Y]+half < right_seed.X && right_seed.X < right_border[right_seed.Y] - half - 1 && half < right_seed.Y && right_seed.Y < USE_IMAGE_H - half - 1 && turn < 4)
+    {
+        //计算当前局部方块的阈值
+        int local_thres = 0;
+        uint8 gray=0;
+        for (int dy = -half; dy <= half; dy++)
+        {
+            for (int dx = -half; dx <= half; dx++)
+            {
+                gray=use_image[right_seed.Y+dy][right_seed.X+dx];
+                if(gray==IMAGE_BAN) continue;
+                else
+                {
+                    local_thres += gray;
+                    point_num++;
+                }
+            }
+        }
+        local_thres /= point_num;
+        local_thres -= clip_value;
+        point_num=0;
+        //右手迷宫巡线
+        int current_value = use_image[right_seed.Y][right_seed.X];
+        int front_value = use_image[right_seed.Y+dir_front[dir][1]][right_seed.X+dir_front[dir][0]];
+        int frontright_value = use_image[right_seed.Y+dir_frontright[dir][1]][right_seed.X+dir_frontright[dir][0]];
+        if (front_value < local_thres)
+        {
+            dir = (dir + 3) % 4;
+            turn++;
+        }
+        else if (frontright_value < local_thres)
+        {
+            right_seed.X += dir_front[dir][0];
+            right_seed.Y += dir_front[dir][1];
+            right_line[step].X = right_seed.X;
+            right_line[step].Y = right_seed.Y;
+            step++;
+            turn = 0;
+        }
+        else
+        {
+            right_seed.X += dir_frontright[dir][0];
+            right_seed.Y += dir_frontright[dir][1];
+            dir = (dir + 1) % 4;
+            right_line[step].X = right_seed.X;
+            right_line[step].Y = right_seed.Y;
+            step++;
+            turn = 0;
+        }
     }
     *num = step;
 }
