@@ -40,7 +40,7 @@ void EncoderGetCount(int* data_left,int* data_right)
 {
     int last_data_left = *data_left,last_data_right = *data_right;
 
-    *data_left = -encoder_get_count(ENCODER_LEFT);                          //获取左边编码器的值
+    *data_left = encoder_get_count(ENCODER_LEFT);                            //获取左边编码器的值
     *data_right = -encoder_get_count(ENCODER_RIGHT);                         //获取右边编码器的值
 
     *data_left = SecondOrderFilter_L(*data_left);                           //左编码器一阶低通滤波
@@ -126,7 +126,7 @@ void MotorCtrl(void)
     {
         pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
         pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
-//
+
         pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left_1);
         pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right_1);
 

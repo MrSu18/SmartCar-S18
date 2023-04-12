@@ -38,6 +38,7 @@
 #include "bluetooth.h"
 #include "adc.h"
 #include "motor.h"
+#include "zf_device_tft180.h"
 
 // **************************** PITÖÐ¶Ïº¯Êý ****************************
 IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
