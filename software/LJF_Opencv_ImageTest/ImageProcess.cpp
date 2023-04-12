@@ -20,10 +20,10 @@
 void ImageProcess(void)
 {
     //扫线
-    myPoint left_seed,right_seed;
-    SowSeedGray(2, 10, &left_seed, &right_seed);
-    Findline_Lefthand_Adaptive(5,2,left_seed,left_line,&l_line_count);
-    Findline_Righthand_Adaptive(5, 2, right_seed, right_line, &r_line_count);
+    EdgeDetection();
+
+//    Findline_Lefthand_Adaptive(5,2,left_seed,left_line,&l_line_count);
+//    Findline_Righthand_Adaptive(5, 2, right_seed, right_line, &r_line_count);
     //对边线进行滤波
 //    BlurPoints(left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
 //    BlurPoints(right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
@@ -84,6 +84,6 @@ void TrackBasicClear(void)
     //边线丢线数组清零
     memset(l_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
     memset(r_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
-    l_line_count=EDGELINE_LENGTH;r_line_count=EDGELINE_LENGTH;//边线的计数指针清零
+    l_line_count=0;r_line_count=0;//边线的计数指针清零
     l_lostline_num=0;r_lostline_num=0;//丢线数清零
 }

@@ -24,19 +24,20 @@ int main()
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-    for (int i = 0; i < 18; i++)
+    for (int i = 0 ; i < 68; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
-        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\3.24\\%d.bmp", i);
+        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\3.27\\%d.bmp", i);
         ScanImage(str);
         /************************************************************************************************/
 
         //二值化
 //        ImageBinary();
-//        myadaptiveThreshold(mt9v03x_image[0],binary_image[0],MT9V03X_W,MT9V03X_H,7 ,3);
+        myadaptiveThreshold(mt9v03x_image[0],binary_image[0],MT9V03X_W,MT9V03X_H,7 ,2);
 //        sobel(mt9v03x_image,binary_image);
         UseImageDataToUseMat();
         PrintImage(use_mat);
+        LCDDrowRow(90,0,0,255);
         ImageProcess();
 
 //        printf("image_bias:%f,l_line_count:%d,r_line_count:%d,c_line_count:%d\r\n",image_bias,l_line_count,r_line_count,c_line_count);

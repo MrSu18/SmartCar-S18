@@ -313,9 +313,9 @@ void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W
             if(tempy<0)
                 tempy=-tempy;
             temp=tempx+tempy;
-            if(temp>255)
+            if(temp>100)
                 temp=255;
-
+            else temp=0;
             imag1[i][j]=temp;
 
         }
