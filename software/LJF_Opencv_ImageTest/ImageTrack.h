@@ -8,9 +8,9 @@
 #include "ImageBasic.h"//mypoint½á¹¹Ìå
 
 //============================²ÎÊı================================
-#define LINE_BLUR_KERNEL    3               //±ßÏßÈı½ÇÂË²¨ºËµÄ´óĞ¡
-#define SAMPLE_DIST         0.02            //Êµ¼Ê²ÉÑù¼ä¾à(m)
-#define PIXEL_PER_METER     50              //Ã¿Ò»Ã×ÓĞ¶àÉÙÏñËØµã
+#define LINE_BLUR_KERNEL    7               //±ßÏßÈı½ÇÂË²¨ºËµÄ´óĞ¡
+#define SAMPLE_DIST         0.01            //Êµ¼Ê²ÉÑù¼ä¾à(m)
+#define PIXEL_PER_METER     100              //Ã¿Ò»Ã×ÓĞ¶àÉÙÏñËØµã
 #define ANGLE_DIST          0.1             //Ëã½Ç¶ÈµÄÊ±ºò¸ô¶àÉÙµãÈ¥½øĞĞ¼ÆËã(m)
 #define TRACK_WIDTH         0.4             //ÈüµÀ¿í¶È(m)
 //===============================================================
@@ -31,6 +31,8 @@ typedef enum TrackType//¸ú×Ù×óÓÒÏßÇĞ»»µÄÃ¶¾ÙÀàĞÍ±äÁ¿
 extern float image_bias;
 //Ô¤Ãéµã
 extern float aim_distance;
+//±ä»»ºó×óÓÒ±ßÏß
+extern myPoint_f per_left_line[EDGELINE_LENGTH],per_right_line[EDGELINE_LENGTH];
 // ±ä»»ºó×óÓÒ±ßÏß+ÂË²¨
 extern myPoint_f f_left_line[EDGELINE_LENGTH],f_right_line[EDGELINE_LENGTH];
 // ±ä»»ºó×óÓÒ±ßÏß+µÈ¾à²ÉÑù
@@ -43,17 +45,18 @@ extern float l_angle_1[EDGELINE_LENGTH],r_angle_1[EDGELINE_LENGTH];//×óÓÒ±ßÏßµÄ·
 extern myPoint_f center_line_l[EDGELINE_LENGTH],center_line_r[EDGELINE_LENGTH];//×óÓÒ±ßÏß¸ú×ÙµÃµ½µÄÈüµÀÖĞÏß
 // ¹éÒ»»¯ÖĞÏß
 extern myPoint_f center_line[EDGELINE_LENGTH];//¹éÒ»»¯ÖĞÏß
-extern int c_line_count;//¹éÒ»»¯ÖĞÏß³¤¶È
+extern uint8 c_line_count;//¹éÒ»»¯ÖĞÏß³¤¶È
 //µ±Ç°µÄÑ²Ïß·½Ïò
 extern enum TrackType track_type;
 
-void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel);
-void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist);
+void BlurPoints(myPoint_f* in_line, int num, myPoint_f* out_line, uint8 kernel);
+void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, uint8 *num2, float dist);
 void local_angle_points(myPoint_f* in_line, int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void track_leftline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist);
 void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist);
 float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line);//µÃµ½Ñ­¼£Ô¤ÃªµãµÄÑ­¼£Æ«²î
 void FillingLine(char choose, myPoint_f point1, myPoint_f point2);
+void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line);//±ßÏßÄæÍ¸ÊÓ
 
 #endif //LJF_OPENCV_IMAGETEST_IMAGETRACK_H

@@ -176,7 +176,7 @@ void ImagePerspective_Init(void)
 {
     static uint8 BlackColor = IMAGE_BAN;
     //ÄæÍ¸ÊÓ¾ØÕó
-    double change_un_Mat[3][3] ={{-5.646070,6.116770,-158.737697},{0.282977,2.882744,-258.992498},{0.004492,0.066291,-4.829664}};
+    double change_un_Mat[3][3] ={{-2.897137,2.967769,-150.453872},{0.069071,1.394489,-249.171423},{0.001096,0.032185,-4.688751}};
     for (int i = 0; i < PER_IMAGE_W; i++)
     {
         for (int j = 0; j < PER_IMAGE_H; j++)

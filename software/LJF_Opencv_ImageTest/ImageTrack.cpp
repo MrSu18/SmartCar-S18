@@ -11,6 +11,8 @@
 float image_bias=0;
 //预瞄点
 float aim_distance = 0.32;
+//变换后左右边线
+myPoint_f per_left_line[EDGELINE_LENGTH]={0},per_right_line[EDGELINE_LENGTH]={0};
 // 变换后左右边线+滤波
 myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
 // 变换后左右边线+等距采样
@@ -23,7 +25,7 @@ float l_angle_1[EDGELINE_LENGTH]={0},r_angle_1[EDGELINE_LENGTH]={0};//左右边线的
 myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线
 // 归一化中线
 myPoint_f center_line[EDGELINE_LENGTH]={0};//归一化中线
-int c_line_count=0;//归一化中线长度
+uint8 c_line_count=0;//归一化中线长度
 //当前的巡线方向
 enum TrackType track_type=kTrackRight;
 
@@ -44,7 +46,7 @@ inline float Max(float a,float b) {return a>b?a:b;}//求ab最大值
 * @date  : 2023.1.10
 * @author: 上交大开源
 ************************************************/
-void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel)
+void BlurPoints(myPoint_f* in_line, int num, myPoint_f* out_line, uint8 kernel)
 {
     int half = kernel / 2;
     float x=0,y=0;
@@ -74,7 +76,7 @@ void BlurPoints(myPoint* in_line, int num, myPoint_f* out_line, uint8 kernel)
 * @date  : 2023.1.12
 * @author: 上交大开源
 ************************************************/
-void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist)
+void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, uint8 *num2, float dist)
 {
     //程序异常检测
     if (num1 < 0)
@@ -334,5 +336,29 @@ void FillingLine(char choose, myPoint_f point1, myPoint_f point2)
         }
         if (l_line_count>=EDGELINE_LENGTH && r_line_count>=EDGELINE_LENGTH)
             break;
+    }
+}
+
+/***********************************************
+* @brief : 边线逆透视
+* @param : myPoint* in_line: 原图扫线得到的边线
+*          uint8 num: 边线数组长度
+*          myPoint_f* out_line: 透视之后的边线
+* @return: 无
+* @date  : 2023.4.12
+* @author: 刘骏帆
+************************************************/
+void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
+{
+    double change_inverse_Mat[3][3]={{-0.3489,-2.1373,124.7762},{-0.0120,-3.2388,172.5025},{-0.0002,-0.0227, 1.0000}};
+    for(uint8 count=0;count<num;count++)
+    {
+        float i=in_line[count].X;float j=in_line[count].Y;
+        float solve_x = ((change_inverse_Mat[0][0]*i+change_inverse_Mat[0][1]*j+change_inverse_Mat[0][2])
+                   /(change_inverse_Mat[2][0]*i+change_inverse_Mat[2][1]*j+change_inverse_Mat[2][2]));
+        float solve_y = ((change_inverse_Mat[1][0]*i+change_inverse_Mat[1][1]*j+change_inverse_Mat[1][2])
+                   /(change_inverse_Mat[2][0]*i+change_inverse_Mat[2][1]*j+change_inverse_Mat[2][2]));
+        out_line[count].X = solve_x;
+        out_line[count].Y = solve_y;
     }
 }
