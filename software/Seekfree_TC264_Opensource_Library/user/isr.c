@@ -38,6 +38,7 @@
 #include "bluetooth.h"
 #include "adc.h"
 #include "motor.h"
+#include "Fuzzypid.h"
 #include "zf_device_tft180.h"
 
 // **************************** PIT中断函数 ****************************
@@ -58,20 +59,21 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
     if(track_mode == kTrackImage)                                                   //当前为摄像头循迹
     {
         if(last_track_mode == kTrackADC)                                            //上一次循迹为电磁循迹则复位PID参数
+            last_track_mode = track_mode;
+
+//        FuzzyPID();
+        PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
+        PIDTurnADC(&target_left_1,&target_right_1,&turnpid_adc);                    //电磁方向环PID
+    }
+    else if(track_mode == kTrackADC)                                                //当前为电磁循迹
+    {
+        if(last_track_mode == kTrackImage)                                          //上一次循迹为摄像头循迹则复位PID参数
         {
             last_track_mode = track_mode;
             PIDClear();
         }
 
-        PIDTurnImage(&target_left,&target_right,&turnpid_image);                    //摄像头方向环PID
-        PIDTurnADC(&target_left_1,&target_right_1,&turnpid_adc);                        //电磁方向环PID
-    }
-    else if(track_mode == kTrackADC)                                                //当前为电磁循迹
-    {
-        if(last_track_mode == kTrackImage)                                          //上一次循迹为摄像头循迹则复位PID参数
-            last_track_mode = track_mode;
-
-        PIDTurnADC(&target_left_1,&target_right_1,&turnpid_adc);                        //电磁方向环PID
+        PIDTurnADC(&target_left_1,&target_right_1,&turnpid_adc);                    //电磁方向环PID
     }
 
     c0h1_isr_flag=1;

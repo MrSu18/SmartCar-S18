@@ -172,7 +172,7 @@ uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
     {
         if((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
         {
-            *corner_id_l = i;
+            *corner_id_l = (int16)i;
             break;
         }
     }
@@ -180,7 +180,7 @@ uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
     {
         if((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
         {
-            *corner_id_r = i;
+            *corner_id_r = (int16)i;
             break;
         }
     }

@@ -47,7 +47,7 @@ int PIDSpeed(int encoder_speed,int target_speed,PID* pid)
     pid->err = (float)(target_speed-encoder_speed);                                  //计算偏差
 
     pid->out += (int)(pid->P*(pid->err-pid->last_err)+pid->I*pid->err);
-    pid->last_err = pid->err;                                               //保存上一次的值
+    pid->last_err = pid->err;                                                        //保存上一次的值
 
     return pid->out;
 }
