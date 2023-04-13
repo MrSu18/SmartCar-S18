@@ -3,7 +3,7 @@
 
 #include "ImageConversion.h"//二值化图像变量以及宏定义
 
-#define EDGELINE_LENGTH USE_IMAGE_H//边线数组长度
+#define EDGELINE_LENGTH 110//边线数组长度
 #define LOST_LINE_TURE   1//丢线
 #define LOST_LINE_FALSE  0//没丢线
 
@@ -23,6 +23,7 @@ extern uint8 left_seed_num,right_seed_num;//八零域的种子生长标号
 
 void SowSeed(myPoint* left_seed,myPoint* right_seed);//扫线前的播种操作
 uint8 EightAreasSeedGrown(myPoint* seed,char choose,uint8 *seed_num);//八零域种子生长规则：种子生长一次
+uint8 EightAreasSeedGrownGray(myPoint* seed,char choose,uint8 *seed_num);//灰度扫线
 void EdgeDetection(void);//八零域扫线
 
 #endif

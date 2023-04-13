@@ -1,11 +1,6 @@
 #include "ImageConversion.h"
 #include "math.h"//二值化算法里面要用到pow函数
 
-//宏定义
-#define PER_IMG     binary_image   //用于透视变换的图像
-#define IMAGE_BAN   255             //逆透视禁止区域的灰度值
-#define PERSPECTIVE 1               //透视处理程度选择 0:不对图像逆透视 1:图像逆透视
-
 //定义变量
 uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
 uint8 binary_image[MT9V03X_H][MT9V03X_W]={0};//二值化图像

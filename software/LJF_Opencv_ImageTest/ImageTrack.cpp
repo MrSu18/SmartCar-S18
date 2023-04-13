@@ -350,7 +350,8 @@ void FillingLine(char choose, myPoint_f point1, myPoint_f point2)
 ************************************************/
 void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
 {
-    double change_inverse_Mat[3][3]={{-0.3489,-2.1373,124.7762},{-0.0120,-3.2388,172.5025},{-0.0002,-0.0227, 1.0000}};
+    double change_inverse_Mat[3][3]={{-0.360547899722757,-2.11222817050679,125.119194800980},{-0.0219325308988181,-3.06300742600148,165.389828731780},{-0.000322621439041103,-0.0223099279886759,0.999927776948517}};
+//    double change_inverse_Mat[3][3]={{-0.3489,-2.1373,124.7762},{-0.0120,-3.2388,172.5025},{-0.0002,-0.0227, 1.0000}};
     for(uint8 count=0;count<num;count++)
     {
         float i=in_line[count].X;float j=in_line[count].Y;

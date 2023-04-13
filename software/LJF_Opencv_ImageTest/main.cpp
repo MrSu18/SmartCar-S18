@@ -27,7 +27,7 @@ int main()
     for (int i = 0 ; i < 68; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
-        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\3.24\\%d.bmp", i);
+        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\4.13\\%d.bmp", i);
         ScanImage(str);
         /************************************************************************************************/
 

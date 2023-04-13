@@ -52,7 +52,7 @@ void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_
 ************************************************/
 char const eight_area_left[8][2]={{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
 char const eight_area_right[8][2]={{-1,0},{-1,-1},{0,-1},{1,-1},{1,0},{1,1},{0,1},{-1,1}};
-uint8 EightAreasSeedGrown(myPoint* seed,char choose,uint8 *seed_num)
+uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num)
 {
     uint8 half=GRAY_BLOCK/2;
     int point_num=0;
@@ -153,7 +153,7 @@ void EdgeDetection(void)
     //左边线生长
     while(l_line_count<EDGELINE_LENGTH)
     {
-        uint8 seed_grow_result=EightAreasSeedGrown(&left_seed,'l',&left_seed_num);
+        uint8 seed_grow_result= EightAreasSeedGrownGray(&left_seed, 'l', &left_seed_num);
         if (seed_grow_result==1)
         {
             grow_success_flag=1;
@@ -173,7 +173,7 @@ void EdgeDetection(void)
     //右边线生长
     while(r_line_count<EDGELINE_LENGTH)
     {
-        uint8 seed_grow_result=EightAreasSeedGrown(&right_seed,'r',&right_seed_num);
+        uint8 seed_grow_result= EightAreasSeedGrownGray(&right_seed, 'r', &right_seed_num);
         if (seed_grow_result==1)
         {
             grow_success_flag=1;

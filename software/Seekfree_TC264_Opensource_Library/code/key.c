@@ -489,13 +489,13 @@ void KeyImage(void)
     while(1)
     {
         uint8 exit_flag = 0;//退出选择图像显示的标志位
-        tft180_show_string(0, 0, "KEY3:show gray_image");
-        tft180_show_string(0, 10, "KEY4:show binary_image");
+        tft180_show_string(0, 0, "KEY3:show binary_image");
+        tft180_show_string(0, 10, "KEY4:show gray_image");
         switch(KeyGet())
         {
             case KEY_LEFT://显示灰度图
             {
-                gray_image_flag = 1;//显示灰度图的标志
+                binary_image_flag = 1;//显示灰度图的标志
                 exit_flag = 1;//退出
                 break;
             }
@@ -505,7 +505,7 @@ void KeyImage(void)
                 while(1)
                 {
                     uint8 exit_flag_1 = 0;//退出选择是否显示边线或中线的标志位
-                    binary_image_flag = 1;//显示逆透视图像
+                    gray_image_flag = 1;//显示逆透视图像
                     tft180_show_string(0, 0, "KEY3:show edge_line");
                     tft180_show_string(0, 10, "KEY4:show center_line");
                     tft180_show_string(0, 20, "KEY5:exit");
