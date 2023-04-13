@@ -17,12 +17,12 @@
 #define PB      3
 
 #define E_MAX   20
-#define E_MIN   -20
+#define E_MIN   -28
 #define EC_MAX  40
 #define EC_MIN  -40
-#define KP_MAX  25
+#define KP_MAX  40
 #define KP_MIN  0
-#define KD_MAX  5
+#define KD_MAX  10
 #define KD_MIN  0
 
 void Fuzzification(float E, float EC, float memership[4], int index_E[2], int index_EC[2]);

@@ -14,6 +14,7 @@
 #include "math.h"
 #include "ImageSpecial.h"
 #include <string.h>
+#include "pid.h"
 
 /***********************************************
 * @brief : 出界保护程序，通过遍历图像最后一行的像素点
@@ -42,8 +43,9 @@ void OutProtect(void)
         while(1)
         {
             pit_disable(CCU60_CH0);//关闭电机中断
+            pit_disable(CCU60_CH1);
             MotorSetPWM(0,0);
-//            tft180_show_int(0, 0, over_count, 3);
+//            printf("%f,%f,%f,%f\n",err_max,err_min,errc_max,errc_min);
         }
     }
 
@@ -163,14 +165,14 @@ void ImageProcess(void)
 //        default:break;
 //    }
 
-    if(CutIdentify() == 1)
-    {
-        while(1)
-        {
-            pit_disable(CCU60_CH0);//关闭电机中断
-            MotorSetPWM(0,0);
-        }
-    }
+//    if(CutIdentify() == 1)
+//    {
+//        while(1)
+//        {
+//            pit_disable(CCU60_CH0);//关闭电机中断
+//            MotorSetPWM(0,0);
+//        }
+//    }
 //    else if(CutIdentify())
 //    {
 //

@@ -36,6 +36,7 @@ uint8 CutIdentify(void)
             int16 corner_id_l = 0,corner_id_r = 0;
             if(CutFindCorner(&corner_id_l, &corner_id_r) != 0)
             {
+                gpio_toggle_level(P20_9);
                 base_speed = 140;
                 if((corner_id_l == 0)&&(corner_id_r != 0))
                 {
@@ -73,8 +74,10 @@ uint8 CutIdentify(void)
         }
         case kCutOut:
         {
+            gpio_toggle_level(P21_5);
             if (l_line_count > 35 && r_line_count > 35)
             {
+                gpio_toggle_level(P21_4);
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
                 cut_type = kCutIn;

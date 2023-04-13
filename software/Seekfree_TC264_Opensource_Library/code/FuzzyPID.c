@@ -142,8 +142,6 @@ void FuzzyPID(void)
 {
     turnpid_image.err = image_bias;
     float EC = turnpid_image.err - turnpid_image.last_err;
-//    tft180_show_float(0, 0, image_bias, 2, 3);
-//    tft180_show_float(0, 10, EC, 3, 3);
 
     float qE = Quantization(E_MAX, E_MIN, turnpid_image.err);
     float qEC = Quantization(EC_MAX, EC_MIN, EC);
