@@ -41,21 +41,21 @@ uint8 CutIdentify(void)
                 if((corner_id_l == 0)&&(corner_id_r != 0))
                 {
                     r_line_count = (uint8)corner_id_r;
-                    track_rightline(f_right_line, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                    track_rightline(f_right_line1, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackRight;
                     aim_distance = (float)corner_id_r*SAMPLE_DIST;
                 }
                 else if((corner_id_l != 0)&&(corner_id_r == 0))
                 {
                     l_line_count = (uint8)corner_id_l;
-                    track_leftline(f_left_line, l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                    track_leftline(f_left_line1, l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackLeft;
                     aim_distance = (float)corner_id_l*SAMPLE_DIST;
                 }
                 else if((corner_id_l != 0)&&(corner_id_r != 0))
                 {
                     r_line_count = (uint8)(corner_id_l + corner_id_r)/2;
-                    track_rightline(f_right_line, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                    track_rightline(f_right_line1, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackRight;
                     aim_distance = (float)(corner_id_l + corner_id_r)/2.0;
                 }
@@ -65,11 +65,11 @@ uint8 CutIdentify(void)
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
                     cut_type = kCutOut;
-                    aim_distance = 0.36;
+                    aim_distance = 0.45;
                 }
             }
             else
-                aim_distance = 0.36;
+                aim_distance = 0.45;
             break;
         }
         case kCutOut:
@@ -189,8 +189,18 @@ uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
     }
     if(corner_id_l != 0 && corner_id_r == 0)
     {
-        if((f_left_line[l_line_count - 1].X > f_left_line[*corner_id_l].X) || (f_right_line[r_line_count - 1].X < f_right_line[*corner_id_r].X))
+        if(f_left_line1[l_line_count - 1].X > f_left_line1[*corner_id_l].X)
             return 1;
+    }
+    else if(corner_id_l == 0 && corner_id_r != 0)
+    {
+        if(f_right_line1[r_line_count - 1].X < f_right_line1[*corner_id_r].X)
+            return 2;
+    }
+    else if(corner_id_l != 0 && corner_id_r != 0)
+    {
+        if((f_left_line1[l_line_count - 1].X > f_left_line1[*corner_id_l].X) || (f_right_line1[r_line_count - 1].X < f_right_line1[*corner_id_r].X))
+            return 3;
     }
 
     return 0;

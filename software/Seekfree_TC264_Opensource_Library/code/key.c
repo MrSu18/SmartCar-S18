@@ -483,34 +483,36 @@ void KeyTrack(void)
 * @author: L
 ************************************************/
 uint8 binary_image_flag = 0,gray_image_flag = 0;//是否显示灰度或逆透视后的图像，1为显示
-uint8 edgeline_flag = 0,c_line_flag = 0;        //是否显示边线或中线，1为显示
+uint8 edgeline_flag = 0,c_line_flag = 0,per_edgeline_flag = 0;        //是否显示边线或中线或透视后的边线，1为显示
 void KeyImage(void)
 {
     while(1)
     {
         uint8 exit_flag = 0;//退出选择图像显示的标志位
-        tft180_show_string(0, 0, "KEY3:show binary_image");
+//        tft180_show_string(0, 0, "KEY3:show binary_image");
         tft180_show_string(0, 10, "KEY4:show gray_image");
         switch(KeyGet())
         {
-            case KEY_LEFT://显示灰度图
-            {
-                binary_image_flag = 1;//显示灰度图的标志
-                exit_flag = 1;//退出
-                break;
-            }
-            case KEY_RIGHT://显示逆透视图
+//            case KEY_LEFT://显示灰度图
+//            {
+//                binary_image_flag = 1;//显示灰度图的标志
+//                exit_flag = 1;//退出
+//                break;
+//            }
+            case KEY_RIGHT://显示灰度图
             {
                 tft180_clear();
                 while(1)
                 {
                     uint8 exit_flag_1 = 0;//退出选择是否显示边线或中线的标志位
                     gray_image_flag = 1;//显示逆透视图像
-                    tft180_show_string(0, 0, "KEY3:show edge_line");
-                    tft180_show_string(0, 10, "KEY4:show center_line");
-                    tft180_show_string(0, 20, "KEY5:exit");
+                    tft180_show_string(0, 0, "KEY2:show peredge_line");
+                    tft180_show_string(0, 10, "KEY3:show edge_line");
+                    tft180_show_string(0, 20, "KEY4:show center_line");
+                    tft180_show_string(0, 30, "KEY5:exit");
                     switch(KeyGet())
                     {
+                        case KEY_DOWN:per_edgeline_flag=1;break;
                         case KEY_LEFT:edgeline_flag=1;break;
                         case KEY_RIGHT:c_line_flag=1;break;
                         case KEY_ENTER:exit_flag_1=1;break;
