@@ -43,6 +43,7 @@
 #include "ImageProcess.h"
 #include "pid.h"
 #include "key.h"
+#include "debug.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -61,10 +62,6 @@ void core1_main(void)
     disable_Watchdog();                     // 关闭看门狗
     interrupt_global_enable(0);             // 打开全局中断
     // 此处编写用户代码 例如外设初始化代码等
-
-
-    ImagePerspective_Init();//逆透视初始化
-    ImageBorderInit();//透视后的图像边界初始化
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
@@ -86,8 +83,11 @@ void core1_main(void)
                 tft180_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
                 tft180_show_float(98, 0, image_bias, 2, 3);
             }
-
-//            ImageBinary();
+            else if(per_image_flag==1)
+            {
+                LCDShowPerImage();
+                tft180_show_float(98, 0, image_bias, 2, 3);
+            }
 
             gpio_toggle_level(P20_8);
 
@@ -97,36 +97,16 @@ void core1_main(void)
             //显示边线
             if(edgeline_flag == 1)
             {
-                for(int i=0;i<l_line_count;i++)
-                {
-                    float y=f_left_line1[i].Y,x=f_left_line1[i].X*0.8510638297872340425531914893617;
-                    if(x<0 || x>159 || y<0 || y>120) continue;
-                    tft180_draw_point((uint16)x, (uint16)y, RGB565_BLUE);
-                }
-                for(int i=0;i<r_line_count;i++)
-                {
-                    float y=f_right_line1[i].Y,x=f_right_line1[i].X*0.8510638297872340425531914893617;
-                    if(x<0 || x>159 || y<0 || y>120) continue;
-                    tft180_draw_point((uint16)x, (uint16)y, RGB565_RED);
-                }
+                LCDShowUint8Line(left_line,l_line_count,RGB565_BLUE);
+                LCDShowUint8Line(right_line,r_line_count,RGB565_RED);
                 tft180_show_int(98, 30, l_line_count, 3);
                 tft180_show_int(98, 60, r_line_count, 3);
             }
             //显示透视后的边线
             if(per_edgeline_flag == 1)
             {
-                for(int i=0;i<l_line_count;i++)
-                {
-                    float y=left_line[i].Y,x=left_line[i].X*0.8510638297872340425531914893617;
-                    if(x<0 || x>159 || y<0 || y>120) continue;
-                    tft180_draw_point((uint16)x, (uint16)y, RGB565_BLUE);
-                }
-                for(int i=0;i<r_line_count;i++)
-                {
-                    float y=right_line[i].Y,x=right_line[i].X*0.8510638297872340425531914893617;
-                    if(x<0 || x>159 || y<0 || y>120) continue;
-                    tft180_draw_point((uint16)x, (uint16)y, RGB565_RED);
-                }
+                LCDShowFloatLine(f_left_line1,l_line_count,RGB565_BLUE);
+                LCDShowFloatLine(f_right_line1,r_line_count,RGB565_RED);
                 tft180_show_int(98, 30, l_line_count, 3);
                 tft180_show_int(98, 60, r_line_count, 3);
             }

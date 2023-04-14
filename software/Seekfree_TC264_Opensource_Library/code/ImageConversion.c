@@ -2,7 +2,6 @@
 #include "math.h"//二值化算法里面要用到pow函数
 
 //定义变量
-uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//二维数组（元素是指针变量用于存储映射的像素地址）
 uint8 binary_image[MT9V03X_H][MT9V03X_W]={0};//二值化图像
 uint8 left_border[USE_IMAGE_H] = {0};//图像左边界
 uint8 right_border[USE_IMAGE_H] = {USE_IMAGE_W-1};//图像右边界
@@ -81,81 +80,4 @@ void ImageBinary(void)
     }
 }
 
-#if PERSPECTIVE==1    //只进行逆透视不进行去畸变，注意逆透视矩阵是否正确
-void ImagePerspective_Init(void) 
-{
-    static uint8 BlackColor = IMAGE_BAN;
-    //逆透视矩阵
-    double change_un_Mat[3][3] ={{-5.646070,6.116770,-158.737697},{0.282977,2.882744,-258.992498},{0.004492,0.066291,-4.829664}};
-    for (int i = 0; i < PER_IMAGE_W; i++)
-    {
-        for (int j = 0; j < PER_IMAGE_H; j++)
-        {
-            int local_x = (int)((change_un_Mat[0][0]*i+change_un_Mat[0][1]*j+change_un_Mat[0][2])
-                               /(change_un_Mat[2][0]*i+change_un_Mat[2][1]*j+change_un_Mat[2][2]));
-            int local_y = (int)((change_un_Mat[1][0]*i+change_un_Mat[1][1]*j+change_un_Mat[1][2])
-                               /(change_un_Mat[2][0]*i+change_un_Mat[2][1]*j+change_un_Mat[2][2]));
-            if (local_x>= 0 && local_y >= 0 && local_y < MT9V03X_H && local_x < MT9V03X_W) 
-            {
-                PerImg_ip[j][i] = &PER_IMG[local_y][local_x];
-            }
-            else 
-            {
-                PerImg_ip[j][i] = &BlackColor;          //&PER_IMG[0][0];
-            }
-        }
-    }
-}
-#else
-void ImagePerspective_Init(void){;}
-#endif  //PERSPECTIVE
-
-/***********************************************
-* @brief : 逆透视图像边界初始化
-* @param : 逆透视图像、宽度、高度、代表禁用区域的灰度值
-* @return: 代表左右图像边界的一维数组
-* @date  : 2022.9.1
-* @author: 刘骏帆
-************************************************/
-void ImageBorderInit(void)
-{
-#if PERSPECTIVE==0
-    memset(left_border,0,sizeof(left_border[0])*USE_IMAGE_H);
-    memset(right_border,USE_IMAGE_W-1,sizeof(right_border[0])*USE_IMAGE_H);
-#else
-    //静态局部变量用于靠近边界减少运算量
-    static uint8 left_x=USE_IMAGE_W/2,right_x=USE_IMAGE_W/2;
-    for (uint8 row = USE_IMAGE_H - 1; row > 0; row--)
-    {
-        //中间到左边
-        for (uint8 l_column = left_x; l_column > 0; l_column--)
-        {
-            if (use_image[row][l_column] == IMAGE_BAN)
-            {
-                left_x = l_column + 2;//更新列坐标用于边界追踪
-                left_border[row]= l_column + 1;
-                break;
-            }
-            else if (l_column - 1 == 0)//如果读到最左边了还是没找到边界，那么就把1作为左边界
-            {
-                left_border[row] = left_border[row + 1];
-            }
-        }
-        //中间到右边
-        for (uint8 r_column = right_x; r_column < USE_IMAGE_W - 1; r_column++)
-        {
-            if (use_image[row][r_column] == IMAGE_BAN)
-            {
-                right_x = r_column - 2;
-                right_border[row]= r_column - 2;
-                break;
-            }
-            else if (r_column + 1 == USE_IMAGE_W - 1)//同理读到最右边还没有读到就用W-1作为右边界
-            {
-                right_border[row] = right_border[row + 1];
-            }
-        }
-    }
-#endif  //PERSPECTIVE透视程度
-}
 

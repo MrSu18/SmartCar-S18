@@ -27,7 +27,7 @@
 #define  PRESSDOWN      1
 #define  LOOSE          0
 
-extern uint8 binary_image_flag,gray_image_flag;
+extern uint8 per_image_flag,gray_image_flag;
 extern uint8 edgeline_flag,c_line_flag,per_edgeline_flag;
 
 void KEYInit(void);                             //初始化按键引脚

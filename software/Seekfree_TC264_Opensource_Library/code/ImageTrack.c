@@ -26,7 +26,7 @@ float l_angle_1[EDGELINE_LENGTH]={0},r_angle_1[EDGELINE_LENGTH]={0};//左右边线的
 myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线
 // 归一化中线
 myPoint_f center_line[EDGELINE_LENGTH]={0};//归一化中线
-int c_line_count=0;//归一化中线长度
+uint8 c_line_count=0;//归一化中线长度
 //当前的巡线方向
 enum TrackType track_type=kTrackRight;
 
@@ -87,7 +87,7 @@ void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, uint8 *nu
     }
     out_line[0].X = in_line[0].X;
     out_line[0].Y = in_line[0].Y;
-    int len = 1;//输出边线的长度计数值
+    uint8 len = 1;//输出边线的长度计数值
     //开始等距采样
     for (int i = 0; i < num1 - 1 && len < *num2; i++)
     {

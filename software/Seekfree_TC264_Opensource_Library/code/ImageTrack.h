@@ -46,7 +46,7 @@ extern float l_angle_1[EDGELINE_LENGTH],r_angle_1[EDGELINE_LENGTH];//×óÓÒ±ßÏßµÄ·
 extern myPoint_f center_line_l[EDGELINE_LENGTH],center_line_r[EDGELINE_LENGTH];//×óÓÒ±ßÏß¸ú×ÙµÃµ½µÄÈüµÀÖĞÏß
 // ¹éÒ»»¯ÖĞÏß
 extern myPoint_f center_line[EDGELINE_LENGTH];//¹éÒ»»¯ÖĞÏß
-extern int c_line_count;//¹éÒ»»¯ÖĞÏß³¤¶È
+extern uint8 c_line_count;//¹éÒ»»¯ÖĞÏß³¤¶È
 //µ±Ç°µÄÑ²Ïß·½Ïò
 extern enum TrackType track_type;
 
