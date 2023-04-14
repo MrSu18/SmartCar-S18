@@ -50,7 +50,7 @@ void LCDShowPerImage(void)
 * @date  : 2023.4.14
 * @author: ΑυΏ₯·«
 ************************************************/
-void LCDShowFloatLine(myPoint_f* line,uint8 len,const uint16 color)
+void LCDShowFloatLine(myPoint_f* line,int len,const uint16 color)
 {
     for(int i=0;i<len;i++)
     {
@@ -69,7 +69,7 @@ void LCDShowFloatLine(myPoint_f* line,uint8 len,const uint16 color)
 * @date  : 2023.4.14
 * @author: ΑυΏ₯·«
 ************************************************/
-void LCDShowUint8Line(myPoint* line,uint8 len,const uint16 color)
+void LCDShowUint8Line(myPoint* line,int len,const uint16 color)
 {
     for(int i=0;i<len;i++)
     {

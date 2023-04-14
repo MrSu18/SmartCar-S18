@@ -8,6 +8,8 @@
 #define PER_IMAGE_H     MT9V03X_H             //逆透视图像的高度
 #define USE_IMAGE_W		MT9V03X_W	    //使用的图像宽度
 #define USE_IMAGE_H		MT9V03X_H		//使用的图像高度
+#define USE_IMAGE_H_MIN 45              //使用的图像的远行边界
+#define USE_IMAGE_H_MAX 110             //使用的图像的近行边界
 #define IMAGE_BLACK		0				//二值化的黑点
 #define IMAGE_WHITE		255				//二值化的白点
 

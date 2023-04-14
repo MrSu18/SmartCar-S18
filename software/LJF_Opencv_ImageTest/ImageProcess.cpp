@@ -30,17 +30,17 @@ void ImageProcess(void)
     BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
     BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
     //等距采样，由于我是对透视图像进行扫线所以不需要进行等距采样
-    ResamplePoints(f_left_line, l_line_count, f_left_line1, &l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-    ResamplePoints(f_right_line, r_line_count, f_right_line1, &r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+    ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+    ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
     //局部曲率
-    local_angle_points(f_left_line,l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
-    local_angle_points(f_right_line,r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
+    local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
+    local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
     //曲率极大值抑制
-    nms_angle(l_angle,l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
-    nms_angle(r_angle,r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+    nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+    nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
     //跟踪左线
-    track_leftline(f_left_line1, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-    track_rightline(f_right_line1, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+    track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+    track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
 //    LCDDrowColumn(f_right_line[19].X,100,100,0);
 //    LCDDrowRow(f_right_line[19].Y,100,100,0);
     //切换左右巡线
@@ -87,5 +87,6 @@ void TrackBasicClear(void)
     memset(l_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
     memset(r_lost_line,LOST_LINE_FALSE,sizeof(char)*EDGELINE_LENGTH);
     l_line_count=0;r_line_count=0;//边线的计数指针清零
+    per_l_line_count=PER_EDGELINE_LENGTH,per_r_line_count=PER_EDGELINE_LENGTH;
     l_lostline_num=0;r_lostline_num=0;//丢线数清零
 }

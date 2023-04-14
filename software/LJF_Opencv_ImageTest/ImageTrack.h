@@ -13,6 +13,7 @@
 #define PIXEL_PER_METER     100              //每一米有多少像素点
 #define ANGLE_DIST          0.1             //算角度的时候隔多少点去进行计算(m)
 #define TRACK_WIDTH         0.4             //赛道宽度(m)
+#define PER_EDGELINE_LENGTH 250             //透视后边线数组长度(cm)
 //===============================================================
 
 typedef struct myPoint_f
@@ -36,21 +37,22 @@ extern myPoint_f per_left_line[EDGELINE_LENGTH],per_right_line[EDGELINE_LENGTH];
 // 变换后左右边线+滤波
 extern myPoint_f f_left_line[EDGELINE_LENGTH],f_right_line[EDGELINE_LENGTH];
 // 变换后左右边线+等距采样
-extern myPoint_f f_left_line1[EDGELINE_LENGTH],f_right_line1[EDGELINE_LENGTH];
+extern myPoint_f f_left_line1[PER_EDGELINE_LENGTH],f_right_line1[PER_EDGELINE_LENGTH];
+extern int per_l_line_count,per_r_line_count;//等距采样之后的边线长度
 // 左右边线局部角度变化率
-extern float l_angle[EDGELINE_LENGTH],r_angle[EDGELINE_LENGTH];
+extern float l_angle[PER_EDGELINE_LENGTH],r_angle[PER_EDGELINE_LENGTH];
 // 左右边线局部角度变化率+非极大抑制
-extern float l_angle_1[EDGELINE_LENGTH],r_angle_1[EDGELINE_LENGTH];//左右边线的非极大值抑制之后的角点数组
+extern float l_angle_1[PER_EDGELINE_LENGTH],r_angle_1[PER_EDGELINE_LENGTH];//左右边线的非极大值抑制之后的角点数组
 // 左/右中线
-extern myPoint_f center_line_l[EDGELINE_LENGTH],center_line_r[EDGELINE_LENGTH];//左右边线跟踪得到的赛道中线
+extern myPoint_f center_line_l[PER_EDGELINE_LENGTH],center_line_r[PER_EDGELINE_LENGTH];//左右边线跟踪得到的赛道中线
 // 归一化中线
-extern myPoint_f center_line[EDGELINE_LENGTH];//归一化中线
-extern uint8 c_line_count;//归一化中线长度
+extern myPoint_f center_line[PER_EDGELINE_LENGTH];//归一化中线
+extern int c_line_count;//归一化中线长度
 //当前的巡线方向
 extern enum TrackType track_type;
 
 void BlurPoints(myPoint_f* in_line, int num, myPoint_f* out_line, uint8 kernel);
-void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, uint8 *num2, float dist);
+void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist);
 void local_angle_points(myPoint_f* in_line, int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void track_leftline(myPoint_f* in_line, int num, myPoint_f* out_line, int approx_num, float dist);

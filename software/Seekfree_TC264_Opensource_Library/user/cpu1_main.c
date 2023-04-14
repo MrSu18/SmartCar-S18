@@ -105,15 +105,16 @@ void core1_main(void)
             //显示透视后的边线
             if(per_edgeline_flag == 1)
             {
-                LCDShowFloatLine(f_left_line1,l_line_count,RGB565_BLUE);
-                LCDShowFloatLine(f_right_line1,r_line_count,RGB565_RED);
-                tft180_show_int(98, 30, l_line_count, 3);
-                tft180_show_int(98, 60, r_line_count, 3);
+                LCDShowFloatLine(f_left_line1,per_l_line_count,RGB565_BLUE);
+                LCDShowFloatLine(f_right_line1,per_r_line_count,RGB565_RED);
+                tft180_show_int(98, 30, per_l_line_count, 3);
+                tft180_show_int(98, 60, per_r_line_count, 3);
             }
             //显示中线
             if(c_line_flag == 1)
             {
-                for(int i=0;i<Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);i++)
+                int num=Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);
+                for(int i=0;i<num;i++)
                 {
                     float y=center_line[i].Y,x=center_line[i].X*0.8510638297872340425531914893617;
                     if(x<0 || x>159 || y<0 || y>120) continue;

@@ -17,16 +17,17 @@ myPoint_f per_left_line[EDGELINE_LENGTH]={0},per_right_line[EDGELINE_LENGTH]={0}
 // 变换后左右边线+滤波
 myPoint_f f_left_line[EDGELINE_LENGTH]={0},f_right_line[EDGELINE_LENGTH]={0};
 // 变换后左右边线+等距采样
-myPoint_f f_left_line1[EDGELINE_LENGTH]={0},f_right_line1[EDGELINE_LENGTH]={0};
+myPoint_f f_left_line1[PER_EDGELINE_LENGTH]={0},f_right_line1[PER_EDGELINE_LENGTH]={0};
+int per_l_line_count=PER_EDGELINE_LENGTH,per_r_line_count=PER_EDGELINE_LENGTH;
 // 左右边线局部角度变化率
-float l_angle[EDGELINE_LENGTH]={0},r_angle[EDGELINE_LENGTH]={0};
+float l_angle[PER_EDGELINE_LENGTH]={0},r_angle[PER_EDGELINE_LENGTH]={0};
 // 左右边线局部角度变化率+非极大抑制
-float l_angle_1[EDGELINE_LENGTH]={0},r_angle_1[EDGELINE_LENGTH]={0};//左右边线的非极大值抑制之后的角点数组
+float l_angle_1[PER_EDGELINE_LENGTH]={0},r_angle_1[PER_EDGELINE_LENGTH]={0};//左右边线的非极大值抑制之后的角点数组
 // 左/右中线
-myPoint_f center_line_l[EDGELINE_LENGTH]={0},center_line_r[EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线
+myPoint_f center_line_l[PER_EDGELINE_LENGTH]={0},center_line_r[PER_EDGELINE_LENGTH]={0};//左右边线跟踪得到的赛道中线
 // 归一化中线
-myPoint_f center_line[EDGELINE_LENGTH]={0};//归一化中线
-uint8 c_line_count=0;//归一化中线长度
+myPoint_f center_line[PER_EDGELINE_LENGTH]={0};//归一化中线
+int c_line_count=0;//归一化中线长度
 //当前的巡线方向
 enum TrackType track_type=kTrackRight;
 
@@ -77,7 +78,7 @@ void BlurPoints(myPoint_f* in_line, int num, myPoint_f* out_line, uint8 kernel)
 * @date  : 2023.1.12
 * @author: 上交大开源
 ************************************************/
-void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, uint8 *num2, float dist)
+void ResamplePoints(myPoint_f* in_line, int num1, myPoint_f* out_line, int *num2, float dist)
 {
     //程序异常检测
     if (num1 < 0)

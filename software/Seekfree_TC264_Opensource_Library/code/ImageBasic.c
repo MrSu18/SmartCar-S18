@@ -80,14 +80,14 @@ void SowSeed(myPoint* left_seed,myPoint* right_seed)
 void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed)//通过差比和算法先找到左右种子
 {
     int dif_gray_value;//灰度值差比和的值
-    for (left_seed->Y=110-half-1,left_seed->X=USE_IMAGE_W/2; left_seed->X>half; left_seed->X--)
+    for (left_seed->Y=USE_IMAGE_H_MAX-half-1,left_seed->X=USE_IMAGE_W/2; left_seed->X>half; left_seed->X--)
     {
         //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
         dif_gray_value=100*(use_image[left_seed->Y][left_seed->X]-use_image[left_seed->Y][left_seed->X-1])
                        /(use_image[left_seed->Y][left_seed->X]+use_image[left_seed->Y][left_seed->X-1]);
         if(dif_gray_value>dif_thres) break;
     }
-    for (right_seed->Y=110-half-1 ,right_seed->X=USE_IMAGE_W/2; right_seed->X<USE_IMAGE_W-half-1; right_seed->X++)
+    for (right_seed->Y=USE_IMAGE_H_MAX-half-1 ,right_seed->X=USE_IMAGE_W/2; right_seed->X<USE_IMAGE_W-half-1; right_seed->X++)
     {
         //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
         dif_gray_value=100*(use_image[right_seed->Y][right_seed->X]-use_image[right_seed->Y][right_seed->X+1])
@@ -207,7 +207,7 @@ uint8 EightAreasSeedGrownGray(myPoint* seed,char choose,uint8 *seed_num)
             else               *seed_num-=2;
             return 1;
         }
-        else if (seed->Y+dy<=half || seed->Y+dy>=USE_IMAGE_H-half-1 || seed->X+dx<=half || seed->X+dx>=USE_IMAGE_W-half-1)//这边的判断是判断种子生长到了图像边缘，但是由于上一次判断了不是黑点，所以就不用再次判断该点是不是白点了
+        else if (seed->Y+dy<=USE_IMAGE_H_MIN+half || seed->Y+dy>=USE_IMAGE_H-half-1 || seed->X+dx<=half || seed->X+dx>=USE_IMAGE_W-half-1)//这边的判断是判断种子生长到了图像边缘，但是由于上一次判断了不是黑点，所以就不用再次判断该点是不是白点了
         {
             seed->X += dx;
             seed->Y += dy;
