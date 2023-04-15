@@ -84,19 +84,19 @@ void ImageProcess(void)
     track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
 
     //ÇĞ»»×óÓÒÑ²Ïß
-    if(r_line_count > 2 && l_line_count < 20)
+    if(per_r_line_count > 2 && per_l_line_count < 20)
     {
         track_type=kTrackRight;
     }
-    else if(l_line_count>2 && r_line_count < 20)
+    else if(per_l_line_count>2 && per_r_line_count < 20)
     {
         track_type=kTrackLeft;
     }
-    else if(l_line_count < 2 && r_line_count > 2)
+    else if(per_l_line_count < 2 && per_r_line_count > 2)
     {
         track_type = kTrackRight;
     }
-    else if(l_line_count > 2 && r_line_count < 2)
+    else if(per_l_line_count > 2 && per_r_line_count < 2)
     {
         track_type=kTrackLeft;
     }
@@ -193,11 +193,11 @@ void ImageProcess(void)
     //Ô¤ÃéµãÇóÆ«²î
     if(track_type==kTrackRight)
     {
-        image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);
+        image_bias = GetAnchorPointBias(aim_distance, per_r_line_count, center_line_r);
     }
     else if(track_type==kTrackLeft)
     {
-        image_bias = GetAnchorPointBias(aim_distance, l_line_count, center_line_l);
+        image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
 }
 

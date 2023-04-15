@@ -71,22 +71,22 @@ uint8 CrossIdentify(void)
         BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
         BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
 
-        ResamplePoints(f_left_line, l_line_count, f_left_line1, &l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-        ResamplePoints(f_right_line, r_line_count, f_right_line1, &r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+        ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+        ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
 
-        local_angle_points(f_left_line1,l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
-        local_angle_points(f_left_line1,r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
+        local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
+        local_angle_points(f_left_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
 
-        nms_angle(l_angle, l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
-        nms_angle(r_angle, r_line_count, r_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
+        nms_angle(l_angle, per_l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
+        nms_angle(r_angle, per_r_line_count, r_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
 
         //找右线角点
-        for (int i = 0; i < r_line_count; i++)
+        for (int i = 0; i < per_r_line_count; i++)
         {
             //找到角点则寻右线，不寻左线，改变预瞄点
             if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
             {
-                track_rightline(f_right_line1, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                 track_type = kTrackRight;
                 aim_distance = ((float)(i + 6)) * SAMPLE_DIST;
                 change_lr_flag = 1;                             //等于1则不从左线找角点
@@ -97,12 +97,12 @@ uint8 CrossIdentify(void)
         //右线没找到角点，从左线找
         if (change_lr_flag == 0)
         {
-            for (int i = 0; i < l_line_count; i++)
+            for (int i = 0; i < per_l_line_count; i++)
             {
                 //找到角点则寻左线，改变预瞄点
                 if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
                 {
-                    track_leftline(f_left_line1, l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                    track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackLeft;
                     aim_distance = ((float)(i + 6)) * SAMPLE_DIST;
                     corner_find = 1;                                //等于0是默认寻右线，这里是寻左线
@@ -113,7 +113,7 @@ uint8 CrossIdentify(void)
         //没有找到角点，默认寻右线，切换下一个状态
         if (corner_find == 0)
         {
-            track_rightline(f_right_line1, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+            track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
             track_type = kTrackRight;
             cross_type = kCrossOut;
             aim_distance = 0.45;
@@ -154,7 +154,7 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
     uint8 cross_find_l = FALSE, cross_find_r = FALSE;                       //是否找到角点标志位
 
     //找左角点
-    for (int16 i = 0; i < l_line_count; i++)
+    for (int16 i = 0; i < per_l_line_count; i++)
     {
         if (cross_find_l == FALSE &&((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180)))
         {
@@ -166,7 +166,7 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
         }
     }
     //找右角点
-    for (int16 i = 0; i < r_line_count; i++)
+    for (int16 i = 0; i < per_r_line_count; i++)
     {
         if (cross_find_r == FALSE && ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180)))
         {
@@ -181,17 +181,17 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
     //如果两边都找到角点，返回1，一边找到角点且另一边丢线，返回2，否则返回0
     if (cross_find_l == TRUE && cross_find_r == TRUE)
     {
-        if((f_left_line1[l_line_count - 1].X < f_left_line1[*corner_id_l].X) || (f_right_line1[r_line_count - 1].X > f_right_line1[*corner_id_r].X))
+        if((f_left_line1[per_l_line_count - 1].X < f_left_line1[*corner_id_l].X) || (f_right_line1[per_r_line_count - 1].X > f_right_line1[*corner_id_r].X))
             return 1;
     }
-    else if ((cross_find_l == TRUE) && (r_line_count < 5))
+    else if ((cross_find_l == TRUE) && (per_r_line_count < 5))
     {
-        if(f_left_line1[l_line_count - 1].X < f_left_line1[*corner_id_l].X)
+        if(f_left_line1[per_l_line_count - 1].X < f_left_line1[*corner_id_l].X)
             return 2;
     }
-    else if ((cross_find_r == TRUE) && (l_line_count < 5))
+    else if ((cross_find_r == TRUE) && (per_l_line_count < 5))
     {
-        if(f_right_line1[r_line_count - 1].X > f_right_line1[*corner_id_r].X)
+        if(f_right_line1[per_r_line_count - 1].X > f_right_line1[*corner_id_r].X)
             return 3;
     }
 
