@@ -13,6 +13,7 @@
 #include "filter.h"
 
 extern int16 adc_value[5];
+extern float adc_bias;
 
 //adcÒý½Å
 #define  ADC_LEFT_1   ADC1_CH4_A20

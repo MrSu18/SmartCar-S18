@@ -8,6 +8,7 @@
 #include "zf_device_tft180.h"
 
 int16 adc_value[5] = {0};                           //存取获取到的ADC的值
+float adc_bias = 0;
 //赛道扫描时得到的最大值和最小值
 int16 adc_max[5] = {3310,3865,3416,3794,3506};
 int16 adc_min[5] = {92,132,113,97,98};

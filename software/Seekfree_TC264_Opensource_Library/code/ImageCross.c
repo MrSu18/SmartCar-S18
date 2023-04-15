@@ -75,10 +75,11 @@ uint8 CrossIdentify(void)
         ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
 
         local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
-        local_angle_points(f_left_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
+        local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
 
-        nms_angle(l_angle, per_l_line_count, l_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
-        nms_angle(r_angle, per_r_line_count, r_angle_1, (ANGLE_DIST / SAMPLE_DIST) * 2 + 1);
+        nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+        nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+
 
         //找右线角点
         for (int i = 0; i < per_r_line_count; i++)
@@ -111,7 +112,7 @@ uint8 CrossIdentify(void)
             }
         }
         //没有找到角点，默认寻右线，切换下一个状态
-        if (corner_find == 0)
+        if (corner_find == 0 && (f_right_line1[0].Y > 100||f_right_line1[0].Y > 100))
         {
             track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
             track_type = kTrackRight;
@@ -209,6 +210,8 @@ void EdgeDetection_Cross(void)
 {
     myPoint left_seed, right_seed;              //左右种子
     left_seed = left_line[l_line_count - 1]; right_seed = right_line[r_line_count - 1];
+    l_line_count = 0;r_line_count = 0;
+    per_l_line_count = EDGELINE_LENGTH;per_r_line_count = EDGELINE_LENGTH;
     uint8 is_loseline = 0;                      //是否丢线的标志位，丢线则继续生长，不丢线就计入边线
 
     //左边线生长

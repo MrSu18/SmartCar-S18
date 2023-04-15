@@ -10,9 +10,10 @@
 
 #include "zf_common_headfile.h"
 
-//#define TRUE        1
-//#define FALSE       0
-
+//路障函数
+extern int time;
+extern uint8 timeintegral_flag;
+uint8 BarrierIdentify(void);
 //车库函数
 uint8 GarageFindCorner(int* corner_id);
 uint8 GarageIdentify_L(void);

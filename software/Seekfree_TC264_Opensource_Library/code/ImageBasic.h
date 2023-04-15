@@ -6,6 +6,8 @@
 #define EDGELINE_LENGTH 120//边线数组长度
 #define LOST_LINE_TURE   1//丢线
 #define LOST_LINE_FALSE  0//没丢线
+#define GRAY_BLOCK   7//灰度扫线的模板大小BLOCK*BLOCK
+#define CLIP_VALUE   2//灰度扫线的参数（1~5）
 
 typedef struct myPoint
 {

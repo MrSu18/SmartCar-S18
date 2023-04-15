@@ -8,6 +8,7 @@
 #include "pid.h"
 #include "motor.h"
 #include "FuzzyPID.h"
+#include "adc.h"
 #include "zf_device_tft180.h"
 
 float qdetail_Kp = 0,qdetail_Kd = 0;
@@ -36,7 +37,7 @@ int8 KDFuzzyRule[7][7] = { {PS,NS,NB,NB,NB,NM,PS},
 * @date  : 2023.4.9
 * @author: L
 ************************************************/
-float range[7] = { NB,NM,NS,ZO,PS,PM,PB };
+float range[7] = { NB,NM,NS,ZO,PS,PM,PB };//论域的范围
 void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_EC[2])
 {
     float memership_E[2] = { 0 };//E的隶属度值
@@ -117,17 +118,18 @@ void SoluteFuzzy(float qE,float qEC)
 {
     int index_E[2] = { 0 };//E的隶属度索引
     int index_EC[2] = { 0 };//EC的隶属度索引
-    float memership[4] = { 0 };
-    Fuzzification(qE, qEC, memership, index_E, index_EC);
+    float memership[4] = { 0 };//KP和KD的隶属度值
+    Fuzzification(qE, qEC, memership, index_E, index_EC);//模糊处理和模糊推理
 
+    //得到KP和KD在论域中的值
     for (int i = 0; i < 2; i++)
     {
         if (index_E[i] == -1) continue;
         for (int j = 0; j < 2; j++)
         {
             if (index_EC[i] == -1) continue;
-            qdetail_Kp += memership[i + j] * KPFuzzyRule[index_E[i]][index_EC[j]];
-            qdetail_Kd += memership[i + j] * KDFuzzyRule[index_E[i]][index_EC[j]];
+            qdetail_Kp += memership[(i << i) + j] * KPFuzzyRule[index_E[i]][index_EC[j]];
+            qdetail_Kd += memership[(i << i) + j] * KDFuzzyRule[index_E[i]][index_EC[j]];
         }
     }
 }
@@ -140,35 +142,27 @@ void SoluteFuzzy(float qE,float qEC)
 ************************************************/
 void FuzzyPID(void)
 {
-    turnpid_image.err = image_bias;
-    float EC = turnpid_image.err - turnpid_image.last_err;
+//    if(track_mode == kTrackADC)
+//    {
+//        ChaBiHe(&adc_bias, TRACK);
+//        turnpid_image.err = Quantization_ADC(ADCE_MAX, ADCE_MIN, adc_bias);
+//    }
+//    else if(track_mode == kTrackImage)
+        turnpid_image.err = image_bias;
+    float EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
 
-    float qE = Quantization(E_MAX, E_MIN, turnpid_image.err);
-    float qEC = Quantization(EC_MAX, EC_MIN, EC);
-    SoluteFuzzy(qE, qEC);
-
-    //detail_Kp = InverseQuantization(KP_MAX, KP_MIN, qdetail_Kp);
-    //detail_Kd = InverseQuantization(KD_MAX, KD_MIN, qdetail_Kd);
-    //qdetail_Kp = 0;
-    //qdetail_Kd = 0;
-    //turnpid_image.P += detail_Kp;
-    //turnpid_image.D += detail_Kd;
-
-    //if (turnpid_image.P > 25) turnpid_image.P = 25;
-    //else if (turnpid_image.P < -25) turnpid_image.P = -25;
-    //if (turnpid_image.D > 5) turnpid_image.D = 5;
-    //else if (turnpid_image.D < -5) turnpid_image.D = -5;
-
+    float qE = Quantization(E_MAX, E_MIN, turnpid_image.err);//偏差映射到论域
+    float qEC = Quantization(EC_MAX, EC_MIN, EC);//偏差的变化量映射到论域
+    SoluteFuzzy(qE, qEC);//解模糊，得到KP和KD在论域中的值
+    //KP和KD解模糊，得到实际的值
     turnpid_image.P = InverseQuantization(KP_MAX, KP_MIN, qdetail_Kp);
     turnpid_image.D = InverseQuantization(KD_MAX, KD_MIN, qdetail_Kd);
     qdetail_Kp = 0;
     qdetail_Kd = 0;
 
-    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * EC);
-    turnpid_image.last_err = turnpid_image.err;
+    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * EC);//PID公式计算输出量
+    turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
-    //target_left = base_speed - turnpid_image.out;
-    //target_right = base_speed + turnpid_image.out;
     if (turnpid_image.out > 0)//左转
     {
         target_left = base_speed - turnpid_image.out;
@@ -205,6 +199,13 @@ float Quantization(float max, float min, float x)
 float InverseQuantization(float max, float min, float x)
 {
     float value = (max - min) * (x + 3) / 6 + min;
+
+    return value;
+}
+
+float Quantization_ADC(float max, float min, float x)
+{
+    float value = (E_MAX - E_MIN) * (x - min) / (max - min) + E_MIN;
 
     return value;
 }

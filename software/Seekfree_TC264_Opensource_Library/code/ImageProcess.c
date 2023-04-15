@@ -167,14 +167,14 @@ void ImageProcess(void)
 //        default:break;
 //    }
 
-//    if(CutIdentify() == 1)
-//    {
-//        while(1)
-//        {
-//            pit_disable(CCU60_CH0);//关闭电机中断
-//            MotorSetPWM(0,0);
-//        }
-//    }
+    if(CrossIdentify() == 1)
+    {
+        while(1)
+        {
+            pit_disable(CCU60_CH0);//关闭电机中断
+            MotorSetPWM(0,0);
+        }
+    }
 //    else if(CutIdentify())
 //    {
 //

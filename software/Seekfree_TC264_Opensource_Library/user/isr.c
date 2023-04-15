@@ -40,6 +40,7 @@
 #include "motor.h"
 #include "Fuzzypid.h"
 #include "zf_device_tft180.h"
+#include "ImageSpecial.h"
 
 // **************************** PIT中断函数 ****************************
 IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
@@ -76,6 +77,8 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
         PIDTurnADC(&target_left_1,&target_right_1,&turnpid_adc);                    //电磁方向环PID
     }
 
+    if(timeintegral_flag == 1)
+        time++;
     c0h1_isr_flag=1;
 }
 
