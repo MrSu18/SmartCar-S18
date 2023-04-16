@@ -40,8 +40,8 @@ uint8 GarageIdentify_L(void)
         if (GarageFindCorner(&corner_id) == 1)//判断角点还有电磁偏差是否为0左右
         {
             gpio_set_level(P21_5,0);
-            track_type = kTrackRight;
-            if (corner_id < 12)
+            track_type = kTrackLeft;
+            if (corner_id < 18)
                 garage_type_l = kGarage_End_l;
         }
         break;
@@ -52,6 +52,7 @@ uint8 GarageIdentify_L(void)
         gpio_set_level(P20_9,0);
 
         image_bias = 25;
+        turnpid_image.last_err = 0;
         system_delay_ms(450);
 
         while(1)

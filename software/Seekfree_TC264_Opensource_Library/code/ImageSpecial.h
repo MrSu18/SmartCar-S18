@@ -10,6 +10,9 @@
 
 #include "zf_common_headfile.h"
 
+//坡道函数
+uint8 SlopeIdentify(void);
+float CalculateGradient(uint8 lr_flag);
 //路障函数
 extern int time;
 extern uint8 timeintegral_flag;
