@@ -364,3 +364,24 @@ void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
         out_line[count].Y = solve_y;
     }
 }
+
+/***********************************************
+* @brief : 原图坐标透视得到透视后的坐标
+* @param : myPoint point: 灰度图坐标点
+* @return: myPoint_f: 透视后的坐标
+* @date  : 2023.4.16
+* @author: 刘骏帆
+************************************************/
+myPoint_f PointPerspective(myPoint point)
+{
+    double change_inverse_Mat[3][3]={{-0.360547899722757,-2.11222817050679,125.119194800980},{-0.0219325308988181,-3.06300742600148,165.389828731780},{-0.000322621439041103,-0.0223099279886759,0.999927776948517}};
+    myPoint_f per_point={0};
+    float i=point.X;float j=point.Y;
+    float solve_x = ((change_inverse_Mat[0][0]*i+change_inverse_Mat[0][1]*j+change_inverse_Mat[0][2])
+                     /(change_inverse_Mat[2][0]*i+change_inverse_Mat[2][1]*j+change_inverse_Mat[2][2]));
+    float solve_y = ((change_inverse_Mat[1][0]*i+change_inverse_Mat[1][1]*j+change_inverse_Mat[1][2])
+                     /(change_inverse_Mat[2][0]*i+change_inverse_Mat[2][1]*j+change_inverse_Mat[2][2]));
+    per_point.X = solve_x;
+    per_point.Y = solve_y;
+    return per_point;
+}

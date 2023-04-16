@@ -26,6 +26,7 @@ typedef enum TrackType//跟踪左右线切换的枚举类型变量
 {
     kTrackLeft=0,
     kTrackRight,
+    kTrackSpecial,//在元素里面就有偏差的值了
 }TrackType;
 
 //图像循迹偏差
@@ -60,5 +61,6 @@ void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int appro
 float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line);//得到循迹预锚点的循迹偏差
 void FillingLine(char choose, myPoint_f point1, myPoint_f point2);
 void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line);//边线逆透视
+myPoint_f PointPerspective(myPoint point);
 
 #endif //LJF_OPENCV_IMAGETEST_IMAGETRACK_H

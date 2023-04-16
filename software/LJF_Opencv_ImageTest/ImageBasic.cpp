@@ -2,8 +2,6 @@
 #include "ImageWR.h"
 #include "main.h"
 
-#define GRAY_BLOCK   7//灰度扫线的模板大小BLOCK*BLOCK
-#define CLIP_VALUE   2//灰度扫线的参数（1~5）
 //=========================赛道特征变量=============================
 //扫线得到的左右边线
 myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左右边线
@@ -109,15 +107,7 @@ uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num)
 //            tempy=-tempy;
 //        int temp=tempx+tempy;
         uint8 next_value=use_image[seed->Y+dy][seed->X+dx];
-        if (next_value<local_thres)
-        {
-            seed->X += dx;
-            seed->Y += dy;
-            if (*seed_num-2<0) *seed_num+=6;
-            else               *seed_num-=2;
-            return 1;
-        }
-        else if (seed->Y+dy<=USE_IMAGE_H_MIN+half || seed->Y+dy>=USE_IMAGE_H-half-1 || seed->X+dx<=half || seed->X+dx>=USE_IMAGE_W-half-1)//这边的判断是判断种子生长到了图像边缘，但是由于上一次判断了不是黑点，所以就不用再次判断该点是不是白点了
+        if (seed->Y+dy<=USE_IMAGE_H_MIN+half || seed->Y+dy>=USE_IMAGE_H-half-1 || seed->X+dx<=half || seed->X+dx>=USE_IMAGE_W-half-1)//这边的判断是判断种子生长到了图像边缘，但是由于上一次判断了不是黑点，所以就不用再次判断该点是不是白点了
         {
             seed->X += dx;
             seed->Y += dy;
@@ -125,6 +115,15 @@ uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num)
             else               *seed_num-=2;
             return 2;
         }
+        else if (next_value<local_thres)
+        {
+            seed->X += dx;
+            seed->Y += dy;
+            if (*seed_num-2<0) *seed_num+=6;
+            else               *seed_num-=2;
+            return 1;
+        }
+
         else
             *seed_num = (*seed_num + 1) % 8;
     }
@@ -147,6 +146,8 @@ void EdgeDetection(void)
     /*播种*/
     myPoint left_seed,right_seed;
     SowSeedGray(GRAY_BLOCK/2, GRAY_DIF_THRES, &left_seed, &right_seed);
+    left_line[l_line_count]=left_seed;l_line_count++;
+    right_line[r_line_count]=right_seed;r_line_count++;
     /*种子生长*/
     left_seed_num=0,right_seed_num=0;
     uint8 grow_success_flag=0;//种子生长成功的标志变量，即：种子开始记录到边线之后flag=1

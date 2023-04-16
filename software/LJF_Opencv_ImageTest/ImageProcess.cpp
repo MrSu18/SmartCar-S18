@@ -24,8 +24,6 @@ void ImageProcess(void)
     //±ßÏß½øĞĞÍ¸ÊÓ
     EdgeLinePerspective(left_line,l_line_count,per_left_line);
     EdgeLinePerspective(right_line,r_line_count,per_right_line);
-//    Findline_Lefthand_Adaptive(5,2,left_seed,left_line,&l_line_count);
-//    Findline_Righthand_Adaptive(5, 2, right_seed, right_line, &r_line_count);
     //¶Ô±ßÏß½øĞĞÂË²¨
     BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
     BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
@@ -41,35 +39,33 @@ void ImageProcess(void)
     //¸ú×Ù×óÏß
     track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
     track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-//    LCDDrowColumn(f_right_line[19].X,100,100,0);
-//    LCDDrowRow(f_right_line[19].Y,100,100,0);
     //ÇĞ»»×óÓÒÑ²Ïß
-    if(r_line_count>2 && l_line_count < 20)
+    if(per_r_line_count>2 && per_l_line_count < 20)
     {
         track_type=kTrackRight;
     }
-    else if(l_line_count>2 && r_line_count < 20)
+    else if(per_l_line_count>2 && per_r_line_count < 20)
     {
         track_type=kTrackLeft;
     }
-    else if(r_line_count>2 && l_line_count<2)
+    else if(per_r_line_count>2 && per_l_line_count<2)
     {
         track_type=kTrackRight;
     }
-    else if(l_line_count>2 && r_line_count<2)
+    else if(per_l_line_count>2 && per_r_line_count<2)
     {
         track_type=kTrackLeft;
     }
-//    if(CircleIslandLStatus()==1)
-//        while (1);
+    if(CircleIslandLStatus()==1)
+        while (1);
     //Ô¤ÃéµãÇóÆ«²î
     if(track_type==kTrackRight)
     {
-        image_bias = GetAnchorPointBias(aim_distance, r_line_count, center_line_r);
+        image_bias = GetAnchorPointBias(aim_distance, per_r_line_count, center_line_r);
     }
     else if(track_type==kTrackLeft)
     {
-        image_bias = GetAnchorPointBias(aim_distance, l_line_count, center_line_l);
+        image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
 }
 

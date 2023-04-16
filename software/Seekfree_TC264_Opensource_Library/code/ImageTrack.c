@@ -234,7 +234,7 @@ void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int appro
 * @date  : 2023.3.1
 * @author: 上交大开源 & 刘骏帆
 ************************************************/
-float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *track_line)
+float GetAnchorPointBias(float aim_distance,int track_line_count,myPoint_f *track_line)
 {
     // 车轮对应点(纯跟踪起始点)
     float cx = USE_IMAGE_W/2;
