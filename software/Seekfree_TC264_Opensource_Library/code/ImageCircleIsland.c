@@ -12,8 +12,8 @@
 
 uint8 CircleIslandLStatus()//右边环岛状态状态机
 {
-    static uint8 status;//环岛状态转移变量
-
+    static uint8 status=0;//环岛状态转移变量
+//    tft180_show_uint(120, 100, status, 2);
     switch (status)
     {
         case 0: //检测左环岛
@@ -142,6 +142,21 @@ uint8 CircleIslandLIn()//入环状态
     if(l_line_count<2)//左边90行都丢线，说明只能沿着外边进去
     {
         //重新扫线
+        uint8 half=GRAY_BLOCK/2;
+        myPoint left_seed=left_line[l_line_count-1];//左种子
+        if (left_seed.Y==0)
+        {
+            left_seed.Y=USE_IMAGE_H_MAX-half-1,left_seed.X=half;
+        }
+        int dif_gray_value;//灰度值差比和的值
+        for (; left_seed.Y>USE_IMAGE_H_MIN; left_seed.Y--)
+        {
+            //灰度差比和=(f(x,y)-f(x,y-1))/(f(x,y)+f(x,y-1))
+            dif_gray_value=100*(use_image[left_seed.Y][left_seed.X]-use_image[left_seed.Y-1][left_seed.X])
+                           /(use_image[left_seed.Y][left_seed.X]+use_image[left_seed.Y-1][left_seed.X]);
+            if(dif_gray_value>10) break;
+        }
+        left_line[l_line_count]=left_seed;l_line_count++;//重新播种
         LeftLineDetectionAgain();
         //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
         if(left_line[0].X<left_line[l_line_count-1].X)//左边看不到圆环内环，只能看到圆环外环
@@ -160,7 +175,7 @@ uint8 CircleIslandLIn()//入环状态
                     r_line_count++;
                 }
             }
-            l_line_count=per_l_line_count=0;
+            l_line_count=0;per_l_line_count=0;
             per_r_line_count=PER_EDGELINE_LENGTH;
             //对边线进行透视
             EdgeLinePerspective(right_line,r_line_count,per_right_line);
@@ -378,7 +393,14 @@ void LeftLineDetectionAgain()
         else if(seed_grown_result==2)
         {
             if(flag==0) continue;
-            else        break;
+            else if(flag==1 && l_line_count==1)
+            {
+                   l_line_count=0;
+                   flag=0;
+                   left_seed.X=half;
+                   continue;
+            }
+            else break;
         }
         else break;
     }
