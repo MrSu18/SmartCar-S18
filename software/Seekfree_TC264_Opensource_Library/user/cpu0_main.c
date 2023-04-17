@@ -108,7 +108,7 @@ int core0_main(void)
         // 此处编写需要循环执行的代码
        if(c0h0_isr_flag==1)
        {
-           printf("%d,%d\r\n",speed_left,speed_right);
+           printf("%d,%d,%d\r\n",base_speed,speed_left,speed_right);
            c0h0_isr_flag=0;
        }
 //        if(mt9v03x_finish_flag)

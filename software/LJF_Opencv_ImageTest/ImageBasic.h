@@ -8,7 +8,7 @@
 #define LOST_LINE_TURE   1//丢线
 #define LOST_LINE_FALSE  0//没丢线
 #define GRAY_BLOCK   7//灰度扫线的模板大小BLOCK*BLOCK
-#define CLIP_VALUE   2//灰度扫线的参数（1~5）
+#define CLIP_VALUE   3//灰度扫线的参数（1~5）
 
 typedef struct myPoint
 {

@@ -19,6 +19,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==2)
             {
+                gpio_set_level(P11_12, GPIO_LOW);
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
             }
             break;
@@ -51,6 +52,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 5://检测环岛是否结束
             if (CircleIslandLEnd()==1)
             {
+                gpio_set_level(P11_12, GPIO_HIGH);
                 status=0;
                 return 1;
             }

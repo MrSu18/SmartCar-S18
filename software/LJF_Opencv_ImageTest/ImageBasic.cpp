@@ -53,24 +53,18 @@ char const eight_area_right[8][2]={{-1,0},{-1,-1},{0,-1},{1,-1},{1,0},{1,1},{0,1
 uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num)
 {
     uint8 half=GRAY_BLOCK/2;
-    int point_num=0;
     //计算当前局部方块的阈值
     int local_thres = 0;
-    uint8 gray=0;
+    static uint8 gray=127;
     for (int dy = -half; dy <= half; dy++)
     {
         for (int dx = -half; dx <= half; dx++)
         {
-            gray=use_image[seed->Y+dy][seed->X+dx];
-            if(gray==IMAGE_BAN) continue;
-            else
-            {
-                local_thres += gray;
-                point_num++;
-            }
+            local_thres += use_image[seed->Y+dy][seed->X+dx];
         }
     }
-    local_thres /= point_num;
+    local_thres+=gray;
+    local_thres /= (GRAY_BLOCK*GRAY_BLOCK+1);
     local_thres -= CLIP_VALUE;
     char dx=0,dy=0;
     for(uint8 seed_count=0;seed_count<8;seed_count++)
@@ -117,6 +111,7 @@ uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num)
         }
         else if (next_value<local_thres)
         {
+            gray=next_value;
             seed->X += dx;
             seed->Y += dy;
             if (*seed_num-2<0) *seed_num+=6;
