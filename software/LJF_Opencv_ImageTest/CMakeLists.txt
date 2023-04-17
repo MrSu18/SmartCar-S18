@@ -15,5 +15,5 @@ add_executable(LJF_Opencv_ImageTest
         ImageWR.h
         main.cpp
         main.h ImageConversion.cpp ImageTrack.cpp ImageTrack.h ImageProcess.cpp ImageProcess.h
-        ImageCircleIsland.cpp ImageCircleIsland.cpp ImageSpecial.h)
+        ImageCircleIsland.cpp ImageCircleIsland.cpp ImageSpecial.h Control.cpp Control.h)
 target_link_libraries(LJF_Opencv_ImageTest ${OpenCV_LIBS})

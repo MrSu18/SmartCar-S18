@@ -11,7 +11,7 @@
 #define LINE_BLUR_KERNEL    7               //边线三角滤波核的大小
 #define SAMPLE_DIST         0.01            //实际采样间距(m)
 #define PIXEL_PER_METER     100              //每一米有多少像素点
-#define ANGLE_DIST          0.1             //算角度的时候隔多少点去进行计算(m)
+#define ANGLE_DIST          0.2             //算角度的时候隔多少点去进行计算(m)
 #define TRACK_WIDTH         0.4             //赛道宽度(m)
 #define PER_EDGELINE_LENGTH 250             //透视后边线数组长度(cm)
 //===============================================================

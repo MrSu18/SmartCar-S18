@@ -239,10 +239,10 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
 uint8 CircleIslandLOutFinish(void)//检测环岛是否结束
 {
     static uint8 status=0;
-//    if(adc_value[2]>OUT_LISLAND_CENTREADC_THR)//电磁检测到直接出环结束
-//    {
-//        return 1;
-//    }
+    if(adc_value[2]>OUT_LISLAND_CENTREADC_THR)//电磁检测到直接出环结束
+    {
+        return 1;
+    }
     //图像判断
     if (status==0)
     {

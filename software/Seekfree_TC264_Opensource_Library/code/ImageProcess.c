@@ -15,6 +15,7 @@
 #include "ImageSpecial.h"
 #include <string.h>
 #include "pid.h"
+#include "Control.h"
 
 /***********************************************
 * @brief : 出界保护程序，通过遍历图像最后一行的像素点
@@ -189,38 +190,16 @@ void ImageProcess(void)
 //            MotorSetPWM(0,0);
 //        }
 //    }
-
-    int s=0,i=3;
-    //预瞄点求偏差
+//    //预瞄点求偏差
     if(track_type==kTrackRight)
     {
         image_bias = GetAnchorPointBias(aim_distance, per_r_line_count, center_line_r);
-        for(;i<per_r_line_count;i++)
-        {
-            float temp=fabs(r_angle_1[i]);
-            if(temp>(13. / 180. * 3.14))
-            {
-                break;
-            }
-        }
-        s=i;
     }
     else if(track_type==kTrackLeft)
     {
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
-        for(;i<per_l_line_count;i++)
-        {
-            float temp=fabs(l_angle_1[i]);
-            if(temp>(13. / 180. * 3.14))
-            {
-                break;
-            }
-        }
-        s=i;
     }
-    base_speed=160;
-    base_speed+=round(2*0.1*s);
-    if(base_speed>220) base_speed=220;
+    base_speed=SpeedDecision(150,30);
 }
 
 /***********************************************

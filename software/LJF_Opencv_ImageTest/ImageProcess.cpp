@@ -9,8 +9,7 @@
 #include <string.h>
 #include "ImageSpecial.h"
 #include "ImageWR.h"
-
-uint16 base_speed=160;
+#include "Control.h"
 
 /***********************************************
 * @brief : 图像处理和元素识别
@@ -61,35 +60,17 @@ void ImageProcess(void)
 //    if(CircleIslandLStatus()==1)
 //        while (1);
     //预瞄点求偏差
-    int s=0,i=3;
     if(track_type==kTrackRight)
     {
         image_bias = GetAnchorPointBias(aim_distance, per_r_line_count, center_line_r);
-        for(;i<per_r_line_count;i++)
-        {
-            float temp=fabs(r_angle_1[i]);
-            if(temp>(10. / 180. * 3.14))
-            {
-                break;
-            }
-        }
-        s=i;
+
     }
     else if(track_type==kTrackLeft)
     {
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
-        for(;i<per_l_line_count;i++)
-        {
-            float temp=fabs(l_angle_1[i]);
-            if(temp>(10. / 180. * 3.14))
-            {
-                break;
-            }
-        }
-        s=i;
     }
-    base_speed=160;
-    base_speed+=round(2*0.1*s);
+    //速度决策
+    base_speed=SpeedDecision(160,25);
 }
 
 /***********************************************

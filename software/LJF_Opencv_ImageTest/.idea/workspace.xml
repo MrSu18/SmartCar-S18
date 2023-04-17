@@ -20,20 +20,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="测试环岛，有很多问题，问题是在于经常把电磁线检测到边线，使得状态错乱，灰度扫线在同色区域的时候会扫出错误边线需要解决">
-      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="采图">
+      <change afterPath="$PROJECT_DIR$/Control.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageConversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageProcess.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageProcess.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageTrack.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImageWR.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageWR.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/key.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/key.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +101,11 @@
   }
 }</component>
   <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="LJF_Opencv_ImageTest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$/../../../../../../../IDE/OpenCVcpp/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/x64/mingw/bin" PASS_PARENT_ENVS_2="true" PROJECT_NAME="LJF_Opencv_ImageTest" TARGET_NAME="LJF_Opencv_ImageTest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="LJF_Opencv_ImageTest" RUN_TARGET_NAME="LJF_Opencv_ImageTest">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -274,7 +275,7 @@
       <workItem from="1681651963227" duration="1028000" />
       <workItem from="1681656958763" duration="1000" />
       <workItem from="1681709053749" duration="51000" />
-      <workItem from="1681709255834" duration="6001000" />
+      <workItem from="1681709255834" duration="10619000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>
@@ -507,7 +508,21 @@
       <option name="project" value="LOCAL" />
       <updated>1681649104718</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="灰度扫线加权上一次边线的灰度值，进行区块运算">
+      <created>1681726934822</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1681726934822</updated>
+    </task>
+    <task id="LOCAL-00035" summary="采图">
+      <created>1681726997139</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1681726997139</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -525,8 +540,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="修改bug，避免边线数组存储的时候越界" />
-    <MESSAGE value="封装了画点画线的函数" />
     <MESSAGE value="等距边线重采样，局部角度变化率计算，非极大值抑制得到角点角度" />
     <MESSAGE value="加入去畸变" />
     <MESSAGE value="增加防止头文件重复包含" />
@@ -550,25 +563,9 @@
     <MESSAGE value="灰度扫线" />
     <MESSAGE value="边线进行透视" />
     <MESSAGE value="测试环岛，有很多问题，问题是在于经常把电磁线检测到边线，使得状态错乱，灰度扫线在同色区域的时候会扫出错误边线需要解决" />
-    <option name="LAST_COMMIT_MESSAGE" value="测试环岛，有很多问题，问题是在于经常把电磁线检测到边线，使得状态错乱，灰度扫线在同色区域的时候会扫出错误边线需要解决" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/ImageProcess.cpp</url>
-          <line>91</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-    <watches-manager>
-      <configuration name="CMakeRunConfiguration">
-        <watch expression="per_right_line" language="ObjectiveC" />
-        <watch expression="per_r_line_count" language="ObjectiveC" />
-        <watch expression="r_angle_1" language="ObjectiveC" />
-      </configuration>
-    </watches-manager>
+    <MESSAGE value="灰度扫线加权上一次边线的灰度值，进行区块运算" />
+    <MESSAGE value="采图" />
+    <option name="LAST_COMMIT_MESSAGE" value="采图" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
