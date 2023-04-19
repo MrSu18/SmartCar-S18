@@ -78,3 +78,51 @@ void LCDShowUint8Line(myPoint* line,int len,const uint16 color)
         tft180_draw_point((uint16)x, (uint16)y, color);
     }
 }
+
+/***********************************************
+* @brief : LCD显示一条横线
+* @param : uint8 row:行
+*          const uint16 color: 颜色
+* @return: 无
+* @date  : 2023.4.19
+* @author: 刘骏帆
+************************************************/
+void LCDDrowRow(uint8 row,const uint16 color)
+{
+   for(uint8 i=0;i<MT9V03X_W-1;i++)
+   {
+       tft180_draw_point(i, row, color);
+   }
+}
+
+/***********************************************
+* @brief : LCD显示一条横线
+* @param : uint8 column:行
+*          const uint16 color: 颜色
+* @return: 无
+* @date  : 2023.4.19
+* @author: 刘骏帆
+************************************************/
+void LCDDrowColumn(uint8 column,const uint16 color)
+{
+    uint16 temp=(uint16)(column*0.8510638297872340425531914893617);
+    for(uint8 i=0;i<MT9V03X_H;i++)
+    {
+        tft180_draw_point(temp, i, color);
+    }
+}
+
+/***********************************************
+* @brief : LCD十字标记一个点
+* @param : uint8 column:行
+*          const uint16 color: 颜色
+* @return: 无
+* @date  : 2023.4.19
+* @author: 刘骏帆
+************************************************/
+void LCDDrowPoint(uint8 row,uint8 column,const uint16 color)
+{
+    LCDDrowRow(row,color);
+//    LCDDrowColumn(column,color);
+}
+
