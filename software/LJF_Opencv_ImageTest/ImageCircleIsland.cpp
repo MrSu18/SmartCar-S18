@@ -11,7 +11,7 @@
 uint8 CircleIslandLStatus()//右边环岛状态状态机
 {
     static uint8 status;//环岛状态转移变量
-
+    printf("%d,",status);
     switch (status)
     {
         case 0: //检测左环岛
@@ -132,7 +132,7 @@ uint8 CircleIslandLIn()//入环状态
     uint8 len=0;
     if (per_r_line_count>EDGELINE_LENGTH) len=EDGELINE_LENGTH;
     else                                  len=per_r_line_count;
-    if(f_right_line1[0].X-f_right_line1[len-1].X>JUDGE_IN_EDD_THR)
+    if(f_right_line1[0].X-f_right_line1[len-1].X>JUDGE_IN_EDD_THR && right_line[r_line_count-1].X<80)
     {
         return 1;//入环结束
     }
@@ -234,12 +234,16 @@ uint8 CircleIslandLOutFinish(void)//检测环岛是否结束
                 return 0;
             }
         }
-        if (r_line_count<2)
-            status=1;//到这步说明没有角点了
+        status=1;//到这步说明没有角点了
     }
-    else if (status==1)//这个状态要要等待检测右边不丢线了
+    else if (status==1)//这个状态是检测车头正对赛道边线
     {
-        if (r_line_count>2)
+        if(l_line_count<3 && r_line_count<3)
+            status=2;
+    }
+    else if(status==2)//这个状态要要等待检测右边不丢线了
+    {
+        if (r_line_count>5)
         {
             status = 0;
             return 1;
@@ -251,7 +255,7 @@ void CircleIslandLOut(void)//环岛出环处理函数
 {
     myPoint_f left_inflection={0},right_inflection={0};
     //出环处理
-    if (l_line_count>2)//左边如果还能看到线就沿着圆出去
+    if (l_line_count>4)//左边如果还能看到线就沿着圆出去
     {
         track_type=kTrackLeft;
     }

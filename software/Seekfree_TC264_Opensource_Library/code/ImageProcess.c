@@ -190,7 +190,8 @@ void ImageProcess(void)
 //            MotorSetPWM(0,0);
 //        }
 //    }
-//    //预瞄点求偏差
+//    if(CircleIslandLIn()==1)while(1);
+    //预瞄点求偏差
     if(track_type==kTrackRight)
     {
         image_bias = GetAnchorPointBias(aim_distance, per_r_line_count, center_line_r);

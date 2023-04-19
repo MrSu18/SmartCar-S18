@@ -7,6 +7,7 @@
 #include "zf_device_tft180.h"
 #include "adc.h"
 #include "stdlib.h"
+#include "debug.h"
 
 #define PI 3.1415926
 
@@ -19,7 +20,6 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==2)
             {
-                gpio_set_level(P11_12, GPIO_LOW);
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
             }
             break;
@@ -32,6 +32,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
+                gpio_set_level(P11_12, GPIO_LOW);
                 status=3;
             }
             break;
@@ -126,7 +127,7 @@ uint8 CircleIslandLInDetection(void)
 * @date  : 2023.4.15
 * @author: 刘骏帆
 ************************************************/
-#define JUDGE_IN_EDD_THR    10//判断入环状态结束的右边线两端X坐标的差值阈值
+#define JUDGE_IN_EDD_THR    40//判断入环状态结束的右边线两端X坐标的差值阈值
 uint8 CircleIslandLIn()//入环状态
 {
     //进入此状态之后就一直开启左边线的特殊扫线（指导扫到赛道边界才开始记录数组）
@@ -134,14 +135,14 @@ uint8 CircleIslandLIn()//入环状态
 
     //这里是判断是否跳出入环状态
     int len=0;
-    if (per_r_line_count>EDGELINE_LENGTH) len=EDGELINE_LENGTH;
+    if (per_r_line_count>EDGELINE_LENGTH-10) len=EDGELINE_LENGTH-10;
     else                                  len=per_r_line_count;
-    if(f_right_line1[0].X-f_right_line1[len-1].X>JUDGE_IN_EDD_THR)
+    if(f_right_line1[0].X-f_right_line1[len-1].X>JUDGE_IN_EDD_THR && right_line[r_line_count-1].X<80)
     {
         return 1;//入环结束
     }
     //对入环状态进行偏差处理
-    if(l_line_count<2)//左边90行都丢线，说明只能沿着外边进去
+    if(l_line_count<5)//左边90行都丢线，说明只能沿着外边进去
     {
         //重新扫线
         uint8 half=GRAY_BLOCK/2;
@@ -158,6 +159,8 @@ uint8 CircleIslandLIn()//入环状态
                            /(use_image[left_seed.Y][left_seed.X]+use_image[left_seed.Y-1][left_seed.X]);
             if(dif_gray_value>10) break;
         }
+//        tft180_show_uint(120, 110, left_seed.X, 3);
+//        tft180_show_uint(100, 110, left_seed.Y, 3);
         left_line[l_line_count]=left_seed;l_line_count++;//重新播种
         LeftLineDetectionAgain();
         //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
@@ -253,12 +256,16 @@ uint8 CircleIslandLOutFinish(void)//检测环岛是否结束
                 return 0;
             }
         }
-        if (r_line_count<2)
-            status=1;//到这步说明没有角点了
+        status=1;//到这步说明没有角点了
     }
-    else if (status==1)//这个状态要要等待检测右边不丢线了
+    else if (status==1)//这个状态是检测车头正对赛道边线
     {
-        if (r_line_count>2)
+        if(l_line_count<3 && r_line_count<3)
+            status=2;
+    }
+    else if(status==2)//这个状态要要等待检测右边不丢线了
+    {
+        if (r_line_count>10)
         {
             status = 0;
             return 1;
@@ -275,7 +282,7 @@ void CircleIslandLOut(void)//环岛出环处理函数
     }
     else
     {
-        if (r_line_count>2)
+        if (r_line_count>4)
         {
             //判断角点的位置
             for (int i = 0; i < per_r_line_count; ++i)

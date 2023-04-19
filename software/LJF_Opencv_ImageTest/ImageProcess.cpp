@@ -59,6 +59,7 @@ void ImageProcess(void)
     }
 //    if(CircleIslandLStatus()==1)
 //        while (1);
+    CircleIslandLIn();
     //‘§√Èµ„«Û∆´≤Ó
     if(track_type==kTrackRight)
     {
