@@ -147,26 +147,24 @@ void ImageProcess(void)
 //    default:break;
 //    }
 
-//    switch(status)
-//    {
-//        case 1:
-//            if(CircleIslandLStatus()==1)
-//            {
-//               status=2;
-//            }
-//            break;
-//        case 2:
-//            if(CrossIdentify() == 1)
-//            {
-//                while(1)
-//                {
-//                    pit_disable(CCU60_CH0);//关闭电机中断
-//                    MotorSetPWM(0,0);
-//                }
-//            }
-//            break;
-//        default:break;
-//    }
+    switch(status)
+    {
+        case 1:
+            if(CircleIslandLStatus()==1)
+            {
+               status=2;
+            }
+            break;
+        case 2:
+            if(CrossIdentify() == 1)
+            {
+                pit_disable(CCU60_CH1);
+                pit_disable(CCU60_CH0);//关闭电机中断
+                MotorSetPWM(0,0);
+            }
+            break;
+        default:break;
+    }
 
 //    if(CrossIdentify() == 1)
 //    {
@@ -185,10 +183,7 @@ void ImageProcess(void)
 //    {
 //        pit_disable(CCU60_CH1);
 //        pit_disable(CCU60_CH0);//关闭电机中断
-//        while(1)
-//        {
-//            MotorSetPWM(0,0);
-//        }
+//        MotorSetPWM(0,0);
 //    }
 //    if(CircleIslandLIn()==1)while(1);
     //预瞄点求偏差
@@ -200,7 +195,7 @@ void ImageProcess(void)
     {
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
-    base_speed=SpeedDecision(150,30);
+//    base_speed=SpeedDecision(150,30);
 }
 
 /***********************************************

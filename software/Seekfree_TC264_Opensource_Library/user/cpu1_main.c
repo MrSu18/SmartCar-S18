@@ -67,6 +67,7 @@ void core1_main(void)
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
 
     KEYCtrl();//按键控制
+    OutGarage();//出库
 
     while (TRUE)
     {

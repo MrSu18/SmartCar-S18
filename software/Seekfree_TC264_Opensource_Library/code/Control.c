@@ -8,6 +8,7 @@
 #include "Control.h"
 #include "ImageTrack.h"
 #include "math.h"
+#include "zf_common_headfile.h"
 
 
 /***********************************************
@@ -54,4 +55,17 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     return vt;
 }
 
-
+/***********************************************
+* @brief : 写死出库
+* @param : void
+* @return: void
+* @date  : 2023.4.19
+* @author: 刘骏帆
+************************************************/
+void OutGarage(void)
+{
+    image_bias=5;    //向左打死
+    system_delay_ms(300);
+//    StartIntegralAngle_Z(45);
+//    while(!icm_angle_z_flag);   //左转45°进入正常寻迹
+}

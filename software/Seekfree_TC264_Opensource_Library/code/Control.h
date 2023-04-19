@@ -11,6 +11,6 @@
 #include "zf_common_typedef.h"
 
 uint16 SpeedDecision(uint16 original_speed,float a);//速度决策
-
+void OutGarage(void);//写死出库
 
 #endif /* CODE_CONTROL_H_ */
