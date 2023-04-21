@@ -34,33 +34,44 @@ uint8 CutIdentify(void)
         case kCutIn:
         {
             int16 corner_id_l = 0,corner_id_r = 0;
-            if(CutFindCorner(&corner_id_l, &corner_id_r) != 0)
+            uint8 corner_find = CutFindCorner(&corner_id_l, &corner_id_r);
+            if(corner_find != 0)
             {
                 gpio_toggle_level(P20_9);
                 base_speed = 140;
-                if((corner_id_l == 0)&&(corner_id_r != 0))
+                if(corner_find == 2)
                 {
                     per_r_line_count = (int)corner_id_r;
                     track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackRight;
-                    aim_distance = (float)corner_id_r*SAMPLE_DIST;
+                    aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
                 }
-                else if((corner_id_l != 0)&&(corner_id_r == 0))
+                else if(corner_find == 1)
                 {
                     per_l_line_count = (int)corner_id_l;
                     track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackLeft;
                     aim_distance = (float)corner_id_l*SAMPLE_DIST;
                 }
-                else if((corner_id_l != 0)&&(corner_id_r != 0))
+                else if(corner_find == 3)
                 {
-                    per_r_line_count = (int)(corner_id_l + corner_id_r)/2;
-                    track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
-                    track_type = kTrackRight;
-                    aim_distance = (float)(corner_id_l + corner_id_r)/2.0;
+                    if(per_l_line_count > per_r_line_count)
+                    {
+                        per_l_line_count = (int)corner_id_l;
+                        track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                        track_type = kTrackLeft;
+                        aim_distance = (float)corner_id_l*SAMPLE_DIST;
+                    }
+                    else if(per_r_line_count > per_l_line_count)
+                    {
+                        per_r_line_count = (int)corner_id_r;
+                        track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                        track_type = kTrackRight;
+                        aim_distance = (float)corner_id_r*SAMPLE_DIST;
+                    }
                 }
 
-                if(corner_id_l < 20 && corner_id_r <20)
+                if(corner_id_l < 20 && corner_id_r < 20)
                 {
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
@@ -75,7 +86,7 @@ uint8 CutIdentify(void)
         case kCutOut:
         {
             gpio_toggle_level(P21_5);
-            if (l_line_count > 35 && r_line_count > 35)
+            if (per_l_line_count > 60 && per_r_line_count > 60)
             {
                 gpio_toggle_level(P21_4);
                 last_track_mode = track_mode;
@@ -90,83 +101,11 @@ uint8 CutIdentify(void)
     }
     return 0;
 }
-//uint8 CutIdentify(void)
-//{
-//    switch (cut_type)
-//    {
-//    case kCutIn:
-//    {
-//        int16 corner_id[2] = { 0 };
-//        uint8 r_corner_result = CutFindCorner(corner_id, 'r');
-//
-//        if (r_corner_result == 2 || r_corner_result == 1)
-//        {
-//            gpio_toggle_level(P20_9);
-//            if (f_right_line[corner_id[0]].X > f_right_line[r_line_count - 1].X)
-//            {
-//                base_speed = 140;
-//                r_line_count = (uint8)corner_id[0];
-//                track_rightline(f_right_line, r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
-//                track_type = kTrackRight;
-//                aim_distance = (float)corner_id[0] * SAMPLE_DIST;
-//            }
-//            if (corner_id[0] < 20)
-//            {
-//                last_track_mode = track_mode;
-//                track_mode = kTrackADC;
-//                cut_type = kCutOut;
-//                aim_distance = 0.36;
-//            }
-//        }
-//        else if (r_corner_result == 0)
-//        {
-//            uint8 l_corner_result = CutFindCorner(corner_id, 'l');
-//
-//            if (l_corner_result == 2 || l_corner_result == 1)
-//            {
-//                gpio_toggle_level(P21_5);
-//                if (f_left_line[corner_id[0]].X < f_left_line[l_line_count - 1].X)
-//                {
-//                    base_speed = 140;
-//                    l_line_count = (uint8)corner_id[0];
-//                    track_leftline(f_left_line, l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
-//                    track_type = kTrackLeft;
-//                    aim_distance = (float)corner_id[0] * SAMPLE_DIST;
-//                }
-//                if (corner_id[0] < 25)
-//                {
-//                    last_track_mode = track_mode;
-//                    track_mode = kTrackADC;
-//                    cut_type = kCutOut;
-//                    aim_distance = 0.36;
-//                }
-//            }
-//        }
-//        break;
-//    }
-//    case kCutOut:
-//    {
-//        gpio_toggle_level(P21_4);
-//        if (l_line_count > 35 && r_line_count > 35)
-//        {
-//            last_track_mode = track_mode;
-//            track_mode = kTrackImage;
-//            cut_type = kCutIn;
-//            base_speed = 160;
-//            return 1;
-//        }
-//        break;
-//    }
-//    default:break;
-//    }
-//    return 0;
-//}
-
 /***********************************************
 * @brief : 断路寻找角点
 * @param : corner_id[2]:存取角点在边线的第几个点
 * @return: corner_count:角点的数量
-* @date  : 2023.3.23
+* @date  : 2023.4.21
 * @author: L
 ************************************************/
 uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
@@ -187,17 +126,17 @@ uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
             break;
         }
     }
-    if(corner_id_l != 0 && corner_id_r == 0)
+    if(*corner_id_l != 0 && *corner_id_r == 0)
     {
         if(f_left_line1[per_l_line_count - 1].X > f_left_line1[*corner_id_l].X)
             return 1;
     }
-    else if(corner_id_l == 0 && corner_id_r != 0)
+    else if(*corner_id_l == 0 && *corner_id_r != 0)
     {
         if(f_right_line1[per_r_line_count - 1].X < f_right_line1[*corner_id_r].X)
             return 2;
     }
-    else if(corner_id_l != 0 && corner_id_r != 0)
+    else if(*corner_id_l != 0 && *corner_id_r != 0)
     {
         if((f_left_line1[per_l_line_count - 1].X > f_left_line1[*corner_id_l].X) || (f_right_line1[per_r_line_count - 1].X < f_right_line1[*corner_id_r].X))
             return 3;
@@ -205,36 +144,3 @@ uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
 
     return 0;
 }
-//uint8 CutFindCorner(int16 corner_id[2],uint8 lr_flag)
-//{
-//    uint8 corner_count = 0;
-//    switch (lr_flag)
-//    {
-//    case 'l':
-//    {
-//        for (int16 i = 0; i < l_line_count; i++)
-//        {
-//            if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
-//            {
-//                corner_id[corner_count] = i;
-//                corner_count++;
-//            }
-//        }
-//        break;
-//    }
-//    case 'r':
-//    {
-//        for (int16 i = 0; i < r_line_count; i++)
-//        {
-//            if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
-//            {
-//                corner_id[corner_count] = i;
-//                corner_count++;
-//            }
-//        }
-//        break;
-//    }
-//    default:break;
-//    }
-//    return corner_count;
-//}

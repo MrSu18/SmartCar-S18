@@ -12,18 +12,18 @@
 typedef enum SlopeType
 {
     kSlopeBegin = 0,
-    kSlopeDown,
     kSlopeEnd,
 }SlopeType;
 
 SlopeType slope_type = kSlopeBegin;
+float dis = 0;
 
 /***********************************************
-* @brief : 坡道状态机\
+* @brief : 坡道状态机
 * @param : void
 * @return: 0:不是坡道
 *          1:识别到坡道
-* @date  : 2023.4.16
+* @date  : 2023.4.21
 * @author: L
 ************************************************/
 uint8 SlopeIdentify(void)
@@ -42,41 +42,22 @@ uint8 SlopeIdentify(void)
                 if(fabs(fabs(gradient_l) - fabs(gradient_r)) < 0.3)
                 {
                     base_speed = 140;
+                    last_track_mode = track_mode;
                     track_mode = kTrackADC;
-                    slope_type = kSlopeDown;
+                    slope_type = kSlopeEnd;
                 }
             }
             break;
         }
-        case kSlopeDown:
-        {
-            gpio_toggle_level(P21_5);
-            int numl = 0;
-            int numr = 0;
-            if(per_l_line_count > 20)
-            {
-                for(int i = 0;i < per_l_line_count - 1;i++)
-                    if(fabs(l_angle_1[i]) < 10e-8) numl++;
-            }
-            if(per_r_line_count > 20)
-            {
-                for(int i = 0;i < per_r_line_count - 1;i++)
-                    if(fabs(r_angle_1[i]) < 10e-8) numr++;
-            }
-            if(numl+numr >= (per_l_line_count+per_r_line_count-2)) slope_type = kSlopeEnd;
-            break;
-        }
         case kSlopeEnd:
         {
-            gpio_toggle_level(P21_4);
-            int num = 0;
-            for(int i = 0;i < 6;i++)
-            {
-                if((f_right_line1[i].X - f_left_line1[i].X) < 50) num++;
-            }
-            if(num >= 5)
+            gpio_toggle_level(P21_5);
+            dis += EncoderGetDistance();
+//            tft180_show_float(0, 0, dis, 3, 3);
+            if(dis >= 1000)
             {
                 base_speed = 160;
+                last_track_mode = track_mode;
                 track_mode = kTrackImage;
                 slope_type = kSlopeBegin;
                 return 1;

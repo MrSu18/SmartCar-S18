@@ -142,13 +142,7 @@ void SoluteFuzzy(float qE,float qEC)
 ************************************************/
 void FuzzyPID(void)
 {
-//    if(track_mode == kTrackADC)
-//    {
-//        ChaBiHe(&adc_bias, TRACK);
-//        turnpid_image.err = Quantization_ADC(ADCE_MAX, ADCE_MIN, adc_bias);
-//    }
-//    else if(track_mode == kTrackImage)
-        turnpid_image.err = image_bias;
+    turnpid_image.err = image_bias;
     float EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
 
     float qE = Quantization(E_MAX, E_MIN, turnpid_image.err);//偏差映射到论域
@@ -199,13 +193,6 @@ float Quantization(float max, float min, float x)
 float InverseQuantization(float max, float min, float x)
 {
     float value = (max - min) * (x + 3) / 6 + min;
-
-    return value;
-}
-
-float Quantization_ADC(float max, float min, float x)
-{
-    float value = (E_MAX - E_MIN) * (x - min) / (max - min) + E_MIN;
 
     return value;
 }
