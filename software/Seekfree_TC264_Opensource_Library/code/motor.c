@@ -14,6 +14,8 @@ uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0ºËÍ¨µ
 uint16 base_speed = 0;
 TrackMode track_mode = kTrackImage;
 TrackMode last_track_mode = kTrackImage;
+uint8 encoder_dis_flag = 0;
+float dis = 0;
 
 /***********************************************
 * @brief : ³õÊ¼»¯×óÓÒÁ½¸ö±àÂëÆ÷
@@ -36,7 +38,7 @@ void EncoderInit(void)
 * @date  : 2023.1.2
 * @author: L
 ************************************************/
-void EncoderGetCount(int* data_left,int* data_right)
+float EncoderGetCount(int* data_left,int* data_right)
 {
     int last_data_left = *data_left,last_data_right = *data_right;
 
@@ -52,6 +54,15 @@ void EncoderGetCount(int* data_left,int* data_right)
     encoder_clear_count(ENCODER_LEFT);                                      //Çå¿Õ×ó±ß±àÂëÆ÷¼ÆÊı
     encoder_clear_count(ENCODER_RIGHT);                                     //Çå¿ÕÓÒ±ß±àÂëÆ÷¼ÆÊı
 
+    if(encoder_dis_flag == 1)
+    {
+        float data_mid = 0;
+        data_mid = (float)(*data_left+*data_right)/2;
+
+        dis += ((data_mid/1024)*30/68)*CIRCLE;
+    }
+    else if(encoder_dis_flag == 0)
+        dis = 0;
 }
 /***********************************************
 * @brief : ³õÊ¼»¯×óÓÒÁ½¸öµç»ú
@@ -141,25 +152,5 @@ void MotorCtrl(void)
     }
 
     c0h0_isr_flag=1;
-}
-/***********************************************
-* @brief : ¼ÆËãÒ»¶ÎÊ±¼ä×ß¹ıµÄÂ·³Ì
-* @param : 1024Ïß±àÂëÆ÷£¬±àÂëÆ÷³İÂÖ³İÊı30£¬³µÄ£³İÂÖ³İÊı68£¬³µÂÖÖ±¾¶64mm
-* @return: dis:Ò»¶ÎÊ±¼ä×ß¹ıµÄÂ·³Ì£¬µ¥Î»Îªmm
-* @date  : 2023.1.31
-* @author: L
-************************************************/
-#define PI 3.14
-float EncoderGetDistance(void)
-{
-    float dis = 0.0,data_mid = 0.0,circle = 0.0;
-    int data_left = 0,data_right = 0;
-
-    EncoderGetCount(&data_left,&data_right);
-    data_mid = (float)(data_left+data_right)/2;
-
-    circle = PI*64;
-    dis = ((data_mid/1024)*30/68)*circle;
-    return dis;
 }
 

@@ -16,7 +16,6 @@ typedef enum SlopeType
 }SlopeType;
 
 SlopeType slope_type = kSlopeBegin;
-float dis = 0;
 
 /***********************************************
 * @brief : ÆÂµÀ×´Ì¬»ú
@@ -45,6 +44,7 @@ uint8 SlopeIdentify(void)
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
                     slope_type = kSlopeEnd;
+                    encoder_dis_flag = 1;
                 }
             }
             break;
@@ -52,10 +52,10 @@ uint8 SlopeIdentify(void)
         case kSlopeEnd:
         {
             gpio_toggle_level(P21_5);
-            dis += EncoderGetDistance();
 //            tft180_show_float(0, 0, dis, 3, 3);
             if(dis >= 1000)
             {
+                encoder_dis_flag = 0;
                 base_speed = 160;
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
