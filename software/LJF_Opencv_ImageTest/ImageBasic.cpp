@@ -21,20 +21,71 @@ uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed)//通过差比和算法先找到左右种子
 {
     int dif_gray_value;//灰度值差比和的值
-    for (left_seed->Y=USE_IMAGE_H_MAX-half-1,left_seed->X=USE_IMAGE_W/2; left_seed->X>half; left_seed->X--)
+    for (left_seed->Y = USE_IMAGE_H_MAX - half - 1, left_seed->X = USE_IMAGE_W / 2;left_seed->X > half; left_seed->X--)
     {
-        //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
-        dif_gray_value=100*(use_image[left_seed->Y][left_seed->X]-use_image[left_seed->Y][left_seed->X-1])
-                       /(use_image[left_seed->Y][left_seed->X]+use_image[left_seed->Y][left_seed->X-1]);
-        if(dif_gray_value>dif_thres) break;
+        if (PointSobelTest(*left_seed) == 1) break;
+//        //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
+//        dif_gray_value=100*(use_image[left_seed->Y][left_seed->X]-use_image[left_seed->Y][left_seed->X-1])
+//                       /(use_image[left_seed->Y][left_seed->X]+use_image[left_seed->Y][left_seed->X-1]);
+//        if(dif_gray_value>dif_thres) break;
     }
-    for (right_seed->Y=USE_IMAGE_H_MAX-half-1 ,right_seed->X=USE_IMAGE_W/2; right_seed->X<USE_IMAGE_W-half-1; right_seed->X++)
+    if (left_seed->X == half)//没有成功播种
     {
-        //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
-        dif_gray_value=100*(use_image[right_seed->Y][right_seed->X]-use_image[right_seed->Y][right_seed->X+1])
-                       /(use_image[right_seed->Y][right_seed->X]+use_image[right_seed->Y][right_seed->X+1]);
-        if(dif_gray_value>dif_thres) break;
+        for (; left_seed->Y > 90; left_seed->Y--)
+        {
+            if (PointSobelTest(*left_seed) == 1)
+            {
+                left_seed->X++;
+                break;
+            }
+        }
     }
+    for (right_seed->Y = USE_IMAGE_H_MAX - half - 1, right_seed->X = USE_IMAGE_W / 2;right_seed->X < USE_IMAGE_W - half - 1; right_seed->X++)
+    {
+        if (PointSobelTest(*right_seed) == 1) break;
+        //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
+//        dif_gray_value=100*(use_image[right_seed->Y][right_seed->X]-use_image[right_seed->Y][right_seed->X+1])
+//                       /(use_image[right_seed->Y][right_seed->X]+use_image[right_seed->Y][right_seed->X+1]);
+//        if(dif_gray_value>dif_thres) break;
+    }
+    if (right_seed->X == USE_IMAGE_W - half - 1)//没有成功播种
+    {
+        for (; right_seed->Y > 90; right_seed->Y--)
+        {
+            if (PointSobelTest(*right_seed) == 1)
+            {
+                right_seed->X++;
+                break;
+            }
+        }
+    }
+}
+
+/***********************************************
+* @brief : sobel梯度检测
+* @param : 要计算的sobel的点
+* @return: 1：该点是赛道边沿 0：该点不是赛道边缘
+* @date  : 2023.4.21
+* @author: 刘骏帆
+************************************************/
+#define SOBEL_THRES 30//sobel梯度阈值大于就是边沿
+uint8 PointSobelTest(myPoint a)//像素点的sobel测试
+{
+    if (a.X<2 || a.X>USE_IMAGE_W-2-1 || a.Y<2 || a.Y>USE_IMAGE_H-2-1) return 0;//越界
+    int gx=0,gy=0,sobel_result=0;
+    gx=((-  use_image[a.Y-1][a.X-1])+(-2*use_image[a.Y  ][a.X-1])+(-  use_image[a.Y+1][a.X-1])
+       +(   use_image[a.Y-1][a.X+1])+( 2*use_image[a.Y  ][a.X+1])+(   use_image[a.Y+1][a.X+1]))/4;
+    if(gx<0)    gx=-gx;
+    gy=((   use_image[a.Y+1][a.X-1])
+       +( 2*use_image[a.Y+1][a.X  ])
+       +(   use_image[a.Y+1][a.X+1])
+       +(-  use_image[a.Y-1][a.X-1])
+       +(-2*use_image[a.Y-1][a.X  ])
+       +(-  use_image[a.Y-1][a.X+1]))/4;
+    if(gy<0)    gy=-gy;
+    sobel_result=(gx+gy)/2;
+    if(sobel_result>SOBEL_THRES) return 1;
+    else                         return 0;
 }
 
 /***********************************************
@@ -81,27 +132,8 @@ uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num)
                 break;
             default:break;
         }
-        //Sobel算子
-//        int tempx=(-  use_image[seed->Y+dy-1][seed->X+dx-1])
-//              +(-2*use_image[seed->Y+dy  ][seed->X+dx-1])
-//              +(-  use_image[seed->Y+dy+1][seed->X+dx-1])
-//              +(   use_image[seed->Y+dy-1][seed->X+dx+1])
-//              +( 2*use_image[seed->Y+dy  ][seed->X+dx+1])
-//              +(   use_image[seed->Y+dy+1][seed->X+dx+1]);
-//        if(tempx<0)
-//            tempx=-tempx;
-//
-//        int tempy=(   use_image[seed->Y+dy+1][seed->X+dx-1])
-//              +( 2*use_image[seed->Y+dy+1][seed->X+dx  ])
-//              +(   use_image[seed->Y+dy+1][seed->X+dx+1])
-//              +(-  use_image[seed->Y+dy-1][seed->X+dx-1])
-//              +(-2*use_image[seed->Y+dy-1][seed->X+dx  ])
-//              +(-  use_image[seed->Y+dy-1][seed->X+dx+1]);
-//        if(tempy<0)
-//            tempy=-tempy;
-//        int temp=tempx+tempy;
         uint8 next_value=use_image[seed->Y+dy][seed->X+dx];
-        if (seed->Y+dy<=USE_IMAGE_H_MIN+half || seed->Y+dy>=USE_IMAGE_H-half-1 || seed->X+dx<=half || seed->X+dx>=USE_IMAGE_W-half-1)//这边的判断是判断种子生长到了图像边缘，但是由于上一次判断了不是黑点，所以就不用再次判断该点是不是白点了
+        if (seed->Y+dy<USE_IMAGE_H_MIN+half || seed->Y+dy>USE_IMAGE_H-half-1 || seed->X+dx<half || seed->X+dx>USE_IMAGE_W-half-1)//这边的判断是判断种子生长到了图像边缘，但是由于上一次判断了不是黑点，所以就不用再次判断该点是不是白点了
         {
             seed->X += dx;
             seed->Y += dy;
@@ -118,7 +150,6 @@ uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num)
             else               *seed_num-=2;
             return 1;
         }
-
         else
             *seed_num = (*seed_num + 1) % 8;
     }
@@ -145,43 +176,26 @@ void EdgeDetection(void)
     right_line[r_line_count]=right_seed;r_line_count++;
     /*种子生长*/
     left_seed_num=0,right_seed_num=0;
-    uint8 grow_success_flag=0;//种子生长成功的标志变量，即：种子开始记录到边线之后flag=1
     //左边线生长
     while(l_line_count<EDGELINE_LENGTH)
     {
-        uint8 seed_grow_result= EightAreasSeedGrownGray(&left_seed, 'l', &left_seed_num);
+//        LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
+        uint8 seed_grow_result=EightAreasSeedGrownGray(&left_seed, 'l', &left_seed_num);
         if (seed_grow_result==1)
         {
-            grow_success_flag=1;
             left_line[l_line_count].X=left_seed.X;left_line[l_line_count].Y=left_seed.Y;
             l_line_count++;
         }
-        else if(seed_grow_result==2)
-        {
-            if(grow_success_flag==0 && left_seed.Y>90)//最下面很快就丢线那么就继续扫线，直到扫到有的时候才记录
-                continue;
-            else
-                break;
-        }
         else break;
     }
-    grow_success_flag=0;
     //右边线生长
     while(r_line_count<EDGELINE_LENGTH)
     {
         uint8 seed_grow_result= EightAreasSeedGrownGray(&right_seed, 'r', &right_seed_num);
         if (seed_grow_result==1)
         {
-            grow_success_flag=1;
             right_line[r_line_count].X=right_seed.X;right_line[r_line_count].Y=right_seed.Y;
             r_line_count++;
-        }
-        else if(seed_grow_result==2)
-        {
-            if(grow_success_flag==0 && right_seed.Y>90)//最下面很快就丢线那么就继续扫线，直到扫到有的时候才记录
-                continue;
-            else
-                break;
         }
         else break;
     }

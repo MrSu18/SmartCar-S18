@@ -24,6 +24,7 @@ extern uint8 l_lostline_num, r_lostline_num;//左右丢线数
 extern uint8 left_seed_num,right_seed_num;//八零域的种子生长标号
 //****************************************
 
+uint8 PointSobelTest(myPoint a);//像素点的sobel测试
 void SowSeedBinary(myPoint* left_seed, myPoint* right_seed);//扫线前的播种操作
 void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed);//通过差比和算法先找到左右种子
 uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num);//八零域种子生长规则：种子生长一次

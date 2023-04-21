@@ -296,27 +296,23 @@ void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W
         for(j=1;j<MT9V03X_W-1;j++)
         {
 
-            tempx=(-  imag[i-1][j-1])
-                  +(-2*imag[i  ][j-1])
-                  +(-  imag[i+1][j-1])
-                  +(   imag[i-1][j+1])
-                  +( 2*imag[i  ][j+1])
-                  +(   imag[i+1][j+1]);
+            tempx=((-  imag[i-1][j-1])+(-2*imag[i  ][j-1])+(-  imag[i+1][j-1])
+                  +(   imag[i-1][j+1])+( 2*imag[i  ][j+1])+(   imag[i+1][j+1]))/4;
             if(tempx<0)
                 tempx=-tempx;
 
-            tempy=(   imag[i+1][j-1])
+            tempy=((   imag[i+1][j-1])
                   +( 2*imag[i+1][j  ])
                   +(   imag[i+1][j+1])
                   +(-  imag[i-1][j-1])
                   +(-2*imag[i-1][j  ])
-                  +(-  imag[i-1][j+1]);
+                  +(-  imag[i-1][j+1]))/4;
             if(tempy<0)
                 tempy=-tempy;
-            temp=tempx+tempy;
-            if(temp>255)
-                temp=255;
-            else temp=0;
+            temp=(tempx+tempy)/2;
+            if(temp>30)
+                temp=0;
+            else temp=255;
             imag1[i][j]=temp;
 
         }
