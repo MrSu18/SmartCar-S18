@@ -77,13 +77,16 @@ void core1_main(void)
         if(mt9v03x_finish_flag)
         {
 #if 1
-            //出界保护
+            uint32 time=0;
+            system_start();
+            memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
+//            //出界保护
             OutProtect();
 //            sobel(mt9v03x_image,binary_image);
             //显示灰度图
             if(gray_image_flag == 1)
             {
-                tft180_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
+                tft180_show_gray_image(0, 0, gray_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
                 tft180_show_float(98, 0, image_bias, 2, 3);
             }
             else if(per_image_flag==1)
@@ -127,6 +130,8 @@ void core1_main(void)
 
             //赛道基础信息变量重置
             TrackBasicClear();
+            time=system_getval_us();
+            tft180_show_uint(0, 0, time, 5);
 #else
 //            MotorSetPWM(2000,2000);
 //            system_delay_ms(3000);

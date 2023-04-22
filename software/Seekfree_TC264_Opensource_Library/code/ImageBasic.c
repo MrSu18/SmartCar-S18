@@ -76,36 +76,31 @@ void SowSeed(myPoint* left_seed,myPoint* right_seed)
 #define GRAY_DIF_THRES  10//灰度差比和算法的阈值
 void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed)//通过差比和算法先找到左右种子
 {
-    for (left_seed->Y = USE_IMAGE_H_MAX - half - 1, left_seed->X = USE_IMAGE_W / 2;left_seed->X > half; left_seed->X--)
+    int dif_gray_value;//灰度值差比和的值
+    static uint8 column=USE_IMAGE_W / 2;
+    for(left_seed->Y = USE_IMAGE_H_MAX - half - 1;left_seed->Y > 100; left_seed->Y--)
     {
-        if (PointSobelTest(*left_seed) == 1) break;
-    }
-    if (left_seed->X == half)//没有成功播种
-    {
-        for (; left_seed->Y > 90; left_seed->Y--)
+        for (left_seed->X = column;left_seed->X > half; left_seed->X--)
         {
-            if (PointSobelTest(*left_seed) == 1)
-            {
-                left_seed->X++;
-                break;
-            }
+            //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
+            dif_gray_value=100*(use_image[left_seed->Y][left_seed->X]-use_image[left_seed->Y][left_seed->X-1])
+                               /(use_image[left_seed->Y][left_seed->X]+use_image[left_seed->Y][left_seed->X-1]);
+                if(dif_gray_value>dif_thres) break;
         }
+        if(dif_gray_value>dif_thres) break;
     }
-    for (right_seed->Y = USE_IMAGE_H_MAX - half - 1, right_seed->X = USE_IMAGE_W / 2;right_seed->X < USE_IMAGE_W - half - 1; right_seed->X++)
+    for(right_seed->Y = USE_IMAGE_H_MAX - half - 1;right_seed->Y > 100; right_seed->Y--)
     {
-        if (PointSobelTest(*right_seed) == 1) break;
-    }
-    if (right_seed->X == USE_IMAGE_W - half - 1)//没有成功播种
-    {
-        for (; right_seed->Y > 90; right_seed->Y--)
+        for (right_seed->X = column;right_seed->X < USE_IMAGE_W - half - 1; right_seed->X++)
         {
-            if (PointSobelTest(*right_seed) == 1)
-            {
-                right_seed->X--;
-                break;
-            }
+            //灰度差比和=(f(x,y)-f(x+1,y))/(f(x,y)+f(x+1,y))
+            dif_gray_value=100*(use_image[right_seed->Y][right_seed->X]-use_image[right_seed->Y][right_seed->X+1])
+                           /(use_image[right_seed->Y][right_seed->X]+use_image[right_seed->Y][right_seed->X+1]);
+            if(dif_gray_value>dif_thres) break;
         }
+        if(dif_gray_value>dif_thres) break;
     }
+    column=(left_seed->X+right_seed->X)/2;
 }
 
 /***********************************************

@@ -58,7 +58,7 @@ void OutProtect(void)
 ************************************************/
 void ImageProcess(void)
 {
-    static uint8 status=1;
+    static uint8 status=3;
     //扫线
     EdgeDetection();
     //边线进行透视

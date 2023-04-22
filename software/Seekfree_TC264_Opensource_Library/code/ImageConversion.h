@@ -17,10 +17,11 @@
 #define PER_IMG     mt9v03x_image    //用于透视变换的图像
 #define IMAGE_BAN   127             //逆透视禁止区域的灰度值
 
-#define use_image   mt9v03x_image   //use_image用于巡线和识别的图像
+#define use_image   gray_image   //use_image用于巡线和识别的图像
 
 extern uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];
 extern uint8 binary_image[MT9V03X_H][MT9V03X_W];//二值化图像
+extern uint8 gray_image[MT9V03X_H][MT9V03X_W];//使用的缓存灰度图像,避免因为dma把图像冲走
 extern uint8 left_border[USE_IMAGE_H];//图像左边界
 extern uint8 right_border[USE_IMAGE_H];//图像右边界
 extern uint8 otsu_thr;//大津法对sobel算法之后的图像求得阈值
