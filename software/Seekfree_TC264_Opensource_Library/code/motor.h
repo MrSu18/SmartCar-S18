@@ -56,7 +56,7 @@ extern TrackMode last_track_mode;
 extern float dis;
 
 void EncoderInit(void);                                                 //初始化左右两个编码器
-float EncoderGetCount(int* data_left,int* data_right);                   //获取左右两个编码器的值
+void EncoderGetCount(int* data_left,int* data_right);                   //获取左右两个编码器的值
 void MotorInit(void);                                                   //初始化左右两个电机
 void MotorSetPWM(int pwm_left,int pwm_right);                           //控制左右电机转速和正反转
 void MotorCtrl(void);                                                   //实现整一轮的小车控制

@@ -45,7 +45,7 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
     //E隶属度确定
     if (E >= range[0] && E <= range[6])
     {
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 6; i++)
         {
             if (E > range[i] && E < range[i + 1])
             {
@@ -74,7 +74,7 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
     //EC隶属度确定
     if (EC >= range[0] && EC <= range[6])
     {
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 6; i++)
         {
             if (EC > range[i] && EC < range[i + 1])
             {

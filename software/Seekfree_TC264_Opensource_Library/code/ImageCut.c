@@ -38,7 +38,7 @@ uint8 CutIdentify(void)
             if(corner_find != 0)
             {
                 gpio_toggle_level(P20_9);
-                base_speed = 140;
+                base_speed = 110;
                 if(corner_find == 2)
                 {
                     per_r_line_count = (int)corner_id_r;
@@ -60,18 +60,18 @@ uint8 CutIdentify(void)
                         per_l_line_count = (int)corner_id_l;
                         track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                         track_type = kTrackLeft;
-                        aim_distance = (float)corner_id_l*SAMPLE_DIST;
+                        aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
                     }
                     else if(per_r_line_count > per_l_line_count)
                     {
                         per_r_line_count = (int)corner_id_r;
                         track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                         track_type = kTrackRight;
-                        aim_distance = (float)corner_id_r*SAMPLE_DIST;
+                        aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
                     }
                 }
 
-                if(corner_id_l < 20 && corner_id_r < 20)
+                if(corner_id_l < 25 && corner_id_r < 25)
                 {
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
@@ -86,13 +86,13 @@ uint8 CutIdentify(void)
         case kCutOut:
         {
             gpio_toggle_level(P21_5);
-            if (per_l_line_count > 60 && per_r_line_count > 60)
+            if (per_l_line_count > 50 && per_r_line_count > 50)
             {
                 gpio_toggle_level(P21_4);
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
                 cut_type = kCutIn;
-                base_speed = 160;
+                base_speed = 150;
                 return 1;
             }
             break;

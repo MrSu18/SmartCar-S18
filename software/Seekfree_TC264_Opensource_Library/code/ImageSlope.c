@@ -36,27 +36,26 @@ uint8 SlopeIdentify(void)
             float gradient_r = 0;
             gradient_l = CalculateGradient('l');
             gradient_r = CalculateGradient('r');
-            if((gradient_l * gradient_r < 0)&&(fabs(gradient_l - 1) > 0.2)&&(fabs(gradient_r - 1) > 0.2))
+            if((gradient_l * gradient_r < 0)&&(fabs(gradient_l - 1) < 0.2)&&(fabs(gradient_r - 1) < 0.2))
             {
-                if(fabs(fabs(gradient_l) - fabs(gradient_r)) < 0.3)
-                {
+//                if(fabs(fabs(gradient_l) - fabs(gradient_r)) < 0.3)
+//                {
                     base_speed = 140;
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
                     slope_type = kSlopeEnd;
                     encoder_dis_flag = 1;
-                }
+//                }
             }
             break;
         }
         case kSlopeEnd:
         {
             gpio_toggle_level(P21_5);
-//            tft180_show_float(0, 0, dis, 3, 3);
             if(dis >= 1000)
             {
                 encoder_dis_flag = 0;
-                base_speed = 160;
+                base_speed = 150;
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
                 slope_type = kSlopeBegin;
@@ -87,8 +86,8 @@ float CalculateGradient(uint8 lr_flag)
             }
             if(corner_appear != 0)
             {
-                float dy = per_left_line[corner_appear].Y - per_left_line[per_l_line_count - 1].Y;
-                float dx = per_left_line[corner_appear].X - per_left_line[per_l_line_count - 1].X;
+                float dy = f_left_line1[corner_appear].Y - f_left_line1[per_l_line_count - 1].Y;
+                float dx = f_left_line1[corner_appear].X - f_left_line1[per_l_line_count - 1].X;
                 if(dx != 0) gradient = dy/dx;
                 return gradient;
             }
@@ -108,8 +107,8 @@ float CalculateGradient(uint8 lr_flag)
             }
             if(corner_appear != 0)
             {
-                float dy = per_right_line[corner_appear].Y - per_right_line[per_r_line_count - 1].Y;
-                float dx = per_right_line[corner_appear].X - per_right_line[per_r_line_count - 1].X;
+                float dy = f_right_line1[corner_appear].Y - f_right_line1[per_r_line_count - 1].Y;
+                float dx = f_right_line1[corner_appear].X - f_right_line1[per_r_line_count - 1].X;
                 if(dx != 0) gradient = dy/dx;
                 return gradient;
             }
