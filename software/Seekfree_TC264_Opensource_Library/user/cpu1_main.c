@@ -77,8 +77,6 @@ void core1_main(void)
         if(mt9v03x_finish_flag)
         {
 #if 1
-            uint32 time=0;
-            system_start();
             memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
 //            //出界保护
             OutProtect();
@@ -130,8 +128,6 @@ void core1_main(void)
 
             //赛道基础信息变量重置
             TrackBasicClear();
-            time=system_getval_us();
-            tft180_show_uint(0, 0, time, 5);
 #else
 //            MotorSetPWM(2000,2000);
 //            system_delay_ms(3000);

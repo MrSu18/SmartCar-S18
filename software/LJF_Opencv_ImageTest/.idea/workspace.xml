@@ -20,11 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="将播种函数修改为sobel">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="播种修改为差比和播种，从110行到100行">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
     </list>
@@ -284,7 +282,8 @@
       <workItem from="1682086795329" duration="5000" />
       <workItem from="1682086823984" duration="5000" />
       <workItem from="1682160199381" duration="1335000" />
-      <workItem from="1682161836221" duration="5000" />
+      <workItem from="1682161836221" duration="100000" />
+      <workItem from="1682165356307" duration="1000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>
@@ -552,7 +551,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682060394162</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="播种修改为差比和播种，从110行到100行">
+      <created>1682161871443</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1682161871443</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -570,7 +576,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="把边线数组长度设定为图像高度" />
     <MESSAGE value="封装了一下是否选择去畸变" />
     <MESSAGE value="修改扫线，现在边界不涂黑也可以了" />
     <MESSAGE value="增加边线处理函数注释，理解局部曲率计算函数，极大值抑制后，能够较好的找出直角拐点，但是还会存在一定程度的误判" />
@@ -595,7 +600,8 @@
     <MESSAGE value="修改环岛入环条件，160入环不了，只能跑150" />
     <MESSAGE value="debug文件但是不能用" />
     <MESSAGE value="将播种函数修改为sobel" />
-    <option name="LAST_COMMIT_MESSAGE" value="将播种函数修改为sobel" />
+    <MESSAGE value="播种修改为差比和播种，从110行到100行" />
+    <option name="LAST_COMMIT_MESSAGE" value="播种修改为差比和播种，从110行到100行" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

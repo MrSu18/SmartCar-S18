@@ -8,6 +8,7 @@
 #include "adc.h"
 #include "stdlib.h"
 #include "debug.h"
+#include "motor.h"
 
 #define PI 3.1415926
 
@@ -80,8 +81,8 @@ uint8 CircleIslandLDetection()//检测左环岛
         for (int i = 0; i < per_l_line_count; ++i)
         {
             //检测左边70度到140度的角点,加负号的因为左边的角点算出来是负数
-            //第三个条件限制的是哪个角点有多远0.8m
-            if(70./180.*PI<-l_angle_1[i] && -l_angle_1[i]<140./180.*PI && i<0.8/SAMPLE_DIST)
+            //第三个条件限制的是哪个角点有多远0.3m
+            if(70./180.*PI<-l_angle_1[i] && -l_angle_1[i]<140./180.*PI && i<0.3/SAMPLE_DIST)
             {
                 track_type=kTrackRight;
                 status=1;//第一次检测到
@@ -108,16 +109,34 @@ uint8 CircleIslandLDetection()//检测左环岛
 ************************************************/
 uint8 CircleIslandLInDetection(void)
 {
-    if (l_line_count>2)//先看左边是否有边线,左边有边线直接进去
-    {
-        track_type=kTrackLeft;
-        return 1;
-    }
-    else
-    {
-        track_type=kTrackRight;//否则还没到入环时机
-        return 0;
-    }
+//    static uint8 status=0;
+//    if(status==0)
+//    {
+//        encoder_dis_flag = 1;//开启编码器计数
+//        status=1;
+//    }
+//    else if(status==1)
+//    {
+//        if(dis>400)//40cm
+//        {
+//            status=2;
+//            encoder_dis_flag = 0;
+//            status=2;
+//        }
+//    }
+//    else if(status==2)
+//    {
+        if (adc_value[0]>90)//先看左边是否有边线,左边有边线直接进去
+        {
+            track_type=kTrackLeft;
+            return 1;
+        }
+        else
+        {
+            track_type=kTrackRight;//否则还没到入环时机
+            return 0;
+        }
+//    }
 }
 
 /***********************************************
@@ -147,9 +166,9 @@ uint8 CircleIslandLIn()//入环状态
         //重新扫线
         LeftLineDetectionAgain();
         //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
-        if(left_line[0].X<left_line[l_line_count-1].X)//左边看不到圆环内环，只能看到圆环外环
+        if(left_line[0].X<left_line[l_line_count-1].X && left_line[0].Y<100)//左边看不到圆环内环，只能看到圆环外环
         {
-            uint8 y=0,flag=0;//flag是连续变量
+            uint8 y=0;//flag是连续变量
             r_line_count=1;
             for (uint8 i=0;i<l_line_count;i++)
             {
@@ -172,6 +191,7 @@ uint8 CircleIslandLIn()//入环状态
             track_rightline(f_right_line1, per_r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
             track_type=kTrackRight;
         }
+        else track_type=kTrackLeft;//如果没丢线寻左边线的圆环进去
     }
     else
     {
