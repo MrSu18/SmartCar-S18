@@ -397,14 +397,13 @@ void LeftLineDetectionAgain()
     }
     l_line_count=0;//用完之后就重置清除之前扫线的错误数据
     uint8 seed_grown_result=0;//种子生长的结果
-    uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
-    while(l_line_count<EDGELINE_LENGTH)
+    uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-left_seed.Y);//重新扫线的长度
+    while(l_line_count<len)
     {
         seed_grown_result=EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num);
         gpio_toggle_level(P21_4);
         if(seed_grown_result==1)
         {
-            flag=1;
             left_line[l_line_count]=left_seed;l_line_count++;
         }
         else break;
@@ -436,19 +435,13 @@ void RightLineDetectionAgain()
     }
     r_line_count=0;//用完之后就重置清除之前扫线的错误数据
     uint8 seed_grown_result=0;//种子生长的结果
-    uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
-    while(r_line_count<EDGELINE_LENGTH)
+    uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-right_seed.Y);//重新扫线的长度
+    while(r_line_count<len)
     {
         seed_grown_result=EightAreasSeedGrownGray(&right_seed,'r',&right_seed_num);
         if(seed_grown_result==1)
         {
-            flag=1;
             right_line[r_line_count]=right_seed;r_line_count++;
-        }
-        else if(seed_grown_result==2)
-        {
-            if(flag==0) continue;
-            else        break;
         }
         else break;
     }

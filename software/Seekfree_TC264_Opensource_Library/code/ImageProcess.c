@@ -124,6 +124,9 @@ void ImageProcess(void)
         default:break;
     }
 
+//    uint8 temp=CircleIslandLIn();
+//    tft180_show_uint(0, 0, temp, 2);
+
     //‘§√Èµ„«Û∆´≤Ó
     if(track_type==kTrackRight)
     {
