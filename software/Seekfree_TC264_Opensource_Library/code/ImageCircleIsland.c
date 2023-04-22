@@ -145,29 +145,12 @@ uint8 CircleIslandLIn()//入环状态
     if(l_line_count<5)//左边90行都丢线，说明只能沿着外边进去
     {
         //重新扫线
-        uint8 half=GRAY_BLOCK/2;
-        myPoint left_seed=left_line[l_line_count-1];//左种子
-        if (left_seed.Y==0)
-        {
-            left_seed.Y=USE_IMAGE_H_MAX-half-1,left_seed.X=half;
-        }
-        int dif_gray_value;//灰度值差比和的值
-        for (; left_seed.Y>USE_IMAGE_H_MIN; left_seed.Y--)
-        {
-            //灰度差比和=(f(x,y)-f(x,y-1))/(f(x,y)+f(x,y-1))
-            dif_gray_value=100*(use_image[left_seed.Y][left_seed.X]-use_image[left_seed.Y-1][left_seed.X])
-                           /(use_image[left_seed.Y][left_seed.X]+use_image[left_seed.Y-1][left_seed.X]);
-            if(dif_gray_value>10) break;
-        }
-//        tft180_show_uint(120, 110, left_seed.X, 3);
-//        tft180_show_uint(100, 110, left_seed.Y, 3);
-        left_line[l_line_count]=left_seed;l_line_count++;//重新播种
         LeftLineDetectionAgain();
         //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
         if(left_line[0].X<left_line[l_line_count-1].X)//左边看不到圆环内环，只能看到圆环外环
         {
-            uint8 y=0;//
-            r_line_count=0;
+            uint8 y=0,flag=0;//flag是连续变量
+            r_line_count=1;
             for (uint8 i=0;i<l_line_count;i++)
             {
                 if(left_line[l_line_count-1-i].Y>=y)
@@ -180,7 +163,7 @@ uint8 CircleIslandLIn()//入环状态
                     r_line_count++;
                 }
             }
-            l_line_count=0;per_l_line_count=0;
+//            l_line_count=0;per_l_line_count=0;
             per_r_line_count=PER_EDGELINE_LENGTH;
             //对边线进行透视
             EdgeLinePerspective(right_line,r_line_count,per_right_line);
@@ -313,13 +296,9 @@ void CircleIslandLOut(void)//环岛出环处理函数
             {
                 left_seed.Y=USE_IMAGE_H_MAX-half-1,left_seed.X=half;
             }
-            int dif_gray_value;//灰度值差比和的值
             for (; left_seed.Y>USE_IMAGE_H_MIN; left_seed.Y--)
             {
-                //灰度差比和=(f(x,y)-f(x,y-1))/(f(x,y)+f(x,y-1))
-                dif_gray_value=100*(use_image[left_seed.Y][left_seed.X]-use_image[left_seed.Y-1][left_seed.X])
-                               /(use_image[left_seed.Y][left_seed.X]+use_image[left_seed.Y-1][left_seed.X]);
-                if(dif_gray_value>10) break;
+                if(PointSobelTest(left_seed)==1) break;
             }
             myPoint right_seed;//右种子
             right_seed.Y=USE_IMAGE_H-half-1,right_seed.X=USE_IMAGE_W-half-2;//图像右下角
@@ -377,16 +356,24 @@ uint8 CircleIslandLEnd(void)
 * @brief : 从丢线找到不丢线再记录边线，左边线重新扫线
 * @param : 无
 * @return: 无
-* @date  : 2023.3.17
+* @date  : 2023.4.21
 * @author: 刘骏帆
 ************************************************/
 void LeftLineDetectionAgain()
 {
     uint8 half=GRAY_BLOCK/2;
     myPoint left_seed=left_line[l_line_count-1];//左种子
-    if (left_seed.Y==0)
+    if (left_seed.Y<USE_IMAGE_H_MIN+half || left_seed.Y>USE_IMAGE_H-half-1 || left_seed.X<half || left_seed.X>USE_IMAGE_W-half-1)
     {
-        left_seed.Y=USE_IMAGE_H_MAX-half-1,left_seed.X=half;
+        left_seed.Y=USE_IMAGE_H_MAX-half-1;left_seed.X=half;
+    }
+    left_seed.X++;
+    for (; left_seed.Y > 45; left_seed.Y--)
+    {
+        if (PointSobelTest(left_seed) == 1)
+        {
+            break;
+        }
     }
     l_line_count=0;//用完之后就重置清除之前扫线的错误数据
     uint8 seed_grown_result=0;//种子生长的结果
@@ -394,22 +381,11 @@ void LeftLineDetectionAgain()
     while(l_line_count<EDGELINE_LENGTH)
     {
         seed_grown_result=EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num);
+        gpio_toggle_level(P21_4);
         if(seed_grown_result==1)
         {
             flag=1;
             left_line[l_line_count]=left_seed;l_line_count++;
-        }
-        else if(seed_grown_result==2)
-        {
-            if(flag==0) continue;
-            else if(flag==1 && l_line_count==1)
-            {
-                   l_line_count=0;
-                   flag=0;
-                   left_seed.X=half;
-                   continue;
-            }
-            else break;
         }
         else break;
     }
@@ -419,16 +395,24 @@ void LeftLineDetectionAgain()
 * @brief : 从丢线找到不丢线再记录边线，右边线重新扫线
 * @param : 无
 * @return: 无
-* @date  : 2023.3.19
+* @date  : 2023.4.21
 * @author: 刘骏帆
 ************************************************/
 void RightLineDetectionAgain()
 {
     uint8 half=GRAY_BLOCK/2;
     myPoint right_seed=right_line[r_line_count-1];//右种子
-    if (right_seed.Y==0)
+    if (right_seed.Y<USE_IMAGE_H_MIN+half || right_seed.Y>USE_IMAGE_H-half-1 || right_seed.X<half || right_seed.X>USE_IMAGE_W-half-1)
     {
         right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-1;
+    }
+    right_seed.X--;
+    for (; right_seed.Y > 45; right_seed.Y--)
+    {
+        if (PointSobelTest(right_seed) == 1)
+        {
+            break;
+        }
     }
     r_line_count=0;//用完之后就重置清除之前扫线的错误数据
     uint8 seed_grown_result=0;//种子生长的结果

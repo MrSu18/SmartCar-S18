@@ -7,6 +7,7 @@ uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];//¶şÎ¬Êı×é£¨ÔªËØÊÇÖ¸Õë±äÁ¿ÓÃÓÚ´æ´¢Ó³É
 uint8 left_border[USE_IMAGE_H] = {0};//Í¼Ïñ×ó±ß½ç
 uint8 right_border[USE_IMAGE_H] = {USE_IMAGE_W-1};//Í¼ÏñÓÒ±ß½ç
 uint8 binary_image[MT9V03X_H][MT9V03X_W];
+uint8 otsu_thr=0;//´ó½ò·¨¶ÔsobelËã·¨Ö®ºóµÄÍ¼ÏñÇóµÃãĞÖµ
 
 /***********************************************
 * @brief : ´ó½ò·¨¶şÖµ»¯0.8ms³ÌĞò£¨Êµ¼Ê²âÊÔ4msÔÚTC264ÖĞ£©
@@ -310,11 +311,13 @@ void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W
             if(tempy<0)
                 tempy=-tempy;
             temp=(tempx+tempy)/2;
-            if(temp>30)
-                temp=0;
-            else temp=255;
-            imag1[i][j]=temp;
-
+            if(otsu_thr!=0)
+            {
+                if(temp>otsu_thr) imag1[i][j]=0;
+                else          imag1[i][j]=255;
+            }
+            else
+                imag1[i][j]=temp;
         }
     }
 }

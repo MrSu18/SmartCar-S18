@@ -20,10 +20,13 @@
 #define use_image   mt9v03x_image   //use_image用于巡线和识别的图像
 
 extern uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];
+extern uint8 binary_image[MT9V03X_H][MT9V03X_W];//二值化图像
 extern uint8 left_border[USE_IMAGE_H];//图像左边界
 extern uint8 right_border[USE_IMAGE_H];//图像右边界
+extern uint8 otsu_thr;//大津法对sobel算法之后的图像求得阈值
 
 void ImageBinary(void);//图像二值化
-
+void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W]);
+uint8 otsuThreshold(uint8* image, uint16 width, uint16 height);
 
 #endif

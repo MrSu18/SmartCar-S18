@@ -145,7 +145,7 @@ uint8 CircleIslandLIn()//入环状态
         if(left_line[0].X<left_line[l_line_count-1].X)//左边看不到圆环内环，只能看到圆环外环
         {
             uint8 y=0;//
-            r_line_count=0;
+            r_line_count=1;
             for (uint8 i=0;i<l_line_count;i++)
             {
                 if(left_line[l_line_count-1-i].Y>=y)
@@ -158,6 +158,7 @@ uint8 CircleIslandLIn()//入环状态
                     r_line_count++;
                 }
             }
+
             l_line_count=per_l_line_count=0;
             per_r_line_count=PER_EDGELINE_LENGTH;
             //对边线进行透视
@@ -356,7 +357,7 @@ uint8 CircleIslandLEnd(void)
 * @brief : 从丢线找到不丢线再记录边线，左边线重新扫线
 * @param : 无
 * @return: 无
-* @date  : 2023.3.17
+* @date  : 2023.4.21
 * @author: 刘骏帆
 ************************************************/
 void LeftLineDetectionAgain()
@@ -365,10 +366,16 @@ void LeftLineDetectionAgain()
     myPoint left_seed=left_line[l_line_count-1];//左种子
     if (left_seed.Y==0)
     {
-        left_seed.Y=USE_IMAGE_H_MAX-half-1,left_seed.X=half;
+        left_seed.Y=USE_IMAGE_H_MAX-half-1,left_seed.X=half+1;
+    }
+    for (; left_seed.Y > 45; left_seed.Y--)
+    {
+        if (PointSobelTest(left_seed) == 1)
+        {
+            break;
+        }
     }
     l_line_count=0;//用完之后就重置清除之前扫线的错误数据
-//    uint8 left_seed_num=0;//左种子八零域标号
     uint8 seed_grown_result=0;//种子生长的结果
     uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
     while(l_line_count<EDGELINE_LENGTH)
@@ -392,7 +399,7 @@ void LeftLineDetectionAgain()
 * @brief : 从丢线找到不丢线再记录边线，右边线重新扫线
 * @param : 无
 * @return: 无
-* @date  : 2023.3.19
+* @date  : 2023.4.21
 * @author: 刘骏帆
 ************************************************/
 void RightLineDetectionAgain()
@@ -401,10 +408,16 @@ void RightLineDetectionAgain()
     myPoint right_seed=right_line[r_line_count-1];//右种子
     if (right_seed.Y==0)
     {
-        right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-1;
+        right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-2;
+    }
+    for (; right_seed.Y > 45; right_seed.Y--)
+    {
+        if (PointSobelTest(right_seed) == 1)
+        {
+            break;
+        }
     }
     r_line_count=0;//用完之后就重置清除之前扫线的错误数据
-//    uint8 right_seed_num=0;//左种子八零域标号
     uint8 seed_grown_result=0;//种子生长的结果
     uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
     while(r_line_count<EDGELINE_LENGTH)

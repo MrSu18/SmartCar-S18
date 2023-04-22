@@ -33,6 +33,7 @@ void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_
     {
         for (; left_seed->Y > 90; left_seed->Y--)
         {
+//            LCDDrawPoint(left_seed->Y,left_seed->X,0,255,0);
             if (PointSobelTest(*left_seed) == 1)
             {
                 left_seed->X++;
@@ -54,7 +55,7 @@ void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_
         {
             if (PointSobelTest(*right_seed) == 1)
             {
-                right_seed->X++;
+                right_seed->X--;
                 break;
             }
         }
@@ -68,7 +69,7 @@ void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_
 * @date  : 2023.4.21
 * @author: 刘骏帆
 ************************************************/
-#define SOBEL_THRES 30//sobel梯度阈值大于就是边沿
+#define SOBEL_THRES 35//sobel梯度阈值大于就是边沿
 uint8 PointSobelTest(myPoint a)//像素点的sobel测试
 {
     if (a.X<2 || a.X>USE_IMAGE_W-2-1 || a.Y<2 || a.Y>USE_IMAGE_H-2-1) return 0;//越界
@@ -84,7 +85,7 @@ uint8 PointSobelTest(myPoint a)//像素点的sobel测试
        +(-  use_image[a.Y-1][a.X+1]))/4;
     if(gy<0)    gy=-gy;
     sobel_result=(gx+gy)/2;
-    if(sobel_result>SOBEL_THRES) return 1;
+    if(sobel_result>otsu_thr) return 1;
     else                         return 0;
 }
 
@@ -160,7 +161,7 @@ uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num)
 * @brief : 八领域扫线函数
 * @param : 赛道灰度图
 * @return: 左右边线、左右丢线数
-* @date  : 2023.4.12
+* @date  : 2023.4.21
 * @author: 刘骏帆
 * @note	 :左种子 3 2 1  右种子 1 2 3
 *				4 S 0		 0 S 4

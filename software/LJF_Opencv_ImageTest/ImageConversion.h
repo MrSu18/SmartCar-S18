@@ -24,9 +24,11 @@ extern uint8* PerImg_ip[PER_IMAGE_H][PER_IMAGE_W];
 extern uint8 left_border[USE_IMAGE_H];//图像左边界
 extern uint8 right_border[USE_IMAGE_H];//图像右边界
 extern uint8 binary_image[MT9V03X_H][MT9V03X_W];
+extern uint8 otsu_thr;//大津法对sobel算法之后的图像求得阈值
 
 
 void ImageBinary(void);//图像二值化
+uint8 otsuThreshold(uint8* image, uint16 width, uint16 height);
 void ImagePerspective_Init(void);//图像逆透视地址映射
 void ImageBorderInit(void);//逆透视图像边界初始化
 void myadaptiveThreshold(uint8 *img_data, uint8 *output_data, int width, int height, int block, uint8 clip_value);

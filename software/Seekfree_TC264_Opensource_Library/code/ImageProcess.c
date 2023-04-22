@@ -40,14 +40,10 @@ void OutProtect(void)
 
     if(over_count >= (MT9V03X_W - 2))                             //如果全部超过阈值则停止
     {
-
-        while(1)
-        {
-            pit_disable(CCU60_CH0);//关闭电机中断
-            pit_disable(CCU60_CH1);
-            MotorSetPWM(0,0);
+        pit_disable(CCU60_CH0);//关闭电机中断
+        pit_disable(CCU60_CH1);
+        MotorSetPWM(0,0);
 //            printf("%f,%f,%f,%f\n",err_max,err_min,errc_max,errc_min);
-        }
     }
 
 }
@@ -152,7 +148,10 @@ void ImageProcess(void)
         case 1:
             if(CircleIslandLStatus()==1)
             {
-               status=2;
+                pit_disable(CCU60_CH1);
+                pit_disable(CCU60_CH0);//关闭电机中断
+                MotorSetPWM(0,0);
+//               status=2;
             }
             break;
         case 2:

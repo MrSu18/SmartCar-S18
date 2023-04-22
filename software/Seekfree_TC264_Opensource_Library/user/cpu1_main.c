@@ -65,9 +65,10 @@ void core1_main(void)
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
-
+    sobel(mt9v03x_image,binary_image);
+    otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
     KEYCtrl();//按键控制
-    OutGarage();//出库
+//    OutGarage();//出库
 
     while (TRUE)
     {
@@ -78,6 +79,7 @@ void core1_main(void)
 #if 1
             //出界保护
             OutProtect();
+//            sobel(mt9v03x_image,binary_image);
             //显示灰度图
             if(gray_image_flag == 1)
             {
