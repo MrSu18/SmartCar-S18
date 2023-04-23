@@ -31,14 +31,14 @@ void OutProtect(void)
 
     for(int16 i = 0;i < 5;i++)
         adc_sum += adc_value[i];
-
+    adc_sum -= adc_value[2];
     for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
     {
         if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
                 over_count++;
     }
 
-    if(over_count >= (MT9V03X_W - 2))                             //如果全部超过阈值则停止
+    if(over_count >= (MT9V03X_W - 2) && (adc_sum < 10))                             //如果全部超过阈值则停止
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -58,7 +58,7 @@ void OutProtect(void)
 ************************************************/
 void ImageProcess(void)
 {
-    static uint8 status=1;
+    static uint8 status=2;
     //扫线
     EdgeDetection();
     //边线进行透视
@@ -102,33 +102,35 @@ void ImageProcess(void)
         track_type=kTrackRight;
     }
 
-//    switch(status)
-//    {
-//        case 1:
-//            if(CircleIslandLStatus()==1)
-//            {
-//                pit_disable(CCU60_CH1);
-//                pit_disable(CCU60_CH0);//关闭电机中断
-//                MotorSetPWM(0,0);
-////               status=2;
-//            }
-//            break;
-//        case 2:
-//            if(CrossIdentify() == 1)
-//            {
-//                pit_disable(CCU60_CH1);
-//                pit_disable(CCU60_CH0);//关闭电机中断
-//                MotorSetPWM(0,0);
-//            }
-//            break;
-//        default:break;
-//    }
-
-    if(SlopeIdentify() == 1)
+    switch(status)
     {
-        pit_disable(CCU60_CH0);//关闭电机中断
-        pit_disable(CCU60_CH1);
-        MotorSetPWM(0,0);
+        case 1:
+            if(CircleIslandLStatus()==1)
+            {
+//                pit_disable(CCU60_CH1);
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                MotorSetPWM(0,0);
+//               status=2;
+            }
+            break;
+        case 2:
+            if(CrossIdentify() == 1)
+            {
+                status = 3;
+//                pit_disable(CCU60_CH1);
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                MotorSetPWM(0,0);
+            }
+            break;
+        case 3:
+            if(CutIdentify() == 1)
+            {
+                pit_disable(CCU60_CH0);//关闭电机中断
+                pit_disable(CCU60_CH1);
+                MotorSetPWM(0,0);
+            }
+            break;
+        default:break;
     }
 
     //预瞄点求偏差

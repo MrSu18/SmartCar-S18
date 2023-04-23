@@ -43,7 +43,7 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
     float memership_E[2] = { 0 };//E的隶属度值
     float memership_EC[2] = { 0 };//EC的隶属度值
     //E隶属度确定
-    if (E >= range[0] && E <= range[6])
+    if (E > range[0] && E < range[6])
     {
         for (int i = 0; i < 6; i++)
         {
@@ -57,14 +57,14 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
             }
         }
     }
-    else if (E < range[0])
+    else if (E <= range[0])
     {
         index_E[0] = 0;
         index_E[1] = -1;
         memership_E[0] = 1;
         memership_E[1] = 0;
     }
-    else if (E > range[6])
+    else if (E >= range[6])
     {
         index_E[0] = 6;
         index_E[1] = -1;
@@ -72,7 +72,7 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
         memership_E[1] = 0;
     }
     //EC隶属度确定
-    if (EC >= range[0] && EC <= range[6])
+    if (EC > range[0] && EC < range[6])
     {
         for (int i = 0; i < 6; i++)
         {
@@ -86,14 +86,14 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
             }
         }
     }
-    else if (EC < range[0])
+    else if (EC <= range[0])
     {
         index_EC[0] = 0;
         index_EC[1] = -1;
         memership_EC[0] = 1;
         memership_EC[1] = 0;
     }
-    else if (EC > range[6])
+    else if (EC >= range[6])
     {
         index_EC[0] = 6;
         index_EC[1] = -1;
@@ -127,7 +127,7 @@ void SoluteFuzzy(float qE,float qEC)
         if (index_E[i] == -1) continue;
         for (int j = 0; j < 2; j++)
         {
-            if (index_EC[i] == -1) continue;
+            if (index_EC[j] == -1) continue;
             qdetail_Kp += memership[(i << i) + j] * KPFuzzyRule[index_E[i]][index_EC[j]];
             qdetail_Kd += memership[(i << i) + j] * KDFuzzyRule[index_E[i]][index_EC[j]];
         }
@@ -166,6 +166,36 @@ void FuzzyPID(void)
     {
         target_left = base_speed;
         target_right = base_speed + turnpid_image.out;
+    }
+}
+
+void FuzzyPID_ADC(void)
+{
+    ChaBiHe(&turnpid_adc.err, TRACK);
+    float EC = turnpid_adc.err - turnpid_adc.last_err;
+
+    float qE = Quantization(E_MAX_A, E_MIN_A, turnpid_adc.err);
+    float qEC = Quantization(EC_MAX_A, EC_MAX_A, EC);
+
+    SoluteFuzzy(qE, qEC);//解模糊，得到KP和KD在论域中的值
+    //KP和KD解模糊，得到实际的值
+    turnpid_adc.P = InverseQuantization(KP_MAX_A, KP_MIN_A, qdetail_Kp);
+    turnpid_adc.D = InverseQuantization(KD_MAX_A, KD_MIN_A, qdetail_Kd);
+    qdetail_Kp = 0;
+    qdetail_Kd = 0;
+
+    turnpid_adc.out = (int)(turnpid_adc.P * turnpid_adc.err + turnpid_adc.D * EC);//PID公式计算输出量
+    turnpid_adc.last_err = turnpid_adc.err;//更新上一次偏差
+
+    if (turnpid_adc.out > 0)//左转
+    {
+        target_left_1 = base_speed - turnpid_adc.out;
+        target_right_1 = base_speed;
+    }
+    else
+    {
+        target_left_1 = base_speed;
+        target_right_1 = base_speed + turnpid_adc.out;
     }
 }
 /***********************************************
