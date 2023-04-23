@@ -159,7 +159,7 @@ uint8 CircleIslandLIn()//入环状态
                 }
             }
 
-            l_line_count=per_l_line_count=0;
+//            l_line_count=per_l_line_count=0;
             per_r_line_count=PER_EDGELINE_LENGTH;
             //对边线进行透视
             EdgeLinePerspective(right_line,r_line_count,per_right_line);
@@ -364,10 +364,11 @@ void LeftLineDetectionAgain()
 {
     uint8 half=GRAY_BLOCK/2;
     myPoint left_seed=left_line[l_line_count-1];//左种子
-    if (left_seed.Y==0)
+    if (left_seed.Y<USE_IMAGE_H_MIN+half || left_seed.Y>USE_IMAGE_H-half-1 || left_seed.X<half || left_seed.X>USE_IMAGE_W-half-1)
     {
-        left_seed.Y=USE_IMAGE_H_MAX-half-1,left_seed.X=half+1;
+        left_seed.Y=USE_IMAGE_H_MAX-half-1;left_seed.X=half;
     }
+    left_seed.X++;
     for (; left_seed.Y > 45; left_seed.Y--)
     {
         if (PointSobelTest(left_seed) == 1)
@@ -377,19 +378,13 @@ void LeftLineDetectionAgain()
     }
     l_line_count=0;//用完之后就重置清除之前扫线的错误数据
     uint8 seed_grown_result=0;//种子生长的结果
-    uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
-    while(l_line_count<EDGELINE_LENGTH)
+    uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-left_seed.Y);//重新扫线的长度
+    while(l_line_count<len)
     {
         seed_grown_result=EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num);
         if(seed_grown_result==1)
         {
-            flag=1;
             left_line[l_line_count]=left_seed;l_line_count++;
-        }
-        else if(seed_grown_result==2)
-        {
-            if(flag==0) continue;
-            else        break;
         }
         else break;
     }
@@ -406,10 +401,11 @@ void RightLineDetectionAgain()
 {
     uint8 half=GRAY_BLOCK/2;
     myPoint right_seed=right_line[r_line_count-1];//右种子
-    if (right_seed.Y==0)
+    if (right_seed.Y<USE_IMAGE_H_MIN+half || right_seed.Y>USE_IMAGE_H-half-1 || right_seed.X<half || right_seed.X>USE_IMAGE_W-half-1)
     {
-        right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-2;
+        right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-1;
     }
+    right_seed.X--;
     for (; right_seed.Y > 45; right_seed.Y--)
     {
         if (PointSobelTest(right_seed) == 1)
@@ -419,19 +415,13 @@ void RightLineDetectionAgain()
     }
     r_line_count=0;//用完之后就重置清除之前扫线的错误数据
     uint8 seed_grown_result=0;//种子生长的结果
-    uint8 flag=0;//从丢线到不丢线,0:还没找到过边界，1:已经找到边界
-    while(r_line_count<EDGELINE_LENGTH)
+    uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-right_seed.Y);//重新扫线的长度
+    while(r_line_count<len)
     {
         seed_grown_result=EightAreasSeedGrownGray(&right_seed,'r',&right_seed_num);
         if(seed_grown_result==1)
         {
-            flag=1;
             right_line[r_line_count]=right_seed;r_line_count++;
-        }
-        else if(seed_grown_result==2)
-        {
-            if(flag==0) continue;
-            else        break;
         }
         else break;
     }

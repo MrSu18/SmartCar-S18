@@ -11,55 +11,40 @@ uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 //================================================================
 
 /***********************************************
-* @brief : 通过差比和算法先找到左右种子
+* @brief : 通过差比和算法先找到左右种子，找不到的时候往上多搜10行
 * @param : 灰度图像
 * @return: 左种子、右种子
-* @date  : 2023.4.12
+* @date  : 2023.4.22
 * @author: 刘骏帆
 ************************************************/
 #define GRAY_DIF_THRES  10//灰度差比和算法的阈值
 void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed)//通过差比和算法先找到左右种子
 {
     int dif_gray_value;//灰度值差比和的值
-    for (left_seed->Y = USE_IMAGE_H_MAX - half - 1, left_seed->X = USE_IMAGE_W / 2;left_seed->X > half; left_seed->X--)
+    static uint8 column=USE_IMAGE_W / 2;
+    for(left_seed->Y = USE_IMAGE_H_MAX - half - 1;left_seed->Y > 100; left_seed->Y--)
     {
-        if (PointSobelTest(*left_seed) == 1) break;
-//        //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
-//        dif_gray_value=100*(use_image[left_seed->Y][left_seed->X]-use_image[left_seed->Y][left_seed->X-1])
-//                       /(use_image[left_seed->Y][left_seed->X]+use_image[left_seed->Y][left_seed->X-1]);
-//        if(dif_gray_value>dif_thres) break;
-    }
-    if (left_seed->X == half)//没有成功播种
-    {
-        for (; left_seed->Y > 90; left_seed->Y--)
+        for (left_seed->X = column;left_seed->X > half; left_seed->X--)
         {
-//            LCDDrawPoint(left_seed->Y,left_seed->X,0,255,0);
-            if (PointSobelTest(*left_seed) == 1)
-            {
-                left_seed->X++;
-                break;
-            }
+            //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
+            dif_gray_value=100*(use_image[left_seed->Y][left_seed->X]-use_image[left_seed->Y][left_seed->X-1])
+                           /(use_image[left_seed->Y][left_seed->X]+use_image[left_seed->Y][left_seed->X-1]);
+            if(dif_gray_value>dif_thres) break;
         }
+        if(dif_gray_value>dif_thres) break;
     }
-    for (right_seed->Y = USE_IMAGE_H_MAX - half - 1, right_seed->X = USE_IMAGE_W / 2;right_seed->X < USE_IMAGE_W - half - 1; right_seed->X++)
+    for(right_seed->Y = USE_IMAGE_H_MAX - half - 1;right_seed->Y > 100; right_seed->Y--)
     {
-        if (PointSobelTest(*right_seed) == 1) break;
-        //灰度差比和=(f(x,y)-f(x-1,y))/(f(x,y)+f(x-1,y))
-//        dif_gray_value=100*(use_image[right_seed->Y][right_seed->X]-use_image[right_seed->Y][right_seed->X+1])
-//                       /(use_image[right_seed->Y][right_seed->X]+use_image[right_seed->Y][right_seed->X+1]);
-//        if(dif_gray_value>dif_thres) break;
-    }
-    if (right_seed->X == USE_IMAGE_W - half - 1)//没有成功播种
-    {
-        for (; right_seed->Y > 90; right_seed->Y--)
+        for (right_seed->X = column;right_seed->X < USE_IMAGE_W - half - 1; right_seed->X++)
         {
-            if (PointSobelTest(*right_seed) == 1)
-            {
-                right_seed->X--;
-                break;
-            }
+            //灰度差比和=(f(x,y)-f(x+1,y))/(f(x,y)+f(x+1,y))
+            dif_gray_value=100*(use_image[right_seed->Y][right_seed->X]-use_image[right_seed->Y][right_seed->X+1])
+                           /(use_image[right_seed->Y][right_seed->X]+use_image[right_seed->Y][right_seed->X+1]);
+            if(dif_gray_value>dif_thres) break;
         }
+        if(dif_gray_value>dif_thres) break;
     }
+    column=(left_seed->X+right_seed->X)/2;
 }
 
 /***********************************************
