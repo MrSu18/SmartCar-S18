@@ -95,7 +95,7 @@ int core0_main(void)
     PIDInit(&speedpid_left_1,168.46,0.86,0);            //244.24  1.99
     PIDInit(&speedpid_right_1,178.62,1.04,0);           //297.87  2.92
     PIDInit(&turnpid_image,0,0,0);                      //25   5
-    PIDInit(&turnpid_adc,25,0,2.5);
+    PIDInit(&turnpid_adc,6,0,3);
     base_speed=150;
 
     // 此处编写用户代码 例如外设初始化代码等

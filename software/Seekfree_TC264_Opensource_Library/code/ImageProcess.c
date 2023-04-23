@@ -102,30 +102,34 @@ void ImageProcess(void)
         track_type=kTrackRight;
     }
 
-    switch(status)
-    {
-        case 1:
-            if(CircleIslandLStatus()==1)
-            {
-                pit_disable(CCU60_CH1);
-                pit_disable(CCU60_CH0);//关闭电机中断
-                MotorSetPWM(0,0);
-//               status=2;
-            }
-            break;
-        case 2:
-            if(CrossIdentify() == 1)
-            {
-                pit_disable(CCU60_CH1);
-                pit_disable(CCU60_CH0);//关闭电机中断
-                MotorSetPWM(0,0);
-            }
-            break;
-        default:break;
-    }
+//    switch(status)
+//    {
+//        case 1:
+//            if(CircleIslandLStatus()==1)
+//            {
+//                pit_disable(CCU60_CH1);
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                MotorSetPWM(0,0);
+////               status=2;
+//            }
+//            break;
+//        case 2:
+//            if(CrossIdentify() == 1)
+//            {
+//                pit_disable(CCU60_CH1);
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                MotorSetPWM(0,0);
+//            }
+//            break;
+//        default:break;
+//    }
 
-//    uint8 temp=CircleIslandLIn();
-//    tft180_show_uint(0, 0, temp, 2);
+    if(SlopeIdentify() == 1)
+    {
+        pit_disable(CCU60_CH0);//关闭电机中断
+        pit_disable(CCU60_CH1);
+        MotorSetPWM(0,0);
+    }
 
     //预瞄点求偏差
     if(track_type==kTrackRight)

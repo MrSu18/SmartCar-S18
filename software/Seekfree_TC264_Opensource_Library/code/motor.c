@@ -38,7 +38,7 @@ void EncoderInit(void)
 * @date  : 2023.1.2
 * @author: L
 ************************************************/
-float EncoderGetCount(int* data_left,int* data_right)
+void EncoderGetCount(int* data_left,int* data_right)
 {
     int last_data_left = *data_left,last_data_right = *data_right;
 
@@ -59,7 +59,7 @@ float EncoderGetCount(int* data_left,int* data_right)
         float data_mid = 0;
         data_mid = (float)(*data_left+*data_right)/2;
 
-        dis += ((data_mid/1024)*30/68)*CIRCLE;
+        dis += ((data_mid/1024.0)*30.0/68.0)*(float)CIRCLE;
     }
     else if(encoder_dis_flag == 0)
         dis = 0;
