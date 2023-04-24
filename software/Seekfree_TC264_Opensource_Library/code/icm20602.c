@@ -8,9 +8,22 @@
 #include "zf_device_icm20602.h"
 #include "zf_driver_spi.h"
 #include "filter.h"
+#include "isr.h"
+#include "zf_driver_pit.h"
 
 #define delta_T 0.005f
-
+#ifdef ICM_GET_Z
+float my_angle_z;//Z轴角度
+int16 my_gyro_z;//Z轴角速度
+#endif
+#ifdef ICM_GET_Y
+float my_angle_y;
+int16 my_gyro_y;
+#endif
+#ifdef ICM_GET_X
+float my_angle_x;
+int16 my_gyro_x;
+#endif
 QuaterInfo Q_info = {1,0,0,0};
 EulerAngle eulerangle;
 GyroOffset gyro_offset;
@@ -18,6 +31,7 @@ float I_ex, I_ey, I_ez;
 float param_Kp = 50.0f;
 float param_Ki = 0.2f;
 float value[6];
+
 
 /***********************************************
 * @brief : 初始化陀螺仪零漂
@@ -179,15 +193,104 @@ void QuaterToEulerianAngles(void)
 ************************************************/
 int16 GetICM20602Gyro_Z(void)
 {
-    uint8 dat[2];
+    uint8 datz[2];
     int16 gyro_z;
 
     ICM20602_CS(0);
-    spi_read_8bit_registers(SPI_0, ICM20602_GYRO_ZOUT_H | ICM20602_SPI_R, dat, 2);
+    spi_read_8bit_registers(SPI_0, ICM20602_GYRO_ZOUT_H | ICM20602_SPI_R, datz, 2);
     ICM20602_CS(1);
 
-    gyro_z = (int16)(((uint16)dat[0]<<8)|dat[1]);
+    gyro_z = (int16)(((uint16)datz[0]<<8)|datz[1]);
 
     return gyro_z;
+}
+int16 GetICM20602Gyro_X(void)
+{
+    uint8 datx[2];
+    int16 gyro_x;
+
+    ICM20602_CS(0);
+    spi_read_8bit_registers(SPI_0, ICM20602_GYRO_XOUT_H | ICM20602_SPI_R, datx, 2);
+    ICM20602_CS(1);
+
+    gyro_x = (int16)(((uint16)datx[0]<<8)|datx[1]);
+
+    return gyro_x;
+}
+int16 GetICM20602Gyro_Y(void)
+{
+    uint8 daty[2];
+    int16 gyro_y;
+
+    ICM20602_CS(0);
+    spi_read_8bit_registers(SPI_0, ICM20602_GYRO_YOUT_H | ICM20602_SPI_R, daty, 2);
+    ICM20602_CS(1);
+
+    gyro_y = (int16)(((uint16)daty[0]<<8)|daty[1]);
+
+    return gyro_y;
+}
+
+float GetICM20602Angle_Z(uint8 flag)
+{
+
+
+    if(flag==1) //清零之前的积分
+    {
+        my_angle_z=0;
+        return 0;
+    }
+
+    my_gyro_z=GetICM20602Gyro_Z();                //获取Z轴角速度
+    my_gyro_z=KalmanFilter(&kalman_gyro, my_gyro_z);  //滤波
+
+    my_angle_z+=0.00012480f*my_gyro_z;                  //积分
+  //  my_angle_z+=0.00012480f*value[5];                  //积分--误差滤波--近似于线性函数滤波
+    return my_angle_z;
+}
+float GetICM20602Angle_X(uint8 flag)
+{
+    if(flag==1) //清零之前的积分
+    {
+        my_angle_x=0;
+        return 0;
+    }
+    my_gyro_x=GetICM20602Gyro_X();                //获取X轴角速度
+    my_gyro_x=KalmanFilter(&kalman_gyro, my_gyro_x);  //滤波
+    my_angle_x+=0.0005616f*my_gyro_x;                  //积分  原0.00012480，现修正值为0.0005616
+    return my_angle_x;
+}
+float GetICM20602Angle_Y(uint8 flag)
+{
+    if(flag==1) //清零之前的积分
+    {
+        my_angle_y=0;
+        return 0;
+    }
+    my_gyro_y=GetICM20602Gyro_Y();                //获取Y轴角速度
+    my_gyro_y=KalmanFilter(&kalman_gyro, my_gyro_y);  //滤波
+    my_angle_y+=0.0005616f*my_gyro_y;                  //积分
+    return my_angle_y;
+}
+void StartIntegralAngle_Z(float target_angle)
+{
+    icm_target_angle_z=target_angle;        //设置目标角度
+    icm_angle_z_flag=0;                     //积分目标flag=0
+    GetICM20602Angle_Z(1);                  //积分清零
+    pit_enable(CCU61_CH0);  //开启中断
+}
+void StartIntegralAngle_X(float target_angle)
+{
+    icm_target_angle_x=target_angle;        //设置目标角度
+    icm_angle_x_flag=0;                     //积分目标flag=0
+    GetICM20602Angle_X(1);                  //积分清零
+    pit_enable(CCU61_CH0);  //开启中断
+}
+void StartIntegralAngle_Y(float target_angle)
+{
+    icm_target_angle_y=target_angle;        //设置目标角度
+    icm_angle_y_flag=0;                     //积分目标flag=0
+    GetICM20602Angle_Y(1);                  //积分清零
+    pit_enable(CCU61_CH0);  //开启中断
 }
 

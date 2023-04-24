@@ -90,6 +90,7 @@ int core0_main(void)
     pit_ms_init(CCU60_CH1,10);pit_disable(CCU60_CH1);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
+    KalmanInit(&kalman_gyro,1,100);
     PIDInit(&speedpid_left,187.52,1.16,0);              //187.52  1.16
     PIDInit(&speedpid_right,179.06,1.23,0);             //179.06  1.23
     PIDInit(&speedpid_left_1,168.46,0.86,0);            //244.24  1.99
@@ -100,6 +101,8 @@ int core0_main(void)
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
+
+    //StartIntegralAngle_X(t_angle);  // 开始积分角度   t_angle 为目标角度
 
 //    ADCScan();
     while (TRUE)
