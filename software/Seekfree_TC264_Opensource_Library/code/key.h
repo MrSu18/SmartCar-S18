@@ -24,8 +24,8 @@
 #define  KEY_RIGHT      4
 #define  KEY_ENTER      5
 
-#define  PRESSDOWN      1
-#define  LOOSE          0
+#define  PRESSDOWN      0
+#define  LOOSE          1
 
 extern uint8 per_image_flag,gray_image_flag;
 extern uint8 edgeline_flag,c_line_flag,per_edgeline_flag;

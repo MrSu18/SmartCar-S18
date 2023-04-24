@@ -22,6 +22,7 @@ typedef struct
 }kalman_filter_1;
 
 extern kalman_filter_1 kalman_adc;
+extern kalman_filter_1 kalman_gyro;
 
 void KalmanInit(kalman_filter_1* state,float Q,float R);                //³õÊ¼»¯¿¨¶ûÂüÂË²¨µÄÏµÊı
 int16 KalmanFilter(kalman_filter_1* state,float z);                     //¿¨¶ûÂüÂË²¨
