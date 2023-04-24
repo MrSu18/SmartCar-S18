@@ -58,7 +58,7 @@ void OutProtect(void)
 ************************************************/
 void ImageProcess(void)
 {
-    static uint8 status=2;
+    static uint8 status=1;
     //扫线
     EdgeDetection();
     //边线进行透视
@@ -110,16 +110,16 @@ void ImageProcess(void)
 //                pit_disable(CCU60_CH1);
 //                pit_disable(CCU60_CH0);//关闭电机中断
 //                MotorSetPWM(0,0);
-//               status=2;
+               status=2;
             }
             break;
         case 2:
             if(CrossIdentify() == 1)
             {
-                status = 3;
-//                pit_disable(CCU60_CH1);
-//                pit_disable(CCU60_CH0);//关闭电机中断
-//                MotorSetPWM(0,0);
+//                status = 3;
+                pit_disable(CCU60_CH1);
+                pit_disable(CCU60_CH0);//关闭电机中断
+                MotorSetPWM(0,0);
             }
             break;
         case 3:
@@ -132,7 +132,8 @@ void ImageProcess(void)
             break;
         default:break;
     }
-
+//    uint8 temp=CircleIslandLIn();
+//    tft180_show_uint(0, 0, temp, 2);
     //预瞄点求偏差
     if(track_type==kTrackRight)
     {

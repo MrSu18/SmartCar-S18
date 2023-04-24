@@ -20,12 +20,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="入环重新扫线限制扫线的长度">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="同步我的opencv工程">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageCircleIsland.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageCircleIsland.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageWR.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageWR.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/adc.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/adc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -289,7 +290,10 @@
       <workItem from="1682250153443" duration="3000" />
       <workItem from="1682254474356" duration="732000" />
       <workItem from="1682257024024" duration="30000" />
-      <workItem from="1682257191354" duration="2245000" />
+      <workItem from="1682257191354" duration="2497000" />
+      <workItem from="1682318760799" duration="3000" />
+      <workItem from="1682321280447" duration="595000" />
+      <workItem from="1682327464444" duration="1000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>
@@ -578,7 +582,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682169728280</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="同步我的opencv工程">
+      <created>1682259491313</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1682259491313</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -596,7 +607,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="增加边线处理函数注释，理解局部曲率计算函数，极大值抑制后，能够较好的找出直角拐点，但是还会存在一定程度的误判" />
     <MESSAGE value="把师弟的摄像头参数输入，现在工程的测试图片是140摄像头，曝光太低，二值化出问题，打算试试灰度扫线算法" />
     <MESSAGE value="上传边线处理函数，但是还没验证，有点问题" />
     <MESSAGE value="加入求偏差处理，测试图用的是师弟的140镜头那份" />
@@ -621,7 +631,8 @@
     <MESSAGE value="播种修改为差比和播种，从110行到100行" />
     <MESSAGE value="环岛重写了入环判断，和种子列继承有一定作用，起码入环失败不会直着冲出去" />
     <MESSAGE value="入环重新扫线限制扫线的长度" />
-    <option name="LAST_COMMIT_MESSAGE" value="入环重新扫线限制扫线的长度" />
+    <MESSAGE value="同步我的opencv工程" />
+    <option name="LAST_COMMIT_MESSAGE" value="同步我的opencv工程" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

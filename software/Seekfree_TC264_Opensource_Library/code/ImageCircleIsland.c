@@ -21,25 +21,28 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==2)
             {
+                base_speed=140;//降速进环
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
             }
             break;
         case 1: //路过环岛第一个入口
             if(CircleIslandLInDetection()==1)
             {
+                gpio_set_level(P11_12, GPIO_LOW);
                 status=2;
             }
             break;
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
-                gpio_set_level(P11_12, GPIO_LOW);
+                base_speed=170;//环内加速
                 status=3;
             }
             break;
         case 3: //检测出环
             if(CircleIslandLOutDetection()==1)
             {
+                base_speed=150;//降速出环
                 track_type=kTrackRight;
                 status=4;
             }
@@ -55,6 +58,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
             if (CircleIslandLEnd()==1)
             {
                 gpio_set_level(P11_12, GPIO_HIGH);
+                base_speed=160;//加速出环
                 status=0;
                 return 1;
             }
@@ -109,34 +113,38 @@ uint8 CircleIslandLDetection()//检测左环岛
 ************************************************/
 uint8 CircleIslandLInDetection(void)
 {
-//    static uint8 status=0;
-//    if(status==0)
-//    {
-//        encoder_dis_flag = 1;//开启编码器计数
-//        status=1;
-//    }
-//    else if(status==1)
-//    {
-//        if(dis>400)//40cm
-//        {
-//            status=2;
-//            encoder_dis_flag = 0;
-//            status=2;
-//        }
-//    }
-//    else if(status==2)
-//    {
-        if (adc_value[0]>90)//先看左边是否有边线,左边有边线直接进去
+    static uint8 status=0;
+    if(status==0)
+    {
+        encoder_dis_flag = 1;//开启编码器计数
+        status=1;
+    }
+    else if(status==1)
+    {
+        if(dis>400)//40cm
         {
+//            status=2;
+            encoder_dis_flag = 0;
+            status=0;
             track_type=kTrackLeft;
             return 1;
         }
-        else
-        {
-            track_type=kTrackRight;//否则还没到入环时机
-            return 0;
-        }
+    }
+//    else if(status==2)
+//    {
+//        if (adc_value[0]>75)//先看左边是否有边线,左边有边线直接进去
+//        {
+//            track_type=kTrackLeft;
+//            return 1;
+//        }
+//        else
+//        {
+//            track_type=kTrackRight;//否则还没到入环时机
+//            return 0;
+//        }
 //    }
+    track_type=kTrackRight;//否则还没到入环时机
+    return 0;
 }
 
 /***********************************************

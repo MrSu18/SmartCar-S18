@@ -10,8 +10,8 @@
 int16 adc_value[5] = {0};                           //存取获取到的ADC的值
 float adc_bias = 0;
 //赛道扫描时得到的最大值和最小值
-int16 adc_max[5] = {3303,3228,2810,2981,3306};
-int16 adc_min[5] = {0,18,4,0,0};
+int16 adc_max[5] = {4095,4095,3196,3871,4095};
+int16 adc_min[5] = {0,0,17,0,0};
 
 adc_channel_enum my_adc_pin[5]=
 {
