@@ -35,6 +35,7 @@
 
 #include "isr_config.h"
 #include "isr.h"
+#include "icm20602.h"
 #include "bluetooth.h"
 #include "adc.h"
 #include "motor.h"
@@ -90,12 +91,15 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
     interrupt_global_enable(0);                     // 开启中断嵌套
 
     float angle_x=GetICM20602Angle_X(0);            //角度积分
-      if(angle_x>icm_target_angle_x||angle_x<-icm_target_angle_x)  //判断积分角度是否大于目标角度
-     //if(my_angle_z>icm_target_angle_z||my_angle_z<-icm_target_angle_z)  //如果上句出bug 使用这句
-      {
 
+    tft180_show_string(0,40,"my anglex = ");
+        tft180_show_float(80,40,my_angle_x,3,2);
+      if(angle_x>icm_target_angle_x||angle_x<-icm_target_angle_x)  //判断积分角度是否大于目标角度
+     //if(my_angle_x>icm_target_angle_x||my_angle_x<-icm_target_angle_x)  //如果上句出bug 使用这句
+      {
                  icm_angle_x_flag=1;                     //积分到达目标flag=1
                  pit_disable(CCU61_CH0); //关闭中断
+
               }
     pit_clear_flag(CCU61_CH0);
 

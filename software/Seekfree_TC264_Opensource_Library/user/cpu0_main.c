@@ -42,7 +42,7 @@
 #include "bluetooth.h"
 #include "pid.h"
 #include "key.h"
-//#include "icm20602.h"
+#include "icm20602.h"
 #include "ZwPlus_lib.h"
 
 extern uint8 binary_image[MT9V03X_H][MT9V03X_W];
@@ -75,8 +75,8 @@ int core0_main(void)
     tft180_init();//初始化tft
     UARTInit();//初始化蓝牙模块
 //    uart_init(BLUETOOTH,3000000,BLUETOOTH_TX,BLUETOOTH_RX);//初始化图传
-//    icm20602_init();
-//    GyroOffsetInit();
+    icm20602_init();
+    GyroOffsetInit();
 //    dl1a_init();
     //初始化debug的led
     gpio_init(P20_8, GPO, GPIO_HIGH, GPO_PUSH_PULL);
@@ -88,6 +88,8 @@ int core0_main(void)
     //初始化电机中断
     pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
     pit_ms_init(CCU60_CH1,10);pit_disable(CCU60_CH1);
+    //陀螺仪中断2ms
+    pit_ms_init(CCU61_CH0,2);pit_disable(CCU61_CH0);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
     KalmanInit(&kalman_gyro,1,100);
@@ -101,12 +103,14 @@ int core0_main(void)
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
-
-    //StartIntegralAngle_X(t_angle);  // 开始积分角度   t_angle 为目标角度
+    float t_angle = 90.0;
+    StartIntegralAngle_X(t_angle);  // 开始积分角度   t_angle 为目标角度
 
 //    ADCScan();
     while (TRUE)
     {
+
+
         ADCGetValue(adc_value);
         // 此处编写需要循环执行的代码
 //       if(c0h0_isr_flag==1)
