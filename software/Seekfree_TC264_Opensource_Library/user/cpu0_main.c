@@ -84,7 +84,7 @@ int core0_main(void)
     gpio_init(P21_5, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     //给蜂鸣器低电平
-    gpio_init(P11_12,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
+    gpio_init(P21_3,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
     //初始化电机中断
     pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
     pit_ms_init(CCU60_CH1,10);pit_disable(CCU60_CH1);

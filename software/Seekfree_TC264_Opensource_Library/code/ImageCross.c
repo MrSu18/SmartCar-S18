@@ -39,6 +39,7 @@ uint8 CrossIdentify(void)
         int16 corner_id_l = 0, corner_id_r = 0;         //角点在边线的第几个点
         if (CrossFindCorner(&corner_id_l, &corner_id_r) != 0)
         {
+            if((corner_id_l > aim_distance / SAMPLE_DIST) || (corner_id_r > aim_distance / SAMPLE_DIST)) break;
             gpio_toggle_level(P20_9);
             //如果只有一边有角点，则不用求平均值，如果有两个角点，则求平均值
             if ((corner_id_l == 0) && (corner_id_r != 0))
