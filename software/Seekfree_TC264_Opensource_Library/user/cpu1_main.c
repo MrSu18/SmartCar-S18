@@ -44,6 +44,7 @@
 #include "pid.h"
 #include "key.h"
 #include "debug.h"
+#include "icm20602.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -67,9 +68,8 @@ void core1_main(void)
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    KEYCtrl();//按键控制
+//    KEYCtrl();//按键控制
 //    OutGarage();//出库
-
     while (TRUE)
     {
         // 此处编写需要循环执行的代码

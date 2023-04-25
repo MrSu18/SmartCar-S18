@@ -92,8 +92,6 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
 
     float angle_x=GetICM20602Angle_X(0);            //角度积分
 
-    tft180_show_string(0,40,"my anglex = ");
-        tft180_show_float(80,40,my_angle_x,3,2);
       if(angle_x>icm_target_angle_x||angle_x<-icm_target_angle_x)  //判断积分角度是否大于目标角度
      //if(my_angle_x>icm_target_angle_x||my_angle_x<-icm_target_angle_x)  //如果上句出bug 使用这句
       {

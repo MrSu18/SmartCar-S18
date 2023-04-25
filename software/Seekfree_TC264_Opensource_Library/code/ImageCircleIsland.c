@@ -9,6 +9,7 @@
 #include "stdlib.h"
 #include "debug.h"
 #include "motor.h"
+#include "icm20602.h"
 
 #define PI 3.1415926
 
@@ -21,14 +22,15 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==2)
             {
-                base_speed=140;//降速进环
+                base_speed=150;//降速进环
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
             }
             break;
         case 1: //路过环岛第一个入口
             if(CircleIslandLInDetection()==1)
             {
-                gpio_set_level(P11_12, GPIO_LOW);
+                StartIntegralAngle_X(340);//开启陀螺仪准备积分出环
+                gpio_set_level(P21_4, GPIO_LOW);
                 status=2;
             }
             break;
@@ -57,7 +59,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 5://检测环岛是否结束
             if (CircleIslandLEnd()==1)
             {
-                gpio_set_level(P11_12, GPIO_HIGH);
+                gpio_set_level(P21_4, GPIO_HIGH);
                 base_speed=160;//加速出环
                 status=0;
                 return 1;
@@ -252,35 +254,9 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
 #define OUT_LISLAND_CENTREADC_THR   80                         //左环出环中间电感ADC阈值
 uint8 CircleIslandLOutFinish(void)//检测环岛是否结束
 {
-    static uint8 status=0;
-    if(adc_value[2]>OUT_LISLAND_CENTREADC_THR)//电磁检测到直接出环结束
+    if(icm_angle_x_flag==1)
     {
         return 1;
-    }
-    //图像判断
-    if (status==0)
-    {
-        for (int i = 0; i < per_r_line_count; ++i)
-        {
-            if (70./180.*PI<r_angle_1[i] && r_angle_1[i]<140./180.*PI)//出环右边角点
-            {
-                return 0;
-            }
-        }
-        status=1;//到这步说明没有角点了
-    }
-    else if (status==1)//这个状态是检测车头正对赛道边线
-    {
-        if(l_line_count<3 && r_line_count<3)
-            status=2;
-    }
-    else if(status==2)//这个状态要要等待检测右边不丢线了
-    {
-        if (r_line_count>10)
-        {
-            status = 0;
-            return 1;
-        }
     }
     return 0;
 }
@@ -351,7 +327,7 @@ void CircleIslandLOut(void)//环岛出环处理函数
 ************************************************/
 uint8 CircleIslandLEnd(void)
 {
-    if(l_line_count>10)//判断
+    if(l_line_count>50)//判断
         return 1;
     //循迹
     if(per_r_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环

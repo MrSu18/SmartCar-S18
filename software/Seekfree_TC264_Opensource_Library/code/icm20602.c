@@ -257,7 +257,7 @@ float GetICM20602Angle_X(uint8 flag)
     }
     my_gyro_x=GetICM20602Gyro_X();                //获取X轴角速度
     my_gyro_x=KalmanFilter(&kalman_gyro, my_gyro_x);  //滤波
-    my_angle_x+=0.0005616f*my_gyro_x;                  //积分  原0.00012480，现修正值为0.0005616
+    my_angle_x+=0.00012480f*my_gyro_x;                  //积分  原0.00012480，现修正值为0.0005616
     return my_angle_x;
 }
 float GetICM20602Angle_Y(uint8 flag)

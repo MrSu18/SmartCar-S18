@@ -86,8 +86,8 @@ int core0_main(void)
     //给蜂鸣器低电平
     gpio_init(P21_3,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
     //初始化电机中断
-    pit_ms_init(CCU60_CH0,5);pit_disable(CCU60_CH0);
-    pit_ms_init(CCU60_CH1,10);pit_disable(CCU60_CH1);
+    pit_ms_init(CCU60_CH0,5);//pit_disable(CCU60_CH0);
+    pit_ms_init(CCU60_CH1,10);//pit_disable(CCU60_CH1);
     //陀螺仪中断2ms
     pit_ms_init(CCU61_CH0,2);pit_disable(CCU61_CH0);
 /*************************参数初始化***************************/
@@ -103,8 +103,8 @@ int core0_main(void)
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
-    float t_angle = 90.0;
-    StartIntegralAngle_X(t_angle);  // 开始积分角度   t_angle 为目标角度
+//    float t_angle = 90.0;
+//    StartIntegralAngle_X(t_angle);  // 开始积分角度   t_angle 为目标角度
 
 //    ADCScan();
     while (TRUE)
