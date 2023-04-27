@@ -22,7 +22,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==2)
             {
-                base_speed=150;//降速进环
+//                base_speed=70;//降速进环
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
             }
             break;
@@ -37,14 +37,14 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
-                base_speed=170;//环内加速
+//                base_speed=170;//环内加速
                 status=3;
             }
             break;
         case 3: //检测出环
             if(CircleIslandLOutDetection()==1)
             {
-                base_speed=150;//降速出环
+//                base_speed=150;//降速出环
                 track_type=kTrackRight;
                 status=4;
             }
@@ -60,7 +60,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
             if (CircleIslandLEnd()==1)
             {
                 gpio_set_level(P21_4, GPIO_HIGH);
-                base_speed=160;//加速出环
+//                base_speed=160;//加速出环
                 status=0;
                 return 1;
             }

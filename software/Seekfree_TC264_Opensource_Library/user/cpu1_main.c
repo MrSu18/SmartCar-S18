@@ -68,7 +68,7 @@ void core1_main(void)
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-//    KEYCtrl();//按键控制
+    KEYCtrl();//按键控制
 //    OutGarage();//出库
     while (TRUE)
     {
@@ -129,13 +129,20 @@ void core1_main(void)
             //赛道基础信息变量重置
             TrackBasicClear();
 #else
-            MotorSetPWM(2000,2000);
-            system_delay_ms(3000);
-            while(1)
+            static uint8 temp=0;
+            if(temp==0)
             {
-                MotorSetPWM(0, 0);
+                StartIntegralAngle_X(360);
+                temp=1;
             }
-            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
+            tft180_show_float(0, 0,my_angle_x, 4, 2);
+//            MotorSetPWM(2000,2000);
+//            system_delay_ms(3000);
+//            while(1)
+//            {
+//                MotorSetPWM(0, 0);
+//            }
+//            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
             mt9v03x_finish_flag=0;
         }

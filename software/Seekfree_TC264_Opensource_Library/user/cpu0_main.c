@@ -86,20 +86,20 @@ int core0_main(void)
     //给蜂鸣器低电平
     gpio_init(P21_3,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
     //初始化电机中断
-    pit_ms_init(CCU60_CH0,5);//pit_disable(CCU60_CH0);
-    pit_ms_init(CCU60_CH1,10);//pit_disable(CCU60_CH1);
+    pit_ms_init(CCU60_CH0,2);pit_disable(CCU60_CH0);
+    pit_ms_init(CCU60_CH1,8);pit_disable(CCU60_CH1);
     //陀螺仪中断2ms
     pit_ms_init(CCU61_CH0,2);pit_disable(CCU61_CH0);
 /*************************参数初始化***************************/
     KalmanInit(&kalman_adc,25,5);
     KalmanInit(&kalman_gyro,1,100);
-    PIDInit(&speedpid_left,187.52,1.16,0);              //187.52  1.16
-    PIDInit(&speedpid_right,179.06,1.23,0);             //179.06  1.23
+    PIDInit(&speedpid_left,301.99,0.66,0);              //187.52  1.16
+    PIDInit(&speedpid_right,339.64,0.73,0);             //179.06  1.23
     PIDInit(&speedpid_left_1,168.46,0.86,0);            //244.24  1.99
     PIDInit(&speedpid_right_1,178.62,1.04,0);           //297.87  2.92
     PIDInit(&turnpid_image,0,0,0);                      //25   5
     PIDInit(&turnpid_adc,0,0,0);
-    base_speed=160;
+    base_speed=70;
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
@@ -109,15 +109,13 @@ int core0_main(void)
 //    ADCScan();
     while (TRUE)
     {
-
-
         ADCGetValue(adc_value);
         // 此处编写需要循环执行的代码
-//       if(c0h0_isr_flag==1)
-//       {
-//           printf("%d,%d,%d\r\n",base_speed,speed_left,speed_right);
-//           c0h0_isr_flag=0;
-//       }
+       if(c0h0_isr_flag==1)
+       {
+           printf("%d,%d\r\n",speed_left,speed_right);
+           c0h0_isr_flag=0;
+       }
 //        if(mt9v03x_finish_flag)
 //        {
 //           gpio_toggle_level(P20_9);
