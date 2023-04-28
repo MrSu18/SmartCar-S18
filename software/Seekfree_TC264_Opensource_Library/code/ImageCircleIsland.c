@@ -11,7 +11,7 @@
 #include "motor.h"
 #include "icm20602.h"
 
-#define PI 3.1415926
+//#define PI 3.1415926
 
 uint8 CircleIslandLStatus()//右边环岛状态状态机
 {
@@ -22,14 +22,14 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==2)
             {
-//                base_speed=70;//降速进环
+                base_speed=65;//降速进环
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
             }
             break;
         case 1: //路过环岛第一个入口
             if(CircleIslandLInDetection()==1)
             {
-                StartIntegralAngle_X(340);//开启陀螺仪准备积分出环
+                StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 gpio_set_level(P21_4, GPIO_LOW);
                 status=2;
             }
@@ -37,14 +37,14 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
-//                base_speed=170;//环内加速
+                base_speed=70;//环内加速
                 status=3;
             }
             break;
         case 3: //检测出环
             if(CircleIslandLOutDetection()==1)
             {
-//                base_speed=150;//降速出环
+                base_speed=65;//降速出环
                 track_type=kTrackRight;
                 status=4;
             }
@@ -60,7 +60,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
             if (CircleIslandLEnd()==1)
             {
                 gpio_set_level(P21_4, GPIO_HIGH);
-//                base_speed=160;//加速出环
+                base_speed=70;//加速出环
                 status=0;
                 return 1;
             }
@@ -339,11 +339,11 @@ uint8 CircleIslandLEnd(void)
         //重新扫线
         RightLineDetectionAgain();
         EdgeLinePerspective(right_line,r_line_count,per_right_line);
+        per_r_line_count=PER_EDGELINE_LENGTH;
+        BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
+        ResamplePoints(per_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
         if(per_r_line_count>aim_distance/SAMPLE_DIST)
         {
-            per_r_line_count=PER_EDGELINE_LENGTH;
-            BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
-            ResamplePoints(per_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
             track_rightline(f_right_line1, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
             track_type=kTrackRight;
         }
@@ -385,7 +385,6 @@ void LeftLineDetectionAgain()
     while(l_line_count<len)
     {
         seed_grown_result=EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num);
-        gpio_toggle_level(P21_4);
         if(seed_grown_result==1)
         {
             left_line[l_line_count]=left_seed;l_line_count++;
