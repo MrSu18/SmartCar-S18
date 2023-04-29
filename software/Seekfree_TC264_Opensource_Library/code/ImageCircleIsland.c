@@ -44,7 +44,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 3: //检测出环
             if(CircleIslandLOutDetection()==1)
             {
-                base_speed=65;//降速出环
+                base_speed=70;//降速出环
                 track_type=kTrackRight;
                 status=4;
             }
@@ -327,7 +327,7 @@ void CircleIslandLOut(void)//环岛出环处理函数
 ************************************************/
 uint8 CircleIslandLEnd(void)
 {
-    if(l_line_count>50)//判断
+    if(l_line_count>100)//判断
         return 1;
     //循迹
     if(per_r_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环

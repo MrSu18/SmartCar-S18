@@ -9,6 +9,7 @@
 #include "ImageTrack.h"
 #include "math.h"
 #include "zf_common_headfile.h"
+#include "icm20602.h"
 
 
 /***********************************************
@@ -64,8 +65,7 @@ uint16 SpeedDecision(uint16 original_speed,float a)
 ************************************************/
 void OutGarage(void)
 {
-    image_bias=5;    //向左打死
-    system_delay_ms(300);
-//    StartIntegralAngle_Z(45);
-//    while(!icm_angle_z_flag);   //左转45°进入正常寻迹
+    image_bias=3;    //向左打死
+    StartIntegralAngle_X(70);
+    while(!icm_angle_x_flag);   //左转45°进入正常寻迹
 }
