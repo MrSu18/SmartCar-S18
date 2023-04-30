@@ -38,7 +38,7 @@ void OutProtect(void)
                 over_count++;
     }
 
-    if(over_count >= (MT9V03X_W - 2) && (adc_sum < 10))                             //如果全部超过阈值则停止
+    if(over_count>=MT9V03X_W-2 && adc_sum < 10)                             //如果全部超过阈值则停止
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -105,31 +105,73 @@ void ImageProcess(void)
     switch(status)
     {
         case 1:
+        {
             if(CircleIslandLStatus()==1)
             {
-                pit_disable(CCU60_CH1);
-                pit_disable(CCU60_CH0);//关闭电机中断
-                MotorSetPWM(0,0);
-//               status=2;
+//                pit_disable(CCU60_CH1);
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                MotorSetPWM(0,0);
+               status=2;
             }
             break;
+        }
         case 2:
+        {
             if(CrossIdentify() == 1)
             {
-//                status = 3;
-                pit_disable(CCU60_CH1);
-                pit_disable(CCU60_CH0);//关闭电机中断
-                MotorSetPWM(0,0);
+                status = 3;
+                last_track_mode = track_mode;
+                track_mode = kTrackADC;
+                base_speed = 60;
+//                pit_disable(CCU60_CH1);
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                MotorSetPWM(0,0);
             }
             break;
+        }
         case 3:
+        {
             if(CutIdentify() == 1)
             {
-                pit_disable(CCU60_CH0);//关闭电机中断
-                pit_disable(CCU60_CH1);
-                MotorSetPWM(0,0);
+                status = 4;
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                pit_disable(CCU60_CH1);
+//                MotorSetPWM(0,0);
             }
             break;
+        }
+        case 4:
+        {
+            if(CrossIdentify() == 1)
+            {
+                gpio_set_level(P21_5,GPIO_LOW);
+                status = 5;
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                pit_disable(CCU60_CH1);
+//                MotorSetPWM(0,0);
+            }
+            break;
+        }
+        case 5:
+        {
+            gpio_set_level(P21_4,GPIO_LOW);
+            if(SlopeIdentify() == 1)
+            {
+                status = 6;
+            }
+            break;
+        }
+        case 6:
+        {
+            gpio_set_level(P20_9,GPIO_LOW);
+            if(GarageIdentify_L() == 1)
+            {
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                pit_disable(CCU60_CH1);
+//                MotorSetPWM(0,0);
+            }
+            break;
+        }
         default:break;
     }
 //    uint8 temp=CircleIslandLEnd();

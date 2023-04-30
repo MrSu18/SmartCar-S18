@@ -30,7 +30,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
             if(CircleIslandLInDetection()==1)
             {
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
-                gpio_set_level(P21_4, GPIO_LOW);
+//                gpio_set_level(P21_4, GPIO_LOW);
                 status=2;
             }
             break;
@@ -59,7 +59,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 5://检测环岛是否结束
             if (CircleIslandLEnd()==1)
             {
-                gpio_set_level(P21_4, GPIO_HIGH);
+//                gpio_set_level(P21_4, GPIO_HIGH);
                 base_speed=70;//加速出环
                 status=0;
                 return 1;

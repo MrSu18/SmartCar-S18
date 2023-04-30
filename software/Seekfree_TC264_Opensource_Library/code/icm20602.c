@@ -13,24 +13,24 @@
 
 #define delta_T 0.005f
 #ifdef ICM_GET_Z
-float my_angle_z;//Z轴角度
-int16 my_gyro_z;//Z轴角速度
+float my_angle_z=0;//Z轴角度
+int16 my_gyro_z=0;//Z轴角速度
 #endif
 #ifdef ICM_GET_Y
-float my_angle_y;
-int16 my_gyro_y;
+float my_angle_y=0;
+int16 my_gyro_y=0;
 #endif
 #ifdef ICM_GET_X
-float my_angle_x;
-int16 my_gyro_x;
+float my_angle_x=0;
+int16 my_gyro_x=0;
 #endif
 QuaterInfo Q_info = {1,0,0,0};
 EulerAngle eulerangle;
 GyroOffset gyro_offset;
-float I_ex, I_ey, I_ez;
+float I_ex=0, I_ey=0, I_ez=0;
 float param_Kp = 50.0f;
 float param_Ki = 0.2f;
-float value[6];
+float value[6]={0};
 
 
 /***********************************************

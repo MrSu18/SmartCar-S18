@@ -29,9 +29,9 @@
 #define E_MIN_A       -30
 #define EC_MAX_A      60
 #define EC_MIN_A      -60
-#define KP_MAX_A      10
+#define KP_MAX_A      6
 #define KP_MIN_A      0
-#define KD_MAX_A      8
+#define KD_MAX_A      3
 #define KD_MIN_A      0
 
 void Fuzzification(float E, float EC, float memership[4], int index_E[2], int index_EC[2]);

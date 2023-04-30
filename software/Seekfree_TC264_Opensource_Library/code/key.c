@@ -108,9 +108,9 @@ uint8 PIDDisplay(uint8 key_num)
                 tft180_show_float(100, 0, speedpid_right.P, 3, 3);
                 tft180_show_string(0, 10, "speedpid_right.I");
                 tft180_show_float(100, 10, speedpid_right.I, 3, 3);
-                tft180_show_string(0, 30, "KEY1:change P");
-                tft180_show_string(0, 40, "KEY2:change I");
-                tft180_show_string(0, 50, "KEY3:exit");
+                tft180_show_string(0, 30, "UP:change P");
+                tft180_show_string(0, 40, "PRESS:change I");
+                tft180_show_string(0, 50, "LEFT:exit");
                 switch(KeyGet())
                 {
                     case KEY_UP:tft180_clear();return 3;
@@ -130,9 +130,9 @@ uint8 PIDDisplay(uint8 key_num)
                 tft180_show_float(100, 0, turnpid_image.P, 3, 3);
                 tft180_show_string(0, 10, "turnpid_image.D");
                 tft180_show_float(100, 10, turnpid_image.D, 3, 3);
-                tft180_show_string(0, 30, "KEY1:change P");
-                tft180_show_string(0, 40, "KEY2:change D");
-                tft180_show_string(0, 50, "KEY3:exit");
+                tft180_show_string(0, 30, "UP:change P");
+                tft180_show_string(0, 40, "PRESS:change D");
+                tft180_show_string(0, 50, "LEFT:exit");
                 switch(KeyGet())
                 {
                     case KEY_UP:return 5;
@@ -152,9 +152,9 @@ uint8 PIDDisplay(uint8 key_num)
                 tft180_show_float(100, 0, turnpid_adc.P, 3, 3);
                 tft180_show_string(0, 10, "turnpid_adc.D");
                 tft180_show_float(100, 10, turnpid_adc.D, 3, 3);
-                tft180_show_string(0, 30, "KEY1:change P");
-                tft180_show_string(0, 40, "KEY2:change D");
-                tft180_show_string(0, 50, "KEY3:exit");
+                tft180_show_string(0, 30, "UP:change P");
+                tft180_show_string(0, 40, "PRESS:change D");
+                tft180_show_string(0, 50, "LEFT:exit");
                 switch(KEYScan())
                 {
                     case KEY_UP:return 7;
@@ -179,13 +179,14 @@ uint8 PIDDisplay(uint8 key_num)
 ************************************************/
 void KeyPID(void)
 {
+    tft180_clear();
     while(1)
     {
-        tft180_show_string(0, 0, "KEY1:speed_pid_left");
-        tft180_show_string(0, 10, "KEY2:speed_pid_right");
-        tft180_show_string(0, 20, "KEY3:turn_pid_image");
-        tft180_show_string(0, 30, "KEY4:turn_pid_adc");
-        tft180_show_string(0, 40, "KEY5:exit");
+        tft180_show_string(0, 0, "UP:speed_pid_left");
+        tft180_show_string(0, 10, "PRESS:speed_pid_right");
+        tft180_show_string(0, 20, "LEFT:turn_pid_image");
+        tft180_show_string(0, 30, "RIGHT:turn_pid_adc");
+        tft180_show_string(0, 40, "DOWN:exit");
 
         uint8 change_parameter = PIDDisplay(KeyGet());//0表示退出调参，9表示没检测到按键按下，1~8表示是哪个参数+或-
 
@@ -201,11 +202,11 @@ void KeyPID(void)
             {
                 uint8 exit_flag = 0;//退出调参的标志
 
-                tft180_show_string(0, 0, "KEY1:P+1");
-                tft180_show_string(0, 10, "KEY2:P-1");
-                tft180_show_string(0, 20, "KEY3:I+0.1/D+0.5");
-                tft180_show_string(0, 30, "KEY4:I-0.1/D-0.5");
-                tft180_show_string(0, 40, "KEY5:exit");
+                tft180_show_string(0, 0, "UP:P+1");
+                tft180_show_string(0, 10, "PRESS:P-1");
+                tft180_show_string(0, 20, "LEFT:I+0.1/D+0.5");
+                tft180_show_string(0, 30, "RIGHT:I-0.1/D-0.5");
+                tft180_show_string(0, 40, "DOWN:exit");
                 switch(KeyGet())
                 {
                     case KEY_UP://参数P+
@@ -368,6 +369,7 @@ void KeyPID(void)
 ************************************************/
 void KeyTrack(void)
 {
+    tft180_clear();
     while(1)
     {
         uint8 exit_flag_3 = 0;
@@ -375,9 +377,9 @@ void KeyTrack(void)
         {
             uint8 exit_flag = 0;//退出调参的标志
             ShowImageParameter();//显示当前参数
-            tft180_show_string(0, 50, "KEY3:change aim_distance");
-            tft180_show_string(0, 60, "KEY4:change base_speed");
-            tft180_show_string(0, 70, "KEY5:exit");
+            tft180_show_string(0, 50, "LEFT:change aim_distance");
+            tft180_show_string(0, 60, "RIGHT:change base_speed");
+            tft180_show_string(0, 70, "DOWN:exit");
             switch(KeyGet())
             {
                 case KEY_LEFT://修改预瞄点的值
@@ -386,11 +388,11 @@ void KeyTrack(void)
                     while(1)
                     {
                         uint8 exit_flag_1 = 0;//退出调节预瞄点的标志位
-                        tft180_show_string(0, 0, "KEY1:aim_distance+0.01");
-                        tft180_show_string(0, 10, "KEY2:aim_distance+0.02");
-                        tft180_show_string(0, 20, "KEY3:aim_distance-0.01");
-                        tft180_show_string(0, 30, "KEY4:aim_distance-0.02");
-                        tft180_show_string(0, 40, "KEY5:exit");
+                        tft180_show_string(0, 0, "UP:aim_distance+0.01");
+                        tft180_show_string(0, 10, "PRESS:aim_distance+0.02");
+                        tft180_show_string(0, 20, "LEFT:aim_distance-0.01");
+                        tft180_show_string(0, 30, "RIGHT:aim_distance-0.02");
+                        tft180_show_string(0, 40, "DOWN:exit");
                         switch(KeyGet())
                         {
                             case KEY_UP://预瞄点+0.01
@@ -434,9 +436,9 @@ void KeyTrack(void)
                     while(1)
                     {
                         uint8 exit_flag_1 = 0;//退出调节基础速度的标志
-                        tft180_show_string(0, 20, "KEY3:base_speed+5");
-                        tft180_show_string(0, 30, "KEY4:base_speed-5");
-                        tft180_show_string(0, 40, "KEY5:exit");
+                        tft180_show_string(0, 20, "LEFT:base_speed+5");
+                        tft180_show_string(0, 30, "RIGHT:base_speed-5");
+                        tft180_show_string(0, 40, "DOWN:exit");
                         switch(KeyGet())
                         {
                             tft180_show_string(0, 70, "base_speed:");
@@ -486,11 +488,12 @@ uint8 per_image_flag = 0,gray_image_flag = 0;//是否显示灰度或逆透视后的图像，1为
 uint8 edgeline_flag = 0,c_line_flag = 0,per_edgeline_flag = 0;        //是否显示边线或中线或透视后的边线，1为显示
 void KeyImage(void)
 {
+    tft180_clear();
     while(1)
     {
         uint8 exit_flag = 0;//退出选择图像显示的标志位
-        tft180_show_string(0, 0, "KEY3:show per_image");
-        tft180_show_string(0, 10, "KEY4:show gray_image");
+        tft180_show_string(0, 0, "LEFT:show per_image");
+        tft180_show_string(0, 10, "RIGHT:show gray_image");
         switch(KeyGet())
         {
             case KEY_LEFT://显示灰度图
@@ -500,9 +503,9 @@ void KeyImage(void)
                 while(1)
                 {
                     uint8 exit_flag_1 = 0;//退出选择是否显示边线或中线的标志位
-                    tft180_show_string(0, 0, "KEY2:show peredge_line");
-                    tft180_show_string(0, 20, "KEY4:show center_line");
-                    tft180_show_string(0, 30, "KEY5:exit");
+                    tft180_show_string(0, 0, "PRESS:show peredge_line");
+                    tft180_show_string(0, 20, "RIGHT:show center_line");
+                    tft180_show_string(0, 30, "DOWN:exit");
                     switch(KeyGet())
                     {
                         case KEY_DOWN:per_edgeline_flag=1;break;
@@ -521,10 +524,10 @@ void KeyImage(void)
                 {
                     uint8 exit_flag_1 = 0;//退出选择是否显示边线或中线的标志位
                     gray_image_flag = 1;//显示逆透视图像
-                    tft180_show_string(0, 0, "KEY2:show peredge_line");
-                    tft180_show_string(0, 10, "KEY3:show edge_line");
-                    tft180_show_string(0, 20, "KEY4:show center_line");
-                    tft180_show_string(0, 30, "KEY5:exit");
+                    tft180_show_string(0, 0, "PRESS:show peredge_line");
+                    tft180_show_string(0, 10, "LEFT:show edge_line");
+                    tft180_show_string(0, 20, "RIGHT:show center_line");
+                    tft180_show_string(0, 30, "DOWN:exit");
                     switch(KeyGet())
                     {
                         case KEY_DOWN:per_edgeline_flag=1;break;
@@ -588,6 +591,20 @@ void ShowImageParameter(void)
     tft180_show_int(100, 10, base_speed, 3);
 }
 /***********************************************
+* @brief : 功能选择显示
+* @param : void
+* @return: void
+* @date  : 2023.4.30
+* @author: L
+************************************************/
+void ShowFunction(void)
+{
+    tft180_show_string(0,0,"PRESS:pid");
+    tft180_show_string(0,10,"LEFT:track");
+    tft180_show_string(0,20,"RIGHT:image");
+    tft180_show_string(0,30,"DOWN:start");
+}
+/***********************************************
 * @brief : 按键调参整体控制
 * @param : void
 * @return: void
@@ -598,11 +615,12 @@ void KEYCtrl(void)
 {
     while(1)
     {
+        ShowFunction();
         uint8 exit_flag_2 = 0;//退出按键模式的标志位
         switch(KeyGet())
         {
-            case KEY_DOWN:KeyPID();break;//KEY2表示调PID参数
-            case KEY_LEFT:KeyTrack();break;//KEY3表示调循迹参数
+            case KEY_DOWN:KeyPID();tft180_clear();break;//KEY2表示调PID参数
+            case KEY_LEFT:KeyTrack();tft180_clear();break;//KEY3表示调循迹参数
             case KEY_RIGHT:KeyImage();exit_flag_2 = 1;break;//KEY4表示选择显示什么图像
             case KEY_ENTER://KEY5表示开启中断，车落地跑
             {

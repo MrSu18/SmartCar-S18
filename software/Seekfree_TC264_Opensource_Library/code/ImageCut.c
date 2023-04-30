@@ -15,9 +15,10 @@ typedef enum CutType
 {
     kCutIn = 0,
     kCutOut,
+    kCutEnd,
 }CutType;
 
-CutType cut_type = kCutIn;
+CutType cut_type = kCutOut;
 
 /***********************************************
 * @brief : ¶ÏÂ·×´Ì¬»ú
@@ -37,8 +38,8 @@ uint8 CutIdentify(void)
             uint8 corner_find = CutFindCorner(&corner_id_l, &corner_id_r);
             if(corner_find != 0)
             {
-                gpio_toggle_level(P20_9);
-                base_speed = 110;
+//                gpio_toggle_level(P20_9);
+                base_speed = 50;
                 if(corner_find == 2)
                 {
                     per_r_line_count = (int)corner_id_r;
@@ -71,7 +72,7 @@ uint8 CutIdentify(void)
                     }
                 }
 
-                if(corner_id_l < 15 && corner_id_r < 15)
+                if(corner_id_l < 50 && corner_id_r < 50)
                 {
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
@@ -85,14 +86,25 @@ uint8 CutIdentify(void)
         }
         case kCutOut:
         {
-            gpio_toggle_level(P21_5);
-            if (per_l_line_count > 50 && per_r_line_count > 50)
+//            gpio_set_level(P21_5,GPIO_LOW);
+            int16 corner_id_l = 0,corner_id_r = 0;
+            if(CutFindCorner(&corner_id_l, &corner_id_r) != 0)
             {
-                gpio_toggle_level(P21_4);
+                if(corner_id_l < 10 && corner_id_r < 10)
+                    cut_type = kCutEnd;
+            }
+            break;
+        }
+        case kCutEnd:
+        {
+//            gpio_set_level(P20_9,GPIO_LOW);
+            if (l_line_count > 80 && r_line_count > 80)
+            {
+//                gpio_set_level(P21_4,GPIO_LOW);
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
-                cut_type = kCutIn;
-                base_speed = 150;
+                cut_type = kCutOut;
+                base_speed = 70;
                 return 1;
             }
             break;

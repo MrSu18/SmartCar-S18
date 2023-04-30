@@ -11,6 +11,7 @@
 #include "motor.h"
 #include "pid.h"
 #include "zf_driver_pit.h"
+#include "icm20602.h"
 
 typedef enum GarageType_l
 {
@@ -39,7 +40,9 @@ uint8 GarageIdentify_L(void)
         int corner_id = 0;
         if (GarageFindCorner(&corner_id) == 1)//判断角点还有电磁偏差是否为0左右
         {
+            StartIntegralAngle_X(70);
             gpio_set_level(P21_5,0);
+            base_speed = 50;
             track_type = kTrackLeft;
             if (corner_id < 18)
                 garage_type_l = kGarage_End_l;
@@ -48,18 +51,19 @@ uint8 GarageIdentify_L(void)
     }
     case kGarage_End_l:
     {
-
         gpio_set_level(P20_9,0);
-
-        image_bias = 25;
-        turnpid_image.last_err = 0;
-        system_delay_ms(450);
+        image_bias = 10;
+        while(!icm_angle_x_flag);
+//        turnpid_image.last_err = 0;
+//        system_delay_ms(400);
 
         while(1)
         {
             base_speed = 0;
+            target_left = 0;
+            target_right = 0;
             image_bias = 0;
-            system_delay_ms(250);
+            system_delay_ms(100);
             pit_disable(CCU60_CH0);
             pit_disable(CCU60_CH1);
             MotorSetPWM(0,0);
