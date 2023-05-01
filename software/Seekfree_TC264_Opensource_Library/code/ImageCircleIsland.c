@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "motor.h"
 #include "icm20602.h"
+#include "Control.h"
 
 //#define PI 3.1415926
 
@@ -37,7 +38,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
-                base_speed=70;//环内加速
+                base_speed=original_speed;//环内加速
                 status=3;
             }
             break;
@@ -59,8 +60,9 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 5://检测环岛是否结束
             if (CircleIslandLEnd()==1)
             {
+                speed_type=kImageSpeed;
 //                gpio_set_level(P21_4, GPIO_HIGH);
-                base_speed=70;//加速出环
+                base_speed=original_speed;//加速出环
                 status=0;
                 return 1;
             }
@@ -90,6 +92,8 @@ uint8 CircleIslandLDetection()//检测左环岛
             //第三个条件限制的是哪个角点有多远0.3m
             if(70./180.*PI<-l_angle_1[i] && -l_angle_1[i]<140./180.*PI && i<0.3/SAMPLE_DIST)
             {
+                speed_type=kNormalSpeed;
+                base_speed=original_speed;//注意恢复到原始的速度
                 track_type=kTrackRight;
                 status=1;//第一次检测到
                 break;

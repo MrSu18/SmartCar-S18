@@ -70,6 +70,7 @@ void core1_main(void)
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
     KEYCtrl();//按键控制
+    base_speed=original_speed;
     OutGarage();//出库
     while (TRUE)
     {

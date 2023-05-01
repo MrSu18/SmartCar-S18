@@ -11,6 +11,10 @@
 #include "zf_common_headfile.h"
 #include "icm20602.h"
 
+//当前的速度决策方式
+enum SpeedType speed_type=kNormalSpeed;
+//设定的速度
+uint16 original_speed=70;
 
 /***********************************************
 * @brief : 速度决策
@@ -50,9 +54,10 @@ uint16 SpeedDecision(uint16 original_speed,float a)
             break;
         }
     }
-    s=i;//得到位移
+    s=i-(int)(aim_distance/SAMPLE_DIST);//得到位移
     vt= (uint16)sqrt(original_speed*original_speed+2*a*s);
-//    if(vt>220) vt=220;//限幅
+//    if(vt>100) vt=100;//限幅
+//    else if(vt<original_speed) vt=original_speed;
     return vt;
 }
 
@@ -67,5 +72,6 @@ void OutGarage(void)
 {
     image_bias=3;    //向左打死
     StartIntegralAngle_X(70);
-    while(!icm_angle_x_flag);   //左转45°进入正常寻迹
+    while(!icm_angle_x_flag);   //左转70°进入正常寻迹
+//    speed_type=kImageSpeed;//出库之后启动速度决策
 }

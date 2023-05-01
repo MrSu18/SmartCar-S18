@@ -10,6 +10,7 @@
 #include "ImageTrack.h"
 #include "ImageBasic.h"
 #include "ImageProcess.h"
+#include "Control.h"
 
 typedef enum CutType
 {
@@ -104,7 +105,7 @@ uint8 CutIdentify(void)
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
                 cut_type = kCutOut;
-                base_speed = 70;
+                base_speed = original_speed;
                 return 1;
             }
             break;

@@ -8,6 +8,7 @@
 #include "ImageTrack.h"
 #include "motor.h"
 #include "ImageSpecial.h"
+#include "Control.h"
 
 typedef enum SlopeType
 {
@@ -42,6 +43,7 @@ uint8 SlopeIdentify(void)
             {
 //                if(fabs(fabs(gradient_l) - fabs(gradient_r)) < 0.3)
 //                {
+                    speed_type=kNormalSpeed;
                     base_speed = 50;
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
@@ -54,11 +56,11 @@ uint8 SlopeIdentify(void)
         case kSlopeEnd:
         {
 //            gpio_toggle_level(P21_5);
-            if(dis >= 1500)
+            if(dis >= 1200)
             {
 //                gpio_toggle_level(P21_4);
                 encoder_dis_flag = 0;
-                base_speed = 70;
+                base_speed = original_speed;
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
                 slope_type = kSlopeBegin;

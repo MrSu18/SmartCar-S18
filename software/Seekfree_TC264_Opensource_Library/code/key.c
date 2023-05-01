@@ -9,6 +9,7 @@
 #include "pid.h"
 #include "ImageTrack.h"
 #include "motor.h"
+#include "Control.h"
 
 /***********************************************
 * @brief : 按键初始化
@@ -442,19 +443,19 @@ void KeyTrack(void)
                         switch(KeyGet())
                         {
                             tft180_show_string(0, 70, "base_speed:");
-                            tft180_show_int(100, 80, base_speed, 3);
+                            tft180_show_int(100, 80, original_speed, 3);
                             case KEY_LEFT:
                             {
-                                base_speed+=5;
+                                original_speed+=5;
                                 tft180_show_string(0, 80, "base_speed:");
-                                tft180_show_int(100, 80, base_speed, 3);
+                                tft180_show_int(100, 80, original_speed, 3);
                                 break;
                             }
                             case KEY_RIGHT:
                             {
-                                base_speed-=5;
+                                original_speed-=5;
                                 tft180_show_string(0, 80, "base_speed:");
-                                tft180_show_int(100, 80, base_speed, 3);
+                                tft180_show_int(100, 80, original_speed, 3);
                                 break;
                             }
                             case KEY_ENTER:exit_flag_1=1;tft180_clear();break;
@@ -588,7 +589,7 @@ void ShowImageParameter(void)
     tft180_show_string(0, 0, "aim_distance:");
     tft180_show_float(100, 0, aim_distance, 1, 2);
     tft180_show_string(0, 10, "base_speed:");
-    tft180_show_int(100, 10, base_speed, 3);
+    tft180_show_int(100, 10, original_speed, 3);
 }
 /***********************************************
 * @brief : 功能选择显示

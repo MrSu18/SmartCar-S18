@@ -6,6 +6,7 @@
  */
 #include "motor.h"
 #include "zf_common_headfile.h"
+#include "Control.h"
 
 int speed_left = 0,speed_right = 0;                                     //左右轮当前编码器的值
 int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值

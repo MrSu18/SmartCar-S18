@@ -101,7 +101,7 @@ void ImageProcess(void)
     {
         track_type=kTrackRight;
     }
-
+    //元素状态机
     switch(status)
     {
         case 1:
@@ -120,6 +120,7 @@ void ImageProcess(void)
             if(CrossIdentify() == 1)
             {
                 status = 3;
+                speed_type=kNormalSpeed;
                 last_track_mode = track_mode;
                 track_mode = kTrackADC;
                 base_speed = 60;
@@ -146,6 +147,7 @@ void ImageProcess(void)
             {
                 gpio_set_level(P21_5,GPIO_LOW);
                 status = 5;
+                speed_type=kImageSpeed;
 //                pit_disable(CCU60_CH0);//关闭电机中断
 //                pit_disable(CCU60_CH1);
 //                MotorSetPWM(0,0);
@@ -174,8 +176,6 @@ void ImageProcess(void)
         }
         default:break;
     }
-//    uint8 temp=CircleIslandLEnd();
-//    tft180_show_uint(0, 0, temp, 2);
     //预瞄点求偏差
     if(track_type==kTrackRight)
     {
@@ -185,7 +185,12 @@ void ImageProcess(void)
     {
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
-//    base_speed=SpeedDecision(150,30);
+    //速度决策
+    if(speed_type==kImageSpeed)
+    {
+        base_speed=SpeedDecision(70,5);//弯道是68直道是80
+    }
+//    tft180_show_uint(0, 0, base_speed, 3);
 }
 
 /***********************************************
