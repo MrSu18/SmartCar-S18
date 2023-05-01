@@ -84,16 +84,7 @@ void core1_main(void)
             OutProtect();
 //            sobel(mt9v03x_image,binary_image);
             //显示灰度图
-            if(gray_image_flag == 1)
-            {
-                tft180_show_gray_image(0, 0, gray_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
-                tft180_show_float(98, 0, image_bias, 2, 3);
-            }
-            else if(per_image_flag==1)
-            {
-                LCDShowPerImage();
-                tft180_show_float(98, 0, image_bias, 2, 3);
-            }
+            ShowImage();
 
             gpio_toggle_level(P20_8);
 
@@ -109,24 +100,7 @@ void core1_main(void)
                 tft180_show_int(98, 60, r_line_count, 3);
             }
             //显示透视后的边线
-            if(per_edgeline_flag == 1)
-            {
-                LCDShowFloatLine(f_left_line1,per_l_line_count,RGB565_BLUE);
-                LCDShowFloatLine(f_right_line1,per_r_line_count,RGB565_RED);
-                tft180_show_int(98, 30, per_l_line_count, 3);
-                tft180_show_int(98, 60, per_r_line_count, 3);
-            }
-            //显示中线
-            if(c_line_flag == 1)
-            {
-                int num=Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);
-                for(int i=0;i<num;i++)
-                {
-                    float y=center_line[i].Y,x=center_line[i].X*0.8510638297872340425531914893617;
-                    if(x<0 || x>159 || y<0 || y>120) continue;
-                    tft180_draw_point((uint16)x, (uint16)y, RGB565_GREEN);
-                }
-            }
+            ShowLine();
 
             //赛道基础信息变量重置
             TrackBasicClear();

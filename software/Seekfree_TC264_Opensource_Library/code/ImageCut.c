@@ -81,8 +81,6 @@ uint8 CutIdentify(void)
                     aim_distance = 0.45;
                 }
             }
-//            else
-//                aim_distance = 0.45;
             break;
         }
         case kCutOut:

@@ -41,15 +41,12 @@ uint8 SlopeIdentify(void)
 //            tft180_show_float(0, 10, gradient_r, 3, 3);
             if((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)
             {
-//                if(fabs(fabs(gradient_l) - fabs(gradient_r)) < 0.3)
-//                {
-                    speed_type=kNormalSpeed;
-                    base_speed = 50;
-                    last_track_mode = track_mode;
-                    track_mode = kTrackADC;
-                    slope_type = kSlopeEnd;
-                    encoder_dis_flag = 1;
-//                }
+                speed_type=kNormalSpeed;
+                base_speed = 50;
+                last_track_mode = track_mode;
+                track_mode = kTrackADC;
+                slope_type = kSlopeEnd;
+                encoder_dis_flag = 1;
             }
             break;
         }

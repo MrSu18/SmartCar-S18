@@ -139,22 +139,15 @@ void MotorCtrl(void)
         pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
         pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
 
-//        pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left_1);
-//        pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right_1);
-
-//        MotorSetPWM(pwm_left,pwm_right);
     }
     else if(track_mode == kTrackADC)                                                //当前为电磁循迹
     {
-//        pwm_left_1 = PIDSpeed(speed_left,target_left_1,&speedpid_left_1);           //获取蓝布上左电机PWM
-//        pwm_right_1 = PIDSpeed(speed_right,target_right_1,&speedpid_right_1);       //获取蓝布上右电机PWM
 
-        pwm_left = PIDSpeed(speed_left,target_left_1,&speedpid_left);                 //获取赛道上左电机PWM
-        pwm_right = PIDSpeed(speed_right,target_right_1,&speedpid_right);             //获取赛道上右电机PWM
+        pwm_left = PIDSpeed(speed_left,target_left_1,&speedpid_left);               //获取赛道上左电机PWM
+        pwm_right = PIDSpeed(speed_right,target_right_1,&speedpid_right);           //获取赛道上右电机PWM
 
-//        MotorSetPWM(pwm_left_1,pwm_right_1);
     }
-    MotorSetPWM(pwm_left,pwm_right);
+    MotorSetPWM(pwm_left,pwm_right);                                                //赋给电机一定占空比的PWM
 
     c0h0_isr_flag=1;
 }

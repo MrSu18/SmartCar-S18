@@ -7,6 +7,12 @@
 #include "ImageConversion.h"
 #include "ImageTrack.h"
 #include "zf_device_tft180.h"
+#include "key.h"
+
+inline int Limit(int x, int low, int up)//给x设置上下限幅
+{
+    return x > up ? up : x < low ? low : x;
+}
 
 /***********************************************
 * @brief : LCD显示透视后的图像
@@ -126,3 +132,52 @@ void LCDDrowPoint(uint8 row,uint8 column,const uint16 color)
 //    LCDDrowColumn(column,color);
 }
 
+/***********************************************
+* @brief : 判断是否显示图像
+* @param : void
+* @return: void
+* @date  : 2023.5.2
+* @author: 刘骏帆
+************************************************/
+void ShowImage(void)
+{
+    if(gray_image_flag == 1)
+    {
+        tft180_show_gray_image(0, 0, gray_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
+        tft180_show_float(98, 0, image_bias, 2, 3);
+    }
+    else if(per_image_flag==1)
+    {
+        LCDShowPerImage();
+        tft180_show_float(98, 0, image_bias, 2, 3);
+    }
+}
+
+/***********************************************
+* @brief : 判断是否显示边线或中线
+* @param : void
+* @return: void
+* @date  : 2023.5.2
+* @author: 刘骏帆
+************************************************/
+void ShowLine(void)
+{
+    if(per_edgeline_flag == 1)
+    {
+        LCDShowFloatLine(f_left_line1,per_l_line_count,RGB565_BLUE);
+        LCDShowFloatLine(f_right_line1,per_r_line_count,RGB565_RED);
+        tft180_show_int(98, 30, per_l_line_count, 3);
+        tft180_show_int(98, 60, per_r_line_count, 3);
+    }
+    //显示中线
+    if(c_line_flag == 1)
+    {
+        int num=Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count);
+        for(int i=0;i<num;i++)
+        {
+            float y=center_line[i].Y,x=center_line[i].X*0.8510638297872340425531914893617;
+            if(x<0 || x>159 || y<0 || y>120) continue;
+            tft180_draw_point((uint16)x, (uint16)y, RGB565_GREEN);
+        }
+    }
+}
