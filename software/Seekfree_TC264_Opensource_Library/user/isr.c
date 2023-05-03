@@ -97,26 +97,41 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
       if(angle_x>icm_target_angle_x||angle_x<-icm_target_angle_x)  //判断积分角度是否大于目标角度
      //if(my_angle_x>icm_target_angle_x||my_angle_x<-icm_target_angle_x)  //如果上句出bug 使用这句
       {
-                 icm_angle_x_flag=1;                     //积分到达目标flag=1
-                 pit_disable(CCU61_CH0); //关闭中断
+         icm_angle_x_flag=1;                     //积分到达目标flag=1
+         pit_disable(CCU61_CH0); //关闭中断
 
-              }
+      }
     pit_clear_flag(CCU61_CH0);
 
-
-
-
 }
-
+int16 last_real_gyro = 0;
 IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
 {
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU61_CH1);
+    float target_gyro = 5*turnpid_image.out;
 
+    real_gyro = GetICM20602Gyro_X();
+    real_gyro = 0.3 * real_gyro + 0.7*last_real_gyro;
+    last_real_gyro = real_gyro;
+    gyropid.err = target_gyro - real_gyro ;
 
+    gyropid.out = gyropid.P * gyropid.err + gyropid.D * (gyropid.err - gyropid.last_err);
+    gyropid.last_err = gyropid.err;
 
-
-
+    target_left = base_speed - gyropid.out;
+    target_right = base_speed + gyropid.out;
+    gyro_flag = 1;
+//    if(gyropid.out>0)//左转
+//    {
+//        target_left = base_speed - gyropid.out;
+//        target_right = base_speed;
+//    }
+//    else
+//    {
+//        target_left = base_speed;
+//        target_right = base_speed + gyropid.out;
+//    }
 }
 // **************************** PIT中断函数 ****************************
 

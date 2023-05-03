@@ -87,6 +87,7 @@ int core0_main(void)
     gpio_init(P21_3,GPO,GPIO_HIGH,GPO_OPEN_DTAIN);
     //初始化电机中断
     pit_ms_init(CCU60_CH0,2);pit_disable(CCU60_CH0);
+    pit_ms_init(CCU61_CH1,4);pit_disable(CCU61_CH1);
     pit_ms_init(CCU60_CH1,8);pit_disable(CCU60_CH1);
     //陀螺仪中断2ms
     pit_ms_init(CCU61_CH0,2);pit_disable(CCU61_CH0);
@@ -99,6 +100,7 @@ int core0_main(void)
     PIDInit(&speedpid_right_1,178.62,1.04,0);           //297.87  2.92
     PIDInit(&turnpid_image,0,0,0);                      //25   5
     PIDInit(&turnpid_adc,0,0,0);
+    PIDInit(&gyropid,-0.006,0,0);
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
@@ -107,12 +109,18 @@ int core0_main(void)
     while (TRUE)
     {
         ADCGetValue(adc_value);
+
+//        if(gyro_flag == 1)
+//        {
+//            printf("%d\n",gyropid.out);
+//            gyro_flag = 0;
+//        }
         // 此处编写需要循环执行的代码
-       if(c0h0_isr_flag==1)
-       {
-           printf("%d,%d\r\n",speed_left,speed_right);
-           c0h0_isr_flag=0;
-       }
+//       if(c0h0_isr_flag==1)
+//       {
+//           printf("%d,%d\r\n",speed_left,speed_right);
+//           c0h0_isr_flag=0;
+//       }
 //        if(mt9v03x_finish_flag)
 //        {
 //           gpio_toggle_level(P20_9);

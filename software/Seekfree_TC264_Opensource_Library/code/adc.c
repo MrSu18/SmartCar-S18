@@ -6,6 +6,7 @@
  */
 #include "adc.h"
 #include "zf_device_tft180.h"
+#include "pid.h"
 
 int16 adc_value[5] = {0};                           //存取获取到的ADC的值
 float adc_bias = 0;
@@ -51,7 +52,7 @@ void ADCGetValue(int16* value)
         *value = 100*(*value-adc_min[i])/(adc_max[i]-adc_min[i]);       //归一化处理
         for(int j=0;j<6;j++)
             *value = KalmanFilter(&kalman_adc,*value);                  //卡尔曼滤波
-//        tft180_show_int(98, 15*i, *value, 4);
+//        tft180_ nn          show_int(98, 15*i, *value, 4);
         value++;
     }
 }
@@ -63,22 +64,27 @@ void ADCGetValue(int16* value)
 * @date  : 2023.1.26
 * @author: L
 ************************************************/
-void ChaBiHe(float* err,int8 flag)
+float ChaBiHe(int8 flag)
 {
+    float err = 0;
     switch(flag)
     {
         case TRACK:
         {
-            *err=(float)30*(LM-RM)/(LM+RM);                 //循迹用的电磁偏差的差比和计算
+            if((L + R) < 10 && fabs(LM - RM) < 10)
+                err = turnpid_adc.err;
+            else
+                err=(float)30*(LM-RM)/(LM+RM);                 //循迹用的电磁偏差的差比和计算
             break;
         }
         case JUDGE:
         {
-            *err = L-R;                                     //判断元素用的偏差
+            err = L-R;                                     //判断元素用的偏差
             break;
         }
         default:break;
     }
+    return err;
 }
 /***********************************************
 * @brief : 赛道扫描程序，得到每个电感最大值和最小值并通过串口打印，用于归一化

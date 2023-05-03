@@ -13,6 +13,9 @@ PID speedpid_left_1;                        //蓝布左轮速度环PID
 PID speedpid_right_1;                       //蓝布右轮速度环PID
 PID turnpid_image;                          //图像转向环PID
 PID turnpid_adc;                            //电磁转向环PID
+PID gyropid;
+int16 real_gyro = 0;
+uint8 gyro_flag = 0;
 
 /***********************************************
 * @brief : 初始化PID参数
@@ -94,7 +97,7 @@ void PIDTurnADC(int* target_left,int* target_right,PID* pid)
 {
         //获取此时电磁偏差
         ADCGetValue(adc_value);
-        ChaBiHe(&pid->err,TRACK);
+//        ChaBiHe(&pid->err,TRACK);
 
         pid->out = (int)(pid->P*pid->err+pid->D*(pid->err-pid->last_err));
         pid->last_err = pid->err;                                               //保存上一次的值

@@ -17,12 +17,14 @@
 #define  KEY3  gpio_get_level(P33_12)
 #define  KEY4  gpio_get_level(P33_13)
 #define  KEY5  gpio_get_level(P32_4)
+#define  KEY6  gpio_get_level(P33_9)
 
 #define  KEY_UP         1
 #define  KEY_DOWN       2
 #define  KEY_LEFT       3
 #define  KEY_RIGHT      4
 #define  KEY_ENTER      5
+#define  KEY_OWN        6
 
 #define  PRESSDOWN      0
 #define  LOOSE          1

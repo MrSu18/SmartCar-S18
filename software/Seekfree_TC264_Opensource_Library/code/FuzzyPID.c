@@ -10,6 +10,7 @@
 #include "FuzzyPID.h"
 #include "adc.h"
 #include "zf_device_tft180.h"
+#include "icm20602.h"
 
 float qdetail_Kp = 0,qdetail_Kd = 0;
 int8 KPFuzzyRule[7][7] = { {PB,PB,PM,PM,PS,ZO,ZO},
@@ -159,19 +160,19 @@ void FuzzyPID(void)
 
     if (turnpid_image.out > 0)//×ó×ª
     {
-        target_left = base_speed - turnpid_image.out;
-        target_right = base_speed;
+        target_left = base_speed - (int)(0.9*turnpid_image.out);
+        target_right = base_speed + (int)(0.1*turnpid_image.out);
     }
     else
     {
-        target_left = base_speed;
-        target_right = base_speed + turnpid_image.out;
+        target_left = base_speed - (int)(0.1*turnpid_image.out);
+        target_right = base_speed + (int)(0.9*turnpid_image.out);
     }
 }
 
 void FuzzyPID_ADC(void)
 {
-    ChaBiHe(&turnpid_adc.err, TRACK);
+    turnpid_adc.err = ChaBiHe(TRACK);
     float EC = turnpid_adc.err - turnpid_adc.last_err;
 
     float qE = Quantization(E_MAX_A, E_MIN_A, turnpid_adc.err);

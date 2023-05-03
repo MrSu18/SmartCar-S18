@@ -14,7 +14,7 @@
 //当前的速度决策方式
 enum SpeedType speed_type=kNormalSpeed;
 //设定的速度
-uint16 original_speed=70;
+uint16 original_speed=65;
 
 /***********************************************
 * @brief : 速度决策

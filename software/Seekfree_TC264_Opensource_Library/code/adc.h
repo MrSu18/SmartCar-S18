@@ -33,7 +33,7 @@ extern float adc_bias;
 
 void ADCInit(void);                             //初始化ADC引脚
 void ADCGetValue(int16* value);                 //获取ADC转换一次的值
-void ChaBiHe(float* err,int8 flag);             //差比和差算法
+float ChaBiHe(int8 flag);                       //差比和差算法
 void ADCScan(void);                             //赛道扫描
 
 #endif /* CODE_ADC_H_ */

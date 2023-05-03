@@ -30,7 +30,10 @@ extern PID speedpid_left_1;
 extern PID speedpid_right_1;
 extern PID turnpid_image;
 extern PID turnpid_adc;
+extern PID gyropid;
 extern float image_bias;
+extern int16 real_gyro;
+extern uint8 gyro_flag;
 
 void PIDInit(PID* pid,float P,float I,float D);                                     //初始化PID参数
 int PIDSpeed(int encoder_data,int target_data,PID* pid);                            //速度环PID计算

@@ -616,7 +616,7 @@ void KEYCtrl(void)
 {
     while(1)
     {
-        ShowFunction();
+//        ShowFunction();
         uint8 exit_flag_2 = 0;//退出按键模式的标志位
         switch(KeyGet())
         {
@@ -631,6 +631,7 @@ void KEYCtrl(void)
                 encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
                 pit_enable(CCU60_CH0);
                 pit_enable(CCU60_CH1);
+//                pit_enable(CCU61_CH1);
 //                MotorSetPWM(2000, 2000);
                 break;
             }
