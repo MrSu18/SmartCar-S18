@@ -188,7 +188,7 @@ void ImageProcess(void)
     //速度决策
     if(speed_type==kImageSpeed)
     {
-        base_speed=SpeedDecision(70,5);//弯道是68直道是80
+        base_speed=SpeedDecision(original_speed,5);//弯道是68直道是80
     }
 //    tft180_show_uint(0, 0, base_speed, 3);
 }

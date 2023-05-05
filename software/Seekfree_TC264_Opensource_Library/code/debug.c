@@ -25,7 +25,7 @@ void LCDShowPerImage(void)
 {
     uint8 per_image[USE_IMAGE_H][USE_IMAGE_W];
     //ÄæÍ¸ÊÓ¾ØÕó
-    double change_un_Mat[3][3] ={{-2.823035,3.058385,-152.620928},{0.141489,1.441372,-256.109755},{0.002246,0.033146,-4.763373}};
+    double change_un_Mat[3][3] ={{-2.816573,2.695960,-119.293601},{0.045197,1.260412,-227.723753},{0.000717,0.029253,-4.243437}};
     for (int i = 0; i < PER_IMAGE_W; i++)
     {
         for (int j = 0; j < PER_IMAGE_H; j++)

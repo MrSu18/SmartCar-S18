@@ -22,11 +22,12 @@
   <component name="ChangeListManager">
     <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="同步我的opencv工程">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/adc.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/adc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageTrack.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageTrack.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/debug.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -294,6 +295,8 @@
       <workItem from="1682318760799" duration="3000" />
       <workItem from="1682321280447" duration="595000" />
       <workItem from="1682327464444" duration="1000" />
+      <workItem from="1682954080065" duration="6000" />
+      <workItem from="1683281399267" duration="5000" />
     </task>
     <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
       <created>1673022973169</created>

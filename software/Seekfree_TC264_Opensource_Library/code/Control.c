@@ -10,11 +10,12 @@
 #include "math.h"
 #include "zf_common_headfile.h"
 #include "icm20602.h"
+#include "motor.h"
 
 //当前的速度决策方式
 enum SpeedType speed_type=kNormalSpeed;
 //设定的速度
-uint16 original_speed=65;
+uint16 original_speed=70;
 
 /***********************************************
 * @brief : 速度决策
@@ -70,7 +71,10 @@ uint16 SpeedDecision(uint16 original_speed,float a)
 ************************************************/
 void OutGarage(void)
 {
-    image_bias=3;    //向左打死
+    encoder_dis_flag=1;
+    image_bias=0.3;
+    while(dis<200);//给时间车加速
+    image_bias=5;    //向左打死
     StartIntegralAngle_X(70);
     while(!icm_angle_x_flag);   //左转70°进入正常寻迹
 //    speed_type=kImageSpeed;//出库之后启动速度决策
