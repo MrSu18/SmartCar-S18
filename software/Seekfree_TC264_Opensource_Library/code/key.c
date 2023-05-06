@@ -437,8 +437,8 @@ void KeyTrack(void)
                     while(1)
                     {
                         uint8 exit_flag_1 = 0;//退出调节基础速度的标志
-                        tft180_show_string(0, 20, "LEFT:base_speed+5");
-                        tft180_show_string(0, 30, "RIGHT:base_speed-5");
+                        tft180_show_string(0, 20, "LEFT:base_speed+1");
+                        tft180_show_string(0, 30, "RIGHT:base_speed-1");
                         tft180_show_string(0, 40, "DOWN:exit");
                         switch(KeyGet())
                         {
@@ -446,14 +446,14 @@ void KeyTrack(void)
                             tft180_show_int(100, 80, original_speed, 3);
                             case KEY_LEFT:
                             {
-                                original_speed+=5;
+                                original_speed+=1;
                                 tft180_show_string(0, 80, "base_speed:");
                                 tft180_show_int(100, 80, original_speed, 3);
                                 break;
                             }
                             case KEY_RIGHT:
                             {
-                                original_speed-=5;
+                                original_speed-=1;
                                 tft180_show_string(0, 80, "base_speed:");
                                 tft180_show_int(100, 80, original_speed, 3);
                                 break;

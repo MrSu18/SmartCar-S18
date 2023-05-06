@@ -9,6 +9,11 @@
 #include "zf_device_tft180.h"
 #include "key.h"
 
+#define PER_IMAGE_W     188             //逆透视图像的宽度
+#define PER_IMAGE_H     120             //逆透视图像的高度
+#define PER_IMG     mt9v03x_image    //用于透视变换的图像
+#define IMAGE_BAN   127             //逆透视禁止区域的灰度值
+
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
     return x > up ? up : x < low ? low : x;

@@ -39,16 +39,27 @@ uint8 CrossIdentify(void)
         int16 corner_id_l = 0, corner_id_r = 0;         //角点在边线的第几个点
         if (CrossFindCorner(&corner_id_l, &corner_id_r) != 0)
         {
-//            gpio_toggle_level(P20_9);
+            gpio_toggle_level(P20_9);
             if((corner_id_l > aim_distance / SAMPLE_DIST) || (corner_id_r > aim_distance / SAMPLE_DIST)) break;
             //如果只有一边有角点，则不用求平均值，如果有两个角点，则求平均值
             else if ((corner_id_l == 0) && (corner_id_r != 0))
+            {
+                track_type = kTrackRight;
                 aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
+            }
             else if ((corner_id_l != 0) && (corner_id_r == 0))
+            {
+                track_type = kTrackLeft;
                 aim_distance = (float)(corner_id_l)* SAMPLE_DIST;
+            }
             else
-                aim_distance = ((float)(corner_id_l + corner_id_r)) * SAMPLE_DIST / 2;
+            {
+                track_type = kTrackRight;
+                aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
+            }
 
+//            last_track_mode = track_mode;
+//            track_mode = kTrackADC;
             //角点很近，切换下一个状态
             if (corner_id_l < 6 && corner_id_r < 6)
             {
@@ -63,11 +74,15 @@ uint8 CrossIdentify(void)
     //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，如果没有找到角点，则表示已经要出了十字，切换状态
     case kCrossIn:
     {
-//        gpio_toggle_level(P21_5);
+        gpio_toggle_level(P21_5);
         uint8 change_lr_flag = 0;               //切换寻找左右边线角点的标志位，默认右线找角点，没找到则从左线找
         uint8 corner_find = 0;                  //是否找到角点的标志位
 
-        EdgeDetection_Cross();
+        LeftLineDetectionAgain();
+        RightLineDetectionAgain();
+        per_r_line_count=PER_EDGELINE_LENGTH;
+        per_l_line_count=PER_EDGELINE_LENGTH;
+//        EdgeDetection_Cross();
 
         EdgeLinePerspective(left_line,l_line_count,per_left_line);
         EdgeLinePerspective(right_line,r_line_count,per_right_line);
@@ -146,7 +161,7 @@ uint8 CrossIdentify(void)
     //判断是否已经出了十字
     case kCrossOut:
     {
-//        gpio_toggle_level(P21_4);
+        gpio_toggle_level(P21_4);
         //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
         if (l_line_count > 10 && r_line_count > 10)
         {

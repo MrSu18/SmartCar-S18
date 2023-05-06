@@ -26,7 +26,7 @@ CutType cut_type = kCutOut;
 * @param : void
 * @return: 0:不是十断路
 *          1:识别到断路
-* @date  : 2023.3.23
+* @date  : 2023.5.5
 * @author: L
 ************************************************/
 uint8 CutIdentify(void)
@@ -86,18 +86,29 @@ uint8 CutIdentify(void)
         case kCutOut:
         {
 //            gpio_set_level(P21_5,GPIO_LOW);
-            int16 corner_id_l = 0,corner_id_r = 0;
-            if(CutFindCorner(&corner_id_l, &corner_id_r) != 0)
+//            int16 corner_id_l = 0,corner_id_r = 0;
+//            if(CutFindCorner(&corner_id_l, &corner_id_r) != 0)
+//            {
+//                if(corner_id_l < 10 || corner_id_r < 10)
+//                    cut_type = kCutEnd;
+//            }
+            int over_count = 0;
+            for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
             {
-                if(corner_id_l < 10 && corner_id_r < 10)
-                    cut_type = kCutEnd;
+                if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
+                        over_count++;
+            }
+            if(over_count>=MT9V03X_W-2)                             //如果全部超过阈值则停止
+            {
+                cut_type = kCutEnd;
             }
             break;
         }
         case kCutEnd:
         {
+//            gpio_toggle_level(P21_3);
 //            gpio_set_level(P20_9,GPIO_LOW);
-            if (l_line_count > 80 && r_line_count > 80)
+            if (l_line_count>50)
             {
 //                gpio_set_level(P21_4,GPIO_LOW);
                 last_track_mode = track_mode;

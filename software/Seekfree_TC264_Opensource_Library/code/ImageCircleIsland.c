@@ -30,6 +30,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 1: //路过环岛第一个入口
             if(CircleIslandLInDetection()==1)
             {
+                gpio_toggle_level(P21_3);
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
 //                gpio_set_level(P21_4, GPIO_LOW);
                 status=2;
@@ -45,7 +46,7 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
         case 3: //检测出环
             if(CircleIslandLOutDetection()==1)
             {
-                base_speed=70;//降速出环
+//                base_speed=70;//降速出环
                 track_type=kTrackRight;
                 status=4;
             }
