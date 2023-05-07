@@ -12,6 +12,7 @@
 #include "pid.h"
 #include "zf_driver_pit.h"
 #include "icm20602.h"
+#include "Control.h"
 
 typedef enum GarageType_l
 {
@@ -42,10 +43,14 @@ uint8 GarageIdentify_L(void)
         {
             StartIntegralAngle_X(70);
             gpio_toggle_level(P21_5);
+            speed_type=kNormalSpeed;
             base_speed = 50;
-            track_type = kTrackLeft;
+            track_type = kTrackRight;
             if (corner_id < 18)
+            {
+                gpio_toggle_level(P21_3);
                 garage_type_l = kGarage_End_l;
+            }
         }
         break;
     }

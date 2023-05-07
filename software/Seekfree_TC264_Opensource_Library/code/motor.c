@@ -152,3 +152,14 @@ void MotorCtrl(void)
     c0h0_isr_flag=1;
 }
 
+void StartEncoderInteger(int target_dis)
+{
+    encoder_dis_flag = 1;
+    if(dis > target_dis)
+    {
+        encoder_dis_flag = 0;
+
+    }
+
+}
+

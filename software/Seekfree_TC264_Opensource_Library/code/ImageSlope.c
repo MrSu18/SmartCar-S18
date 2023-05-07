@@ -65,6 +65,21 @@ uint8 SlopeIdentify(void)
                     }
                 }
             }
+            else if((USE_IMAGE_W/2-10<right_line[0].X && right_line[0].X<USE_IMAGE_W/2+10))
+            {
+                if(r_line_count>10)
+                {
+                    if(abs(left_line[0].X-left_line[l_line_count-1].X)<10)
+                    {
+                        speed_type=kNormalSpeed;
+                        base_speed = 50;
+                        last_track_mode = track_mode;
+                        track_mode = kTrackADC;
+                        slope_type = kSlopeEnd;
+                        encoder_dis_flag = 1;
+                    }
+                }
+            }
             break;
         }
         case kSlopeEnd:

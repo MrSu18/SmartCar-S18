@@ -31,7 +31,7 @@ uint8 process_status_cnt=0;//元素状态数组的计数器
 ************************************************/
 void ImageProcess(void)
 {
-    static uint8 status=5;
+    static uint8 status=1;
     //扫线
     EdgeDetection();
     //边线进行透视
@@ -138,6 +138,8 @@ void ImageProcess(void)
             if(SlopeIdentify() == 1)
             {
                 gpio_toggle_level(P21_3);
+//                speed_type=kNormalSpeed;
+//                base_speed = 50;
                 status = 6;
             }
             break;
