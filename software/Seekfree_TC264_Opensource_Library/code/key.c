@@ -25,6 +25,7 @@ void KEYInit(void)
     gpio_init(P33_12,GPI,LOOSE,GPI_PULL_DOWN);
     gpio_init(P33_13,GPI,LOOSE,GPI_PULL_DOWN);
     gpio_init(P32_4,GPI,LOOSE,GPI_PULL_DOWN);
+    gpio_init(P33_9,GPI,LOOSE,GPI_PULL_DOWN);
 }
 /***********************************************
 * @brief : 按键扫描程序，扫描是否有按键被按下
@@ -43,8 +44,9 @@ uint8 KEYScan(void)
         else if(KEY3==PRESSDOWN) return KEY_LEFT;
         else if(KEY4==PRESSDOWN) return KEY_RIGHT;
         else if(KEY5==PRESSDOWN) return KEY_ENTER;
+        else if(KEY6==PRESSDOWN) return KEY_OWN;
     }
-    else if(KEY1==LOOSE||KEY2==LOOSE||KEY3==LOOSE||KEY4==LOOSE||KEY5==LOOSE)
+    else if(KEY1==LOOSE||KEY2==LOOSE||KEY3==LOOSE||KEY4==LOOSE||KEY5==LOOSE||KEY6==LOOSE)
         return 0;
     return 0;
 }
@@ -61,9 +63,9 @@ uint8 KeyGet(void)
     static uint8 key_down  = 0;
     static uint8 key_old   = 0;
 
-    key_value = KEYScan();
-    key_down = key_value & (key_value ^ key_old);
-    key_old = key_value;
+    key_value = KEYScan();//扫描按键
+    key_down = key_value & (key_value ^ key_old);//防止按一次按键响应多次
+    key_old = key_value;//更新上一次按键的值
 
     return key_down;
 }
@@ -616,7 +618,7 @@ void KEYCtrl(void)
 {
     while(1)
     {
-//        ShowFunction();
+        ShowFunction();
         uint8 exit_flag_2 = 0;//退出按键模式的标志位
         switch(KeyGet())
         {
@@ -632,7 +634,6 @@ void KEYCtrl(void)
                 pit_enable(CCU60_CH0);
                 pit_enable(CCU60_CH1);
 //                pit_enable(CCU61_CH1);
-//                MotorSetPWM(2000, 2000);
                 break;
             }
         }

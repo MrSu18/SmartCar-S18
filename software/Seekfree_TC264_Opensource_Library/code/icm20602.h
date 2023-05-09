@@ -40,6 +40,7 @@ extern EulerAngle eulerangle;
 extern float value[6];
 extern int counter2ms;
 extern int16 my_gyro_z;
+
 void GyroOffsetInit(void);
 void ICMGetValue(float* value);
 void ICMUpdate(float gx,float gy,float gz,float ax,float ay,float az);

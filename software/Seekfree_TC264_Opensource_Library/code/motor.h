@@ -35,15 +35,12 @@
 #define  MOTOR_LEFT_2   ATOM0_CH6_P02_6
 #define  MOTOR_RIGHT_1  ATOM0_CH5_P02_5
 #define  MOTOR_RIGHT_2  ATOM0_CH7_P02_7
-//左右环岛的判断标志位
-#define  CIRCLE_LEFT    1
-#define  CIRCLE_RIGHT   2
 
 typedef enum TrackMode
 {
     kTrackImage = 0,
     kTrackADC,
-}TrackMode;
+}TrackMode;//切换图像和电磁巡线的结构体
 
 extern int speed_left,speed_right;
 extern int target_left,target_right;

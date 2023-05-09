@@ -26,7 +26,7 @@ extern kalman_filter_1 kalman_gyro;
 
 void KalmanInit(kalman_filter_1* state,float Q,float R);                //³õÊ¼»¯¿¨¶ûÂüÂË²¨µÄÏµÊı
 int16 KalmanFilter(kalman_filter_1* state,float z);                     //¿¨¶ûÂüÂË²¨
-int SecondOrderFilter_L(int value);                                 //×ó±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
-int SecondOrderFilter_R(int value);                                 //ÓÒ±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
+int SecondOrderFilter_L(int value);                                     //×ó±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
+int SecondOrderFilter_R(int value);                                     //ÓÒ±àÂëÆ÷¶ş½×µÍÍ¨ÂË²¨
 
 #endif /* CODE_FILTER_H_ */

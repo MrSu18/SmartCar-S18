@@ -7,9 +7,9 @@
 #include "filter.h"
 
 kalman_filter_1 kalman_adc;                         //ADC卡尔曼滤波系数
-kalman_filter_1 kalman_gyro;
-int last_left = 0,last_2_left = 0;                //左编码器二阶低通滤波的过去值
-int last_right = 0,last_2_right = 0;              //右编码器二阶低通滤波的过去值
+kalman_filter_1 kalman_gyro;                        //陀螺仪角速度卡尔曼滤波系数
+int last_left = 0,last_2_left = 0;                  //左编码器二阶低通滤波的过去值
+int last_right = 0,last_2_right = 0;                //右编码器二阶低通滤波的过去值
 /***********************************************
 * @brief : 卡尔曼滤波初始化
 * @param : state:卡尔曼滤波数据的结构体指针

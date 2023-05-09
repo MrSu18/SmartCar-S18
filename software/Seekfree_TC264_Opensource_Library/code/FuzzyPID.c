@@ -12,7 +12,8 @@
 #include "zf_device_tft180.h"
 #include "icm20602.h"
 
-float qdetail_Kp = 0,qdetail_Kd = 0;
+float qdetail_Kp = 0,qdetail_Kd = 0;                    //kp和kd在论域中的值
+//KP的模糊规则表
 int8 KPFuzzyRule[7][7] = { {PB,PB,PM,PM,PS,ZO,ZO},
                             {PB,PB,PM,PS,PS,ZO,NS},
                             {PM,PM,PM,PS,ZO,NS,NS},
@@ -20,6 +21,7 @@ int8 KPFuzzyRule[7][7] = { {PB,PB,PM,PM,PS,ZO,ZO},
                             {PS,PS,ZO,NS,NS,NM,NM},
                             {PS,ZO,NS,NM,NM,NM,NB},
                             {ZO,ZO,NM,NM,NM,NB,NB} };
+//KD的模糊规则表
 int8 KDFuzzyRule[7][7] = { {PS,NS,NB,NB,NB,NM,PS},
                             {PS,NS,NB,NM,NM,NS,ZO},
                             {ZO,NS,NM,NM,NS,NS,ZO},
@@ -50,8 +52,10 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
         {
             if (E > range[i] && E < range[i + 1])
             {
+                //E的索引值
                 index_E[0] = i;
                 index_E[1] = i + 1;
+                //E的隶属度
                 memership_E[0] = (E - range[i]) / (range[i + 1] - range[i]);
                 memership_E[1] = (range[i + 1] - E) / (range[i + 1] - range[i]);
                 break;
@@ -79,8 +83,10 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
         {
             if (EC > range[i] && EC < range[i + 1])
             {
+                //EC的索引值
                 index_EC[0] = i;
                 index_EC[1] = i + 1;
+                //EC的隶属度
                 memership_EC[0] = (EC - range[i]) / (range[i + 1] - range[i]);
                 memership_EC[1] = (range[i + 1] - EC) / (range[i + 1] - range[i]);
                 break;
@@ -129,8 +135,8 @@ void SoluteFuzzy(float qE,float qEC)
         for (int j = 0; j < 2; j++)
         {
             if (index_EC[j] == -1) continue;
-            qdetail_Kp += memership[(i << i) + j] * KPFuzzyRule[index_E[i]][index_EC[j]];
-            qdetail_Kd += memership[(i << i) + j] * KDFuzzyRule[index_E[i]][index_EC[j]];
+            qdetail_Kp += memership[(i << i) + j] * KPFuzzyRule[index_E[i]][index_EC[j]];//计算Kp在论域中的值
+            qdetail_Kd += memership[(i << i) + j] * KDFuzzyRule[index_E[i]][index_EC[j]];//计算Kd在论域中的值
         }
     }
 }
@@ -143,7 +149,7 @@ void SoluteFuzzy(float qE,float qEC)
 ************************************************/
 void FuzzyPID(void)
 {
-    turnpid_image.err = image_bias;
+    turnpid_image.err = image_bias;//图像偏差
     float EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
 
     float qE = Quantization(E_MAX, E_MIN, turnpid_image.err);//偏差映射到论域
@@ -173,20 +179,26 @@ void FuzzyPID(void)
         target_left = base_speed - (int)turnpid_image.out;
         target_right = base_speed ;
     }
-    else
+    else//右转
     {
         target_left = base_speed;
         target_right = base_speed + (int)turnpid_image.out;
     }
 }
-
+/***********************************************
+* @brief : 对论域中的KP和KD进行反映射，得到实际的值，并代入PID计算公式得到偏差
+* @param : void
+* @return: void
+* @date  : 2023.4.17
+* @author: L
+************************************************/
 void FuzzyPID_ADC(void)
 {
-    turnpid_adc.err = ChaBiHe(TRACK);
-    float EC = turnpid_adc.err - turnpid_adc.last_err;
+    turnpid_adc.err = ChaBiHe(TRACK);//电磁偏差
+    float EC = turnpid_adc.err - turnpid_adc.last_err;//偏差变化量
 
-    float qE = Quantization(E_MAX_A, E_MIN_A, turnpid_adc.err);
-    float qEC = Quantization(EC_MAX_A, EC_MAX_A, EC);
+    float qE = Quantization(E_MAX_A, E_MIN_A, turnpid_adc.err);//偏差映射到论域
+    float qEC = Quantization(EC_MAX_A, EC_MAX_A, EC);//偏差的变化量映射到论域
 
     SoluteFuzzy(qE, qEC);//解模糊，得到KP和KD在论域中的值
     //KP和KD解模糊，得到实际的值
@@ -203,7 +215,7 @@ void FuzzyPID_ADC(void)
         target_left_1 = base_speed - turnpid_adc.out;
         target_right_1 = base_speed;
     }
-    else
+    else//右转
     {
         target_left_1 = base_speed;
         target_right_1 = base_speed + turnpid_adc.out;

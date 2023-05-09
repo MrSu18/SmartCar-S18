@@ -31,7 +31,6 @@ uint8 process_status_cnt=0;//元素状态数组的计数器
 ************************************************/
 void ImageProcess(void)
 {
-    static uint8 status=1;
     //扫线
     EdgeDetection();
     //边线进行透视
@@ -75,90 +74,6 @@ void ImageProcess(void)
         track_type=kTrackRight;
     }
 
-    //元素状态机
-//    if(CrossIdentify()==1)
-//    {
-//        pit_disable(CCU60_CH0);//关闭电机中断
-//        pit_disable(CCU60_CH1);
-//        MotorSetPWM(0,0);
-//    }
-#if 1
-    switch(status)
-    {
-        case 1:
-        {
-            if(CircleIslandLStatus()==1)
-            {
-               gpio_toggle_level(P21_3);
-//               pit_disable(CCU60_CH0);//关闭电机中断
-//               pit_disable(CCU60_CH1);
-//               MotorSetPWM(0,0);
-               status=2;
-            }
-            break;
-        }
-        case 2:
-        {
-            if(CrossIdentify() == 1)
-            {
-                gpio_toggle_level(P21_3);
-                status = 3;
-                speed_type=kNormalSpeed;
-                last_track_mode = track_mode;
-                track_mode = kTrackADC;
-                base_speed = 60;
-            }
-            break;
-        }
-        case 3:
-        {
-            if(CutIdentify() == 1)
-            {
-                gpio_toggle_level(P21_3);
-                status = 4;
-            }
-            break;
-        }
-        case 4:
-        {
-            if(CrossIdentify() == 1)
-            {
-//                pit_disable(CCU60_CH0);//关闭电机中断
-//                pit_disable(CCU60_CH1);
-//                MotorSetPWM(0,0);
-                gpio_toggle_level(P21_3);
-                status = 5;
-                speed_type=kImageSpeed;
-            }
-            break;
-        }
-        case 5:
-        {
-            gpio_set_level(P21_4,GPIO_LOW);
-            if(SlopeIdentify() == 1)
-            {
-                gpio_toggle_level(P21_3);
-//                speed_type=kNormalSpeed;
-//                base_speed = 50;
-                status = 6;
-            }
-            break;
-        }
-        case 6:
-        {
-            gpio_set_level(P20_9,GPIO_LOW);
-            if(GarageIdentify_L() == 1)
-            {
-//                pit_disable(CCU60_CH0);//关闭电机中断
-//                pit_disable(CCU60_CH1);
-//                MotorSetPWM(0,0);
-            }
-            break;
-        }
-        default:break;
-    }
-#endif
-#if 0
     switch(process_status[process_status_cnt])
     {
         case 1://左环岛
@@ -219,7 +134,6 @@ void ImageProcess(void)
             break;
         default:break;
     }
-#endif
 
     //预瞄点求偏差
     if(track_type==kTrackRight)
@@ -282,7 +196,5 @@ void OutProtect(void)
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
         MotorSetPWM(0,0);
-//            printf("%f,%f,%f,%f\n",err_max,err_min,errc_max,errc_min);
     }
-
 }

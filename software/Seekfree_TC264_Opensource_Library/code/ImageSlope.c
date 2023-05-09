@@ -15,7 +15,7 @@ typedef enum SlopeType
 {
     kSlopeBegin = 0,
     kSlopeEnd,
-}SlopeType;
+}SlopeType;//坡道状态机状态结构体
 
 SlopeType slope_type = kSlopeBegin;
 
@@ -31,68 +31,32 @@ uint8 SlopeIdentify(void)
 {
     switch(slope_type)
     {
-        case kSlopeBegin:
+        case kSlopeBegin://求左右两个边线的斜率，斜率相反且斜率在0.2到0.5之间
         {
-//            gpio_toggle_level(P20_9);
             float gradient_l = 0;
             float gradient_r = 0;
-            gradient_l = CalculateGradient('l');
-            gradient_r = CalculateGradient('r');
-//            tft180_show_float(0, 0, gradient_l, 3, 3);
-//            tft180_show_float(0, 10, gradient_r, 3, 3);
+            gradient_l = CalculateGradient('l');//求左线斜率
+            gradient_r = CalculateGradient('r');//求右线斜率
             if((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)
             {
-                speed_type=kNormalSpeed;
+                speed_type=kNormalSpeed;//降速
                 base_speed = 50;
-                last_track_mode = track_mode;
+                last_track_mode = track_mode;//切换成电磁循迹
                 track_mode = kTrackADC;
-                slope_type = kSlopeEnd;
-                encoder_dis_flag = 1;
-            }
-            //校赛电磁线外露临时用
-            else if((USE_IMAGE_W/2-10<left_line[0].X && left_line[0].X<USE_IMAGE_W/2+10))
-            {
-                if(l_line_count>10)
-                {
-                    if(abs(left_line[0].X-left_line[l_line_count-1].X)<10)
-                    {
-                        speed_type=kNormalSpeed;
-                        base_speed = 50;
-                        last_track_mode = track_mode;
-                        track_mode = kTrackADC;
-                        slope_type = kSlopeEnd;
-                        encoder_dis_flag = 1;
-                    }
-                }
-            }
-            else if((USE_IMAGE_W/2-10<right_line[0].X && right_line[0].X<USE_IMAGE_W/2+10))
-            {
-                if(r_line_count>10)
-                {
-                    if(abs(left_line[0].X-left_line[l_line_count-1].X)<10)
-                    {
-                        speed_type=kNormalSpeed;
-                        base_speed = 50;
-                        last_track_mode = track_mode;
-                        track_mode = kTrackADC;
-                        slope_type = kSlopeEnd;
-                        encoder_dis_flag = 1;
-                    }
-                }
+                slope_type = kSlopeEnd;//切换下一个状态
+                encoder_dis_flag = 1;//开启编码器积分
             }
             break;
         }
         case kSlopeEnd:
         {
-//            gpio_toggle_level(P21_5);
-            if(dis >= 1200)
+            if(dis >= 1200)//编码器积分1.2m，跳出坡道状态
             {
-//                gpio_toggle_level(P21_4);
-                encoder_dis_flag = 0;
+                encoder_dis_flag = 0;//编码器积分标志位清零
                 base_speed = original_speed;
-                last_track_mode = track_mode;
+                last_track_mode = track_mode;//改成图像循迹
                 track_mode = kTrackImage;
-                slope_type = kSlopeBegin;
+                slope_type = kSlopeBegin;//复位状态机
                 return 1;
             }
             break;
@@ -101,14 +65,20 @@ uint8 SlopeIdentify(void)
     }
     return 0;
 }
-
+/***********************************************
+* @brief : 坡道计算边线斜率
+* @param : flag:选择左线还是右线
+* @return: gradient:边线斜率
+* @date  : 2023.4.21
+* @author: L
+************************************************/
 float CalculateGradient(uint8 lr_flag)
 {
     switch(lr_flag)
     {
-        case 'l':
+        case 'l'://求左线斜率
         {
-            if(per_l_line_count < 160) return 0;
+            if(per_l_line_count < 160) return 0;//边线很长，返回0
             float x = 0,y = 0,xx = 0,xy = 0;
             float x_ave = 0,y_ave = 0,xx_ave = 0,xy_ave = 0;
             float gradient = 0;
@@ -125,13 +95,12 @@ float CalculateGradient(uint8 lr_flag)
             xy_ave = xy / 160.0;
 
             gradient = (xy_ave - x_ave * y_ave)/(xx_ave - x_ave * x_ave);
-//            tft180_show_float(0, 0, gradient, 3, 3);
             return gradient;
             break;
         }
-        case 'r':
+        case 'r'://求右线斜率
         {
-            if(per_r_line_count < 160) return 0;
+            if(per_r_line_count < 160) return 0;//边线很长，返回0
             float x = 0,y = 0,xx = 0,xy = 0;
             float x_ave = 0,y_ave = 0,xx_ave = 0,xy_ave = 0;
             float gradient = 0;
@@ -155,52 +124,3 @@ float CalculateGradient(uint8 lr_flag)
     }
     return 0;
 }
-//float CalculateGradient(uint8 lr_flag)
-//{
-//    switch(lr_flag)
-//    {
-//        case 'l':
-//        {
-//            float gradient = 0;
-//            int corner_appear = 0;
-//            for(int i = 0;i < per_l_line_count;i++)
-//            {
-//                if(fabs(l_angle_1[i] > 0.3))
-//                {
-//                    corner_appear = i;
-//                    break;
-//                }
-//            }
-//            if(corner_appear != 0)
-//            {
-//                float dy = f_left_line1[corner_appear].Y - f_left_line1[per_l_line_count - 1].Y;
-//                float dx = f_left_line1[corner_appear].X - f_left_line1[per_l_line_count - 1].X;
-//                if(dx != 0) gradient = dy/dx;
-//                return gradient;
-//            }
-//            else break;
-//        }
-//        case 'r':
-//        {
-//            float gradient = 0;
-//            int corner_appear = 0;
-//            for(int i = 0;i < per_r_line_count;i++)
-//            {
-//                if(fabs(r_angle_1[i] > 0.3))
-//                {
-//                    corner_appear = i;
-//                    break;
-//                }
-//            }
-//            if(corner_appear != 0)
-//            {
-//                float dy = f_right_line1[corner_appear].Y - f_right_line1[per_r_line_count - 1].Y;
-//                float dx = f_right_line1[corner_appear].X - f_right_line1[per_r_line_count - 1].X;
-//                if(dx != 0) gradient = dy/dx;
-//                return gradient;
-//            }
-//            else break;
-//        }
-//    }
-//    return 0;
-//}

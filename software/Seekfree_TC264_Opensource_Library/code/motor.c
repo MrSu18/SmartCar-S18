@@ -9,14 +9,14 @@
 #include "Control.h"
 
 int speed_left = 0,speed_right = 0;                                     //左右轮当前编码器的值
-int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值
-int target_left_1 = 0,target_right_1 = 0;
+int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值(图像)
+int target_left_1 = 0,target_right_1 = 0;                               //左右轮的目标速度的值(电磁)
 uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
-uint16 base_speed = 0;
-TrackMode track_mode = kTrackImage;
-TrackMode last_track_mode = kTrackImage;
-uint8 encoder_dis_flag = 0;
-float dis = 0;
+uint16 base_speed = 0;                                                  //基础速度
+TrackMode track_mode = kTrackImage;                                     //巡线模式
+TrackMode last_track_mode = kTrackImage;                                //上一次巡线模式
+uint8 encoder_dis_flag = 0;                                             //编码器积分标志位
+float dis = 0;                                                          //距离
 
 /***********************************************
 * @brief : 初始化左右两个编码器
@@ -48,13 +48,14 @@ void EncoderGetCount(int* data_left,int* data_right)
 
     *data_left = SecondOrderFilter_L(*data_left);                           //左编码器一阶低通滤波
     *data_right = SecondOrderFilter_R(*data_right);                         //右编码器一阶低通滤波
-
+    //限幅
     if(*data_left > 255 || *data_left < -255) *data_left = last_data_left;
     if(*data_right > 255 || *data_right < -255) *data_right = last_data_right;
 
     encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
     encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
 
+    //编码器积分
     if(encoder_dis_flag == 1)
     {
         float data_mid = 0;
@@ -62,7 +63,7 @@ void EncoderGetCount(int* data_left,int* data_right)
 
         dis += ((data_mid/1024.0)*30.0/68.0)*(float)CIRCLE;
     }
-    else if(encoder_dis_flag == 0)
+    else if(encoder_dis_flag == 0)//清零积分的距离
         dis = 0;
 }
 /***********************************************
@@ -130,7 +131,6 @@ void MotorSetPWM(int pwm_left,int pwm_right)
 void MotorCtrl(void)
 {
     int pwm_left = 0,pwm_right = 0;                                                 //左右电机PWM
-    int pwm_left_1 = 0,pwm_right_1 = 0;
 
     EncoderGetCount(&speed_left,&speed_right);                                      //获取编码器的值
 
@@ -142,7 +142,6 @@ void MotorCtrl(void)
     }
     else if(track_mode == kTrackADC)                                                //当前为电磁循迹
     {
-
         pwm_left = PIDSpeed(speed_left,target_left_1,&speedpid_left);               //获取赛道上左电机PWM
         pwm_right = PIDSpeed(speed_right,target_right_1,&speedpid_right);           //获取赛道上右电机PWM
 
@@ -151,15 +150,3 @@ void MotorCtrl(void)
 
     c0h0_isr_flag=1;
 }
-
-void StartEncoderInteger(int target_dis)
-{
-    encoder_dis_flag = 1;
-    if(dis > target_dis)
-    {
-        encoder_dis_flag = 0;
-
-    }
-
-}
-

@@ -9,7 +9,7 @@
 #include "pid.h"
 
 int16 adc_value[5] = {0};                           //存取获取到的ADC的值
-float adc_bias = 0;
+float adc_bias = 0;                                 //ADC的偏差
 //赛道扫描时得到的最大值和最小值
 int16 adc_max[5] = {4095,4095,3196,3871,4095};
 int16 adc_min[5] = {0,0,17,0,0};
@@ -52,7 +52,7 @@ void ADCGetValue(int16* value)
         *value = 100*(*value-adc_min[i])/(adc_max[i]-adc_min[i]);       //归一化处理
         for(int j=0;j<6;j++)
             *value = KalmanFilter(&kalman_adc,*value);                  //卡尔曼滤波
-//        tft180_ nn          show_int(98, 15*i, *value, 4);
+//        tft180_show_int(98, 15*i, *value, 4);
         value++;
     }
 }

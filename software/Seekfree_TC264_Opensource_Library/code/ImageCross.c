@@ -17,7 +17,7 @@ typedef enum CrossType
     kCrossBegin = 0,
     kCrossIn,
     kCrossOut,
-}CrossType;
+}CrossType;//十字状态机状态结构体
 
 CrossType cross_type = kCrossBegin;
 
@@ -39,27 +39,26 @@ uint8 CrossIdentify(void)
         int16 corner_id_l = 0, corner_id_r = 0;         //角点在边线的第几个点
         if (CrossFindCorner(&corner_id_l, &corner_id_r) != 0)
         {
-            gpio_toggle_level(P20_9);
+            //角点太远，跳出状态
             if((corner_id_l > aim_distance / SAMPLE_DIST) || (corner_id_r > aim_distance / SAMPLE_DIST)) break;
-            //如果只有一边有角点，则不用求平均值，如果有两个角点，则求平均值
+            //左边没有角点，右边有角点，寻右线，更改预瞄点
             else if ((corner_id_l == 0) && (corner_id_r != 0))
             {
                 track_type = kTrackRight;
                 aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
             }
+            //右边没有角点，左边有角点，寻左线，更改预瞄点
             else if ((corner_id_l != 0) && (corner_id_r == 0))
             {
                 track_type = kTrackLeft;
                 aim_distance = (float)(corner_id_l)* SAMPLE_DIST;
             }
+            //两边都右角点，寻右线，更改预瞄点
             else
             {
                 track_type = kTrackRight;
                 aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
             }
-
-//            last_track_mode = track_mode;
-//            track_mode = kTrackADC;
             //角点很近，切换下一个状态
             if (corner_id_l < 6 && corner_id_r < 6)
             {
@@ -74,31 +73,28 @@ uint8 CrossIdentify(void)
     //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，如果没有找到角点，则表示已经要出了十字，切换状态
     case kCrossIn:
     {
-        gpio_toggle_level(P21_5);
         uint8 change_lr_flag = 0;               //切换寻找左右边线角点的标志位，默认右线找角点，没找到则从左线找
         uint8 corner_find = 0;                  //是否找到角点的标志位
 
-        LeftLineDetectionAgain();
-        RightLineDetectionAgain();
-        per_r_line_count=PER_EDGELINE_LENGTH;
-        per_l_line_count=PER_EDGELINE_LENGTH;
-//        EdgeDetection_Cross();
-
+        LeftLineDetectionAgain();               //左线重新扫线
+        RightLineDetectionAgain();              //右线重新扫线
+        per_r_line_count=PER_EDGELINE_LENGTH;   //重置透视后右线的长度
+        per_l_line_count=PER_EDGELINE_LENGTH;   //重置透视后左线的长度
+        //边线逆透视
         EdgeLinePerspective(left_line,l_line_count,per_left_line);
         EdgeLinePerspective(right_line,r_line_count,per_right_line);
-
+        //边线滤波
         BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
         BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
-
+        //边线等距采样
         ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
         ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-
+        //求边线曲率
         local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
         local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
-
+        //曲率极大值抑制
         nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
         nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
-
 
         //找右线角点
         for (int i = 0; i < per_r_line_count; i++)
@@ -106,7 +102,7 @@ uint8 CrossIdentify(void)
             //找到角点则寻右线，不寻左线，改变预瞄点
             if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
             {
-                if(i > 70) break;
+                if(i > 70) break;//角点很远。跳出
                 else
                 {
                     track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
@@ -126,7 +122,7 @@ uint8 CrossIdentify(void)
                 //找到角点则寻左线，改变预瞄点
                 if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
                 {
-                    if(i > 70) break;
+                    if(i > 70) break;//角点很远。跳出
                     else
                     {
                         track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
@@ -161,13 +157,12 @@ uint8 CrossIdentify(void)
     //判断是否已经出了十字
     case kCrossOut:
     {
-        gpio_toggle_level(P21_4);
         //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
         if (l_line_count > 10 && r_line_count > 10)
         {
             encoder_dis_flag = 0;
             aim_distance = 0.45;
-            cross_type = kCrossBegin;
+            cross_type = kCrossBegin;//复位状态机
             return 1;
         }
         break;
@@ -196,10 +191,8 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
     {
         if (cross_find_l == FALSE &&((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180)))
         {
-//            for(int j = -3;j < 3;j++)
-//                tft180_draw_point(f_left_line[i].X + j, f_left_line[i].Y, RGB565_RED);
-            *corner_id_l = i;
-            cross_find_l = TRUE;
+            *corner_id_l = i;//保存角点在边线第几个点
+            cross_find_l = TRUE;//找到角点标志位
             break;
         }
     }
@@ -208,10 +201,8 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
     {
         if (cross_find_r == FALSE && ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180)))
         {
-//            for(int j = -3;j < 3;j++)
-//                tft180_draw_point(f_right_line[i].X + j, f_right_line[i].Y, RGB565_BLUE);
-            *corner_id_r = i;
-            cross_find_r = TRUE;
+            *corner_id_r = i;//保存角点在边线第几个点
+            cross_find_r = TRUE;//找到角点标志位
             break;
         }
     }

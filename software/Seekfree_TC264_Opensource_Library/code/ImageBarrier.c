@@ -14,7 +14,7 @@ typedef enum BarrierType
     kBarrierBegin = 0,
     kBarrierNear,
     kBarrierEnd,
-}BarrierType;
+}BarrierType;//障碍状态机状态结构体
 
 BarrierType barrier_type = kBarrierBegin;
 /***********************************************

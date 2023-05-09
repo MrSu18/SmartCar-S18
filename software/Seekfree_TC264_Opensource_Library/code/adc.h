@@ -28,8 +28,8 @@ extern float adc_bias;
 #define RM  adc_value[3]
 #define R   adc_value[4]
 
-#define JUDGE  0
-#define TRACK  1
+#define JUDGE  0                                //求判断元素的偏差
+#define TRACK  1                                //求循迹用的偏差
 
 void ADCInit(void);                             //初始化ADC引脚
 void ADCGetValue(int16* value);                 //获取ADC转换一次的值

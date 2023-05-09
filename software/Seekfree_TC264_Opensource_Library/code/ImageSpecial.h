@@ -11,24 +11,22 @@
 #include "zf_common_headfile.h"
 
 //坡道函数
-uint8 SlopeIdentify(void);
-float CalculateGradient(uint8 lr_flag);
+uint8 SlopeIdentify(void);//坡道状态机
+float CalculateGradient(uint8 lr_flag);//坡道计算边线斜率
 //路障函数
 extern int time;
 extern uint8 timeintegral_flag;
-uint8 BarrierIdentify(void);
+uint8 BarrierIdentify(void);//路障状态机
 //车库函数
-uint8 GarageFindCorner(int* corner_id);
-uint8 GarageIdentify_L(void);
-uint8 GarageIdentify_R(void);
-void EdgeDetection_Garage(uint8 flag);
+uint8 GarageFindCorner(int* corner_id);//车库找角点
+uint8 GarageIdentify_L(void);//左车库状态机
+uint8 GarageIdentify_R(void);//右车库状态机
 //断路函数
-uint8 CutIdentify(void);
-uint8 CutFindCorner(int16* corner_id_l,int16* coener_id_r);
+uint8 CutIdentify(void);//断路状态机
+uint8 CutFindCorner(int16* corner_id_l,int16* coener_id_r);//断路找角点
 //十字路口函数
-uint8 CrossIdentify(void);
-uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r);
-void EdgeDetection_Cross(void);
+uint8 CrossIdentify(void);//十字状态机
+uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r);//十字找角点
 //左环岛元素函数
 void LeftLineDetectionAgain(void);
 void RightLineDetectionAgain(void);
