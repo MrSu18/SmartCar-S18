@@ -25,14 +25,14 @@ int main()
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-    String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\4.16\\0.bmp");
+    String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230510_170243\\img0002741.png");
     ScanImage(str);
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    for (int i = 20 ; i < 68; i++)
+    for (int i = 3343 ; i < 3894; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
-        String str = format("E:\\nodeanddata\\studio\\FSL\\Complete\\S18\\data\\image\\4.16\\%d.bmp", i);
+        String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230510_170243\\img000%d.png", i);
         ScanImage(str);
         /************************************************************************************************/
 

@@ -35,6 +35,8 @@ void ScanImage(cv::String str)
 {
     //获取图像
     Mat gray_img = imread(str,IMREAD_GRAYSCALE);//以灰度图的形式读取图像
+    if(!gray_img.data) //判断图片调入是否成功
+        return; //调入图片失败则退出
     //将图像转化为二维数组
     int i = 0, j = 0;
     int row = gray_img.rows;
