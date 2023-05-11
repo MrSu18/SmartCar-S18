@@ -15,7 +15,7 @@
 //当前的速度决策方式
 enum SpeedType speed_type=kNormalSpeed;
 //设定的速度
-uint16 original_speed=70;
+uint16 original_speed=65;
 
 /***********************************************
 * @brief : 速度决策
@@ -58,7 +58,7 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     s=i-(int)(aim_distance/SAMPLE_DIST);//得到位移
     vt= (uint16)sqrt(original_speed*original_speed+2*a*s);
 //    if(vt>100) vt=100;//限幅
-//    else if(vt<original_speed) vt=original_speed;
+    if(vt<original_speed) vt=original_speed;
     return vt;
 }
 

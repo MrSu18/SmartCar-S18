@@ -74,6 +74,7 @@ void ImageProcess(void)
         track_type=kTrackRight;
     }
 
+#if 0
     switch(process_status[process_status_cnt])
     {
         case 1://左环岛
@@ -134,6 +135,7 @@ void ImageProcess(void)
             break;
         default:break;
     }
+#endif
 
     //预瞄点求偏差
     if(track_type==kTrackRight)
@@ -145,10 +147,10 @@ void ImageProcess(void)
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
     //速度决策
-//    if(speed_type==kImageSpeed)
-//    {
-//        base_speed=SpeedDecision(original_speed,5);//弯道是68直道是80
-//    }
+    if(speed_type==kImageSpeed)
+    {
+        base_speed=SpeedDecision(original_speed,5);//弯道是68直道是80
+    }
 //    tft180_show_uint(0, 0, base_speed, 3);
 }
 
