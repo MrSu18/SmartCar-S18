@@ -18,8 +18,8 @@
 #include "Control.h"
 
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入库 'S':停车*/
-uint8 process_status[15]={1 ,3 ,4 ,3 ,5 ,7};//总状态机元素执行顺序数组
-uint16 process_speed[15]={70,70,60,70,70,70};//上面数组对应的元素路段的速度
+uint8 process_status[15]={3,3,3,3,'S'};//总状态机元素执行顺序数组
+uint16 process_speed[15]={70,70,70,70,70};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
 /***********************************************
@@ -91,13 +91,6 @@ void ImageProcess(void)
             if(CrossIdentify()==1)
             {
                 gpio_toggle_level(P21_3);
-                if(process_status_cnt==1)
-                {
-                    speed_type=kNormalSpeed;
-                    last_track_mode = track_mode;
-                    track_mode = kTrackADC;
-                    base_speed = 60;
-                }
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
             }

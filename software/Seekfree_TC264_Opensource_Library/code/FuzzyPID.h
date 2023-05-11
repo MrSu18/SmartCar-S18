@@ -18,12 +18,12 @@
 #define PB      3
 //图像模糊PID需要用到的各个参数
 #define E_MAX       20
-#define E_MIN       -28
+#define E_MIN       -20
 #define EC_MAX      40
 #define EC_MIN      -40
 #define KP_MAX      30
 #define KP_MIN      0
-#define KD_MAX      6
+#define KD_MAX      8
 #define KD_MIN      0
 //电磁模糊PID需要用到的各个参数
 #define E_MAX_A       30

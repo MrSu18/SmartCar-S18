@@ -177,11 +177,11 @@ void FuzzyPID(void)
     if (turnpid_image.out > 0)//×ó×ª
     {
         target_left = base_speed - (int)turnpid_image.out;
-        target_right = base_speed ;
+        target_right = base_speed + (int)(0.2*turnpid_image.out);
     }
     else//ÓÒ×ª
     {
-        target_left = base_speed;
+        target_left = base_speed - (int)(0.2*turnpid_image.out);
         target_right = base_speed + (int)turnpid_image.out;
     }
 }
