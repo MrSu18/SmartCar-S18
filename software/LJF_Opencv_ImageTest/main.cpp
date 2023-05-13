@@ -29,7 +29,7 @@ int main()
     ScanImage(str);
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    for (int i = 3343 ; i < 3894; i++)
+    for (int i = 3168 ; i < 3894; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
         String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230510_170243\\img000%d.png", i);

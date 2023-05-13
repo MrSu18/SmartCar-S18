@@ -361,6 +361,327 @@ uint8 CircleIslandLEnd(void)
     return 0;
 }
 
+/**************************************************右环岛***************************************************************/
+uint8 CircleIslandRStatus()//右边环岛状态状态机
+{
+    static uint8 status;//环岛状态转移变量
+    switch (status)
+    {
+        case 0: //检测右环岛
+            if(CircleIslandRDetection()==2)
+            {
+                status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
+            }
+            break;
+        case 1: //路过环岛第一个入口
+            if(CircleIslandRInDetection()==1)
+            {
+                gpio_toggle_level(P21_3);
+                StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
+                status=2;
+            }
+            break;
+        case 2: //进入环岛
+            if(CircleIslandRIn()==1)
+            {
+                status=3;
+            }
+            break;
+        case 3: //检测出环
+            if(CircleIslandROutDetection()==1)
+            {
+                gpio_toggle_level(P21_3);
+                track_type=kTrackLeft;
+                status=4;
+            }
+            break;
+        case 4://出环
+            if (CircleIslandROutFinish()==1)
+            {
+                gpio_toggle_level(P21_3);
+                status=5;
+            }
+            else CircleIslandROut();//出环没结束就一直做出环处理
+            break;
+        case 5://检测环岛是否结束
+            if (CircleIslandREnd()==1)
+            {
+                status=0;
+                return 1;
+            }
+            break;
+        default:
+            break;
+    }
+    return 0;
+}
+
+/***********************************************
+* @brief : 检测小车是否走到了环岛元素部分
+* @param : 无
+* @return: 0：还没检测到左角点 1：检测到了左边角点 2：左角点消失
+* @date  : 2023.5.13
+* @author: 刘骏帆
+* @notice: 角度./180.*PI，因为求得的曲率是弧度制的不是角度制
+************************************************/
+uint8 CircleIslandRDetection()//检测左环岛
+{
+    static uint8 status=0;//检测到角点->检测不到角点
+    if (status==0)//状态0检测角点出现
+    {
+        for (int i = 0; i < per_r_line_count; ++i)
+        {
+            //检测左边70度到140度的角点,加负号的因为左边的角点算出来是负数
+            //第三个条件限制的是哪个角点有多远0.8m
+            if(70./180.*PI<r_angle_1[i] && r_angle_1[i]<140./180.*PI && i<0.8/SAMPLE_DIST)
+            {
+                track_type=kTrackLeft;
+                status=1;//第一次检测到
+                break;
+            }
+        }
+    }
+    else if (status==1)//状态1检测角点消失
+    {
+        track_type=kTrackLeft;
+        if(r_line_count<2) status=2;
+    }
+    else if(status==2)
+        status=0;//重置flag
+    return status;
+}
+
+/***********************************************
+* @brief : 检测是否到了需要入环的状态
+* @param : 无
+* @return: 是否入环 1：入环 0：入环还不用入环
+* @date  : 2023.5.13
+* @author: 刘骏帆
+************************************************/
+uint8 CircleIslandRInDetection(void)
+{
+    static uint8 status=0;
+    if(status==0)
+    {
+        encoder_dis_flag = 1;//开启编码器计数
+        status=1;
+    }
+    else if(status==1)
+    {
+        if(dis>400)//40cm
+        {
+            encoder_dis_flag = 0;
+            status=0;
+            track_type=kTrackRight;
+            return 1;
+        }
+    }
+    track_type=kTrackLeft;//否则还没到入环时机
+    return 0;
+}
+
+/***********************************************
+* @brief : 右环岛入环状态
+* @param : 无
+* @return: 是否入环结束 1：入环结束 0：入环未结束
+* @date  : 2023.5.13
+* @author: 刘骏帆
+************************************************/
+uint8 CircleIslandRIn()//入环状态
+{
+    //这里是判断是否跳出入环状态
+    uint8 len=0;
+    if (per_l_line_count>EDGELINE_LENGTH) len=EDGELINE_LENGTH;
+    else                                  len=per_l_line_count;
+    if(f_left_line1[len-1].X-f_left_line1[0].X>JUDGE_IN_EDD_THR && left_line[l_line_count-1].X>USE_IMAGE_W-80)
+    {
+        return 1;//入环结束
+    }
+    //对入环状态进行偏差处理
+    if(r_line_count<2)//左边90行都丢线，说明只能沿着外边进去
+    {
+        //重新扫线
+        RightLineDetectionAgain();
+        //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
+        if(right_line[0].X>right_line[r_line_count-1].X)//右边看不到圆环内环，只能看到圆环外环
+        {
+            uint8 y=0;//
+            l_line_count=1;
+            for (uint8 i=0;i<r_line_count;i++)
+            {
+                if(right_line[r_line_count-1-i].Y>=y)
+                {
+                    y=right_line[r_line_count-1-i].Y;
+                }
+                else
+                {
+                    left_line[l_line_count]=right_line[r_line_count-i];
+                    l_line_count++;
+                }
+            }
+
+//            l_line_count=per_l_line_count=0;
+            per_l_line_count=PER_EDGELINE_LENGTH;
+            //对边线进行透视
+            EdgeLinePerspective(left_line,l_line_count,per_left_line);
+            BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+            ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+            track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+            track_type=kTrackLeft;
+        }
+    }
+    else
+    {
+        track_type=kTrackRight;//如果没丢线寻左边线的圆环进去
+    }
+    return 0;
+}
+
+/***********************************************
+* @brief : 右环岛检测出环
+* @param : 无
+* @return: 是否到出环状态 1：环岛出口 0：还在环中
+* @date  : 2023.5.13
+* @author: 刘骏帆
+************************************************/
+uint8 CircleIslandROutDetection()//左环岛出环状态
+{
+    if (l_line_count<2)//右边一开始就丢线
+    {
+        //左边重新扫线
+        LeftLineDetectionAgain();
+        per_l_line_count=PER_EDGELINE_LENGTH;
+        EdgeLinePerspective(left_line,l_line_count,per_left_line);
+        BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+        ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+        local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
+        nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+        track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+    }
+    //进行角点判断
+    for (int i = 0; i < per_l_line_count; ++i)
+    {
+        if (70./180.*PI<-l_angle_1[i] && -l_angle_1[i]<140./180.*PI && i<0.8/SAMPLE_DIST)//出环右边角点
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/***********************************************
+* @brief : 右环岛出环
+* @param : 无
+* @return: 0：出环未结束 1：出环结束
+* @date  : 2023.5.13
+* @author: 刘骏帆
+************************************************/
+uint8 CircleIslandROutFinish(void)//检测环岛是否结束
+{
+    //陀螺仪检测出环
+    if(icm_angle_x_flag==1)
+    {
+        return 1;
+    }
+    return 0;
+}
+void CircleIslandROut(void)//环岛出环处理函数
+{
+    //出环处理
+    if (r_line_count>3)//右边如果还能看到线就沿着圆出去
+    {
+        track_type=kTrackRight;
+    }
+    else
+    {
+        if (l_line_count>4)
+        {
+            //判断角点的位置
+            for (int i = 0; i < per_l_line_count; ++i)
+            {
+                if (70./180.*PI<-l_angle_1[i] && -l_angle_1[i]<140./180.*PI)//出环左边角点
+                {
+                    if (i>aim_distance/SAMPLE_DIST)
+                    {
+                        per_l_line_count=i;
+                        track_type=kTrackLeft;
+                    }
+                    else//继承上次的偏差
+                    {
+                        if (image_bias<-5) image_bias=-8;//如果上次太小就固定打死
+                        track_type=kTrackSpecial;
+                    }
+                    break;
+                }
+            }
+        }
+        else//左右边线都丢线
+        {
+            l_line_count=0;//重新规划左边线
+            //找到补线的右上角点
+            uint8 half=GRAY_BLOCK/2;
+            myPoint right_seed=right_line[r_line_count-1];//右种子
+            if (right_seed.Y==0)
+            {
+                right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-2;
+            }
+            for (; right_seed.Y>USE_IMAGE_H_MIN; right_seed.Y--)
+            {
+                if(PointSobelTest(right_seed)==1) break;
+            }
+            myPoint left_seed;//左种子
+            left_seed.Y=USE_IMAGE_H-half-1,left_seed.X=half;//图像左下角
+            left_line[l_line_count]=left_seed;l_line_count++;//顺序不能错，不然这条线的方向就反了
+            left_line[l_line_count]=right_seed;l_line_count++;
+            //*****************************
+            per_l_line_count=PER_EDGELINE_LENGTH;
+            EdgeLinePerspective(left_line,l_line_count,per_left_line);
+            ResamplePoints(per_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+            track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+            track_type=kTrackLeft;
+        }
+    }
+}
+
+/***********************************************
+* @brief : 判断右环岛是否结束
+* @param : 无
+* @return: 无
+* @date  : 2023.5.13
+* @author: 刘骏帆
+************************************************/
+uint8 CircleIslandREnd(void)
+{
+    if(r_line_count>10)//判断
+        return 1;
+    //循迹
+    if(per_l_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环
+    {
+        track_type=kTrackLeft;//寻左线出去即可
+    }
+    else//这里对偏差进行处理，避免由于出环的时候就左拐太多，使得右边线不存在而继承上一次的偏差
+    {
+        //重新扫线
+        LeftLineDetectionAgain();
+        EdgeLinePerspective(left_line,l_line_count,per_left_line);
+        if(per_l_line_count>aim_distance/SAMPLE_DIST)
+        {
+            per_l_line_count=PER_EDGELINE_LENGTH;
+            BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+            ResamplePoints(per_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+            track_leftline(f_left_line1, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+            track_type=kTrackLeft;
+        }
+        else
+        {
+            track_type=kTrackSpecial;//偏差置为0
+            image_bias=0.5;//左拐一点
+        }
+    }
+    return 0;
+}
+/**********************************************************************************************************************/
+
 /***********************************************
 * @brief : 从丢线找到不丢线再记录边线，左边线重新扫线
 * @param : 无
