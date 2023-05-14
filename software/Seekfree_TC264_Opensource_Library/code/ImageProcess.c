@@ -112,6 +112,12 @@ void ImageProcess(void)
             }
             break;
         case 6://路障
+            if(BarrierIdentify()==1)
+            {
+                gpio_toggle_level(P21_3);
+                process_status_cnt++;
+                original_speed=process_speed[process_status_cnt];
+            }
             break;
         case 7://车库
             if(GarageIdentify_L()==1)
@@ -186,7 +192,7 @@ void OutProtect(void)
                 over_count++;
     }
 
-    if(over_count>=MT9V03X_W-2 && adc_sum < 10)                             //如果全部超过阈值则停止
+    if(over_count>=MT9V03X_W-2)                             //如果全部超过阈值则停止
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);

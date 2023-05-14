@@ -58,7 +58,6 @@ uint8 GarageIdentify_L(void)
         {
             image_bias = 10;
             while(!icm_angle_x_flag);
-            turnpid_image.last_err = 0;
 
             while(1)
             {

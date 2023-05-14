@@ -64,10 +64,9 @@ uint8 CrossIdentify(void)
             {
                 encoder_dis_flag = 1;
                 cross_type = kCrossIn;
+                aim_distance = 0.45;
             }
         }
-        else
-            aim_distance = 0.45;
         break;
     }
     //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，如果没有找到角点，则表示已经要出了十字，切换状态
@@ -76,8 +75,13 @@ uint8 CrossIdentify(void)
         uint8 change_lr_flag = 0;               //切换寻找左右边线角点的标志位，默认右线找角点，没找到则从左线找
         uint8 corner_find = 0;                  //是否找到角点的标志位
 
-        LeftLineDetectionAgain();               //左线重新扫线
-        RightLineDetectionAgain();              //右线重新扫线
+        if(l_line_count > 100 && r_line_count > 100)
+        {
+            cross_type = kCrossOut;
+            aim_distance = 0.45;
+        }
+
+        EdgeDetection_Cross();
         per_r_line_count=PER_EDGELINE_LENGTH;   //重置透视后右线的长度
         per_l_line_count=PER_EDGELINE_LENGTH;   //重置透视后左线的长度
         //边线逆透视
@@ -105,9 +109,9 @@ uint8 CrossIdentify(void)
                 if(i > 70) break;//角点很远。跳出
                 else
                 {
-                    track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                    track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
                     track_type = kTrackRight;
-                    aim_distance = ((float)(i + 6)) * SAMPLE_DIST;
+                    aim_distance = (float)((i + 6) * SAMPLE_DIST);
                     change_lr_flag = 1;                             //等于1则不从左线找角点
                     corner_find = 1;                                //等于0是默认寻右线，这里是寻右线
                     break;
@@ -125,9 +129,9 @@ uint8 CrossIdentify(void)
                     if(i > 70) break;//角点很远。跳出
                     else
                     {
-                        track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
+                        track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
                         track_type = kTrackLeft;
-                        aim_distance = ((float)(i + 6)) * SAMPLE_DIST;
+                        aim_distance = (float)((i + 6) * SAMPLE_DIST);
                         corner_find = 1;                                //等于0是默认寻右线，这里是寻左线
                         break;
                     }
@@ -135,7 +139,7 @@ uint8 CrossIdentify(void)
             }
         }
         //没有找到角点，默认寻右线，切换下一个状态
-//        if (corner_find == 0 && (f_left_line1[0].Y > 100||f_right_line1[0].Y > 100))
+//        if (corner_find == 0 && (left_line[0].Y > 100 || left_line[0].Y > 100))
 //        {
 //            track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
 //            track_type = kTrackRight;
@@ -160,7 +164,6 @@ uint8 CrossIdentify(void)
         //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
         if (l_line_count > 10 && r_line_count > 10)
         {
-            encoder_dis_flag = 0;
             aim_distance = 0.45;
             cross_type = kCrossBegin;//复位状态机
             return 1;
@@ -236,38 +239,64 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
 ************************************************/
 void EdgeDetection_Cross(void)
 {
+    uint8 half=GRAY_BLOCK/2;
     myPoint left_seed, right_seed;              //左右种子
     left_seed = left_line[l_line_count - 1]; right_seed = right_line[r_line_count - 1];
-    l_line_count = 0;r_line_count = 0;
-    per_l_line_count = EDGELINE_LENGTH;per_r_line_count = EDGELINE_LENGTH;
+    int now_point = 1,last_point = 1;
     uint8 is_loseline = 0;                      //是否丢线的标志位，丢线则继续生长，不丢线就计入边线
 
-    //左边线生长
-    while(l_line_count < EDGELINE_LENGTH)
+    if (left_seed.Y<USE_IMAGE_H_MIN+half || left_seed.Y>USE_IMAGE_H-half-1 || left_seed.X<half || left_seed.X>USE_IMAGE_W-half-1)
     {
-        is_loseline = EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num);
-        if (is_loseline == 1)
-        {
-            left_line[l_line_count].X = left_seed.X;left_line[l_line_count].Y = left_seed.Y;
-            l_line_count++;
-        }
-        else if(is_loseline == 2)
-            continue;
-        else
+        left_seed.Y=USE_IMAGE_H_MAX-half-1;left_seed.X=half;
+    }
+    left_seed.X++;
+    if (right_seed.Y<USE_IMAGE_H_MIN+half || right_seed.Y>USE_IMAGE_H-half-1 || right_seed.X<half || right_seed.X>USE_IMAGE_W-half-1)
+    {
+        right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-1;
+    }
+    right_seed.X--;
+
+    for (; left_seed.Y > USE_IMAGE_H_MAX - 45; left_seed.Y--)
+    {
+        last_point = now_point;
+        now_point = PointSobelTest(left_seed);
+        if (now_point == 1 && last_point == 0)
             break;
     }
+    now_point=1;
+    for (; right_seed.Y > USE_IMAGE_H_MAX - 45; right_seed.Y--)
+    {
+        last_point=now_point;
+        now_point=PointSobelTest(right_seed);
+        if (now_point == 1 && last_point == 0)
+            break;
+    }
+
+    l_line_count = 0;r_line_count = 0;
+    uint8 len_l=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-left_seed.Y);
+    uint8 len_r=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-right_seed.Y);
+    //左边线生长
+    while(l_line_count < len_l)
+    {
+        is_loseline = EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num);
+            if (is_loseline == 1)
+            {
+                left_line[l_line_count].X = left_seed.X;left_line[l_line_count].Y = left_seed.Y;
+                l_line_count++;
+            }
+            else
+                break;
+    }
     //右边线生长
-    while(r_line_count < EDGELINE_LENGTH)
+    while(r_line_count < len_r)
     {
         is_loseline = EightAreasSeedGrownGray(&right_seed,'r',&right_seed_num);
-        if (is_loseline == 1)
-        {
-            right_line[r_line_count].X = right_seed.X;right_line[r_line_count].Y = right_seed.Y;
-            r_line_count++;
-        }
-        else if(is_loseline == 2)
-            continue;
-        else
-            break;
+            if (is_loseline == 1)
+            {
+                right_line[r_line_count].X = right_seed.X;right_line[r_line_count].Y = right_seed.Y;
+                r_line_count++;
+            }
+            else
+                break;
     }
 }

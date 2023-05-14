@@ -41,7 +41,7 @@
 #include "filter.h"
 #include "bluetooth.h"
 #include "pid.h"
-#include "key.h"
+#include "KeyMenu.h"
 #include "icm20602.h"
 #include "ZwPlus_lib.h"
 
@@ -85,10 +85,10 @@ int core0_main(void)
     gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     //给蜂鸣器低电平
     gpio_init(P21_3,GPO,GPIO_LOW,GPO_PUSH_PULL);
-    //初始化电机中断
-    pit_ms_init(CCU60_CH0,2);pit_disable(CCU60_CH0);
-    pit_ms_init(CCU61_CH1,4);pit_disable(CCU61_CH1);
-    pit_ms_init(CCU60_CH1,8);pit_disable(CCU60_CH1);
+    //初始化中断
+    pit_ms_init(CCU60_CH0,2);pit_disable(CCU60_CH0);//速度环
+    pit_ms_init(CCU61_CH1,4);pit_disable(CCU61_CH1);//角速度环
+    pit_ms_init(CCU60_CH1,8);pit_disable(CCU60_CH1);//方向环
     //陀螺仪中断2ms
     pit_ms_init(CCU61_CH0,2);pit_disable(CCU61_CH0);
 /*************************参数初始化***************************/
@@ -109,7 +109,6 @@ int core0_main(void)
     while (TRUE)
     {
         ADCGetValue(adc_value);
-
 //        if(gyro_flag == 1)
 //        {
 //            printf("%d\n",gyropid.out);

@@ -7,7 +7,7 @@
 #include "ImageConversion.h"
 #include "ImageTrack.h"
 #include "zf_device_tft180.h"
-#include "key.h"
+#include "KeyMenu.h"
 
 #define PER_IMAGE_W     188             //逆透视图像的宽度
 #define PER_IMAGE_H     120             //逆透视图像的高度
@@ -184,5 +184,12 @@ void ShowLine(void)
             if(x<0 || x>159 || y<0 || y>120) continue;
             tft180_draw_point((uint16)x, (uint16)y, RGB565_GREEN);
         }
+    }
+    if(edgeline_flag == 1)
+    {
+        LCDShowUint8Line(left_line,l_line_count,RGB565_BLUE);
+        LCDShowUint8Line(right_line,r_line_count,RGB565_RED);
+        tft180_show_int(98, 30, l_line_count, 3);
+        tft180_show_int(98, 60, r_line_count, 3);
     }
 }

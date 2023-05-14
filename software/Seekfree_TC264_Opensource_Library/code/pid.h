@@ -11,7 +11,7 @@
 #include "zf_common_headfile.h"
 #include "motor.h"
 #include "adc.h"
-#include "key.h"
+#include "KeyMenu.h"
 
 //PID参数的结构体
 typedef struct

@@ -42,7 +42,7 @@
 #include "bluetooth.h"
 #include "ImageProcess.h"
 #include "pid.h"
-#include "key.h"
+#include "KeyMenu.h"
 #include "debug.h"
 #include "icm20602.h"
 #include "Control.h"
@@ -69,7 +69,7 @@ void core1_main(void)
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    KEYCtrl();//按键控制
+    KeyCtrl();//按键控制
     base_speed=original_speed;
 //    OutGarage();//出库
     while (TRUE)
@@ -81,7 +81,7 @@ void core1_main(void)
 #if 1
             memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
 //            //出界保护
-            OutProtect();
+//            OutProtect();
 //            sobel(mt9v03x_image,binary_image);
             //显示灰度图
             ShowImage();
@@ -92,14 +92,6 @@ void core1_main(void)
             ImageProcess();
 
             //显示边线
-            if(edgeline_flag == 1)
-            {
-                LCDShowUint8Line(left_line,l_line_count,RGB565_BLUE);
-                LCDShowUint8Line(right_line,r_line_count,RGB565_RED);
-                tft180_show_int(98, 30, l_line_count, 3);
-                tft180_show_int(98, 60, r_line_count, 3);
-            }
-            //显示透视后的边线
             ShowLine();
 
             //赛道基础信息变量重置
