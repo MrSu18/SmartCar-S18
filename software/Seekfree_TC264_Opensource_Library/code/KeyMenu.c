@@ -11,6 +11,7 @@
 #include "ImageTrack.h"
 #include "ImageProcess.h"
 #include "Control.h"
+#include "zf_driver_flash.h"
 
 static Menu menu={0,0,0};
 static int index=0;
@@ -18,7 +19,7 @@ static uint16 speed[8];
 uint8 per_image_flag=0,gray_image_flag=0;
 uint8 edgeline_flag,c_line_flag=0,per_edgeline_flag=0;
 
-uint8 home[10][30]=
+uint8 home[12][30]=
 {
         "   TurnPID_Image",
         "   TurnPID_ADC",
@@ -29,45 +30,42 @@ uint8 home[10][30]=
         "   ProcessSpeed",
         "   BaseTrack",
         "   ShowImage",
+        "   WriteToFlash",
+        "   ClearFlash",
         "   Exit"
 };
-uint8 imagepid[5][30]=
+uint8 imagepid[3][30]=
 {
         "   PIDImage.P:",
         "   PIDImage.D:",
-        "   WriteToFlash",
         "   Exit"
 };
-uint8 adcpid[5][30]=
+uint8 adcpid[3][30]=
 {
         "   PIDADC.P:",
         "   PIDADC.D:",
-        "   WriteToFlash",
         "   Exit"
 };
-uint8 leftpid[5][30]=
+uint8 leftpid[3][30]=
 {
         "   PIDLeft.P:",
         "   PIDLeft.I:",
-        "   WriteToFlash",
         "   Exit"
 };
-uint8 rightpid[5][30]=
+uint8 rightpid[3][30]=
 {
         "   PIDRight.P:",
         "   PIDRight.I:",
-        "   WriteToFlash",
         "   Exit"
 };
-uint8 gyro_pid[5][30]=
+uint8 gyro_pid[4][30]=
 {
         "   GyroPID.P:",
         "   GyroPID.I:",
         "   GyroPID.D:",
-        "   WriteToFlash",
         "   Exit"
 };
-uint8 state_machine[11][30]=
+uint8 state_machine[10][30]=
 {
         " ",
         "   LeftCircle",
@@ -78,10 +76,9 @@ uint8 state_machine[11][30]=
         "   Barrier",
         "   Garage",
         "   Stop",
-        "   WriteToFlash",
         "   Exit"
 };
-uint8 state_speed[10][30]=
+uint8 state_speed[9][30]=
 {
         "   LeftCircle:",
         "   RightCircle:",
@@ -91,14 +88,12 @@ uint8 state_speed[10][30]=
         "   Barrier:",
         "   Garage:",
         "   Stop:",
-        "   WriteToFlash",
         "   Exit"
 };
-uint8 basetrack[4][30]=
+uint8 basetrack[3][30]=
 {
         "   base_speed:",
         "   aim_distance:",
-        "   WriteToFlash",
         "   Exit"
 };
 /***********************************************
@@ -171,39 +166,39 @@ void ShowFunction(uint8 page)
     switch(page)
     {
         case 0:
-            for(int i = 0;i < 10;i++)
+            for(int i = 0;i < 12;i++)
                 tft180_show_string(0, i*10, home[i]);
             break;
         case 1:
-            for(int i = 0;i < 5;i++)
+            for(int i = 0;i < 3;i++)
                 tft180_show_string(0, i*10, imagepid[i]);
             break;
         case 2:
-            for(int i = 0;i < 5;i++)
+            for(int i = 0;i < 3;i++)
                 tft180_show_string(0, i*10, adcpid[i]);
             break;
         case 3:
-            for(int i = 0;i < 5;i++)
+            for(int i = 0;i < 3;i++)
                 tft180_show_string(0, i*10, leftpid[i]);
             break;
         case 4:
-            for(int i = 0;i < 5;i++)
+            for(int i = 0;i < 3;i++)
                 tft180_show_string(0, i*10, rightpid[i]);
             break;
         case 5:
-            for(int i = 0;i < 5;i++)
+            for(int i = 0;i < 4;i++)
                 tft180_show_string(0, i*10, gyro_pid[i]);
             break;
         case 6:
-            for(int i = 0;i < 11;i++)
+            for(int i = 0;i < 10;i++)
                 tft180_show_string(0, i*10, state_machine[i]);
             break;
         case 7:
-            for(int i = 0;i < 10;i++)
+            for(int i = 0;i < 9;i++)
                 tft180_show_string(0, i*10, state_speed[i]);
             break;
         case 8:
-            for(int i = 0;i < 4;i++)
+            for(int i = 0;i < 3;i++)
                 tft180_show_string(0, i*10, basetrack[i]);
             break;
         case 9:
@@ -237,33 +232,33 @@ void KeyCtrl(void)
     while(1)
     {
         uint8 exit_flag = 0;
-        ShowFunction(menu.page);
+        ShowFunction(menu.page);//显示对应页面的内容
         tft180_show_string(0, menu.updown*10, ">>");
         switch(KeyGet())
         {
-            case KEY_UP:
+            case KEY_UP://光标向上
                 tft180_show_string(0, menu.updown*10, "  ");
                 menu.updown--;
                 if(menu.updown < 0) menu.updown = 0;
                 tft180_show_string(0, menu.updown*10, ">>");
                 break;
-            case KEY_DOWN:
+            case KEY_DOWN://光标向下
                 tft180_show_string(0, menu.updown*10, "  ");
                 menu.updown++;
-                if(menu.updown > 10) menu.updown = 10;
+                if(menu.updown > 12) menu.updown = 12;
                 tft180_show_string(0, menu.updown*10, ">>");
                 break;
-            case KEY_LEFT: SubParameter();break;
-            case KEY_RIGHT:AddParameter();break;
-            case KEY_ENTER:EnterKey(&exit_flag);break;
+            case KEY_LEFT: SubParameter();break;//参数减
+            case KEY_RIGHT:AddParameter();break;//参数加
+            case KEY_ENTER:EnterKey(&exit_flag);break;//确认键
         }
-        if(exit_flag == 1)
+        if(exit_flag == 1)//退出按键调参
         {
             tft180_clear();
             break;
         }
     }
-    while(KeyGet()!=KEY_OWN)
+    while(KeyGet()!=KEY_OWN)//发车键
     {
         system_delay_ms(1000);
         encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
@@ -443,47 +438,53 @@ void AddParameter(void)
 ************************************************/
 void EnterKey(uint8* exit_flag)
 {
-    if(menu.enter==0)
+    if(menu.enter==0)//一级菜单
     {
-        uint8 exit_flag_1 = 0;
+        uint8 exit_flag_1 = 0;//
         switch(menu.page)
         {
-            case 0:
-                if(menu.updown<9)
+            case 0://在主界面
+                if(menu.updown<11)//不是退出键
                 {
-                    menu.page=menu.updown+1;
-                    if(menu.updown==8) menu.enter=1;
+                    menu.page=menu.updown+1;//显示对应的下一页的内容
+                    if(menu.updown==8) menu.enter=1;//到二级菜单
+                    else if(menu.updown==9)//写入flash
+                        WriteToFlash();
+                    else if(menu.updown==10)//擦除flash
+                    {
+                        if(flash_check(0, 0)==1)//如果Flash不为空，则擦除
+                            flash_erase_page(0, 0);
+                        flash_buffer_clear();//清空缓冲区
+                    }
                     menu.updown=0;
                     tft180_clear();
                 }
-                else if(menu.updown==9) *exit_flag = 1;
+                else if(menu.updown==11) *exit_flag = 1;//退出按键调参
                 break;
+            //不同页面返回主界面
             case 1:
             case 2:
             case 3:
             case 4:
             case 8:
-                if(menu.updown==2);//flash
-                if(menu.updown==3) exit_flag_1 = 1;
+                if(menu.updown==2) exit_flag_1 = 1;
                 break;
             case 5:
-                if(menu.updown==3);//flash
-                if(menu.updown==4) exit_flag_1 = 1;
+                if(menu.updown==3) exit_flag_1 = 1;
                 break;
-            case 6://状态机
+            case 6://设置状态机顺序
                 if(menu.updown==8) process_status[index]='S';
-                else if(menu.updown==9);//flash
-                else if(menu.updown==10) exit_flag_1=1;
+                else if(menu.updown==9) exit_flag_1=1;//退出调节状态机
                 else
                 {
                     process_status[index]=(uint8)menu.updown;
-                    tft180_show_char(index*10, 0, process_status[index]);
+                    tft180_show_uint(index*10, 0, process_status[index], 1);
                     index++;
                 }
                 break;
-            case 7://状态机对应的速度
-                if(menu.updown==8);//flash
-                else if(menu.updown==9)
+            case 7://修改状态机对应的速度
+                //将对应速度赋给对应的状态机顺序
+                if(menu.updown==8)
                 {
                     exit_flag_1=1;
                     for(int i=0;i<100;i++)
@@ -493,14 +494,15 @@ void EnterKey(uint8* exit_flag)
                         else process_speed[i]=speed[process_status[i]-1];
                     }
                 }
+                //用一个数组存每一个元素对应的速度
                 else
                 {
                     speed[menu.updown]+=2;
-                    tft180_show_char(100, menu.updown*10, speed[menu.updown]);
+                    tft180_show_uint(100, menu.updown*10, speed[menu.updown], 2);
                 }
                 break;
         }
-        if(exit_flag_1)
+        if(exit_flag_1)//返回主界面
         {
             index=0;
             menu.page=0;
@@ -508,7 +510,7 @@ void EnterKey(uint8* exit_flag)
             tft180_clear();
         }
     }
-    else if(menu.enter==1)
+    else if(menu.enter==1)//二级菜单，显示图像
     {
         if(menu.updown<2)
         {
@@ -525,7 +527,7 @@ void EnterKey(uint8* exit_flag)
             menu.enter=0;
         }
     }
-    else if(menu.enter==2)
+    else if(menu.enter==2)//三级菜单，显示边线和中线
     {
         if(menu.page==10)
         {
@@ -548,5 +550,68 @@ void EnterKey(uint8* exit_flag)
                 case 3:*exit_flag=1;break;
             }
         }
+    }
+}
+/***********************************************
+* @brief : 将需要修改的变量写入Flash
+* @param : void
+* @return: void
+* @date  : 2023.5.14
+* @author: L
+************************************************/
+void WriteToFlash(void)
+{
+    if(flash_check(0, 0)==1)//如果Flash有值，擦除
+        flash_erase_page(0, 0);
+    flash_buffer_clear();//清空缓冲区
+    //将需要修改的变量写到缓冲区
+    flash_union_buffer[0].uint32_type=(uint32)turnpid_image.P;
+    flash_union_buffer[1].uint32_type=(uint32)turnpid_image.D;
+    flash_union_buffer[2].uint32_type=(uint32)turnpid_adc.P;
+    flash_union_buffer[3].uint32_type=(uint32)turnpid_adc.D;
+    flash_union_buffer[4].uint32_type=(uint32)speedpid_left.P;
+    flash_union_buffer[5].uint32_type=(uint32)speedpid_left.D;
+    flash_union_buffer[6].uint32_type=(uint32)speedpid_right.P;
+    flash_union_buffer[7].uint32_type=(uint32)speedpid_right.D;
+    flash_union_buffer[8].uint32_type=(uint32)(-gyropid.P);
+    flash_union_buffer[9].uint32_type=(uint32)(-gyropid.I);
+    flash_union_buffer[10].uint32_type=(uint32)(-gyropid.D);
+    for(int i=11;i<11+15;i++)
+    {
+        flash_union_buffer[i].uint32_type=process_status[i-11];
+        flash_union_buffer[i+15].uint32_type=process_speed[i-11];
+    }
+    flash_write_page_from_buffer(0, 0);//将缓冲区中的值写入Flash
+}
+/***********************************************
+* @brief : 从Flash中读取值到对应的变量
+* @param : void
+* @return: void
+* @date  : 2023.5.14
+* @author: L
+************************************************/
+void ReadFromFlash(void)
+{
+    if(flash_check(0, 0)==1)//如果Flash中有值，则读取，否则不读取
+    {
+        flash_read_page_to_buffer(0, 0);//读取Flash的值
+        //从缓冲区获得对应变量的值
+        turnpid_image.P=flash_union_buffer[0].uint32_type;
+        turnpid_image.D=flash_union_buffer[1].uint32_type;
+        turnpid_adc.P=flash_union_buffer[2].uint32_type;
+        turnpid_adc.D=flash_union_buffer[3].uint32_type;
+        speedpid_left.P=flash_union_buffer[4].uint32_type;
+        speedpid_left.D=flash_union_buffer[5].uint32_type;
+        speedpid_right.P=flash_union_buffer[6].uint32_type;
+        speedpid_right.D=flash_union_buffer[7].uint32_type;
+        gyropid.P=flash_union_buffer[8].uint32_type;
+        gyropid.I=flash_union_buffer[9].uint32_type;
+        gyropid.D=flash_union_buffer[10].uint32_type;
+        for(int i=11;i<11+15;i++)
+        {
+            process_status[i-11]=flash_union_buffer[i].uint32_type;
+            process_speed[i-11]=flash_union_buffer[i+15].uint32_type;
+        }
+        flash_buffer_clear();//清空缓冲区
     }
 }

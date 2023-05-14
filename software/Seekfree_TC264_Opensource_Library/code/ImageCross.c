@@ -69,90 +69,75 @@ uint8 CrossIdentify(void)
         }
         break;
     }
-    //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，如果没有找到角点，则表示已经要出了十字，切换状态
+    //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，编码器积分到阈值或者没重新扫线就已经有边线则退出状态
     case kCrossIn:
     {
-        uint8 change_lr_flag = 0;               //切换寻找左右边线角点的标志位，默认右线找角点，没找到则从左线找
-        uint8 corner_find = 0;                  //是否找到角点的标志位
-
+        uint8 change_lr_flag = 0;//切换寻找左右边线角点的标志位，默认左线找角点，没找到则从右线找
         if(l_line_count > 100 && r_line_count > 100)
         {
             cross_type = kCrossOut;
             aim_distance = 0.45;
         }
 
-        EdgeDetection_Cross();
-        per_r_line_count=PER_EDGELINE_LENGTH;   //重置透视后右线的长度
-        per_l_line_count=PER_EDGELINE_LENGTH;   //重置透视后左线的长度
-        //边线逆透视
-        EdgeLinePerspective(left_line,l_line_count,per_left_line);
-        EdgeLinePerspective(right_line,r_line_count,per_right_line);
-        //边线滤波
-        BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
-        BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
-        //边线等距采样
-        ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-        ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-        //求边线曲率
-        local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
-        local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
-        //曲率极大值抑制
-        nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
-        nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
-
-        //找右线角点
-        for (int i = 0; i < per_r_line_count; i++)
+        EdgeDetection_Cross('l');//左边重新扫线
+        per_l_line_count=PER_EDGELINE_LENGTH;//重置透视后左线的长度
+        EdgeLinePerspective(left_line,l_line_count,per_left_line);//边线逆透视
+        BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);//边线滤波
+        ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);//等距采样
+        local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);//边线曲率
+        nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);//极大值抑制
+        //如果右边也没找到角点，为了防止出错，所以默认寻左线，如果右边找到角点就会寻右线
+        track_rightline(f_left_line1, per_l_line_count , center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        track_type = kTrackLeft;
+        //找左线角点
+        for (int i = 0; i < per_l_line_count; i++)
         {
-            //找到角点则寻右线，不寻左线，改变预瞄点
-            if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
+            //找到角点则寻左线，不扫右线，改变预瞄点
+            if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
             {
                 if(i > 70) break;//角点很远。跳出
                 else
                 {
-                    track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-                    track_type = kTrackRight;
                     aim_distance = (float)((i + 6) * SAMPLE_DIST);
-                    change_lr_flag = 1;                             //等于1则不从左线找角点
-                    corner_find = 1;                                //等于0是默认寻右线，这里是寻右线
+                    change_lr_flag = 1;                             //等于1则不扫右线
                     break;
                 }
             }
         }
-        //右线没找到角点，从左线找
+
+        //左线没找到角点，从右线找
         if (change_lr_flag == 0)
         {
-            for (int i = 0; i < per_l_line_count; i++)
+            EdgeDetection_Cross('r');
+            per_r_line_count=PER_EDGELINE_LENGTH;//重置透视后右线的长度
+            EdgeLinePerspective(right_line,r_line_count,per_right_line);//边线逆透视
+            BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);//边线滤波
+            ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);//边线等距采样
+            local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);//求边线曲率
+            nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);//曲率极大值抑制
+            //找右线角点
+            for (int i = 0; i < per_r_line_count; i++)
             {
                 //找到角点则寻左线，改变预瞄点
-                if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
+                if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
                 {
                     if(i > 70) break;//角点很远。跳出
                     else
                     {
                         track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-                        track_type = kTrackLeft;
+                        track_type = kTrackRight;
                         aim_distance = (float)((i + 6) * SAMPLE_DIST);
-                        corner_find = 1;                                //等于0是默认寻右线，这里是寻左线
                         break;
                     }
                 }
             }
         }
-        //没有找到角点，默认寻右线，切换下一个状态
-//        if (corner_find == 0 && (left_line[0].Y > 100 || left_line[0].Y > 100))
-//        {
-//            track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
-//            track_type = kTrackRight;
-////            track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
-////            track_type = kTrackLeft;
-//            cross_type = kCrossOut;
-//            aim_distance = 0.45;
-//        }
+
         if(dis > 450)
         {
             encoder_dis_flag = 0;
             aim_distance = 0.45;
-            cross_type = kCrossBegin;
+            cross_type = kCrossOut;
             return 1;
         }
 
@@ -187,7 +172,7 @@ uint8 CrossIdentify(void)
 ************************************************/
 uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
 {
-    uint8 cross_find_l = FALSE, cross_find_r = FALSE;                       //是否找到角点标志位
+    uint8 cross_find_l = FALSE, cross_find_r = FALSE;//是否找到角点标志位
 
     //找左角点
     for (int16 i = 0; i < per_l_line_count; i++)
@@ -237,66 +222,78 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
 * @date  : 2023.4.14
 * @author: L
 ************************************************/
-void EdgeDetection_Cross(void)
+void EdgeDetection_Cross(uint8 lr_flag)
 {
     uint8 half=GRAY_BLOCK/2;
-    myPoint left_seed, right_seed;              //左右种子
-    left_seed = left_line[l_line_count - 1]; right_seed = right_line[r_line_count - 1];
-    int now_point = 1,last_point = 1;
-    uint8 is_loseline = 0;                      //是否丢线的标志位，丢线则继续生长，不丢线就计入边线
-
-    if (left_seed.Y<USE_IMAGE_H_MIN+half || left_seed.Y>USE_IMAGE_H-half-1 || left_seed.X<half || left_seed.X>USE_IMAGE_W-half-1)
+    switch(lr_flag)
     {
-        left_seed.Y=USE_IMAGE_H_MAX-half-1;left_seed.X=half;
-    }
-    left_seed.X++;
-    if (right_seed.Y<USE_IMAGE_H_MIN+half || right_seed.Y>USE_IMAGE_H-half-1 || right_seed.X<half || right_seed.X>USE_IMAGE_W-half-1)
-    {
-        right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-1;
-    }
-    right_seed.X--;
-
-    for (; left_seed.Y > USE_IMAGE_H_MAX - 45; left_seed.Y--)
-    {
-        last_point = now_point;
-        now_point = PointSobelTest(left_seed);
-        if (now_point == 1 && last_point == 0)
-            break;
-    }
-    now_point=1;
-    for (; right_seed.Y > USE_IMAGE_H_MAX - 45; right_seed.Y--)
-    {
-        last_point=now_point;
-        now_point=PointSobelTest(right_seed);
-        if (now_point == 1 && last_point == 0)
-            break;
-    }
-
-    l_line_count = 0;r_line_count = 0;
-    uint8 len_l=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-left_seed.Y);
-    uint8 len_r=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-right_seed.Y);
-    //左边线生长
-    while(l_line_count < len_l)
-    {
-        is_loseline = EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num);
-            if (is_loseline == 1)
+        case 'l':
+        {
+            myPoint left_seed = left_line[l_line_count - 1];//左种子
+            int now_point = 1,last_point = 1;//保存本次的点和上一次的点是否为边缘的点
+            //防止种子在边界，导致sobel检测越界
+            if (left_seed.Y<USE_IMAGE_H_MIN+half || left_seed.Y>USE_IMAGE_H-half-1 || left_seed.X<half || left_seed.X>USE_IMAGE_W-half-1)
             {
-                left_line[l_line_count].X = left_seed.X;left_line[l_line_count].Y = left_seed.Y;
-                l_line_count++;
+                left_seed.Y=USE_IMAGE_H_MAX-half-1;left_seed.X=half;
             }
-            else
-                break;
-    }
-    //右边线生长
-    while(r_line_count < len_r)
-    {
-        is_loseline = EightAreasSeedGrownGray(&right_seed,'r',&right_seed_num);
-            if (is_loseline == 1)
+            left_seed.X++;
+            //从种子开始向上寻找边缘点
+            for (; left_seed.Y > USE_IMAGE_H_MAX - 45; left_seed.Y--)
             {
-                right_line[r_line_count].X = right_seed.X;right_line[r_line_count].Y = right_seed.Y;
-                r_line_count++;
+                last_point = now_point;
+                now_point = PointSobelTest(left_seed);
+                if (now_point == 1 && last_point == 0)
+                    break;
             }
-            else
-                break;
+            l_line_count = 0;//清空之前的线
+
+            uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-left_seed.Y);//重新扫线的长度
+            //左边线生长
+            while(l_line_count < len)
+            {
+                if (EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num) == 1)
+                {
+                    left_line[l_line_count].X = left_seed.X;left_line[l_line_count].Y = left_seed.Y;
+                    l_line_count++;
+                }
+                else
+                    break;
+            }
+            break;
+        }
+        case 'r':
+        {
+            myPoint right_seed = right_line[r_line_count - 1];//右种子
+            int now_point = 1,last_point = 1;//保存本次的点和上一次的点是否为边缘的点
+            //防止种子在边界，导致sobel检测越界
+            if (right_seed.Y<USE_IMAGE_H_MIN+half || right_seed.Y>USE_IMAGE_H-half-1 || right_seed.X<half || right_seed.X>USE_IMAGE_W-half-1)
+            {
+                right_seed.Y=USE_IMAGE_H_MAX-half-1,right_seed.X=USE_IMAGE_W-half-1;
+            }
+            right_seed.X--;
+            //从种子开始向上寻找边缘点
+            for (; right_seed.Y > USE_IMAGE_H_MAX - 45; right_seed.Y--)
+            {
+                last_point=now_point;
+                now_point=PointSobelTest(right_seed);
+                if (now_point == 1 && last_point == 0)
+                    break;
+            }
+            r_line_count = 0;//清空之前的线
+
+            uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-right_seed.Y);//重新扫线的长度
+            //右边线生长
+            while(r_line_count < len)
+            {
+                if (EightAreasSeedGrownGray(&right_seed,'r',&right_seed_num) == 1)
+                {
+                    right_line[r_line_count].X = right_seed.X;right_line[r_line_count].Y = right_seed.Y;
+                    r_line_count++;
+                }
+                else
+                    break;
+            }
+            break;
+        }
     }
 }
