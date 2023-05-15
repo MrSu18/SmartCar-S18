@@ -71,6 +71,7 @@ void core1_main(void)
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
     ReadFromFlash();//从flash中读取值
     KeyCtrl();//按键控制
+    pit_enable(CCU60_CH0);
     base_speed=original_speed;
 //    OutGarage();//出库
     while (TRUE)
@@ -81,8 +82,8 @@ void core1_main(void)
         {
 #if 1
             memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
-//            //出界保护
-//            OutProtect();
+            //出界保护
+            OutProtect();
 //            sobel(mt9v03x_image,binary_image);
             //显示灰度图
             ShowImage();

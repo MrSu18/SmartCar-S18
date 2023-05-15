@@ -87,7 +87,7 @@ uint8 CrossIdentify(void)
         local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);//边线曲率
         nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);//极大值抑制
         //如果右边也没找到角点，为了防止出错，所以默认寻左线，如果右边找到角点就会寻右线
-        track_rightline(f_left_line1, per_l_line_count , center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        track_leftline(f_left_line1, per_l_line_count , center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
         track_type = kTrackLeft;
         //找左线角点
         for (int i = 0; i < per_l_line_count; i++)

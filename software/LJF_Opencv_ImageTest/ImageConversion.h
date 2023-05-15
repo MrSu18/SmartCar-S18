@@ -3,6 +3,18 @@
 
 #include "main.h"
 
+typedef struct myPoint
+{
+    uint8 X;
+    uint8 Y;
+}myPoint;//点的结构体
+
+typedef struct myPoint_f
+{
+    float X;
+    float Y;
+}myPoint_f;//浮点数精度点的结构体，防止精度丢失
+
 //图像转化的宏定义
 #define PER_IMAGE_W     MT9V03X_W             //逆透视图像的宽度
 #define PER_IMAGE_H     MT9V03X_H             //逆透视图像的高度
@@ -33,5 +45,6 @@ void ImagePerspective_Init(void);//图像逆透视地址映射
 void ImageBorderInit(void);//逆透视图像边界初始化
 void myadaptiveThreshold(uint8 *img_data, uint8 *output_data, int width, int height, int block, uint8 clip_value);
 void sobel(uint8 imag[MT9V03X_H][MT9V03X_W],uint8 imag1[MT9V03X_H][MT9V03X_W]);
+myPoint PointRePerspective(myPoint_f point);//由透视坐标找到原图坐标
 
 #endif

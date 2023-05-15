@@ -14,7 +14,8 @@
 
 //#define PI 3.1415926
 
-uint8 CircleIslandLStatus()//右边环岛状态状态机
+/**************************************************左环岛***************************************************************/
+uint8 CircleIslandLStatus()//左边环岛状态状态机
 {
     static uint8 status=0;//环岛状态转移变量
 //    tft180_show_uint(120, 100, status, 2);
@@ -32,7 +33,6 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
             {
                 gpio_toggle_level(P21_3);
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
-//                gpio_set_level(P21_4, GPIO_LOW);
                 status=2;
             }
             break;
@@ -42,13 +42,20 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
                 base_speed=original_speed;//环内加速
                 status=3;
             }
+            else  if (CircleIslandLOutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
+            {
+                status=5;
+            }
             break;
         case 3: //检测出环
             if(CircleIslandLOutDetection()==1)
             {
-//                base_speed=70;//降速出环
                 track_type=kTrackRight;
                 status=4;
+            }
+            else  if (CircleIslandLOutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
+            {
+                status=5;
             }
             break;
         case 4://出环
@@ -62,7 +69,6 @@ uint8 CircleIslandLStatus()//右边环岛状态状态机
             if (CircleIslandLEnd()==1)
             {
                 speed_type=kImageSpeed;
-//                gpio_set_level(P21_4, GPIO_HIGH);
                 base_speed=original_speed;//加速出环
                 status=0;
                 return 1;
@@ -87,6 +93,18 @@ uint8 CircleIslandLDetection()//检测左环岛
     static uint8 status=0;//检测到角点->检测不到角点
     if (status==0)//状态0检测角点出现
     {
+        //避免太靠右使得左边没线，但是左边又有角点存在
+        if(l_line_count<3)
+        {
+            //左边重新扫线
+            LeftLineDetectionAgain();
+            per_l_line_count=PER_EDGELINE_LENGTH;
+            EdgeLinePerspective(left_line,l_line_count,per_left_line);
+            BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+            ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+            local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
+            nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+        }
         for (int i = 0; i < per_l_line_count; ++i)
         {
             //检测左边70度到140度的角点,加负号的因为左边的角点算出来是负数
@@ -130,26 +148,12 @@ uint8 CircleIslandLInDetection(void)
     {
         if(dis>400)//40cm
         {
-//            status=2;
             encoder_dis_flag = 0;
             status=0;
             track_type=kTrackLeft;
             return 1;
         }
     }
-//    else if(status==2)
-//    {
-//        if (adc_value[0]>75)//先看左边是否有边线,左边有边线直接进去
-//        {
-//            track_type=kTrackLeft;
-//            return 1;
-//        }
-//        else
-//        {
-//            track_type=kTrackRight;//否则还没到入环时机
-//            return 0;
-//        }
-//    }
     track_type=kTrackRight;//否则还没到入环时机
     return 0;
 }
@@ -332,8 +336,12 @@ void CircleIslandLOut(void)//环岛出环处理函数
 ************************************************/
 uint8 CircleIslandLEnd(void)
 {
-    if(l_line_count>100)//判断
-        return 1;
+    if(l_line_count>10)//判断
+    {
+        if(left_line[10].X-left_line[0].X>5)//并且左边线有像右边延生的趋势，利用了梯形畸变近大远小
+            return 1;
+    }
+
     //循迹
     if(per_r_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环
     {
@@ -360,23 +368,24 @@ uint8 CircleIslandLEnd(void)
     }
     return 0;
 }
+/**********************************************************************************************************************/
 
 /**************************************************右环岛***************************************************************/
 uint8 CircleIslandRStatus()//右边环岛状态状态机
 {
     static uint8 status;//环岛状态转移变量
+//    tft180_show_uint(120, 100, status, 2);
     switch (status)
     {
         case 0: //检测右环岛
             if(CircleIslandRDetection()==2)
             {
-                status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
+                status=1;
             }
             break;
         case 1: //路过环岛第一个入口
             if(CircleIslandRInDetection()==1)
             {
-                gpio_toggle_level(P21_3);
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }
@@ -386,19 +395,25 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
             {
                 status=3;
             }
+            else  if (CircleIslandROutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
+            {
+                status=5;
+            }
             break;
         case 3: //检测出环
             if(CircleIslandROutDetection()==1)
             {
-                gpio_toggle_level(P21_3);
                 track_type=kTrackLeft;
                 status=4;
+            }
+            else  if (CircleIslandROutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
+            {
+                status=5;
             }
             break;
         case 4://出环
             if (CircleIslandROutFinish()==1)
             {
-                gpio_toggle_level(P21_3);
                 status=5;
             }
             else CircleIslandROut();//出环没结束就一直做出环处理
@@ -420,7 +435,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
 * @brief : 检测小车是否走到了环岛元素部分
 * @param : 无
 * @return: 0：还没检测到左角点 1：检测到了左边角点 2：左角点消失
-* @date  : 2023.5.13
+* @date  : 2023.5.15
 * @author: 刘骏帆
 * @notice: 角度./180.*PI，因为求得的曲率是弧度制的不是角度制
 ************************************************/
@@ -432,10 +447,11 @@ uint8 CircleIslandRDetection()//检测左环岛
         for (int i = 0; i < per_r_line_count; ++i)
         {
             //检测左边70度到140度的角点,加负号的因为左边的角点算出来是负数
-            //第三个条件限制的是哪个角点有多远0.8m
-            if(70./180.*PI<r_angle_1[i] && r_angle_1[i]<140./180.*PI && i<0.8/SAMPLE_DIST)
+            //第三个条件限制的是哪个角点有多远0.3m
+            if(70./180.*PI<r_angle_1[i] && r_angle_1[i]<140./180.*PI && i<0.3/SAMPLE_DIST)
             {
                 track_type=kTrackLeft;
+                //如果左边没线就要重新扫线不然会继承上一次偏差
                 status=1;//第一次检测到
                 break;
             }
@@ -444,6 +460,7 @@ uint8 CircleIslandRDetection()//检测左环岛
     else if (status==1)//状态1检测角点消失
     {
         track_type=kTrackLeft;
+        //如果左边没线就要重新扫线不然会继承上一次偏差
         if(r_line_count<2) status=2;
     }
     else if(status==2)
@@ -519,8 +536,6 @@ uint8 CircleIslandRIn()//入环状态
                     l_line_count++;
                 }
             }
-
-//            l_line_count=per_l_line_count=0;
             per_l_line_count=PER_EDGELINE_LENGTH;
             //对边线进行透视
             EdgeLinePerspective(left_line,l_line_count,per_left_line);
@@ -546,7 +561,7 @@ uint8 CircleIslandRIn()//入环状态
 ************************************************/
 uint8 CircleIslandROutDetection()//左环岛出环状态
 {
-    if (l_line_count<2)//右边一开始就丢线
+    if (l_line_count<10)//左边一开始就丢线
     {
         //左边重新扫线
         LeftLineDetectionAgain();
@@ -581,6 +596,7 @@ uint8 CircleIslandROutFinish(void)//检测环岛是否结束
     //陀螺仪检测出环
     if(icm_angle_x_flag==1)
     {
+        gpio_toggle_level(P21_3);
         return 1;
     }
     return 0;
@@ -652,8 +668,11 @@ void CircleIslandROut(void)//环岛出环处理函数
 ************************************************/
 uint8 CircleIslandREnd(void)
 {
-    if(r_line_count>10)//判断
-        return 1;
+    if(r_line_count>10)//判断是否走完了环岛
+    {
+        if(right_line[0].X-right_line[10].X>5)//并且右边线有像左边延生的趋势，利用了梯形畸变近大远小
+            return 1;
+    }
     //循迹
     if(per_l_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环
     {
@@ -664,19 +683,11 @@ uint8 CircleIslandREnd(void)
         //重新扫线
         LeftLineDetectionAgain();
         EdgeLinePerspective(left_line,l_line_count,per_left_line);
-        if(per_l_line_count>aim_distance/SAMPLE_DIST)
-        {
-            per_l_line_count=PER_EDGELINE_LENGTH;
-            BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
-            ResamplePoints(per_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-            track_leftline(f_left_line1, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-            track_type=kTrackLeft;
-        }
-        else
-        {
-            track_type=kTrackSpecial;//偏差置为0
-            image_bias=0.5;//左拐一点
-        }
+        per_l_line_count=PER_EDGELINE_LENGTH;
+        BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+        ResamplePoints(per_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+        track_leftline(f_left_line1, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        track_type=kTrackLeft;
     }
     return 0;
 }

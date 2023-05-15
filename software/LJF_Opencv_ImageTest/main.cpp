@@ -25,14 +25,14 @@ int main()
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-    String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230510_170243\\img0002741.png");
+    String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230510_192309\\img0008536.png");
     ScanImage(str);
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    for (int i = 3168 ; i < 3894; i++)
+    for (int i = 8536 ; i < 9054; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
-        String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230510_170243\\img000%d.png", i);
+        String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230510_192309\\img000%d.png", i);
         ScanImage(str);
         /************************************************************************************************/
 
@@ -53,6 +53,9 @@ int main()
         PrintEdgeLine(right_line,0,r_line_count,0,100,100);
         PrintEdgeLine(f_left_line1,0,per_l_line_count,0,255,0);
         PrintEdgeLine(f_right_line1,0,per_r_line_count,0,255,255);
+
+
+
 //        PrintEdgeLine(center_line_l,0,per_l_line_count,0,0,255);//左边跟踪出来的中线
 //        PrintEdgeLine(center_line_r,0,per_r_line_count,255,100,0);//循迹的中线
         PrintEdgeLine(center_line,0,Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count),255,0,0);//循迹的中线

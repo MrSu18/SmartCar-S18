@@ -374,7 +374,7 @@ void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
 ************************************************/
 myPoint_f PointPerspective(myPoint point)
 {
-    double change_inverse_Mat[3][3]={{-0.360547899722757,-2.11222817050679,125.119194800980},{-0.0219325308988181,-3.06300742600148,165.389828731780},{-0.000322621439041103,-0.0223099279886759,0.999927776948517}};
+    double change_inverse_Mat[3][3]={{-0.357647738148811,-2.16541398167235,126.261161713577},{-0.00776583115938610,-3.27857740797651,176.162946641881},{-0.000113965940146683,-0.0229674263434089,1.00009118341184}};
     myPoint_f per_point={0};
     float i=point.X;float j=point.Y;
     float solve_x = ((change_inverse_Mat[0][0]*i+change_inverse_Mat[0][1]*j+change_inverse_Mat[0][2])

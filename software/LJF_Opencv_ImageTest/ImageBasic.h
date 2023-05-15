@@ -10,12 +10,6 @@
 #define GRAY_BLOCK   7//灰度扫线的模板大小BLOCK*BLOCK
 #define CLIP_VALUE   3//灰度扫线的参数（1~5）
 
-typedef struct myPoint
-{
-	uint8 X;
-	uint8 Y;
-}myPoint;//点的结构体
-
 /**************全局变量*****************/
 extern myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左中右三线
 extern char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];
@@ -25,6 +19,7 @@ extern uint8 left_seed_num,right_seed_num;//八零域的种子生长标号
 //****************************************
 
 uint8 PointSobelTest(myPoint a);//像素点的sobel测试
+uint8 InflectionTest(myPoint_f inflection,uint8 x1,uint8 y1,uint8 x2,uint8 y2);//拐点的再次判断，避免由于黑胶布而造成的错误拐点
 void SowSeedBinary(myPoint* left_seed, myPoint* right_seed);//扫线前的播种操作
 void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed);//通过差比和算法先找到左右种子
 uint8 EightAreasSeedGrownGray(myPoint* seed, char choose, uint8 *seed_num);//八零域种子生长规则：种子生长一次

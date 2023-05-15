@@ -307,3 +307,8 @@ void Findline_Righthand_Adaptive(int block_size, int clip_value, myPoint right_s
     }
     *num = step;
 }
+
+uint8 InflectionTest(myPoint_f inflection,uint8 x1,uint8 y1,uint8 x2,uint8 y2)//拐点的再次判断，避免由于黑胶布而造成的错误拐点
+{
+    ;
+}

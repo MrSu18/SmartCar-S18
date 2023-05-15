@@ -16,12 +16,6 @@
 #define PER_EDGELINE_LENGTH 250             //透视后边线数组长度(cm)
 //===============================================================
 
-typedef struct myPoint_f
-{
-    float X;
-    float Y;
-}myPoint_f;//浮点数精度点的结构体，防止精度丢失
-
 typedef enum TrackType//跟踪左右线切换的枚举类型变量
 {
     kTrackLeft=0,

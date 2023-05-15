@@ -18,8 +18,8 @@
 #include "Control.h"
 
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入库 'S':停车*/
-uint8 process_status[15]={3,3,3,3,'S'};//总状态机元素执行顺序数组
-uint16 process_speed[15]={70,70,70,70,70};//上面数组对应的元素路段的速度
+uint8 process_status[15]={2,1,'S'};//总状态机元素执行顺序数组
+uint16 process_speed[15]={70,70,70};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
 /***********************************************
@@ -74,7 +74,7 @@ void ImageProcess(void)
         track_type=kTrackRight;
     }
 
-#if 0
+#if 1
     switch(process_status[process_status_cnt])
     {
         case 1://左环岛
@@ -86,6 +86,12 @@ void ImageProcess(void)
             }
             break;
         case 2://右环岛
+            if(CircleIslandRStatus()==1)
+            {
+                gpio_toggle_level(P21_3);
+                process_status_cnt++;
+                original_speed=process_speed[process_status_cnt];
+            }
             break;
         case 3://十字
             if(CrossIdentify()==1)
@@ -139,10 +145,28 @@ void ImageProcess(void)
     //预瞄点求偏差
     if(track_type==kTrackRight)
     {
+        if(r_line_count<10)//你想让他寻右线但是右边线不存在时，右边重新扫线
+        {
+            RightLineDetectionAgain();
+            EdgeLinePerspective(right_line,r_line_count,per_right_line);
+            per_r_line_count=PER_EDGELINE_LENGTH;
+            BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
+            ResamplePoints(per_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+            track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        }
         image_bias = GetAnchorPointBias(aim_distance, per_r_line_count, center_line_r);
     }
     else if(track_type==kTrackLeft)
     {
+        if (l_line_count<10)//你想让他寻左线但是左边线不存在时，左边重新扫线
+        {
+            LeftLineDetectionAgain();
+            per_l_line_count=PER_EDGELINE_LENGTH;
+            EdgeLinePerspective(left_line,l_line_count,per_left_line);
+            BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+            ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+            track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        }
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
     //速度决策

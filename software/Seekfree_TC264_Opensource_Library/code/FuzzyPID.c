@@ -164,16 +164,6 @@ void FuzzyPID(void)
     turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * EC);//PID公式计算输出量
     turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
-//    if (turnpid_image.out > 0)//左转
-//    {
-//        target_left = base_speed - (int)(0.9*turnpid_image.out);
-//        target_right = base_speed + (int)(0.1*turnpid_image.out);
-//    }
-//    else
-//    {
-//        target_left = base_speed - (int)(0.1*turnpid_image.out);
-//        target_right = base_speed + (int)(0.9*turnpid_image.out);
-//    }
     if (turnpid_image.out > 0)//左转
     {
         target_left = base_speed - (int)turnpid_image.out;

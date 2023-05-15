@@ -178,7 +178,6 @@ void ImagePerspective_Init(void)
     static uint8 BlackColor = IMAGE_BAN;
     //逆透视矩阵
     double change_un_Mat[3][3] ={{-2.823035,3.058385,-152.620928},{0.141489,1.441372,-256.109755},{0.002246,0.033146,-4.763373}};
-//    double change_un_Mat[3][3] ={{-2.897137,2.967769,-150.453872},{0.069071,1.394489,-249.171423},{0.001096,0.032185,-4.688751}};
     for (int i = 0; i < PER_IMAGE_W; i++)
     {
         for (int j = 0; j < PER_IMAGE_H; j++)
@@ -322,5 +321,25 @@ void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W
     }
 }
 
-
+/***********************************************
+* @brief : 由透视坐标找到原图坐标
+* @param : 点的透视图坐标
+* @return: 原图点的坐标
+* @date  : 2023.5.14
+* @author: 刘骏帆
+************************************************/
+myPoint PointRePerspective(myPoint_f per_point)
+{
+    double change_un_Mat[3][3] ={{-2.816573,2.695960,-119.293601},{0.045197,1.260412,-227.723753},{0.000717,0.029253,-4.243437}};
+    myPoint original_point={0};
+    int local_x = (int)((change_un_Mat[0][0] * per_point.X + change_un_Mat[0][1] * per_point.Y + change_un_Mat[0][2])
+                        / (change_un_Mat[2][0]*per_point.X+change_un_Mat[2][1]*per_point.Y+change_un_Mat[2][2]));
+    int local_y = (int)((change_un_Mat[1][0]*per_point.X+change_un_Mat[1][1]*per_point.Y+change_un_Mat[1][2])
+                        /(change_un_Mat[2][0]*per_point.X+change_un_Mat[2][1]*per_point.Y+change_un_Mat[2][2]));
+    if (local_x>= 0 && local_y >= 0 && local_y < USE_IMAGE_H && local_x < USE_IMAGE_W)
+    {
+        original_point.X=local_x;original_point.Y=local_y;
+    }
+    return original_point;
+}
 
