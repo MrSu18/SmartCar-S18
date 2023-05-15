@@ -151,7 +151,7 @@ void ShowImage(void)
         tft180_show_gray_image(0, 0, gray_image[0], MT9V03X_W, MT9V03X_H, 160, 120, 0);
         tft180_show_float(98, 0, image_bias, 2, 3);
     }
-    else if(per_image_flag==1)
+    else if(per_image_flag == 1)
     {
         LCDShowPerImage();
         tft180_show_float(98, 0, image_bias, 2, 3);

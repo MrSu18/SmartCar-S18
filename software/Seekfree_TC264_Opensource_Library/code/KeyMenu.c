@@ -348,6 +348,11 @@ void SubParameter(void)
             }
             break;
     }
+    if(menu.page==7)
+    {
+        speed[menu.updown]-=2;
+        tft180_show_uint(100, menu.updown*10, speed[menu.updown], 2);
+    }
 }
 /***********************************************
 * @brief : 对应参数加操作
@@ -428,6 +433,11 @@ void AddParameter(void)
             }
             break;
     }
+    if(menu.page==7)
+    {
+        speed[menu.updown]+=2;
+        tft180_show_uint(100, menu.updown*10, speed[menu.updown], 2);
+    }
 }
 /***********************************************
 * @brief : 按下确认按键后实现不同的功能
@@ -444,20 +454,20 @@ void EnterKey(uint8* exit_flag)
         switch(menu.page)
         {
             case 0://在主界面
-                if(menu.updown<11)//不是退出键
+                if(menu.updown<9)//不是退出键
                 {
                     menu.page=menu.updown+1;//显示对应的下一页的内容
                     if(menu.updown==8) menu.enter=1;//到二级菜单
-                    else if(menu.updown==9)//写入flash
-                        WriteToFlash();
-                    else if(menu.updown==10)//擦除flash
-                    {
-                        if(flash_check(0, 0)==1)//如果Flash不为空，则擦除
-                            flash_erase_page(0, 0);
-                        flash_buffer_clear();//清空缓冲区
-                    }
                     menu.updown=0;
                     tft180_clear();
+                }
+                else if(menu.updown==9)//写入flash
+                    WriteToFlash();
+                else if(menu.updown==10)//擦除flash
+                {
+                    if(flash_check(0, 0)==1)//如果Flash不为空，则擦除
+                        flash_erase_page(0, 0);
+                    flash_buffer_clear();//清空缓冲区
                 }
                 else if(menu.updown==11) *exit_flag = 1;//退出按键调参
                 break;
@@ -473,12 +483,11 @@ void EnterKey(uint8* exit_flag)
                 if(menu.updown==3) exit_flag_1 = 1;
                 break;
             case 6://设置状态机顺序
-                if(menu.updown==8) process_status[index]='S';
-                else if(menu.updown==9) exit_flag_1=1;//退出调节状态机
+                if(menu.updown==9) exit_flag_1=1;//退出调节状态机
                 else
                 {
                     process_status[index]=(uint8)menu.updown;
-                    tft180_show_uint(index*10, 0, process_status[index], 1);
+                    tft180_show_uint((index+1)*10, 0, process_status[index], 1);
                     index++;
                 }
                 break;
@@ -493,12 +502,6 @@ void EnterKey(uint8* exit_flag)
                         else if(process_status[i]=='S') process_speed[i]=speed[7];
                         else process_speed[i]=speed[process_status[i]-1];
                     }
-                }
-                //用一个数组存每一个元素对应的速度
-                else
-                {
-                    speed[menu.updown]+=2;
-                    tft180_show_uint(100, menu.updown*10, speed[menu.updown], 2);
                 }
                 break;
         }
@@ -596,21 +599,21 @@ void ReadFromFlash(void)
     {
         flash_read_page_to_buffer(0, 0);//读取Flash的值
         //从缓冲区获得对应变量的值
-        turnpid_image.P=flash_union_buffer[0].uint32_type;
-        turnpid_image.D=flash_union_buffer[1].uint32_type;
-        turnpid_adc.P=flash_union_buffer[2].uint32_type;
-        turnpid_adc.D=flash_union_buffer[3].uint32_type;
-        speedpid_left.P=flash_union_buffer[4].uint32_type;
-        speedpid_left.D=flash_union_buffer[5].uint32_type;
-        speedpid_right.P=flash_union_buffer[6].uint32_type;
-        speedpid_right.D=flash_union_buffer[7].uint32_type;
-        gyropid.P=flash_union_buffer[8].uint32_type;
-        gyropid.I=flash_union_buffer[9].uint32_type;
-        gyropid.D=flash_union_buffer[10].uint32_type;
+        turnpid_image.P=(float)flash_union_buffer[0].uint32_type;
+        turnpid_image.D=(float)flash_union_buffer[1].uint32_type;
+        turnpid_adc.P=(float)flash_union_buffer[2].uint32_type;
+        turnpid_adc.D=(float)flash_union_buffer[3].uint32_type;
+        speedpid_left.P=(float)flash_union_buffer[4].uint32_type;
+        speedpid_left.D=(float)flash_union_buffer[5].uint32_type;
+        speedpid_right.P=(float)flash_union_buffer[6].uint32_type;
+        speedpid_right.D=(float)flash_union_buffer[7].uint32_type;
+        gyropid.P=(float)flash_union_buffer[8].uint32_type;
+        gyropid.I=(float)flash_union_buffer[9].uint32_type;
+        gyropid.D=(float)flash_union_buffer[10].uint32_type;
         for(int i=11;i<11+15;i++)
         {
-            process_status[i-11]=flash_union_buffer[i].uint32_type;
-            process_speed[i-11]=flash_union_buffer[i+15].uint32_type;
+            process_status[i-11]=(uint8)flash_union_buffer[i].uint32_type;
+            process_speed[i-11]=(uint16)flash_union_buffer[i+15].uint32_type;
         }
         flash_buffer_clear();//清空缓冲区
     }

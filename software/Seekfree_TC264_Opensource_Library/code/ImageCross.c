@@ -20,6 +20,7 @@ typedef enum CrossType
 }CrossType;//十字状态机状态结构体
 
 CrossType cross_type = kCrossBegin;
+const float* const origin_aimdis = &aim_distance;
 
 /***********************************************
 * @brief : 十字路口状态机
@@ -40,7 +41,11 @@ uint8 CrossIdentify(void)
         if (CrossFindCorner(&corner_id_l, &corner_id_r) != 0)
         {
             //角点太远，跳出状态
-            if((corner_id_l > aim_distance / SAMPLE_DIST) || (corner_id_r > aim_distance / SAMPLE_DIST)) break;
+            if((corner_id_l > *origin_aimdis / SAMPLE_DIST) || (corner_id_r > *origin_aimdis / SAMPLE_DIST))
+            {
+                aim_distance = *origin_aimdis;
+                break;
+            }
             //左边没有角点，右边有角点，寻右线，更改预瞄点
             else if ((corner_id_l == 0) && (corner_id_r != 0))
             {
@@ -53,7 +58,7 @@ uint8 CrossIdentify(void)
                 track_type = kTrackLeft;
                 aim_distance = (float)(corner_id_l)* SAMPLE_DIST;
             }
-            //两边都右角点，寻右线，更改预瞄点
+            //两边都有角点，寻右线，更改预瞄点
             else
             {
                 track_type = kTrackRight;
@@ -64,7 +69,7 @@ uint8 CrossIdentify(void)
             {
                 encoder_dis_flag = 1;
                 cross_type = kCrossIn;
-                aim_distance = 0.45;
+                aim_distance = *origin_aimdis;
             }
         }
         break;
@@ -75,8 +80,10 @@ uint8 CrossIdentify(void)
         uint8 change_lr_flag = 0;//切换寻找左右边线角点的标志位，默认左线找角点，没找到则从右线找
         if(l_line_count > 100 && r_line_count > 100)
         {
-            cross_type = kCrossOut;
-            aim_distance = 0.45;
+            encoder_dis_flag = 0;
+            cross_type = kCrossBegin;
+            aim_distance = *origin_aimdis;
+            return 1;
         }
 
         EdgeDetection_Cross('l');//左边重新扫线
@@ -96,6 +103,12 @@ uint8 CrossIdentify(void)
             if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
             {
                 if(i > 70) break;//角点很远。跳出
+                else if((i + 6) < *origin_aimdis / SAMPLE_DIST)
+                {
+                    aim_distance = *origin_aimdis;
+                    change_lr_flag = 1;                             //等于1则不扫右线
+                    break;
+                }
                 else
                 {
                     aim_distance = (float)((i + 6) * SAMPLE_DIST);
@@ -129,6 +142,7 @@ uint8 CrossIdentify(void)
                         aim_distance = (float)((i + 6) * SAMPLE_DIST);
                         break;
                     }
+                    if((i + 6) < *origin_aimdis / SAMPLE_DIST) aim_distance = *origin_aimdis;
                 }
             }
         }
@@ -136,8 +150,8 @@ uint8 CrossIdentify(void)
         if(dis > 450)
         {
             encoder_dis_flag = 0;
-            aim_distance = 0.45;
-            cross_type = kCrossOut;
+            aim_distance = *origin_aimdis;
+            cross_type = kCrossBegin;
             return 1;
         }
 
@@ -201,12 +215,12 @@ uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r)
         if((f_left_line1[per_l_line_count - 1].X < f_left_line1[*corner_id_l].X) || (f_right_line1[per_r_line_count - 1].X > f_right_line1[*corner_id_r].X))
             return 1;
     }
-    else if ((cross_find_l == TRUE) && (per_r_line_count < 5))
+    else if (cross_find_l == TRUE && cross_find_r == FALSE)
     {
         if(f_left_line1[per_l_line_count - 1].X < f_left_line1[*corner_id_l].X)
             return 2;
     }
-    else if ((cross_find_r == TRUE) && (per_l_line_count < 5))
+    else if (cross_find_r == TRUE && cross_find_l == FALSE)
     {
         if(f_right_line1[per_r_line_count - 1].X > f_right_line1[*corner_id_r].X)
             return 3;
