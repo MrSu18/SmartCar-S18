@@ -83,6 +83,7 @@ void ImageProcess(void)
                 gpio_toggle_level(P21_3);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
+                base_speed=original_speed;
             }
             break;
         case 2://右环岛
@@ -91,6 +92,7 @@ void ImageProcess(void)
                 gpio_toggle_level(P21_3);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
+                base_speed=original_speed;
             }
             break;
         case 3://十字
@@ -99,6 +101,7 @@ void ImageProcess(void)
                 gpio_toggle_level(P21_3);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
+                base_speed=original_speed;
             }
             break;
         case 4://断路
@@ -107,6 +110,7 @@ void ImageProcess(void)
                 gpio_toggle_level(P21_3);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
+                base_speed=original_speed;
             }
             break;
         case 5://坡道
@@ -115,6 +119,7 @@ void ImageProcess(void)
                 gpio_toggle_level(P21_3);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
+                base_speed=original_speed;
             }
             break;
         case 6://路障
@@ -123,6 +128,7 @@ void ImageProcess(void)
                 gpio_toggle_level(P21_3);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
+                base_speed=original_speed;
             }
             break;
         case 7://车库

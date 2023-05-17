@@ -24,7 +24,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==2)
             {
-                base_speed=65;//降速进环
+//                base_speed=65;//降速进环
                 status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
             }
             break;
@@ -39,7 +39,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
-                base_speed=original_speed;//环内加速
+//                base_speed=original_speed;//环内加速
                 status=3;
             }
             else  if (CircleIslandLOutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
@@ -69,7 +69,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
             if (CircleIslandLEnd()==1)
             {
                 speed_type=kImageSpeed;
-                base_speed=original_speed;//加速出环
+//                base_speed=original_speed;//加速出环
                 status=0;
                 return 1;
             }
@@ -341,31 +341,8 @@ uint8 CircleIslandLEnd(void)
         if(left_line[10].X-left_line[0].X>5)//并且左边线有像右边延生的趋势，利用了梯形畸变近大远小
             return 1;
     }
-
     //循迹
-    if(per_r_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环
-    {
-        track_type=kTrackRight;//寻右线出去即可
-    }
-    else//这里对偏差进行处理，避免由于出环的时候就左拐太多，使得右边线不存在而继承上一次的偏差
-    {
-        //重新扫线
-        RightLineDetectionAgain();
-        EdgeLinePerspective(right_line,r_line_count,per_right_line);
-        per_r_line_count=PER_EDGELINE_LENGTH;
-        BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
-        ResamplePoints(per_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-        if(per_r_line_count>aim_distance/SAMPLE_DIST)
-        {
-            track_rightline(f_right_line1, r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-            track_type=kTrackRight;
-        }
-        else
-        {
-            track_type=kTrackSpecial;//偏差置为0
-            image_bias=-0.5;//右拐一点
-        }
-    }
+    track_type=kTrackRight;
     return 0;
 }
 /**********************************************************************************************************************/
@@ -674,21 +651,7 @@ uint8 CircleIslandREnd(void)
             return 1;
     }
     //循迹
-    if(per_l_line_count>aim_distance/SAMPLE_DIST)//右边不丢线才去判断两边边线的差值避免提前出环
-    {
-        track_type=kTrackLeft;//寻左线出去即可
-    }
-    else//这里对偏差进行处理，避免由于出环的时候就左拐太多，使得右边线不存在而继承上一次的偏差
-    {
-        //重新扫线
-        LeftLineDetectionAgain();
-        EdgeLinePerspective(left_line,l_line_count,per_left_line);
-        per_l_line_count=PER_EDGELINE_LENGTH;
-        BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
-        ResamplePoints(per_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-        track_leftline(f_left_line1, l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-        track_type=kTrackLeft;
-    }
+    track_type=kTrackLeft;//寻左线出去即可
     return 0;
 }
 /**********************************************************************************************************************/
