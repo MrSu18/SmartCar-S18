@@ -20,7 +20,8 @@ typedef enum CrossType
 }CrossType;//十字状态机状态结构体
 
 CrossType cross_type = kCrossBegin;
-const float* const origin_aimdis = &aim_distance;
+float origin_aimdis = 0;
+uint8 now_flag = 0;
 
 /***********************************************
 * @brief : 十字路口状态机
@@ -32,144 +33,149 @@ const float* const origin_aimdis = &aim_distance;
 ************************************************/
 uint8 CrossIdentify(void)
 {
+    if(now_flag == 0)
+    {
+        origin_aimdis = aim_distance;
+        now_flag = 1;
+    }
     switch (cross_type)
     {
-     //识别有角点，且边线向左右两边分开，则更改预瞄点，当角点离得很近的时候表示已经要进入十字，切换状态
-    case kCrossBegin:
-    {
-        int16 corner_id_l = 0, corner_id_r = 0;         //角点在边线的第几个点
-        if (CrossFindCorner(&corner_id_l, &corner_id_r) != 0)
+         //识别有角点，且边线向左右两边分开，则更改预瞄点，当角点离得很近的时候表示已经要进入十字，切换状态
+        case kCrossBegin:
         {
-            //角点太远，跳出状态
-            if((corner_id_l > *origin_aimdis / SAMPLE_DIST) || (corner_id_r > *origin_aimdis / SAMPLE_DIST))
+            int16 corner_id_l = 0, corner_id_r = 0;         //角点在边线的第几个点
+            if (CrossFindCorner(&corner_id_l, &corner_id_r) != 0)
             {
-                aim_distance = *origin_aimdis;
-                break;
-            }
-            //左边没有角点，右边有角点，寻右线，更改预瞄点
-            else if ((corner_id_l == 0) && (corner_id_r != 0))
-            {
-                track_type = kTrackRight;
-                aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
-            }
-            //右边没有角点，左边有角点，寻左线，更改预瞄点
-            else if ((corner_id_l != 0) && (corner_id_r == 0))
-            {
-                track_type = kTrackLeft;
-                aim_distance = (float)(corner_id_l)* SAMPLE_DIST;
-            }
-            //两边都有角点，寻右线，更改预瞄点
-            else
-            {
-                track_type = kTrackRight;
-                aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
-            }
-            //角点很近，切换下一个状态
-            if (corner_id_l < 6 && corner_id_r < 6)
-            {
-                encoder_dis_flag = 1;
-                cross_type = kCrossIn;
-                aim_distance = *origin_aimdis;
-            }
-        }
-        break;
-    }
-    //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，编码器积分到阈值或者没重新扫线就已经有边线则退出状态
-    case kCrossIn:
-    {
-        uint8 change_lr_flag = 0;//切换寻找左右边线角点的标志位，默认左线找角点，没找到则从右线找
-        if(l_line_count > 100 && r_line_count > 100)
-        {
-            encoder_dis_flag = 0;
-            cross_type = kCrossBegin;
-            aim_distance = *origin_aimdis;
-            return 1;
-        }
-
-        EdgeDetection_Cross('l');//左边重新扫线
-        per_l_line_count=PER_EDGELINE_LENGTH;//重置透视后左线的长度
-        EdgeLinePerspective(left_line,l_line_count,per_left_line);//边线逆透视
-        BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);//边线滤波
-        ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);//等距采样
-        local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);//边线曲率
-        nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);//极大值抑制
-        //如果右边也没找到角点，为了防止出错，所以默认寻左线，如果右边找到角点就会寻右线
-        track_leftline(f_left_line1, per_l_line_count , center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-        track_type = kTrackLeft;
-        //找左线角点
-        for (int i = 0; i < per_l_line_count; i++)
-        {
-            //找到角点则寻左线，不扫右线，改变预瞄点
-            if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
-            {
-                if(i > 70) break;//角点很远。跳出
-                else if((i + 6) < *origin_aimdis / SAMPLE_DIST)
+                //角点太远，跳出状态
+                if((corner_id_l > origin_aimdis / SAMPLE_DIST) || (corner_id_r > origin_aimdis / SAMPLE_DIST))
                 {
-                    aim_distance = *origin_aimdis;
-                    change_lr_flag = 1;                             //等于1则不扫右线
+                    aim_distance = origin_aimdis;
                     break;
                 }
+                //左边没有角点，右边有角点，寻右线，更改预瞄点
+                else if ((corner_id_l == 0) && (corner_id_r != 0))
+                {
+                    track_type = kTrackRight;
+                    aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
+                }
+                //右边没有角点，左边有角点，寻左线，更改预瞄点
+                else if ((corner_id_l != 0) && (corner_id_r == 0))
+                {
+                    track_type = kTrackLeft;
+                    aim_distance = (float)(corner_id_l)* SAMPLE_DIST;
+                }
+                //两边都有角点，寻右线，更改预瞄点
                 else
                 {
-                    aim_distance = (float)((i + 6) * SAMPLE_DIST);
-                    change_lr_flag = 1;                             //等于1则不扫右线
-                    break;
+                    track_type = kTrackRight;
+                    aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
+                }
+                //角点很近，切换下一个状态
+                if (corner_id_l < 6 && corner_id_r < 6)
+                {
+                    encoder_dis_flag = 1;
+                    cross_type = kCrossIn;
+                    aim_distance = origin_aimdis;
                 }
             }
+            break;
         }
-
-        //左线没找到角点，从右线找
-        if (change_lr_flag == 0)
+        //默认重新扫线并求局部曲率最大值，通过角点判断寻那一边的边线，编码器积分到阈值或者没重新扫线就已经有边线则退出状态
+        case kCrossIn:
         {
-            EdgeDetection_Cross('r');
-            per_r_line_count=PER_EDGELINE_LENGTH;//重置透视后右线的长度
-            EdgeLinePerspective(right_line,r_line_count,per_right_line);//边线逆透视
-            BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);//边线滤波
-            ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);//边线等距采样
-            local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);//求边线曲率
-            nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);//曲率极大值抑制
-            //找右线角点
-            for (int i = 0; i < per_r_line_count; i++)
+            uint8 change_lr_flag = 0;//切换寻找左右边线角点的标志位，默认左线找角点，没找到则从右线找
+            if(l_line_count > 100 && r_line_count > 100)
             {
-                //找到角点则寻左线，改变预瞄点
-                if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
+                encoder_dis_flag = 0;
+                cross_type = kCrossBegin;
+                aim_distance = origin_aimdis;
+                return 1;
+            }
+
+            EdgeDetection_Cross('l');//左边重新扫线
+            per_l_line_count=PER_EDGELINE_LENGTH;//重置透视后左线的长度
+            EdgeLinePerspective(left_line,l_line_count,per_left_line);//边线逆透视
+            BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);//边线滤波
+            ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);//等距采样
+            local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);//边线曲率
+            nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);//极大值抑制
+            //如果右边也没找到角点，为了防止出错，所以默认寻左线，如果右边找到角点就会寻右线
+            track_leftline(f_left_line1, per_l_line_count , center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+            track_type = kTrackLeft;
+            //找左线角点
+            for (int i = 0; i < per_l_line_count; i++)
+            {
+                //找到角点则寻左线，不扫右线，改变预瞄点
+                if ((fabs(l_angle_1[i]) > 70 * 3.14 / 180) && (fabs(l_angle_1[i]) < 120 * 3.14 / 180))
                 {
                     if(i > 70) break;//角点很远。跳出
-                    else
+                    else if((i + 6) < origin_aimdis / SAMPLE_DIST)
                     {
-                        track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-                        track_type = kTrackRight;
-                        aim_distance = (float)((i + 6) * SAMPLE_DIST);
+                        aim_distance = origin_aimdis;
+                        change_lr_flag = 1;                             //等于1则不扫右线
                         break;
                     }
-                    if((i + 6) < *origin_aimdis / SAMPLE_DIST) aim_distance = *origin_aimdis;
+                    else
+                    {
+                        aim_distance = (float)((i + 6) * SAMPLE_DIST);
+                        change_lr_flag = 1;                             //等于1则不扫右线
+                        break;
+                    }
                 }
             }
-        }
 
-        if(dis > 450)
-        {
-            encoder_dis_flag = 0;
-            aim_distance = *origin_aimdis;
-            cross_type = kCrossBegin;
-            return 1;
-        }
+            //左线没找到角点，从右线找
+            if (change_lr_flag == 0)
+            {
+                EdgeDetection_Cross('r');
+                per_r_line_count=PER_EDGELINE_LENGTH;//重置透视后右线的长度
+                EdgeLinePerspective(right_line,r_line_count,per_right_line);//边线逆透视
+                BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);//边线滤波
+                ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);//边线等距采样
+                local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);//求边线曲率
+                nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);//曲率极大值抑制
+                //找右线角点
+                for (int i = 0; i < per_r_line_count; i++)
+                {
+                    //找到角点则寻左线，改变预瞄点
+                    if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
+                    {
+                        if(i > 70) break;//角点很远。跳出
+                        else
+                        {
+                            track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+                            track_type = kTrackRight;
+                            aim_distance = (float)((i + 6) * SAMPLE_DIST);
+                            break;
+                        }
+                        if((i + 6) < origin_aimdis / SAMPLE_DIST) aim_distance = origin_aimdis;
+                    }
+                }
+            }
 
-        break;
-    }
-    //判断是否已经出了十字
-    case kCrossOut:
-    {
-        //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
-        if (l_line_count > 10 && r_line_count > 10)
-        {
-            aim_distance = 0.45;
-            cross_type = kCrossBegin;//复位状态机
-            return 1;
+            if(dis > 450)
+            {
+                encoder_dis_flag = 0;
+                aim_distance = origin_aimdis;
+                cross_type = kCrossBegin;
+                return 1;
+            }
+
+            break;
         }
-        break;
-    }
-    default:break;
+        //判断是否已经出了十字
+        case kCrossOut:
+        {
+            //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
+            if (l_line_count > 10 && r_line_count > 10)
+            {
+                aim_distance = 0.45;
+                cross_type = kCrossBegin;//复位状态机
+                return 1;
+            }
+            break;
+        }
+        default:break;
     }
     return 0;
 }

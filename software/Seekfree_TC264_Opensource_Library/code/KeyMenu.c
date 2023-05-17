@@ -483,7 +483,12 @@ void EnterKey(uint8* exit_flag)
                 if(menu.updown==3) exit_flag_1 = 1;
                 break;
             case 6://设置状态机顺序
-                if(menu.updown==9) exit_flag_1=1;//退出调节状态机
+                if(menu.updown==8)
+                {
+                    process_status[index]='S';
+                    tft180_show_uint((index+1)*10, 0, process_status[index], 1);
+                }
+                else if(menu.updown==9) exit_flag_1=1;//退出调节状态机
                 else
                 {
                     process_status[index]=(uint8)menu.updown;

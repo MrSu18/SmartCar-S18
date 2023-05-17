@@ -77,7 +77,7 @@ int core0_main(void)
 //    uart_init(BLUETOOTH,3000000,BLUETOOTH_TX,BLUETOOTH_RX);//初始化图传
     icm20602_init();
     GyroOffsetInit();
-//    dl1a_init();
+    dl1a_init();
     //初始化debug的led
     gpio_init(P20_8, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(P20_9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
@@ -108,6 +108,10 @@ int core0_main(void)
 //    ADCScan();
     while (TRUE)
     {
+//        int16 a = GetICM20602Gyro_Y();
+//        tft180_show_int(0, 0, a, 5);
+//        dl1a_get_distance();
+//        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
 //        if(gyro_flag == 1)
 //        {
