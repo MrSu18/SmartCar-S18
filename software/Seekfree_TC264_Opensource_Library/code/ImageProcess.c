@@ -18,8 +18,8 @@
 #include "Control.h"
 
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入库 'S':停车*/
-uint8 process_status[15]={2,1,'S'};//总状态机元素执行顺序数组
-uint16 process_speed[15]={65,65,70};//上面数组对应的元素路段的速度
+uint8 process_status[15]={3,3,3,3,3,3,3,'S'};//总状态机元素执行顺序数组
+uint16 process_speed[15]={70,70,70,70,70,70,70,70};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
 /***********************************************
@@ -151,7 +151,7 @@ void ImageProcess(void)
     //预瞄点求偏差
     if(track_type==kTrackRight)
     {
-        if(r_line_count<10)//你想让他寻右线但是右边线不存在时，右边重新扫线
+        if(r_line_count<10 && process_status[process_status_cnt]!=3)//你想让他寻右线但是右边线不存在时，右边重新扫线
         {
             RightLineDetectionAgain();
             EdgeLinePerspective(right_line,r_line_count,per_right_line);
@@ -164,7 +164,7 @@ void ImageProcess(void)
     }
     else if(track_type==kTrackLeft)
     {
-        if (l_line_count<10)//你想让他寻左线但是左边线不存在时，左边重新扫线
+        if (l_line_count<10 && process_status[process_status_cnt]!=3)//你想让他寻左线但是左边线不存在时，左边重新扫线
         {
             LeftLineDetectionAgain();
             per_l_line_count=PER_EDGELINE_LENGTH;

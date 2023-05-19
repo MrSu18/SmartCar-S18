@@ -267,9 +267,9 @@ void EdgeDetection_Cross(uint8 lr_flag)
             }
             l_line_count = 0;//清空之前的线
 
-            uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-left_seed.Y);//重新扫线的长度
+//            uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-left_seed.Y);//重新扫线的长度
             //左边线生长
-            while(l_line_count < len)
+            while(l_line_count < EDGELINE_LENGTH)
             {
                 if (EightAreasSeedGrownGray(&left_seed,'l',&left_seed_num) == 1)
                 {
@@ -301,9 +301,9 @@ void EdgeDetection_Cross(uint8 lr_flag)
             }
             r_line_count = 0;//清空之前的线
 
-            uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-right_seed.Y);//重新扫线的长度
+//            uint8 len=EDGELINE_LENGTH-(USE_IMAGE_H_MAX-right_seed.Y);//重新扫线的长度
             //右边线生长
-            while(r_line_count < len)
+            while(r_line_count < EDGELINE_LENGTH)
             {
                 if (EightAreasSeedGrownGray(&right_seed,'r',&right_seed_num) == 1)
                 {
