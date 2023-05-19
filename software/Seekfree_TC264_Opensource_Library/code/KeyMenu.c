@@ -239,13 +239,13 @@ void KeyCtrl(void)
             case KEY_UP://光标向上
                 tft180_show_string(0, menu.updown*10, "  ");
                 menu.updown--;
-                if(menu.updown < 0) menu.updown = 0;
+                if(menu.updown < 0) menu.updown = 11;
                 tft180_show_string(0, menu.updown*10, ">>");
                 break;
             case KEY_DOWN://光标向下
                 tft180_show_string(0, menu.updown*10, "  ");
                 menu.updown++;
-                if(menu.updown > 12) menu.updown = 12;
+                if(menu.updown > 12) menu.updown = 0;
                 tft180_show_string(0, menu.updown*10, ">>");
                 break;
             case KEY_LEFT: SubParameter();break;//参数减
@@ -255,18 +255,14 @@ void KeyCtrl(void)
         if(exit_flag == 1)//退出按键调参
         {
             tft180_clear();
+            system_delay_ms(1000);
+            encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
+            encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
+            pit_enable(CCU60_CH0);
+            pit_enable(CCU60_CH1);
+     //       pit_enable(CCU61_CH1);
             break;
         }
-    }
-    while(KeyGet()!=KEY_OWN)//发车键
-    {
-        system_delay_ms(1000);
-        encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
-        encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
-        pit_enable(CCU60_CH0);
-        pit_enable(CCU60_CH1);
- //       pit_enable(CCU61_CH1);
-        break;
     }
 }
 /***********************************************
@@ -304,8 +300,8 @@ void SubParameter(void)
                     tft180_show_float(100, menu.updown*10, gyropid.P, 2, 5);
                     break;
                 case 8:
-                    base_speed-=5;
-                    tft180_show_int(100, menu.updown*10, base_speed, 3);
+                    original_speed-=5;
+                    tft180_show_int(100, menu.updown*10, original_speed, 3);
                     break;
             }
             break;
@@ -389,8 +385,8 @@ void AddParameter(void)
                     tft180_show_float(100, menu.updown*10, gyropid.P, 2, 5);
                     break;
                 case 8:
-                    base_speed+=5;
-                    tft180_show_int(100, menu.updown*10, base_speed, 3);
+                    original_speed+=5;
+                    tft180_show_int(100, menu.updown*10, original_speed, 3);
                     break;
             }
             break;
@@ -501,7 +497,7 @@ void EnterKey(uint8* exit_flag)
                 if(menu.updown==8)
                 {
                     exit_flag_1=1;
-                    for(int i=0;i<100;i++)
+                    for(int i=0;i<15;i++)
                     {
                         if(process_status[i]==0) break;
                         else if(process_status[i]=='S') process_speed[i]=speed[7];
