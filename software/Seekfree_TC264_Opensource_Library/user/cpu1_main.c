@@ -70,9 +70,9 @@ void core1_main(void)
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
     ReadFromFlash();//从flash中读取值
+    base_speed=original_speed=process_speed[0];
     KeyCtrl();//按键控制
     pit_enable(CCU60_CH0);
-    base_speed=original_speed;
 //    OutGarage();//出库
     while (TRUE)
     {

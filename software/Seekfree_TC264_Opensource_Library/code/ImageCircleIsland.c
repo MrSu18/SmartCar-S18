@@ -109,7 +109,7 @@ uint8 CircleIslandLDetection()//检测左环岛
         {
             //检测左边70度到140度的角点,加负号的因为左边的角点算出来是负数
             //第三个条件限制的是哪个角点有多远0.3m
-            if(70./180.*PI<-l_angle_1[i] && -l_angle_1[i]<140./180.*PI && i<0.3/SAMPLE_DIST)
+            if(60./180.*PI<-l_angle_1[i] && -l_angle_1[i]<140./180.*PI && i<0.3/SAMPLE_DIST)
             {
                 speed_type=kNormalSpeed;
                 base_speed=original_speed;//注意恢复到原始的速度
@@ -421,6 +421,17 @@ uint8 CircleIslandRDetection()//检测左环岛
     static uint8 status=0;//检测到角点->检测不到角点
     if (status==0)//状态0检测角点出现
     {
+        if(r_line_count<3)
+        {
+            //右边重新扫线
+            RightLineDetectionAgain();
+            per_r_line_count=PER_EDGELINE_LENGTH;
+            EdgeLinePerspective(right_line,r_line_count,per_right_line);
+            BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
+            ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+            local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
+            nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
+        }
         for (int i = 0; i < per_r_line_count; ++i)
         {
             //检测左边70度到140度的角点,加负号的因为左边的角点算出来是负数

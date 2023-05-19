@@ -54,12 +54,12 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(time>1500)
-    {
-        pit_disable(CCU60_CH0);//关闭电机中断
-        pit_disable(CCU60_CH1);
-        MotorSetPWM(0,0);
-    }
+//    if(time>2200)
+//    {
+//        pit_disable(CCU60_CH0);//关闭电机中断
+//        pit_disable(CCU60_CH1);
+//        MotorSetPWM(0,0);
+//    }
 }
 
 
