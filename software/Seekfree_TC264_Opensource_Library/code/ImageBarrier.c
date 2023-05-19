@@ -24,8 +24,8 @@ BarrierType barrier_type = kBarrierBegin;
 * @param : void
 * @return: 0:不是路障
 *          1:识别到路障
-* @date  : 2023.4.15
-* @author: L
+* @date  : 2023.5.19
+* @author: L & 刘骏帆
 ************************************************/
 int time = 0;
 uint8 timeintegral_flag = 0;
@@ -39,28 +39,33 @@ uint8 BarrierIdentify(void)
             if(dl1a_distance_mm <= 1000)
             {
                 speed_type=kNormalSpeed;
-                base_speed = 50;
+//                base_speed = 50;
                 StartIntegralAngle_X(50);
                 barrier_type = kBarrierNear;
             }
-            else base_speed = 65;
+//            else base_speed = 65;
             break;
         }
         case kBarrierNear:
         {
-            image_bias = 10;
+            image_bias = 5;
             while(!icm_angle_x_flag);
-            encoder_dis_flag = 1;
-            while(dis < 200);
-            encoder_dis_flag = 0;
-            StartIntegralAngle_X(50);
+            image_bias=0;
+//            encoder_dis_flag = 1;
+//            while(dis < 300);
+//            encoder_dis_flag = 0;
+            StartIntegralAngle_X(80);
             barrier_type = kBarrierEnd;
             break;
         }
         case kBarrierEnd:
         {
-            image_bias = -10;
+            image_bias = -5;
             while(!icm_angle_x_flag);
+            image_bias=0;
+//            encoder_dis_flag = 1;
+//            while(dis < 300);
+//            encoder_dis_flag = 0;
             barrier_type = kBarrierBegin;
             return 1;
             break;
