@@ -15,7 +15,7 @@
 
 static Menu menu={0,0,0};
 static int index=0;
-static uint16 speed[8];
+static uint16 speed[8]={70,70,70,70,70,70,70,70};
 uint8 per_image_flag=0,gray_image_flag=0;
 uint8 edgeline_flag,c_line_flag=0,per_edgeline_flag=0;
 
@@ -228,7 +228,6 @@ void ShowFunction(uint8 page)
 ************************************************/
 void KeyCtrl(void)
 {
-    memset(speed,70,8);
     while(1)
     {
         uint8 exit_flag = 0;
@@ -245,7 +244,7 @@ void KeyCtrl(void)
             case KEY_DOWN://光标向下
                 tft180_show_string(0, menu.updown*10, "  ");
                 menu.updown++;
-                if(menu.updown > 12) menu.updown = 0;
+                if(menu.updown > 11) menu.updown = 0;
                 tft180_show_string(0, menu.updown*10, ">>");
                 break;
             case KEY_LEFT: SubParameter();break;//参数减
@@ -482,7 +481,7 @@ void EnterKey(uint8* exit_flag)
                 if(menu.updown==8)
                 {
                     process_status[index]='S';
-                    tft180_show_uint((index+1)*10, 0, process_status[index], 1);
+                    tft180_show_uint((index+1)*10, 0, menu.updown, 1);
                 }
                 else if(menu.updown==9) exit_flag_1=1;//退出调节状态机
                 else
@@ -569,21 +568,23 @@ void WriteToFlash(void)
         flash_erase_page(0, 0);
     flash_buffer_clear();//清空缓冲区
     //将需要修改的变量写到缓冲区
-    flash_union_buffer[0].uint32_type=(uint32)turnpid_image.P;
-    flash_union_buffer[1].uint32_type=(uint32)turnpid_image.D;
-    flash_union_buffer[2].uint32_type=(uint32)turnpid_adc.P;
-    flash_union_buffer[3].uint32_type=(uint32)turnpid_adc.D;
-    flash_union_buffer[4].uint32_type=(uint32)speedpid_left.P;
-    flash_union_buffer[5].uint32_type=(uint32)speedpid_left.D;
-    flash_union_buffer[6].uint32_type=(uint32)speedpid_right.P;
-    flash_union_buffer[7].uint32_type=(uint32)speedpid_right.D;
-    flash_union_buffer[8].uint32_type=(uint32)(-gyropid.P);
-    flash_union_buffer[9].uint32_type=(uint32)(-gyropid.I);
-    flash_union_buffer[10].uint32_type=(uint32)(-gyropid.D);
-    for(int i=11;i<11+15;i++)
+    flash_union_buffer[0].uint32_type=*(uint32*)&turnpid_image.P;
+    flash_union_buffer[1].uint32_type=*(uint32*)&turnpid_image.D;
+    flash_union_buffer[2].uint32_type=*(uint32*)&turnpid_adc.P;
+    flash_union_buffer[3].uint32_type=*(uint32*)&turnpid_adc.D;
+    flash_union_buffer[4].uint32_type=*(uint32*)&speedpid_left.P;
+    flash_union_buffer[5].uint32_type=*(uint32*)&speedpid_left.I;
+    flash_union_buffer[6].uint32_type=*(uint32*)&speedpid_right.P;
+    flash_union_buffer[7].uint32_type=*(uint32*)&speedpid_right.I;
+    flash_union_buffer[8].uint32_type=*(uint32*)&gyropid.P;
+    flash_union_buffer[9].uint32_type=*(uint32*)&gyropid.I;
+    flash_union_buffer[10].uint32_type=*(uint32*)&gyropid.D;
+    flash_union_buffer[11].uint32_type=*(uint32*)&original_speed;
+    flash_union_buffer[12].uint32_type=*(uint32*)&aim_distance;
+    for(int i=13;i<13+15;i++)
     {
-        flash_union_buffer[i].uint32_type=process_status[i-11];
-        flash_union_buffer[i+15].uint32_type=process_speed[i-11];
+        flash_union_buffer[i].uint32_type=*((uint32*)process_status+(i-13));
+        flash_union_buffer[i+15].uint32_type=*((uint32*)process_speed+(i-13));
     }
     flash_write_page_from_buffer(0, 0);//将缓冲区中的值写入Flash
 }
@@ -600,21 +601,23 @@ void ReadFromFlash(void)
     {
         flash_read_page_to_buffer(0, 0);//读取Flash的值
         //从缓冲区获得对应变量的值
-        turnpid_image.P=(float)flash_union_buffer[0].uint32_type;
-        turnpid_image.D=(float)flash_union_buffer[1].uint32_type;
-        turnpid_adc.P=(float)flash_union_buffer[2].uint32_type;
-        turnpid_adc.D=(float)flash_union_buffer[3].uint32_type;
-        speedpid_left.P=(float)flash_union_buffer[4].uint32_type;
-        speedpid_left.D=(float)flash_union_buffer[5].uint32_type;
-        speedpid_right.P=(float)flash_union_buffer[6].uint32_type;
-        speedpid_right.D=(float)flash_union_buffer[7].uint32_type;
-        gyropid.P=(float)flash_union_buffer[8].uint32_type;
-        gyropid.I=(float)flash_union_buffer[9].uint32_type;
-        gyropid.D=(float)flash_union_buffer[10].uint32_type;
-        for(int i=11;i<11+15;i++)
+        turnpid_image.P=flash_union_buffer[0].float_type;
+        turnpid_image.D=flash_union_buffer[1].float_type;
+        turnpid_adc.P=flash_union_buffer[2].float_type;
+        turnpid_adc.D=flash_union_buffer[3].float_type;
+        speedpid_left.P=flash_union_buffer[4].float_type;
+        speedpid_left.I=flash_union_buffer[5].float_type;
+        speedpid_right.P=flash_union_buffer[6].float_type;
+        speedpid_right.I=flash_union_buffer[7].float_type;
+        gyropid.P=flash_union_buffer[8].float_type;
+        gyropid.I=flash_union_buffer[9].float_type;
+        gyropid.D=flash_union_buffer[10].float_type;
+        original_speed=flash_union_buffer[11].uint16_type;
+        aim_distance=flash_union_buffer[12].float_type;
+        for(int i=13;i<13+15;i++)
         {
-            process_status[i-11]=(uint8)flash_union_buffer[i].uint32_type;
-            process_speed[i-11]=(uint16)flash_union_buffer[i+15].uint32_type;
+            process_status[i-13]=flash_union_buffer[i].uint8_type;
+            process_speed[i-13]=flash_union_buffer[i+15].uint16_type;
         }
         flash_buffer_clear();//清空缓冲区
     }

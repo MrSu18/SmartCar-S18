@@ -44,7 +44,6 @@ uint8 CutIdentify(void)
                 if(corner_find == 2)
                 {
                     per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
-                    track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackRight;
                     aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
                 }
@@ -52,7 +51,6 @@ uint8 CutIdentify(void)
                 else if(corner_find == 1)
                 {
                     per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
-                    track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                     track_type = kTrackLeft;
                     aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
                 }
@@ -62,14 +60,12 @@ uint8 CutIdentify(void)
                     if(per_l_line_count > per_r_line_count)
                     {
                         per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
-                        track_leftline(f_left_line1, per_l_line_count, center_line_l, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                         track_type = kTrackLeft;
                         aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
                     }
                     else if(per_r_line_count > per_l_line_count)
                     {
                         per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
-                        track_rightline(f_right_line1, per_r_line_count, center_line_r, (int)round(ANGLE_DIST / SAMPLE_DIST), PIXEL_PER_METER * (TRACK_WIDTH / 2));
                         track_type = kTrackRight;
                         aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
                     }
