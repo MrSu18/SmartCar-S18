@@ -5,7 +5,7 @@
 #include "ImageTrack.h"
 #include "math.h"
 
-uint16 base_speed=160;
+uint16 base_speed=65;
 
 /***********************************************
 * @brief : 速度决策

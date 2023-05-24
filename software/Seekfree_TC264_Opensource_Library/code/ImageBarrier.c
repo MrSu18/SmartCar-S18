@@ -10,11 +10,13 @@
 #include "ImageTrack.h"
 #include "icm20602.h"
 #include "Control.h"
+#include "string.h"
 
 typedef enum BarrierType
 {
     kBarrierBegin = 0,
     kBarrierNear,
+    kBarrierOut,
     kBarrierEnd,
 }BarrierType;//障碍状态机状态结构体
 
@@ -33,41 +35,52 @@ uint8 BarrierIdentify(void)
 {
     switch(barrier_type)
     {
-        case kBarrierBegin:
+        case kBarrierBegin://tof检测到路障
         {
             dl1a_get_distance();
             if(dl1a_distance_mm <= 1000)
             {
                 speed_type=kNormalSpeed;
-//                base_speed = 50;
                 StartIntegralAngle_X(50);
                 barrier_type = kBarrierNear;
             }
-//            else base_speed = 65;
             break;
         }
-        case kBarrierNear:
+        case kBarrierNear://开始陀螺仪积分拐出去
         {
             image_bias = 5;
             while(!icm_angle_x_flag);
             image_bias=0;
-//            encoder_dis_flag = 1;
-//            while(dis < 300);
-//            encoder_dis_flag = 0;
-            StartIntegralAngle_X(80);
-            barrier_type = kBarrierEnd;
+            StartIntegralAngle_X(70);
+            barrier_type = kBarrierOut;
             break;
         }
-        case kBarrierEnd:
+        case kBarrierOut://陀螺仪积分拐回来
         {
             image_bias = -5;
             while(!icm_angle_x_flag);
             image_bias=0;
-//            encoder_dis_flag = 1;
-//            while(dis < 300);
-//            encoder_dis_flag = 0;
-            barrier_type = kBarrierBegin;
-            return 1;
+            barrier_type = kBarrierEnd;
+            break;
+        }
+        case kBarrierEnd://图像控制是否回到赛道
+        {
+            if (l_line_count>10)//有左边线的时候即回到赛道
+            {
+                barrier_type = kBarrierBegin;
+                return 1;
+            }
+            //没有回到赛道的时候只有右边线没有左边线,那就把右边线给左边线，单边寻左边线
+            else if(r_line_count>10 && l_line_count<3)
+            {
+                memcpy(left_line,right_line,r_line_count);
+                l_line_count=r_line_count;
+                EdgeLinePerspective(left_line,l_line_count,per_left_line);
+                BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+                ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+                track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+                track_type=kTrackLeft;
+            }
             break;
         }
         default:break;

@@ -274,7 +274,8 @@ float GetAnchorPointBias(float aim_distance,int track_line_count,myPoint_f *trac
         //float error = -atan2f(dx, dy) * 180 / 3.14;
 
         // ´¿¸ú×ÙËã·¨(Ö»¿¼ÂÇÔ¶µã)
-        pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
+//        pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
+        pure_angle=-PIXEL_PER_METER * 2 * dx / dn / dn * 5;
     }
     else
     {

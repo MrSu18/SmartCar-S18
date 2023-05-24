@@ -20,10 +20,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="环岛修改角点最小限">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="路障OK了，能跑65">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCross.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCross.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Control.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Control.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageTrack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageTrack.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageTrack.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -303,14 +310,11 @@
       <workItem from="1684156974949" duration="1913000" />
       <workItem from="1684334287092" duration="903000" />
       <workItem from="1684499699248" duration="83000" />
-      <workItem from="1684504059470" duration="1000" />
-    </task>
-    <task id="LOCAL-00001" summary="参考上交大修改八零域扫线种子生长的代码编写方法从之前的switch队列思维变成直接查八零域像素的偏移表，同时比起上交大一次种子循环里少了两次查表的运算，使得代码更加简洁效率更加高">
-      <created>1673022973169</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1673022973169</updated>
+      <workItem from="1684504059470" duration="1730000" />
+      <workItem from="1684758640705" duration="617000" />
+      <workItem from="1684759319657" duration="750000" />
+      <workItem from="1684901717920" duration="57000" />
+      <workItem from="1684935595596" duration="6000" />
     </task>
     <task id="LOCAL-00002" summary="将边线存储的形式修改为链表，加入丢线数的记录，代码结构更加有逻辑">
       <created>1673167663270</created>
@@ -641,7 +645,21 @@
       <option name="project" value="LOCAL" />
       <updated>1684499762520</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="十字重新扫线取消掉线的缩短">
+      <created>1684504082489</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1684504082489</updated>
+    </task>
+    <task id="LOCAL-00050" summary="路障OK了，能跑65">
+      <created>1684508024856</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1684508024857</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -659,8 +677,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ADS工程进行相应修改" />
-    <MESSAGE value="初步写环岛的入环图像处理，还欠缺出入环状态和对寻圆环外圆进去处理的不好" />
     <MESSAGE value="同步工程" />
     <MESSAGE value="增加补线函数，添加环岛出环补线" />
     <MESSAGE value="将环岛的东西加入到ADS中还没实地测试" />
@@ -684,7 +700,9 @@
     <MESSAGE value="环岛避免车身太靠偏离环岛那边而检测不到角点，还有避免车身太靠外，而你想让他寻左右但是左右却没线则在求偏差进行判断并且重新扫线" />
     <MESSAGE value="环岛判断出环结束中删去多余的操作" />
     <MESSAGE value="环岛修改角点最小限" />
-    <option name="LAST_COMMIT_MESSAGE" value="环岛修改角点最小限" />
+    <MESSAGE value="十字重新扫线取消掉线的缩短" />
+    <MESSAGE value="路障OK了，能跑65" />
+    <option name="LAST_COMMIT_MESSAGE" value="路障OK了，能跑65" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -72,10 +72,10 @@ uint16 SpeedDecision(uint16 original_speed,float a)
 void OutGarage(void)
 {
     encoder_dis_flag=1;
-    image_bias=0.3;
+//    image_bias=0.3;
     while(dis<200);//给时间车加速
-    image_bias=5;    //向左打死
-    StartIntegralAngle_X(70);
-    while(!icm_angle_x_flag);   //左转70°进入正常寻迹
+//    image_bias=5;    //向左打死
+//    StartIntegralAngle_X(70);
+//    while(!icm_angle_x_flag);   //左转70°进入正常寻迹
 //    speed_type=kImageSpeed;//出库之后启动速度决策
 }
