@@ -46,6 +46,7 @@
 #include "debug.h"
 #include "icm20602.h"
 #include "Control.h"
+#include "ImageSpecial.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -84,18 +85,14 @@ void core1_main(void)
             memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
             //出界保护
             OutProtect();
+            //图像处理
+            ImageProcess();
 //            sobel(mt9v03x_image,binary_image);
             //显示灰度图
             ShowImage();
-
             gpio_toggle_level(P20_8);
-
-            //图像处理
-            ImageProcess();
-
             //显示边线
             ShowLine();
-
             //赛道基础信息变量重置
             TrackBasicClear();
 #else

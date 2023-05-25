@@ -97,7 +97,7 @@ uint8 CircleIslandLDetection()//检测左环岛
         if(l_line_count<3)
         {
             //左边重新扫线
-            LeftLineDetectionAgain();
+            LeftLineDetectionAgain('y');
             per_l_line_count=PER_EDGELINE_LENGTH;
             EdgeLinePerspective(left_line,l_line_count,per_left_line);
             BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
@@ -183,7 +183,7 @@ uint8 CircleIslandLIn()//入环状态
     if(l_line_count<5)//左边90行都丢线，说明只能沿着外边进去
     {
         //重新扫线
-        LeftLineDetectionAgain();
+        LeftLineDetectionAgain('n');
         //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
         if(left_line[0].X<left_line[l_line_count-1].X && left_line[0].Y<100)//左边看不到圆环内环，只能看到圆环外环
         {
@@ -231,7 +231,7 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
     if (r_line_count<2)//右边一开始就丢线
     {
         //重新扫线
-        RightLineDetectionAgain();
+        RightLineDetectionAgain('n');
         per_r_line_count=PER_EDGELINE_LENGTH;
         EdgeLinePerspective(right_line,r_line_count,per_right_line);
         BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
@@ -357,12 +357,16 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         case 0: //检测右环岛
             if(CircleIslandRDetection()==2)
             {
+//                pit_disable(CCU60_CH0);//关闭电机中断
+//                pit_disable(CCU60_CH1);
+//                MotorSetPWM(0,0);
                 status=1;
             }
             break;
         case 1: //路过环岛第一个入口
             if(CircleIslandRInDetection()==1)
             {
+                gpio_toggle_level(P21_3);
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }
@@ -424,7 +428,7 @@ uint8 CircleIslandRDetection()//检测左环岛
         if(r_line_count<3)
         {
             //右边重新扫线
-            RightLineDetectionAgain();
+            RightLineDetectionAgain('y');
             per_r_line_count=PER_EDGELINE_LENGTH;
             EdgeLinePerspective(right_line,r_line_count,per_right_line);
             BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
@@ -506,7 +510,7 @@ uint8 CircleIslandRIn()//入环状态
     if(r_line_count<2)//左边90行都丢线，说明只能沿着外边进去
     {
         //重新扫线
-        RightLineDetectionAgain();
+        RightLineDetectionAgain('n');
         //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
         if(right_line[0].X>right_line[r_line_count-1].X)//右边看不到圆环内环，只能看到圆环外环
         {
@@ -552,7 +556,7 @@ uint8 CircleIslandROutDetection()//左环岛出环状态
     if (l_line_count<10)//左边一开始就丢线
     {
         //左边重新扫线
-        LeftLineDetectionAgain();
+        LeftLineDetectionAgain('n');
         per_l_line_count=PER_EDGELINE_LENGTH;
         EdgeLinePerspective(left_line,l_line_count,per_left_line);
         BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
@@ -669,12 +673,12 @@ uint8 CircleIslandREnd(void)
 
 /***********************************************
 * @brief : 从丢线找到不丢线再记录边线，左边线重新扫线
-* @param : 无
+* @param : char choose:选择是否开启重新扫线错边的检测，'y': 开启 'n': 不开启
 * @return: 无
-* @date  : 2023.4.21
+* @date  : 2023.5.25
 * @author: 刘骏帆
 ************************************************/
-void LeftLineDetectionAgain()
+void LeftLineDetectionAgain(char choose)
 {
     uint8 half=GRAY_BLOCK/2;
     myPoint left_seed=left_line[l_line_count-1];//左种子
@@ -699,19 +703,24 @@ void LeftLineDetectionAgain()
         if(seed_grown_result==1)
         {
             left_line[l_line_count]=left_seed;l_line_count++;
+            l_growth_direction[(left_seed_num+2)%8]++;
         }
         else break;
+    }
+    if ((l_growth_direction[1]+l_growth_direction[2])<(l_growth_direction[7]+l_growth_direction[6]) && choose=='y')//种子生长的右上生长的趋势比右下要小说明重新扫线是错误的
+    {
+        l_line_count=0;
     }
 }
 
 /***********************************************
 * @brief : 从丢线找到不丢线再记录边线，右边线重新扫线
-* @param : 无
+* @param : char choose:选择是否开启重新扫线错边的检测，'y': 开启 'n': 不开启
 * @return: 无
-* @date  : 2023.4.21
+* @date  : 2023.5.25
 * @author: 刘骏帆
 ************************************************/
-void RightLineDetectionAgain()
+void RightLineDetectionAgain(char choose)
 {
     uint8 half=GRAY_BLOCK/2;
     myPoint right_seed=right_line[r_line_count-1];//右种子
@@ -736,8 +745,13 @@ void RightLineDetectionAgain()
         if(seed_grown_result==1)
         {
             right_line[r_line_count]=right_seed;r_line_count++;
+            r_growth_direction[(right_seed_num+2)%8]++;
         }
         else break;
+    }
+    if ((r_growth_direction[1]+r_growth_direction[2])<(r_growth_direction[7]+r_growth_direction[6]) && choose=='y')//种子生长的左上生长的趋势比左下要小说明重新扫线是错误的
+    {
+        r_line_count=0;
     }
 }
 

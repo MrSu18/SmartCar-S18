@@ -6,6 +6,7 @@ myPoint left_line[EDGELINE_LENGTH]={0},right_line[EDGELINE_LENGTH]={0};//×óÓÒ±ßÏ
 char l_lost_line[EDGELINE_LENGTH]={0},r_lost_line[EDGELINE_LENGTH]={0};//×óÓÒÏßÊÇ·ñ¶ªÏßµÄ¼ÇÂ¼Êı×é
 uint8 l_line_count=0,r_line_count=0;//×óÓÒ±ßÏß¼ÇÂ¼×Ü¹²ÓĞ¶à³¤
 uint8 l_lostline_num = 0, r_lostline_num = 0;//×óÓÒ¶ªÏßÊı
+uint8 l_growth_direction[8]={0},r_growth_direction[8]={0};//×óÓÒÏßÉú³¤·½Ïò,Êı×éÎ»ÖÃ¶ÔÓ¦µÄÊÇÖÖ×ÓÉú³¤µÄÊ±ºòºÅÎ»µÄÉú³¤´ÎÊı
 //================================================================
 
 /***********************************************
@@ -286,6 +287,7 @@ void EdgeDetection(void)
         {
             left_line[l_line_count].X=left_seed.X;left_line[l_line_count].Y=left_seed.Y;
             l_line_count++;
+            l_growth_direction[(left_seed_num+2)%8]++;
         }
         else break;
     }
@@ -297,6 +299,7 @@ void EdgeDetection(void)
         {
             right_line[r_line_count].X=right_seed.X;right_line[r_line_count].Y=right_seed.Y;
             r_line_count++;
+            r_growth_direction[(right_seed_num+2)%8]++;
         }
         else break;
     }

@@ -697,8 +697,13 @@ void LeftLineDetectionAgain()
         if(seed_grown_result==1)
         {
             left_line[l_line_count]=left_seed;l_line_count++;
+            l_growth_direction[(left_seed_num+2)%8]++;
         }
         else break;
+    }
+    if ((l_growth_direction[1]+l_growth_direction[2])<(l_growth_direction[7]+l_growth_direction[6]))//种子生长的右上生长的趋势比右下要小说明重新扫线是错误的
+    {
+        l_line_count=0;
     }
 }
 
@@ -734,7 +739,12 @@ void RightLineDetectionAgain()
         if(seed_grown_result==1)
         {
             right_line[r_line_count]=right_seed;r_line_count++;
+            r_growth_direction[(right_seed_num+2)%8]++;
         }
         else break;
+    }
+    if ((r_growth_direction[1]+r_growth_direction[2])<(r_growth_direction[7]+r_growth_direction[6]))//种子生长的左上生长的趋势比左下要小说明重新扫线是错误的
+    {
+        r_line_count=0;
     }
 }

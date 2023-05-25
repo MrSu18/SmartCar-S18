@@ -18,8 +18,8 @@
 #include "Control.h"
 
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入库 'S':停车*/
-uint8 process_status[15]={6,3,3,'S'};//总状态机元素执行顺序数组
-uint16 process_speed[15]={65,65,65,65,65,65,65,65};//上面数组对应的元素路段的速度
+uint8 process_status[15]={2,1,'S'};//总状态机元素执行顺序数组
+uint16 process_speed[15]={65,65,65,65,65,60,60,60};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
 /***********************************************
@@ -147,13 +147,12 @@ void ImageProcess(void)
         default:break;
     }
 #endif
-
     //预瞄点求偏差
     if(track_type==kTrackRight)
     {
         if(r_line_count<10 && process_status[process_status_cnt]!=3)//你想让他寻右线但是右边线不存在时，右边重新扫线
         {
-            RightLineDetectionAgain();
+            RightLineDetectionAgain('y');
             EdgeLinePerspective(right_line,r_line_count,per_right_line);
             per_r_line_count=PER_EDGELINE_LENGTH;
             BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
@@ -166,7 +165,7 @@ void ImageProcess(void)
     {
         if (l_line_count<10 && process_status[process_status_cnt]!=3)//你想让他寻左线但是左边线不存在时，左边重新扫线
         {
-            LeftLineDetectionAgain();
+            LeftLineDetectionAgain('y');
             per_l_line_count=PER_EDGELINE_LENGTH;
             EdgeLinePerspective(left_line,l_line_count,per_left_line);
             BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
@@ -199,6 +198,9 @@ void TrackBasicClear(void)
     l_line_count=0;r_line_count=0;//边线的计数指针清零
     per_l_line_count=PER_EDGELINE_LENGTH,per_r_line_count=PER_EDGELINE_LENGTH;
     l_lostline_num=0;r_lostline_num=0;//丢线数清零
+    //生长趋势的数组清零
+    memset(l_growth_direction,0,8);
+    memset(r_growth_direction,0,8);
 }
 
 /***********************************************

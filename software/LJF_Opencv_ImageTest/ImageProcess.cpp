@@ -57,8 +57,8 @@ void ImageProcess(void)
     {
         track_type=kTrackLeft;
     }
-
-    CircleIslandRStatus();
+    LeftLineDetectionAgain();
+//    CircleIslandRStatus();
     //预瞄点求偏差
     if(track_type==kTrackRight)
     {
@@ -89,4 +89,6 @@ void TrackBasicClear(void)
     l_line_count=0;r_line_count=0;//边线的计数指针清零
     per_l_line_count=PER_EDGELINE_LENGTH,per_r_line_count=PER_EDGELINE_LENGTH;
     l_lostline_num=0;r_lostline_num=0;//丢线数清零
+    memset(l_growth_direction,0,8);
+    memset(r_growth_direction,0,8);
 }

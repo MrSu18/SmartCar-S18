@@ -29,8 +29,8 @@ uint8 CrossIdentify(void);//十字状态机
 uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r);//十字找角点
 void EdgeDetection_Cross(uint8 lr_flag);
 //左环岛元素函数
-void LeftLineDetectionAgain(void);
-void RightLineDetectionAgain(void);
+void LeftLineDetectionAgain(char choose);
+void RightLineDetectionAgain(char choose);
 uint8 CircleIslandLStatus(void);//左环岛状态状态机
 uint8 CircleIslandLDetection(void);//检测左环岛
 uint8 CircleIslandLInDetection(void);//检测是否到了需要入环的状态

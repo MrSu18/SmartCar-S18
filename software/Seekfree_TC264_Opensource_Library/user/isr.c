@@ -46,7 +46,7 @@ float icm_target_angle_z,icm_target_angle_x,icm_target_angle_y;   //ÍÓÂİÒÇ*Öá»ı·
 
 uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //ÍÓÂİÒÇ*Öá»ı·Ö´ïµ½Ä¿±ê½Ç¶È ±êÖ¾Î»  ¿É×÷Îª»·µº³ö»·±êÖ¾Î» //´ıÕûºÏ
 // **************************** PITÖĞ¶Ïº¯Êı ****************************
-IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
+IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//ËÙ¶È»·
 {
     static uint32 time=0;
     time++;
@@ -54,7 +54,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(time>2400)
+    if(time>2000)
     {
         pit_disable(CCU60_CH0);//¹Ø±Õµç»úÖĞ¶Ï
         pit_disable(CCU60_CH1);
@@ -63,11 +63,22 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
 }
 
 
-IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
+IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)//×ªÏò»·
 {
     interrupt_global_enable(0);                     // ¿ªÆôÖĞ¶ÏÇ¶Ì×
     pit_clear_flag(CCU60_CH1);
 
+//    turnpid_image.err = image_bias;//Í¼ÏñÆ«²î
+//    if (turnpid_image.out > 0)//×ó×ª
+//    {
+//        target_left = base_speed - (int)2*turnpid_image.err;
+//        target_right = base_speed;
+//    }
+//    else//ÓÒ×ª
+//    {
+//        target_left = base_speed;
+//        target_right = base_speed + (int)2*turnpid_image.err;
+//    }
     if(track_mode == kTrackImage)                                                   //µ±Ç°ÎªÉãÏñÍ·Ñ­¼£
     {
         if(last_track_mode == kTrackADC)                                            //ÉÏÒ»´ÎÑ­¼£Îªµç´ÅÑ­¼£Ôò¸´Î»PID²ÎÊı

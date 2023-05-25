@@ -20,15 +20,20 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="路障OK了，能跑65">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="修改纯跟踪算法求偏差的方式，PID参数进行对应调整，路障出状态和结束状态的循迹使用图像识别">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Control.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Control.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageTrack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageCircleIsland.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageCircleIsland.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageProcess.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageProcess.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageTrack.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageTrack.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSpecial.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSpecial.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
@@ -314,14 +319,9 @@
       <workItem from="1684758640705" duration="617000" />
       <workItem from="1684759319657" duration="750000" />
       <workItem from="1684901717920" duration="57000" />
-      <workItem from="1684935595596" duration="6000" />
-    </task>
-    <task id="LOCAL-00002" summary="将边线存储的形式修改为链表，加入丢线数的记录，代码结构更加有逻辑">
-      <created>1673167663270</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1673167663270</updated>
+      <workItem from="1684935595596" duration="78000" />
+      <workItem from="1685013199863" duration="24000" />
+      <workItem from="1685013325515" duration="8314000" />
     </task>
     <task id="LOCAL-00003" summary="暂时不要赛道黑块区域的赛道信息记录，较为麻烦，并且没有想到好的思路去写，删除了一些无关紧要的变量，提交日记">
       <created>1673167792396</created>
@@ -659,7 +659,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684508024857</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="修改纯跟踪算法求偏差的方式，PID参数进行对应调整，路障出状态和结束状态的循迹使用图像识别">
+      <created>1684935653928</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1684935653928</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -677,7 +684,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="同步工程" />
     <MESSAGE value="增加补线函数，添加环岛出环补线" />
     <MESSAGE value="将环岛的东西加入到ADS中还没实地测试" />
     <MESSAGE value="把扫线的八零域标号改成全局变量，为了在元素再次扫线的时候保存标号值" />
@@ -702,7 +708,8 @@
     <MESSAGE value="环岛修改角点最小限" />
     <MESSAGE value="十字重新扫线取消掉线的缩短" />
     <MESSAGE value="路障OK了，能跑65" />
-    <option name="LAST_COMMIT_MESSAGE" value="路障OK了，能跑65" />
+    <MESSAGE value="修改纯跟踪算法求偏差的方式，PID参数进行对应调整，路障出状态和结束状态的循迹使用图像识别" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改纯跟踪算法求偏差的方式，PID参数进行对应调整，路障出状态和结束状态的循迹使用图像识别" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

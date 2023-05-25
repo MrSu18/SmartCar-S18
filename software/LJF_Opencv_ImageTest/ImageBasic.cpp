@@ -8,6 +8,7 @@ myPoint left_line[EDGELINE_LENGTH],right_line[EDGELINE_LENGTH];//左右边线
 uint8 l_line_count=0,r_line_count=0;//左右边线记录总共有多长
 char l_lost_line[EDGELINE_LENGTH],r_lost_line[EDGELINE_LENGTH];//左右线是否丢线的记录数组
 uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
+uint8 l_growth_direction[8]={0},r_growth_direction[8]={0};//左右线生长方向,数组位置对应的是种子生长的时候号位的生长次数
 //================================================================
 
 /***********************************************
@@ -171,6 +172,7 @@ void EdgeDetection(void)
         {
             left_line[l_line_count].X=left_seed.X;left_line[l_line_count].Y=left_seed.Y;
             l_line_count++;
+            l_growth_direction[(left_seed_num+2)%8]++;
         }
         else break;
     }
@@ -182,6 +184,7 @@ void EdgeDetection(void)
         {
             right_line[r_line_count].X=right_seed.X;right_line[r_line_count].Y=right_seed.Y;
             r_line_count++;
+            r_growth_direction[(right_seed_num+2)%8]++;
         }
         else break;
     }
