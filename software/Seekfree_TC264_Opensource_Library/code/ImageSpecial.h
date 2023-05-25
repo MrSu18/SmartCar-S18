@@ -28,6 +28,8 @@ uint8 CutFindCorner(int16* corner_id_l,int16* coener_id_r);//断路找角点
 uint8 CrossIdentify(void);//十字状态机
 uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r);//十字找角点
 void EdgeDetection_Cross(uint8 lr_flag);
+extern float origin_aimdis;
+extern uint8 now_flag;
 //左环岛元素函数
 void LeftLineDetectionAgain(char choose);
 void RightLineDetectionAgain(char choose);

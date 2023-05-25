@@ -13,8 +13,8 @@ int target_left = 0,target_right = 0;                                   //左右轮
 int target_left_1 = 0,target_right_1 = 0;                               //左右轮的目标速度的值(电磁)
 uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 uint16 base_speed = 0;                                                  //基础速度
-TrackMode track_mode = kTrackImage;                                     //巡线模式
-TrackMode last_track_mode = kTrackImage;                                //上一次巡线模式
+TrackMode track_mode = kTrackADC;                                     //巡线模式
+TrackMode last_track_mode = kTrackADC;                                //上一次巡线模式
 uint8 encoder_dis_flag = 0;                                             //编码器积分标志位
 float dis = 0;                                                          //距离
 

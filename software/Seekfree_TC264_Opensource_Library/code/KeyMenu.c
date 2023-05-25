@@ -92,7 +92,7 @@ uint8 state_speed[9][30]=
 };
 uint8 basetrack[3][30]=
 {
-        "   base_speed:",
+        "   original_speed:",
         "   aim_distance:",
         "   Exit"
 };
@@ -300,7 +300,7 @@ void SubParameter(void)
                     break;
                 case 8:
                     original_speed-=5;
-                    tft180_show_int(100, menu.updown*10, original_speed, 3);
+                    tft180_show_int(100, menu.updown*14, original_speed, 3);
                     break;
             }
             break;
@@ -385,7 +385,7 @@ void AddParameter(void)
                     break;
                 case 8:
                     original_speed+=5;
-                    tft180_show_int(100, menu.updown*10, original_speed, 3);
+                    tft180_show_int(100, menu.updown*14, original_speed, 3);
                     break;
             }
             break;

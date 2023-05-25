@@ -103,7 +103,7 @@ int core0_main(void)
     PIDInit(&gyropid,-0.006,0,0);
 
     // 此处编写用户代码 例如外设初始化代码等
-    cpu_wait_event_ready();         // 等待所有核心初始化完毕
+    cpu_wait_event_ready();         //等待所有核心初始化完毕
 
 //    ADCScan();
     while (TRUE)
@@ -113,6 +113,7 @@ int core0_main(void)
 //        dl1a_get_distance();
 //        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
+//        ChaBiHe(TRACK);
 //        if(gyro_flag == 1)
 //        {
 //            printf("%d\n",gyropid.out);

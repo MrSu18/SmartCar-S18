@@ -14,12 +14,12 @@
 
 typedef enum CutType
 {
-    kCutIn = 0,
-    kCutOut,
+    kCutBegin=0,
+    kCutIn,
     kCutEnd,
 }CutType;//断路状态机状态结构体
 
-CutType cut_type = kCutOut;
+CutType cut_type = kCutBegin;
 
 /***********************************************
 * @brief : 断路状态机
@@ -31,15 +31,31 @@ CutType cut_type = kCutOut;
 ************************************************/
 uint8 CutIdentify(void)
 {
+    if(now_flag == 0)
+    {
+        origin_aimdis = aim_distance;
+        now_flag = 1;
+    }
     switch(cut_type)
     {
+        case kCutBegin:
+        {
+            int16 corner_id_l = 0,corner_id_r = 0;
+            if(CutFindCorner(&corner_id_l, &corner_id_r)!=0)
+            {
+                if((corner_id_l > origin_aimdis / SAMPLE_DIST) || (corner_id_r > origin_aimdis / SAMPLE_DIST))
+                    break;
+                else
+                    cut_type = kCutIn;
+            }
+            break;
+        }
         case kCutIn:
         {
             int16 corner_id_l = 0,corner_id_r = 0;
             uint8 corner_find = CutFindCorner(&corner_id_l, &corner_id_r);//找角点
             if(corner_find != 0)
             {
-                base_speed = 50;
                 //有右角点，没有左角点
                 if(corner_find == 2)
                 {
@@ -71,27 +87,15 @@ uint8 CutIdentify(void)
                     }
                 }
                 //切换状态，改成电磁循迹
-                if(corner_id_l < 50 && corner_id_r < 50)
+                if(corner_id_l < 20 && corner_id_r < 20)
                 {
+                    speed_type=kNormalSpeed;
+                    base_speed = 50;
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
-                    cut_type = kCutOut;
-                    aim_distance = 0.45;
+                    cut_type = kCutEnd;
+                    aim_distance = origin_aimdis;
                 }
-            }
-            break;
-        }
-        case kCutOut:
-        {
-            int over_count = 0;                                      //存放超过阈值的像素数量
-            for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
-            {
-                if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
-                        over_count++;
-            }
-            if(over_count>=MT9V03X_W-2)                             //如果全部超过阈值则停止
-            {
-                cut_type = kCutEnd;
             }
             break;
         }
@@ -102,7 +106,7 @@ uint8 CutIdentify(void)
             {
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
-                cut_type = kCutOut;//复位状态机
+                cut_type = kCutBegin;//复位状态机
                 base_speed = original_speed;
                 return 1;
             }

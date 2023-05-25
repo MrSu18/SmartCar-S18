@@ -7,6 +7,8 @@
 #include "adc.h"
 #include "zf_device_tft180.h"
 #include "pid.h"
+#include "filter.h"
+#include "stdlib.h"
 
 int16 adc_value[5] = {0};                           //存取获取到的ADC的值
 float adc_bias = 0;                                 //ADC的偏差
@@ -44,16 +46,24 @@ void ADCInit(void)
 * @date  : 2023.1.5
 * @author: L
 ************************************************/
-void ADCGetValue(int16* value)
+void ADCGetValue(int16 value[5])
 {
+    int ave_value[5] = {0};
+    for(int8 i=0;i<25;i++)
+    {
+        for(int8 j=0;j<5;j++)
+        {
+            ave_value[j] += adc_convert(my_adc_pin[j]);                            //获取ADC转换的值
+    //        *value = 100*(*value-adc_min[i])/(adc_max[i]-adc_min[i]);       //归一化处理
+    //        for(int j=0;j<6;j++)
+    //            *value = KalmanFilter(&kalman_adc,*value);                  //卡尔曼滤波
+//            tft180_show_int(98, 15*j, value[j], 4);
+        }
+    }
     for(int8 i=0;i<5;i++)
     {
-        *value = adc_convert(my_adc_pin[i]);                            //获取ADC转换的值
-        *value = 100*(*value-adc_min[i])/(adc_max[i]-adc_min[i]);       //归一化处理
-        for(int j=0;j<6;j++)
-            *value = KalmanFilter(&kalman_adc,*value);                  //卡尔曼滤波
-//        tft180_show_int(98, 15*i, *value, 4);
-        value++;
+        value[i]=ave_value[i]/25;
+//        tft180_show_int(98, 15*i, value[i], 4);
     }
 }
 /***********************************************
@@ -71,11 +81,12 @@ float ChaBiHe(int8 flag)
     {
         case TRACK:
         {
-            if((L + R) < 10 && fabs(LM - RM) < 10)
-                err = turnpid_adc.err;
-            else
-                err=(float)30*(LM-RM)/(LM+RM);                 //循迹用的电磁偏差的差比和计算
-            break;
+//            if((L + R) < 10 && fabs(LM - RM) < 10)
+//                err = turnpid_adc.err;
+//            else
+                err=(float)20*((0.8*(L-R)+0.2*(LM-RM))/(0.8*(L+R)+0.2*abs(LM-RM)));                 //循迹用的电磁偏差的差比和计算
+//                tft180_show_float(0,0,err,3,2);
+                break;
         }
         case JUDGE:
         {
