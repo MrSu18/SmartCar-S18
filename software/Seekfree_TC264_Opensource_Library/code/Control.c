@@ -74,6 +74,7 @@ void OutGarage(void)
     encoder_dis_flag=1;
 //    image_bias=0.3;
     while(dis<500);//给时间车加速
+    encoder_dis_flag=0;
 //    image_bias=5;    //向左打死
 //    StartIntegralAngle_X(70);
 //    while(!icm_angle_x_flag);   //左转70°进入正常寻迹

@@ -42,26 +42,13 @@ uint8 SlopeIdentify(void)
             gradient_r = CalculateGradient('r');//求右线斜率
             if(((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)||(dl1a_distance_mm < 600))
             {
-                gpio_toggle_level(P21_3);
                 speed_type=kNormalSpeed;//降速
-                base_speed = 40;
-//                last_track_mode = track_mode;//切换成电磁循迹
-//                track_mode = kTrackADC;
-                slope_type = kSlopeUp;//切换下一个状态
+                base_speed = 50;
+                last_track_mode = track_mode;//切换成电磁循迹
+                track_mode = kTrackADC;
+                slope_type = kSlopeEnd;//切换下一个状态
                 encoder_dis_flag = 1;//开启编码器积分
             }
-            break;
-        }
-        case kSlopeUp:
-        {
-            image_bias = 0;
-//            while(GetICM20602Gyro_Y()<1000);
-//            slope_type = kSlopeEnd;
-//            base_speed = original_speed;
-            while(dis < 1000);
-            encoder_dis_flag = 0;
-            slope_type = kSlopeBegin;
-            return 1;
             break;
         }
         case kSlopeEnd:

@@ -16,6 +16,7 @@ typedef enum CutType
 {
     kCutBegin=0,
     kCutIn,
+    kCutMid,
     kCutEnd,
 }CutType;//断路状态机状态结构体
 
@@ -61,14 +62,14 @@ uint8 CutIdentify(void)
                 {
                     per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
                     track_type = kTrackRight;
-                    aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
+                    aim_distance = (float)corner_id_r*SAMPLE_DIST;
                 }
                 //有左角点，没有右角点
                 else if(corner_find == 1)
                 {
                     per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
                     track_type = kTrackLeft;
-                    aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
+                    aim_distance = (float)corner_id_l*SAMPLE_DIST;
                 }
                 //两边都有角点，那边边线长就寻那条边线
                 else if(corner_find == 3)
@@ -77,32 +78,44 @@ uint8 CutIdentify(void)
                     {
                         per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
                         track_type = kTrackLeft;
-                        aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
+                        aim_distance = (float)corner_id_l*SAMPLE_DIST;
                     }
                     else if(per_r_line_count > per_l_line_count)
                     {
                         per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
                         track_type = kTrackRight;
-                        aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
+                        aim_distance = (float)corner_id_r*SAMPLE_DIST;
                     }
                 }
                 //切换状态，改成电磁循迹
-                if(corner_id_l < 20 && corner_id_r < 20)
+                if(corner_id_l < 35 && corner_id_r < 35)
                 {
                     speed_type=kNormalSpeed;
-                    base_speed = 50;
+                    base_speed = 55;
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
-                    cut_type = kCutEnd;
+                    cut_type = kCutMid;
                     aim_distance = origin_aimdis;
                 }
             }
             break;
         }
+        case kCutMid:
+        {
+            int over_count = 0;
+            for(int16 i = 0;i < MT9V03X_W;i++)
+            {
+                if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
+                        over_count++;
+            }
+            if(over_count>=MT9V03X_W-2)
+                cut_type = kCutEnd;
+            break;
+        }
         case kCutEnd:
         {
             //边线重新出现，断路状态结束，切换成图像循迹
-            if (l_line_count>50)
+            if (l_line_count>80 && r_line_count>80)
             {
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
@@ -164,3 +177,4 @@ uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
     //没找到角点
     return 0;
 }
+
