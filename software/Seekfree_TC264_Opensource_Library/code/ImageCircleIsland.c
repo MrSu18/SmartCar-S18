@@ -13,6 +13,10 @@
 #include "Control.h"
 
 //#define PI 3.1415926
+#define CIRCLE_SIDE_LARGE_ADC_THR 2000 //车到了环岛中下部时靠近环岛那边边ADC的值应该大于这个阈值
+#define CIRCLE_SIDE_SMALL_ADC_THR 1000 //车到了环岛中下部时另外一边ADC的值应该小于于这个阈值
+#define CIRCLE_MID_ADC_THR        3000 //车到了环岛中下部时，中间电感应该大于这个阈值
+#define CIRCLE_SPECIAL_ADC_THR    4095 //车子由于路径完全平行远离环岛，这时候双边电感会等于4095并且车在环岛中部需要及时入环
 
 /**************************************************左环岛***************************************************************/
 uint8 CircleIslandLStatus()//左边环岛状态状态机
@@ -22,16 +26,20 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
     switch (status)
     {
         case 0: //检测左环岛
-            if(CircleIslandLDetection()==2)
+            if(CircleIslandLDetection()==1)
             {
 //                base_speed=65;//降速进环
-                status=1;//先默认电磁检测到就可以入环，不知道效果怎么样还没测试
+                status=1;
+            }
+            else if(L>=CIRCLE_SPECIAL_ADC_THR)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
+            {
+                StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
+                status=2;
             }
             break;
         case 1: //路过环岛第一个入口
             if(CircleIslandLInDetection()==1)
             {
-                gpio_toggle_level(P21_3);
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }
@@ -84,56 +92,26 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
 * @brief : 检测小车是否走到了环岛元素部分
 * @param : 无
 * @return: 0：还没检测到左角点 1：检测到了左边角点 2：左角点消失
-* @date  : 2023.3.17
+* @date  : 2023.5.26
 * @author: 刘骏帆
 * @notice: 角度./180.*PI，因为求得的曲率是弧度制的不是角度制
 ************************************************/
 uint8 CircleIslandLDetection()//检测左环岛
 {
-    static uint8 status=0;//检测到角点->检测不到角点
-    if (status==0)//状态0检测角点出现
+    track_type=kTrackRight;//默认寻右边
+    //环岛中下部分电磁特征
+    if(L>CIRCLE_SIDE_LARGE_ADC_THR && M>CIRCLE_MID_ADC_THR)
     {
-        //避免太靠右使得左边没线，但是左边又有角点存在
-        if(l_line_count<3)
-        {
-            //左边重新扫线
-            LeftLineDetectionAgain('y');
-            per_l_line_count=PER_EDGELINE_LENGTH;
-            EdgeLinePerspective(left_line,l_line_count,per_left_line);
-            BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
-            ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-            local_angle_points(f_left_line1,per_l_line_count,l_angle,ANGLE_DIST/SAMPLE_DIST);
-            nms_angle(l_angle,per_l_line_count,l_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
-        }
-        for (int i = 0; i < per_l_line_count; ++i)
-        {
-            //检测左边70度到140度的角点,加负号的因为左边的角点算出来是负数
-            //第三个条件限制的是哪个角点有多远0.3m
-            if(60./180.*PI<-l_angle_1[i] && -l_angle_1[i]<140./180.*PI && i<0.3/SAMPLE_DIST)
-            {
-                speed_type=kNormalSpeed;
-                base_speed=original_speed;//注意恢复到原始的速度
-                track_type=kTrackRight;
-                status=1;//第一次检测到
-                break;
-            }
-        }
+        return 1;
     }
-    else if (status==1)//状态1检测角点消失
-    {
-        track_type=kTrackRight;
-        if(l_line_count<2) status=2;
-    }
-    else if(status==2)
-        status=0;//重置flag
-    return status;
+    return 0;
 }
 
 /***********************************************
 * @brief : 检测是否到了需要入环的状态
 * @param : 无
 * @return: 是否入环 1：入环 0：入环还不用入环
-* @date  : 2023.4.15
+* @date  : 2023.5.26
 * @author: 刘骏帆
 ************************************************/
 uint8 CircleIslandLInDetection(void)
@@ -146,7 +124,7 @@ uint8 CircleIslandLInDetection(void)
     }
     else if(status==1)
     {
-        if(dis>400)//40cm
+        if(dis>200)//20cm
         {
             encoder_dis_flag = 0;
             status=0;
@@ -355,12 +333,14 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
     switch (status)
     {
         case 0: //检测右环岛
-            if(CircleIslandRDetection()==2)
+            if(CircleIslandRDetection()==1)
             {
-//                pit_disable(CCU60_CH0);//关闭电机中断
-//                pit_disable(CCU60_CH1);
-//                MotorSetPWM(0,0);
                 status=1;
+            }
+            else if(R>=CIRCLE_SPECIAL_ADC_THR)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
+            {
+                StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
+                status=2;
             }
             break;
         case 1: //路过环岛第一个入口
@@ -416,55 +396,26 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
 * @brief : 检测小车是否走到了环岛元素部分
 * @param : 无
 * @return: 0：还没检测到左角点 1：检测到了左边角点 2：左角点消失
-* @date  : 2023.5.15
+* @date  : 2023.5.26
 * @author: 刘骏帆
 * @notice: 角度./180.*PI，因为求得的曲率是弧度制的不是角度制
 ************************************************/
 uint8 CircleIslandRDetection()//检测左环岛
 {
-    static uint8 status=0;//检测到角点->检测不到角点
-    if (status==0)//状态0检测角点出现
+    track_type=kTrackLeft;//默认寻左边
+    //环岛中下部分电磁特征
+    if(R>CIRCLE_SIDE_LARGE_ADC_THR && M>CIRCLE_MID_ADC_THR)
     {
-        if(r_line_count<3)
-        {
-            //右边重新扫线
-            RightLineDetectionAgain('y');
-            per_r_line_count=PER_EDGELINE_LENGTH;
-            EdgeLinePerspective(right_line,r_line_count,per_right_line);
-            BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
-            ResamplePoints(f_right_line, r_line_count, f_right_line1, &per_r_line_count, SAMPLE_DIST*PIXEL_PER_METER);
-            local_angle_points(f_right_line1,per_r_line_count,r_angle,ANGLE_DIST/SAMPLE_DIST);
-            nms_angle(r_angle,per_r_line_count,r_angle_1,(ANGLE_DIST/SAMPLE_DIST)*2+1);
-        }
-        for (int i = 0; i < per_r_line_count; ++i)
-        {
-            //检测左边70度到140度的角点,加负号的因为左边的角点算出来是负数
-            //第三个条件限制的是哪个角点有多远0.3m
-            if(70./180.*PI<r_angle_1[i] && r_angle_1[i]<140./180.*PI && i<0.3/SAMPLE_DIST)
-            {
-                track_type=kTrackLeft;
-                //如果左边没线就要重新扫线不然会继承上一次偏差
-                status=1;//第一次检测到
-                break;
-            }
-        }
+        return 1;
     }
-    else if (status==1)//状态1检测角点消失
-    {
-        track_type=kTrackLeft;
-        //如果左边没线就要重新扫线不然会继承上一次偏差
-        if(r_line_count<2) status=2;
-    }
-    else if(status==2)
-        status=0;//重置flag
-    return status;
+    return 0;
 }
 
 /***********************************************
 * @brief : 检测是否到了需要入环的状态
 * @param : 无
 * @return: 是否入环 1：入环 0：入环还不用入环
-* @date  : 2023.5.13
+* @date  : 2023.5.26
 * @author: 刘骏帆
 ************************************************/
 uint8 CircleIslandRInDetection(void)
@@ -477,7 +428,7 @@ uint8 CircleIslandRInDetection(void)
     }
     else if(status==1)
     {
-        if(dis>400)//40cm
+        if(dis>400)//20cm
         {
             encoder_dis_flag = 0;
             status=0;
@@ -588,7 +539,7 @@ uint8 CircleIslandROutFinish(void)//检测环岛是否结束
     //陀螺仪检测出环
     if(icm_angle_x_flag==1)
     {
-        gpio_toggle_level(P21_3);
+
         return 1;
     }
     return 0;

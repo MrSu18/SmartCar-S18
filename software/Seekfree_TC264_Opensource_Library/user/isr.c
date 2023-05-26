@@ -54,7 +54,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(time>2000)
+    if(time>2200)
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -68,17 +68,6 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)//转向环
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU60_CH1);
 
-//    turnpid_image.err = image_bias;//图像偏差
-//    if (turnpid_image.out > 0)//左转
-//    {
-//        target_left = base_speed - (int)2*turnpid_image.err;
-//        target_right = base_speed;
-//    }
-//    else//右转
-//    {
-//        target_left = base_speed;
-//        target_right = base_speed + (int)2*turnpid_image.err;
-//    }
     if(track_mode == kTrackImage)                                                   //当前为摄像头循迹
     {
         if(last_track_mode == kTrackADC)                                            //上一次循迹为电磁循迹则复位PID参数
@@ -100,8 +89,6 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)//转向环
         FuzzyPID_ADC();
     }
 
-    if(timeintegral_flag == 1)
-        time++;
     c0h1_isr_flag=1;
 }
 

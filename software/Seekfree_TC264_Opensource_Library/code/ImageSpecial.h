@@ -14,8 +14,6 @@
 uint8 SlopeIdentify(void);//坡道状态机
 float CalculateGradient(uint8 lr_flag);//坡道计算边线斜率
 //路障函数
-extern int time;
-extern uint8 timeintegral_flag;
 uint8 BarrierIdentify(void);//路障状态机
 //车库函数
 uint8 GarageFindCorner(int* corner_id);//车库找角点

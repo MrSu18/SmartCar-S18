@@ -29,8 +29,6 @@ BarrierType barrier_type = kBarrierBegin;
 * @date  : 2023.5.19
 * @author: L & ΑυΏ₯·«
 ************************************************/
-int time = 0;
-uint8 timeintegral_flag = 0;
 uint8 BarrierIdentify(void)
 {
     switch(barrier_type)

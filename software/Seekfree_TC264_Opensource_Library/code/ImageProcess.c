@@ -91,6 +91,7 @@ void ImageProcess(void)
             {
                 gpio_toggle_level(P21_3);
                 process_status_cnt++;
+                aim_distance=0.36;
                 original_speed=process_speed[process_status_cnt];
                 base_speed=original_speed;
             }
@@ -135,8 +136,6 @@ void ImageProcess(void)
             if(GarageIdentify_L()==1)
             {
                 gpio_toggle_level(P21_3);
-//                process_status_cnt++;
-//                original_speed=process_speed[process_status_cnt];
             }
             break;
         case 'S':
