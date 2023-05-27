@@ -26,10 +26,10 @@
 #define KD_MAX      6   //8
 #define KD_MIN      0
 //电磁模糊PID需要用到的各个参数
-#define E_MAX_A       30
-#define E_MIN_A       -30
-#define EC_MAX_A      60
-#define EC_MIN_A      -60
+#define E_MAX_A       20
+#define E_MIN_A       -20
+#define EC_MAX_A      15
+#define EC_MIN_A      -15
 #define KP_MAX_A      5
 #define KP_MIN_A      0
 #define KD_MAX_A      3

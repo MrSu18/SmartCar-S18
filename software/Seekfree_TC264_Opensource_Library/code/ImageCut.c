@@ -88,7 +88,7 @@ uint8 CutIdentify(void)
                     }
                 }
                 //ÇÐ»»×´Ì¬£¬¸Ä³Éµç´ÅÑ­¼£
-                if(corner_id_l < 35 && corner_id_r < 35)
+                if(corner_id_l < 40 && corner_id_r < 40)
                 {
                     speed_type=kNormalSpeed;
                     base_speed = 55;

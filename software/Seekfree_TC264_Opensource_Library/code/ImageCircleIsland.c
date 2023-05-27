@@ -48,7 +48,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
-                base_speed=original_speed;//环内加速
+                base_speed=75;//环内加速
                 status=3;
             }
             else  if (CircleIslandLOutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
@@ -70,6 +70,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 4://出环
             if (CircleIslandLOutFinish()==1)
             {
+                base_speed=original_speed;//恢复速度
                 status=5;
             }
             else CircleIslandLOut();//出环没结束就一直做出环处理
@@ -78,7 +79,6 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
             if (CircleIslandLEnd()==1)
             {
                 speed_type=kImageSpeed;
-                base_speed=original_speed;//加速出环
                 status=0;
                 return 1;
             }
@@ -354,7 +354,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandRIn()==1)
             {
-                base_speed=original_speed;
+                base_speed=75;
                 status=3;
             }
             else  if (CircleIslandROutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
@@ -376,6 +376,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         case 4://出环
             if (CircleIslandROutFinish()==1)
             {
+                base_speed=original_speed;//恢复速度
                 status=5;
             }
             else CircleIslandROut();//出环没结束就一直做出环处理

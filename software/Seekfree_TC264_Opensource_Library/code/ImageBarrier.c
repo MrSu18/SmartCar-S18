@@ -46,7 +46,7 @@ uint8 BarrierIdentify(void)
         }
         case kBarrierNear://开始陀螺仪积分拐出去
         {
-            image_bias = 5;
+            image_bias = 6;//舵轮转向是5
             while(!icm_angle_x_flag);
             image_bias=0;
             StartIntegralAngle_X(70);
@@ -55,7 +55,7 @@ uint8 BarrierIdentify(void)
         }
         case kBarrierOut://陀螺仪积分拐回来
         {
-            image_bias = -5;
+            image_bias = -6;//舵轮转向是-5
             while(!icm_angle_x_flag);
             image_bias=0;
             barrier_type = kBarrierEnd;

@@ -18,7 +18,7 @@
 #include "Control.h"
 
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入库 'S':停车*/
-uint8 process_status[15]={2,1,'S'};//总状态机元素执行顺序数组
+uint8 process_status[15]={4,3,6,'S'};//总状态机元素执行顺序数组
 uint16 process_speed[15]={65,65,65,65,65,60,60,60};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
@@ -216,14 +216,13 @@ void OutProtect(void)
 
     for(int16 i = 0;i < 5;i++)
         adc_sum += adc_value[i];
-    adc_sum -= adc_value[2];
     for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
     {
         if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
                 over_count++;
     }
 
-    if(over_count>=MT9V03X_W-2)                             //如果全部超过阈值则停止
+    if(over_count>=MT9V03X_W-2 && adc_sum < 450)                             //如果全部超过阈值则停止
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
