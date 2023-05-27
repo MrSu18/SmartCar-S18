@@ -28,11 +28,12 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==1)
             {
-//                base_speed=65;//降速进环
+                base_speed=65;//降速进环
                 status=1;
             }
             else if(L>=CIRCLE_SPECIAL_ADC_THR)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
             {
+                base_speed=65;//降速进环
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }
@@ -47,7 +48,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
-//                base_speed=original_speed;//环内加速
+                base_speed=original_speed;//环内加速
                 status=3;
             }
             else  if (CircleIslandLOutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
@@ -77,7 +78,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
             if (CircleIslandLEnd()==1)
             {
                 speed_type=kImageSpeed;
-//                base_speed=original_speed;//加速出环
+                base_speed=original_speed;//加速出环
                 status=0;
                 return 1;
             }
@@ -146,13 +147,10 @@ uint8 CircleIslandLInDetection(void)
 #define JUDGE_IN_EDD_THR    40//判断入环状态结束的右边线两端X坐标的差值阈值
 uint8 CircleIslandLIn()//入环状态
 {
-    //进入此状态之后就一直开启左边线的特殊扫线（指导扫到赛道边界才开始记录数组）
-    //同样的，如果第一个点的Y在图像很上方，说明这时候的车是右斜的，则进入特殊状态
-
     //这里是判断是否跳出入环状态
     int len=0;
     if (per_r_line_count>EDGELINE_LENGTH-10) len=EDGELINE_LENGTH-10;
-    else                                  len=per_r_line_count;
+    else                                     len=per_r_line_count;
     if(f_right_line1[0].X-f_right_line1[len-1].X>JUDGE_IN_EDD_THR && right_line[r_line_count-1].X<80)
     {
         return 1;//入环结束
@@ -167,13 +165,13 @@ uint8 CircleIslandLIn()//入环状态
         {
             uint8 y=0;//flag是连续变量
             r_line_count=1;
-            for (uint8 i=0;i<l_line_count;i++)
+            for (uint8 i=0;i<l_line_count-2;i++)
             {
                 if(left_line[l_line_count-1-i].Y>=y)
                 {
                     y=left_line[l_line_count-1-i].Y;
                 }
-                else if (left_line[l_line_count-1-i].Y>60)//因为灰度扫线在远处会乱打转把线搞乱，所以这里先临时这么用，后续要修改
+                else if (left_line[l_line_count-1-i].X>left_line[l_line_count-2-i].X)//在y开始回升的情况下下一个点的x还是在这个点的左边
                 {
                     right_line[r_line_count]=left_line[l_line_count-i];
                     r_line_count++;
@@ -335,10 +333,12 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         case 0: //检测右环岛
             if(CircleIslandRDetection()==1)
             {
+                base_speed=65;//降速进环
                 status=1;
             }
             else if(R>=CIRCLE_SPECIAL_ADC_THR)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
             {
+                base_speed=65;//降速进环
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }
@@ -354,6 +354,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandRIn()==1)
             {
+                base_speed=original_speed;
                 status=3;
             }
             else  if (CircleIslandROutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
@@ -428,7 +429,7 @@ uint8 CircleIslandRInDetection(void)
     }
     else if(status==1)
     {
-        if(dis>400)//20cm
+        if(dis>200)//20cm
         {
             encoder_dis_flag = 0;
             status=0;
