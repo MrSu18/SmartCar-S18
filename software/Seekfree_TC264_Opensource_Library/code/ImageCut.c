@@ -27,7 +27,7 @@ CutType cut_type = kCutBegin;
 * @param : void
 * @return: 0:不是断路
 *          1:识别到断路
-* @date  : 2023.5.5
+* @date  : 2023.5.26
 * @author: L
 ************************************************/
 uint8 CutIdentify(void)
@@ -53,6 +53,7 @@ uint8 CutIdentify(void)
         }
         case kCutIn:
         {
+//            printf("1\n");
             int16 corner_id_l = 0,corner_id_r = 0;
             uint8 corner_find = CutFindCorner(&corner_id_l, &corner_id_r);//找角点
             if(corner_find != 0)
@@ -102,6 +103,7 @@ uint8 CutIdentify(void)
         }
         case kCutMid:
         {
+//            printf("2\n");
             int over_count = 0;
             for(int16 i = 0;i < MT9V03X_W;i++)
             {
@@ -114,9 +116,11 @@ uint8 CutIdentify(void)
         }
         case kCutEnd:
         {
+//            printf("3\n");
             //边线重新出现，断路状态结束，切换成图像循迹
             if (l_line_count>80 && r_line_count>80)
             {
+//                printf("4\n");
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
                 cut_type = kCutBegin;//复位状态机

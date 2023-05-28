@@ -11,7 +11,7 @@
 #include "stdlib.h"
 
 int16 adc_value[5] = {0};                           //存取获取到的ADC的值
-float adc_bias = 0;                                 //ADC的偏差
+
 //赛道扫描时得到的最大值和最小值
 int16 adc_max[5] = {4095,4095,3196,3871,4095};
 int16 adc_min[5] = {0,0,17,0,0};
@@ -84,7 +84,7 @@ float ChaBiHe(int8 flag)
 //            if((L + R) < 10 && fabs(LM - RM) < 10)
 //                err = turnpid_adc.err;
 //            else
-                err=(float)20*((0.8*(L-R)+0.2*(LM-RM))/(0.8*(L+R)+0.2*abs(LM-RM)));                 //循迹用的电磁偏差的差比和计算
+                err=(float)20*((0.9*(L-R)+0.2*(LM-RM))/(0.9*(L+R)+0.3*abs(LM-RM)));                 //循迹用的电磁偏差的差比和计算
 //                tft180_show_float(0,0,err,3,2);
                 break;
         }

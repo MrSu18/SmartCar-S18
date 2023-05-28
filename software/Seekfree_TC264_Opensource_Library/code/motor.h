@@ -26,7 +26,7 @@
 #define ENCODER_LEFT_A (TIM2_ENCODER_CH1_P33_7)
 #define ENCODER_LEFT_B (TIM2_ENCODER_CH2_P33_6)
 
-#define  MOTOR_PWM_MAX      8000                        //电机PWM限幅
+#define  MOTOR_PWM_MAX      9000                        //电机PWM限幅
 
 #define CIRCLE          3.1415926*65                    //车轮周长
 

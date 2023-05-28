@@ -102,23 +102,23 @@ void MotorSetPWM(int pwm_left,int pwm_right)
     //控制电机正反转和转速
     if(pwm_left>=0)
     {
-        pwm_set_duty(MOTOR_LEFT_2,pwm_left);
+        pwm_set_duty(MOTOR_LEFT_2,-pwm_left);
         pwm_set_duty(MOTOR_LEFT_1,0);
     }
     else
     {
         pwm_set_duty(MOTOR_LEFT_2,0);
-        pwm_set_duty(MOTOR_LEFT_1,-pwm_left);
+        pwm_set_duty(MOTOR_LEFT_1,pwm_left);
     }
     if(pwm_right>=0)
     {
-        pwm_set_duty(MOTOR_RIGHT_1,pwm_right);
+        pwm_set_duty(MOTOR_RIGHT_1,-pwm_right);
         pwm_set_duty(MOTOR_RIGHT_2,0);
     }
     else
     {
         pwm_set_duty(MOTOR_RIGHT_1,0);
-        pwm_set_duty(MOTOR_RIGHT_2,-pwm_right);
+        pwm_set_duty(MOTOR_RIGHT_2,pwm_right);
     }
 }
 /***********************************************
