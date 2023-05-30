@@ -96,14 +96,7 @@ void core1_main(void)
             //赛道基础信息变量重置
             TrackBasicClear();
 #else
-            static uint8 temp=0;
-            if(temp==0)
-            {
-                StartIntegralAngle_X(360);
-                temp=1;
-            }
-            tft180_show_float(0, 0,my_angle_x, 4, 2);
-//            MotorSetPWM(2000,2000);
+//            MotorSetPWM(-3200,-2900);
 //            system_delay_ms(3000);
 //            while(1)
 //            {

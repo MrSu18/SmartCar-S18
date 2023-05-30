@@ -49,17 +49,18 @@ uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //ÍÓÂÝÒÇ*Öá»
 IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//ËÙ¶È»·
 {
     static uint32 time=0;
-    time++;
+//    time++;
     interrupt_global_enable(0);                     // ¿ªÆôÖÐ¶ÏÇ¶Ì×
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(time>3500)
-    {
-        pit_disable(CCU60_CH0);//¹Ø±Õµç»úÖÐ¶Ï
-        pit_disable(CCU60_CH1);
-        MotorSetPWM(0,0);
-    }
+//    if(time>2000)
+//    {
+//        pit_disable(CCU60_CH0);//¹Ø±Õµç»úÖÐ¶Ï
+//        pit_disable(CCU60_CH1);
+//        pit_disable(CCU61_CH1);
+//        MotorSetPWM(0,0);
+//    }
 }
 
 
@@ -113,18 +114,18 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
 {
     interrupt_global_enable(0);                     // ¿ªÆôÖÐ¶ÏÇ¶Ì×
     pit_clear_flag(CCU61_CH1);
-    float target_gyro = 5*turnpid_image.out;
+//    float target_gyro = (float)(turnpid_image.out);
 
     real_gyro = GetICM20602Gyro_X();
-    real_gyro = 0.3 * real_gyro + 0.7*last_real_gyro;
+    real_gyro = 0.7 * real_gyro + 0.3*last_real_gyro;
     last_real_gyro = real_gyro;
-    gyropid.err = target_gyro - real_gyro ;
+//    gyropid.err = target_gyro - real_gyro;
 
-    gyropid.out = gyropid.P * gyropid.err + gyropid.D * (gyropid.err - gyropid.last_err);
-    gyropid.last_err = gyropid.err;
+//    gyropid.out += gyropid.P * (gyropid.err - gyropid.last_err) + gyropid.I * gyropid.err;
+//    gyropid.last_err = gyropid.err;
 
-    target_left = base_speed - gyropid.out;
-    target_right = base_speed + gyropid.out;
+//    target_left = base_speed - gyropid.out;
+//    target_right = base_speed + gyropid.out;
     gyro_flag = 1;
 //    if(gyropid.out>0)//×ó×ª
 //    {

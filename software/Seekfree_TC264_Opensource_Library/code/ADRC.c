@@ -1,7 +1,8 @@
 
 
 #include "ADRC.h"
-Fhan_Data ADRC_Controller;
+Fhan_Data adrc_controller_l;
+Fhan_Data adrc_controller_r;
 /***********************************************
 * @brief : 开根号
 * @param : float number 输入量
@@ -63,10 +64,13 @@ int16_t Fsg_ADRC(float x,float d)
 ************************************************/
 void ADRC_Init()
 {
-    ADRC_Controller.r=1000000;
-    ADRC_Controller.h=0.01;
-    ADRC_Controller.N0=4;
+    adrc_controller_l.r=1000000;
+    adrc_controller_l.h=0.002;
+    adrc_controller_l.N0=2;
 
+    adrc_controller_r.r=1000000;
+    adrc_controller_r.h=0.002;
+    adrc_controller_r.N0=2;
 }
 
 /***********************************************

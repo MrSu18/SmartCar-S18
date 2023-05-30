@@ -17,9 +17,9 @@
 #include "pid.h"
 #include "Control.h"
 
-/*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入库 'S':停车*/
-uint8 process_status[15]={4,3,'S'};//总状态机元素执行顺序数组
-uint16 process_speed[15]={65,65,65,65,65,60,60,60};//上面数组对应的元素路段的速度
+/*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入左库 8:入右库 'S':停车*/
+uint8 process_status[30]={2,1,5,3,3,3,3,8,'S'};//总状态机元素执行顺序数组
+uint16 process_speed[30]={70,65,70,70,70,70,70,70,70,70,70,65,65,65};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
 /***********************************************
@@ -132,8 +132,14 @@ void ImageProcess(void)
                 base_speed=original_speed;
             }
             break;
-        case 7://车库
+        case 7://左车库
             if(GarageIdentify_L()==1)
+            {
+                gpio_toggle_level(P21_3);
+            }
+            break;
+        case 8://右车库
+            if(GarageIdentify_R()==1)
             {
                 gpio_toggle_level(P21_3);
             }
@@ -222,10 +228,11 @@ void OutProtect(void)
                 over_count++;
     }
 
-    if(over_count>=MT9V03X_W-2 && adc_sum < 450)                             //如果全部超过阈值则停止
+    if(over_count>=MT9V03X_W-2)                             //如果全部超过阈值则停止
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
+        pit_disable(CCU61_CH1);
         MotorSetPWM(0,0);
     }
 }

@@ -7,6 +7,7 @@
 #include "motor.h"
 #include "zf_common_headfile.h"
 #include "Control.h"
+#include "ADRC.h"
 
 int speed_left = 0,speed_right = 0;                                     //左右轮当前编码器的值
 int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值(图像)
@@ -102,23 +103,23 @@ void MotorSetPWM(int pwm_left,int pwm_right)
     //控制电机正反转和转速
     if(pwm_left>=0)
     {
-        pwm_set_duty(MOTOR_LEFT_2,-pwm_left);
-        pwm_set_duty(MOTOR_LEFT_1,0);
-    }
-    else
-    {
         pwm_set_duty(MOTOR_LEFT_2,0);
         pwm_set_duty(MOTOR_LEFT_1,pwm_left);
     }
-    if(pwm_right>=0)
-    {
-        pwm_set_duty(MOTOR_RIGHT_1,-pwm_right);
-        pwm_set_duty(MOTOR_RIGHT_2,0);
-    }
     else
+    {
+        pwm_set_duty(MOTOR_LEFT_2,-pwm_left);
+        pwm_set_duty(MOTOR_LEFT_1,0);
+    }
+    if(pwm_right>=0)
     {
         pwm_set_duty(MOTOR_RIGHT_1,0);
         pwm_set_duty(MOTOR_RIGHT_2,pwm_right);
+    }
+    else
+    {
+        pwm_set_duty(MOTOR_RIGHT_1,-pwm_right);
+        pwm_set_duty(MOTOR_RIGHT_2,0);
     }
 }
 /***********************************************
@@ -134,6 +135,8 @@ void MotorCtrl(void)
 
     EncoderGetCount(&speed_left,&speed_right);                                      //获取编码器的值
 
+    pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
+    pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
     if(track_mode == kTrackImage)                                                   //当前为摄像头循迹
     {
         pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
@@ -146,6 +149,8 @@ void MotorCtrl(void)
         pwm_right = PIDSpeed(speed_right,target_right_1,&speedpid_right);           //获取赛道上右电机PWM
 
     }
+//    Fhan_ADRC(&adrc_controller_l,(float)pwm_left);
+//    Fhan_ADRC(&adrc_controller_r,(float)pwm_right);
     MotorSetPWM(pwm_left,pwm_right);                                                //赋给电机一定占空比的PWM
 
     c0h0_isr_flag=1;

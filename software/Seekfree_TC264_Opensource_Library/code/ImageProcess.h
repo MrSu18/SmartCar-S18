@@ -17,8 +17,8 @@
 #define OUT_THRESHOLD       100             //≥ˆΩÁ≈–∂œ„–÷µ
 //===============================================================
 
-extern uint8 process_status[15];
-extern uint16 process_speed[15];
+extern uint8 process_status[30];
+extern uint16 process_speed[30];
 
 void OutProtect(void);
 void ImageProcess(void);

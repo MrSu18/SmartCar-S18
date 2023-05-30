@@ -8,6 +8,13 @@
 #ifndef CODE_DEBUG_H_
 #define CODE_DEBUG_H_
 
+#include "ImageTrack.h"
+#include "zf_driver_pwm.h"
+
+#define GREEN    ATOM0_CH6_P23_1
+#define RED     ATOM0_CH1_P22_0
+#define BLUE   ATOM0_CH0_P22_1
+
 void LCDShowPerImage(void);//LCD显示透视后的图像
 void LCDShowFloatLine(myPoint_f* line,int len,const uint16 color);//LCD显示边线
 void LCDShowUint8Line(myPoint* line,int len,const uint16 color);//LCD显示边线

@@ -31,10 +31,10 @@
 #define CIRCLE          3.1415926*65                    //车轮周长
 
 //电机PWM引脚
-#define  MOTOR_LEFT_1   ATOM0_CH4_P02_4
-#define  MOTOR_LEFT_2   ATOM0_CH6_P02_6
-#define  MOTOR_RIGHT_1  ATOM0_CH5_P02_5
-#define  MOTOR_RIGHT_2  ATOM0_CH7_P02_7
+#define  MOTOR_LEFT_1   ATOM0_CH5_P02_5
+#define  MOTOR_LEFT_2   ATOM0_CH7_P02_7
+#define  MOTOR_RIGHT_1  ATOM0_CH4_P02_4
+#define  MOTOR_RIGHT_2  ATOM0_CH6_P02_6
 
 typedef enum TrackMode
 {

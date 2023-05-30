@@ -9,8 +9,6 @@
 
 PID speedpid_left;                          //赛道左轮速度环PID
 PID speedpid_right;                         //赛道右轮速度环PID
-PID speedpid_left_1;                        //蓝布左轮速度环PID
-PID speedpid_right_1;                       //蓝布右轮速度环PID
 PID turnpid_image;                          //图像转向环PID
 PID turnpid_adc;                            //电磁转向环PID
 PID gyropid;
@@ -122,10 +120,8 @@ void PIDTurnADC(int* target_left,int* target_right,PID* pid)
 ************************************************/
 void PIDClear(void)
 {
-    PIDInit(&speedpid_left,301.99,0.66,0);
-    PIDInit(&speedpid_right,339.64,0.73,0);
-    PIDInit(&speedpid_left_1,301.99,0.66,0);
-    PIDInit(&speedpid_right_1,339.64,0.73,0);
+    PIDInit(&speedpid_left,185.8,0.61,0);
+    PIDInit(&speedpid_right,164.8,0.54,0);
     PIDInit(&turnpid_image,0,0,0);
     PIDInit(&turnpid_adc, 0, 0, 0);
 }

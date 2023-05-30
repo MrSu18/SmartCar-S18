@@ -19,7 +19,8 @@ typedef struct
     float fh;//最速微分加速度跟踪量
 }Fhan_Data;
 
-Fhan_Data ADRC_Controller;
+extern Fhan_Data adrc_controller_l;
+extern Fhan_Data adrc_controller_r;
 
 void ADRC_Init();
 void Fhan_ADRC(Fhan_Data *fhan_Input,float expect_ADRC);

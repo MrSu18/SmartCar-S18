@@ -15,7 +15,7 @@
 
 static Menu menu={0,0,0};
 static int index=0;
-static uint16 speed[8]={70,70,70,70,70,70,70,70};
+static uint16 speed[9]={65,65,65,65,65,65,65,65,65};
 uint8 per_image_flag=0,gray_image_flag=0;
 uint8 edgeline_flag,c_line_flag=0,per_edgeline_flag=0;
 
@@ -65,7 +65,7 @@ uint8 gyro_pid[4][30]=
         "   GyroPID.D:",
         "   Exit"
 };
-uint8 state_machine[10][30]=
+uint8 state_machine[11][30]=
 {
         " ",
         "   LeftCircle",
@@ -74,11 +74,12 @@ uint8 state_machine[10][30]=
         "   Cut",
         "   Slope",
         "   Barrier",
-        "   Garage",
+        "   LeftGarage",
+        "   RightGarage",
         "   Stop",
         "   Exit"
 };
-uint8 state_speed[9][30]=
+uint8 state_speed[10][30]=
 {
         "   LeftCircle:",
         "   RightCircle:",
@@ -86,7 +87,8 @@ uint8 state_speed[9][30]=
         "   Cut:",
         "   Slope:",
         "   Barrier:",
-        "   Garage:",
+        "   LeftGarage:",
+        "   RightGarage:",
         "   Stop:",
         "   Exit"
 };
@@ -190,11 +192,11 @@ void ShowFunction(uint8 page)
                 tft180_show_string(0, i*10, gyro_pid[i]);
             break;
         case 6:
-            for(int i = 0;i < 10;i++)
+            for(int i = 0;i < 11;i++)
                 tft180_show_string(0, i*10, state_machine[i]);
             break;
         case 7:
-            for(int i = 0;i < 9;i++)
+            for(int i = 0;i < 10;i++)
                 tft180_show_string(0, i*10, state_speed[i]);
             break;
         case 8:
@@ -259,7 +261,7 @@ void KeyCtrl(void)
             encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
             pit_enable(CCU60_CH0);
             pit_enable(CCU60_CH1);
-     //       pit_enable(CCU61_CH1);
+            pit_enable(CCU61_CH1);
             break;
         }
     }
@@ -478,12 +480,12 @@ void EnterKey(uint8* exit_flag)
                 if(menu.updown==3) exit_flag_1 = 1;
                 break;
             case 6://设置状态机顺序
-                if(menu.updown==8)
+                if(menu.updown==9)
                 {
                     process_status[index]='S';
                     tft180_show_uint((index+1)*10, 0, menu.updown, 1);
                 }
-                else if(menu.updown==9) exit_flag_1=1;//退出调节状态机
+                else if(menu.updown==10) exit_flag_1=1;//退出调节状态机
                 else
                 {
                     process_status[index]=(uint8)menu.updown;
@@ -493,13 +495,13 @@ void EnterKey(uint8* exit_flag)
                 break;
             case 7://修改状态机对应的速度
                 //将对应速度赋给对应的状态机顺序
-                if(menu.updown==8)
+                if(menu.updown==9)
                 {
                     exit_flag_1=1;
                     for(int i=0;i<15;i++)
                     {
                         if(process_status[i]==0) break;
-                        else if(process_status[i]=='S') process_speed[i]=speed[7];
+                        else if(process_status[i]=='S') process_speed[i]=speed[8];
                         else process_speed[i]=speed[process_status[i]-1];
                     }
                 }
