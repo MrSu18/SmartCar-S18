@@ -87,11 +87,11 @@ int core0_main(void)
     gpio_init(P21_5, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
 
-    gpio_init(P23_1, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-    pwm_init(RED,12500,0);
+    gpio_init(P23_1, GPO, GPIO_LOW, GPO_PUSH_PULL);
+  //  pwm_init(RED,12500,0);
     pwm_init(BLUE,12500,0);
     //给蜂鸣器低电平
-    gpio_init(P21_3,GPO,GPIO_LOW,GPO_OPEN_DTAIN);
+    gpio_init(P21_2,GPO,GPIO_LOW,GPO_PUSH_PULL);
     //初始化中断
     pit_ms_init(CCU60_CH0,2);pit_disable(CCU60_CH0);//速度环
     pit_ms_init(CCU61_CH1,4);pit_disable(CCU61_CH1);//角速度环
