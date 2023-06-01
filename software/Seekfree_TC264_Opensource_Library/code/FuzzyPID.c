@@ -14,21 +14,39 @@
 
 float qdetail_Kp = 0,qdetail_Kd = 0;                    //kp和kd在论域中的值
 //KP的模糊规则表
-int8 KPFuzzyRule[7][7] = { {PB,PB,PM,PM,PS,ZO,ZO},
-                            {PB,PB,PM,PS,PS,ZO,NS},
-                            {PM,PM,PM,PS,ZO,NS,NS},
-                            {PM,PM,PS,ZO,NS,NM,NM},
-                            {PS,PS,ZO,NS,NS,NM,NM},
-                            {PS,ZO,NS,NM,NM,NM,NB},
-                            {ZO,ZO,NM,NM,NM,NB,NB} };
+int8 KPFuzzyRule[7][7] = {
+                          {6, 5, 4, 3, 2, 0, 0,},        //   -3
+                          {5, 4, 3, 2, 1, 0, 1,},        //   -2
+                          {4, 3, 2, 1, 0, 1, 2,},        //   -1
+                          {3, 2, 1, 0, 1, 2, 3,},        //    0
+                          {2, 1, 0, 1, 2, 3, 4,},        //    1
+                          {1, 0, 1, 2, 3, 4, 5,},        //    2
+                          {0, 0, 2, 3, 4, 5, 6}          //    3
+//                            {PB,PB,PM,PM,PS,ZO,ZO},
+//                            {PB,PB,PM,PS,PS,ZO,NS},
+//                            {PM,PM,PM,PS,ZO,NS,NS},
+//                            {PM,PM,PS,ZO,NS,NM,NM},
+//                            {PS,PS,ZO,NS,NS,NM,NM},
+//                            {PS,ZO,NS,NM,NM,NM,NB},
+//                            {ZO,ZO,NM,NM,NM,NB,NB}
+                          };
 //KD的模糊规则表
-int8 KDFuzzyRule[7][7] = { {PS,NS,NB,NB,NB,NM,PS},
-                            {PS,NS,NB,NM,NM,NS,ZO},
-                            {ZO,NS,NM,NM,NS,NS,ZO},
-                            {ZO,NS,NS,NS,NS,NS,ZO},
-                            {ZO,ZO,ZO,ZO,ZO,ZO,ZO},
-                            {PB,NS,PS,PS,PS,PS,PB},
-                            {PB,PM,PM,PM,PS,PS,PB} };
+int8 KDFuzzyRule[7][7] = {
+                           {2, 2, 6, 5, 6, 4, 2,},   //   -3
+                           {1, 2, 5, 4, 3, 1, 0,},   //   -2
+                           {0, 1, 3, 3, 1, 1, 0,},   //   -1
+                           {0, 1, 1, 1, 1, 1, 0,},   //    0
+                           {0, 0, 0, 0, 0, 0, 0,},   //    1
+                           {5, 1, 1, 1, 1, 1, 1,},   //    2
+                           {6, 4, 4, 3, 3, 1, 1}
+//                            {PS,NS,NB,NB,NB,NM,PS},
+//                            {PS,NS,NB,NM,NM,NS,ZO},
+//                            {ZO,NS,NM,NM,NS,NS,ZO},
+//                            {ZO,NS,NS,NS,NS,NS,ZO},
+//                            {ZO,ZO,ZO,ZO,ZO,ZO,ZO},
+//                            {PB,NS,PS,PS,PS,PS,PB},
+//                            {PB,PM,PM,PM,PS,PS,PB}
+                         };
 /***********************************************
 * @brief : 将输入的偏差和偏差的变化量模糊化，计算Kp和Kd的隶属度值
 * @param : E:偏差
@@ -167,11 +185,11 @@ void FuzzyPID(void)
     if (turnpid_image.out > 0)//左转
     {
         target_left = base_speed - (int)turnpid_image.out;
-        target_right = base_speed;
+        target_right = base_speed+(int)0.3*turnpid_image.out;
     }
     else//右转
     {
-        target_left = base_speed;
+        target_left = base_speed-(int)0.3*turnpid_image.out;
         target_right = base_speed + (int)turnpid_image.out;
     }
 }
