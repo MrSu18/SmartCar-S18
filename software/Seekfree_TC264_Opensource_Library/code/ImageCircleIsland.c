@@ -17,6 +17,7 @@
 #define CIRCLE_SIDE_SMALL_ADC_THR 1000 //车到了环岛中下部时另外一边ADC的值应该小于于这个阈值
 #define CIRCLE_MID_ADC_THR        3000 //车到了环岛中下部时，中间电感应该大于这个阈值
 #define CIRCLE_SPECIAL_ADC_THR    4095 //车子由于路径完全平行远离环岛，这时候双边电感会等于4095并且车在环岛中部需要及时入环
+#define CIRCLE_SPECIAL_ADC_THR2   3000 //车子由于路径完全平行远离环岛，这时候靠近环侧内八会大于3000并且车在环岛中部需要及时入环
 
 /**************************************************左环岛***************************************************************/
 uint8 CircleIslandLStatus()//左边环岛状态状态机
@@ -31,7 +32,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
                 base_speed=65;//降速进环
                 status=1;
             }
-            else if(L>=CIRCLE_SPECIAL_ADC_THR)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
+            else if(L>=CIRCLE_SPECIAL_ADC_THR && LM>CIRCLE_SPECIAL_ADC_THR2)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
             {
                 base_speed=65;//降速进环
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
@@ -102,7 +103,7 @@ uint8 CircleIslandLDetection()//检测左环岛
 {
     track_type=kTrackRight;//默认寻右边
     //环岛中下部分电磁特征
-    if(L>CIRCLE_SIDE_LARGE_ADC_THR && M>CIRCLE_MID_ADC_THR)
+    if((L>CIRCLE_SIDE_LARGE_ADC_THR || R>CIRCLE_SIDE_LARGE_ADC_THR) && M>CIRCLE_MID_ADC_THR)
     {
         return 1;
     }
@@ -337,7 +338,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
                 base_speed=65;//降速进环
                 status=1;
             }
-            else if(R>=CIRCLE_SPECIAL_ADC_THR)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
+            else if(R>=CIRCLE_SPECIAL_ADC_THR && RM>CIRCLE_SPECIAL_ADC_THR2)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
             {
                 base_speed=65;//降速进环
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
@@ -355,7 +356,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandRIn()==1)
             {
-                base_speed=80;
+                base_speed=70;
                 status=3;
             }
             else  if (CircleIslandROutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
@@ -408,7 +409,8 @@ uint8 CircleIslandRDetection()//检测左环岛
 {
     track_type=kTrackLeft;//默认寻左边
     //环岛中下部分电磁特征
-    if(R>CIRCLE_SIDE_LARGE_ADC_THR && M>CIRCLE_MID_ADC_THR)
+    //左边大于阈值的时候是车体太靠近环内的情况
+    if((L>CIRCLE_SIDE_LARGE_ADC_THR || R>CIRCLE_SIDE_LARGE_ADC_THR) && M>CIRCLE_MID_ADC_THR)
     {
         return 1;
     }
