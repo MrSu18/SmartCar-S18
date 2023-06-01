@@ -10,8 +10,7 @@
 #include "ADRC.h"
 
 int speed_left = 0,speed_right = 0;                                     //左右轮当前编码器的值
-int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值(图像)
-int target_left_1 = 0,target_right_1 = 0;                               //左右轮的目标速度的值(电磁)
+int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值
 uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 uint16 base_speed = 0;                                                  //基础速度
 TrackMode track_mode = kTrackImage;                                     //巡线模式
@@ -135,20 +134,8 @@ void MotorCtrl(void)
 
     EncoderGetCount(&speed_left,&speed_right);                                      //获取编码器的值
 
-    pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
-    pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
-    if(track_mode == kTrackImage)                                                   //当前为摄像头循迹
-    {
-        pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                 //获取赛道上左电机PWM
-        pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);             //获取赛道上右电机PWM
-
-    }
-    else if(track_mode == kTrackADC)                                                //当前为电磁循迹
-    {
-        pwm_left = PIDSpeed(speed_left,target_left_1,&speedpid_left);               //获取赛道上左电机PWM
-        pwm_right = PIDSpeed(speed_right,target_right_1,&speedpid_right);           //获取赛道上右电机PWM
-
-    }
+    pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                     //获取赛道上左电机PWM
+    pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);                 //获取赛道上右电机PWM
 //    Fhan_ADRC(&adrc_controller_l,(float)pwm_left);
 //    Fhan_ADRC(&adrc_controller_r,(float)pwm_right);
     MotorSetPWM(pwm_left,pwm_right);                                                //赋给电机一定占空比的PWM

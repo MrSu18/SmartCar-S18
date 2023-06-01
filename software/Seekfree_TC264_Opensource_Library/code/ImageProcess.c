@@ -16,10 +16,11 @@
 #include <string.h>
 #include "pid.h"
 #include "Control.h"
+#include "debug.h"
 
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入左库 8:入右库 'S':停车*/
-uint8 process_status[30]={2,1,5,3,3,3,3,8,'S'};//总状态机元素执行顺序数组
-uint16 process_speed[30]={65,65,65,70,70,70,70,70,70,70,70,65,65,65};//上面数组对应的元素路段的速度
+uint8 process_status[30]={2,1,3,4,'S'};//总状态机元素执行顺序数组
+uint16 process_speed[30]={65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
 /***********************************************
@@ -80,7 +81,7 @@ void ImageProcess(void)
         case 1://左环岛
             if(CircleIslandLStatus()==1)
             {
-                gpio_toggle_level(P21_3);
+                gpio_toggle_level(BEER);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
                 base_speed=original_speed;
@@ -89,7 +90,7 @@ void ImageProcess(void)
         case 2://右环岛
             if(CircleIslandRStatus()==1)
             {
-                gpio_toggle_level(P21_3);
+                gpio_toggle_level(BEER);
                 process_status_cnt++;
                 aim_distance=0.36;
                 original_speed=process_speed[process_status_cnt];
@@ -99,7 +100,7 @@ void ImageProcess(void)
         case 3://十字
             if(CrossIdentify()==1)
             {
-                gpio_toggle_level(P21_3);
+                gpio_toggle_level(BEER);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
                 base_speed=original_speed;
@@ -108,7 +109,7 @@ void ImageProcess(void)
         case 4://断路
             if(CutIdentify()==1)
             {
-                gpio_toggle_level(P21_3);
+                gpio_toggle_level(BEER);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
                 base_speed=original_speed;
@@ -117,7 +118,7 @@ void ImageProcess(void)
         case 5://坡道
             if(SlopeIdentify()==1)
             {
-                gpio_toggle_level(P21_3);
+                gpio_toggle_level(BEER);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
                 base_speed=original_speed;
@@ -126,7 +127,7 @@ void ImageProcess(void)
         case 6://路障
             if(BarrierIdentify()==1)
             {
-                gpio_toggle_level(P21_3);
+                gpio_toggle_level(BEER);
                 process_status_cnt++;
                 original_speed=process_speed[process_status_cnt];
                 base_speed=original_speed;
@@ -135,13 +136,13 @@ void ImageProcess(void)
         case 7://左车库
             if(GarageIdentify_L()==1)
             {
-                gpio_toggle_level(P21_3);
+                gpio_toggle_level(BEER);
             }
             break;
         case 8://右车库
             if(GarageIdentify_R()==1)
             {
-                gpio_toggle_level(P21_3);
+                gpio_toggle_level(BEER);
             }
             break;
         case 'S':
@@ -155,7 +156,7 @@ void ImageProcess(void)
     //预瞄点求偏差
     if(track_type==kTrackRight)
     {
-        if(r_line_count<10 && process_status[process_status_cnt]!=3)//你想让他寻右线但是右边线不存在时，右边重新扫线
+        if(r_line_count<10 && (process_status[process_status_cnt]==1 || process_status[process_status_cnt]==2))//你想让他寻右线但是右边线不存在时，右边重新扫线
         {
             RightLineDetectionAgain('y');
             EdgeLinePerspective(right_line,r_line_count,per_right_line);
@@ -168,7 +169,7 @@ void ImageProcess(void)
     }
     else if(track_type==kTrackLeft)
     {
-        if (l_line_count<10 && process_status[process_status_cnt]!=3)//你想让他寻左线但是左边线不存在时，左边重新扫线
+        if (l_line_count<10 && (process_status[process_status_cnt]==1 || process_status[process_status_cnt]==2))//你想让他寻左线但是左边线不存在时，左边重新扫线
         {
             LeftLineDetectionAgain('y');
             per_l_line_count=PER_EDGELINE_LENGTH;
@@ -221,14 +222,14 @@ void OutProtect(void)
     int adc_sum = 0;
 
     for(int16 i = 0;i < 5;i++)
-        adc_sum += adc_value[i];
+        adc_sum += normalvalue[i];
     for(int16 i = 0;i < MT9V03X_W;i++)                       //遍历最后一行
     {
         if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
                 over_count++;
     }
 
-    if(over_count>=MT9V03X_W-2)                             //如果全部超过阈值则停止
+    if(over_count>=MT9V03X_W-2 && adc_sum < 10)                             //如果全部超过阈值则停止
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);

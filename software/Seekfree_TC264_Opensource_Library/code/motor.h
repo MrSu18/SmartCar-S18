@@ -44,7 +44,6 @@ typedef enum TrackMode
 
 extern int speed_left,speed_right;
 extern int target_left,target_right;
-extern int target_left_1,target_right_1;
 extern uint8 c0h0_isr_flag,c0h1_isr_flag;
 extern uint8 encoder_dis_flag;
 extern uint16 base_speed;

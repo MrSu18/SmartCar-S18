@@ -53,7 +53,6 @@ uint8 CutIdentify(void)
         }
         case kCutIn:
         {
-//            printf("1\n");
             int16 corner_id_l = 0,corner_id_r = 0;
             uint8 corner_find = CutFindCorner(&corner_id_l, &corner_id_r);//找角点
             if(corner_find != 0)
@@ -63,36 +62,36 @@ uint8 CutIdentify(void)
                 {
                     per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
                     track_type = kTrackRight;
-                    aim_distance = (float)corner_id_r*SAMPLE_DIST;
+                    aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
                 }
                 //有左角点，没有右角点
                 else if(corner_find == 1)
                 {
                     per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
                     track_type = kTrackLeft;
-                    aim_distance = (float)corner_id_l*SAMPLE_DIST;
+                    aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
                 }
-                //两边都有角点，那边边线长就寻那条边线
+                //两边都有角点，哪边边线长就寻那条边线
                 else if(corner_find == 3)
                 {
-                    if(per_l_line_count > per_r_line_count)
-                    {
+//                    if(per_l_line_count > per_r_line_count)
+//                    {
                         per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
                         track_type = kTrackLeft;
-                        aim_distance = (float)corner_id_l*SAMPLE_DIST;
-                    }
-                    else if(per_r_line_count > per_l_line_count)
-                    {
-                        per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
-                        track_type = kTrackRight;
-                        aim_distance = (float)corner_id_r*SAMPLE_DIST;
-                    }
+                        aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
+//                    }
+//                    else if(per_r_line_count > per_l_line_count)
+//                    {
+//                        per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
+//                        track_type = kTrackRight;
+//                        aim_distance = (float)corner_id_r*SAMPLE_DIST;
+//                    }
                 }
                 //切换状态，改成电磁循迹
                 if(corner_id_l < 40 && corner_id_r < 40)
                 {
                     speed_type=kNormalSpeed;
-                    base_speed = 55;
+                    base_speed = 60;
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
                     cut_type = kCutMid;
@@ -103,7 +102,6 @@ uint8 CutIdentify(void)
         }
         case kCutMid:
         {
-//            printf("2\n");
             int over_count = 0;
             for(int16 i = 0;i < MT9V03X_W;i++)
             {
@@ -111,16 +109,17 @@ uint8 CutIdentify(void)
                         over_count++;
             }
             if(over_count>=MT9V03X_W-2)
+            {
+                base_speed = 65;
                 cut_type = kCutEnd;
+            }
             break;
         }
         case kCutEnd:
         {
-//            printf("3\n");
             //边线重新出现，断路状态结束，切换成图像循迹
             if (l_line_count>80 && r_line_count>80)
             {
-//                printf("4\n");
                 last_track_mode = track_mode;
                 track_mode = kTrackImage;
                 cut_type = kCutBegin;//复位状态机

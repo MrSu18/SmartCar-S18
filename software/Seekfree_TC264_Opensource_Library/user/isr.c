@@ -49,18 +49,18 @@ uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //ÍÓÂÝÒÇ*Öá»
 IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//ËÙ¶È»·
 {
     static uint32 time=0;
-    time++;
+//    time++;
     interrupt_global_enable(0);                     // ¿ªÆôÖÐ¶ÏÇ¶Ì×
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(time>3000)
-    {
-        pit_disable(CCU60_CH0);//¹Ø±Õµç»úÖÐ¶Ï
-        pit_disable(CCU60_CH1);
-        pit_disable(CCU61_CH1);
-        MotorSetPWM(0,0);
-    }
+//    if(time>3000)
+//    {
+//        pit_disable(CCU60_CH0);//¹Ø±Õµç»úÖÐ¶Ï
+//        pit_disable(CCU60_CH1);
+//        pit_disable(CCU61_CH1);
+//        MotorSetPWM(0,0);
+//    }
 }
 
 

@@ -8,6 +8,7 @@
 #include "ImageTrack.h"
 #include "zf_device_tft180.h"
 #include "KeyMenu.h"
+#include "debug.h"
 
 #define PER_IMAGE_W     188             //逆透视图像的宽度
 #define PER_IMAGE_H     120             //逆透视图像的高度
@@ -192,4 +193,39 @@ void ShowLine(void)
         tft180_show_int(98, 30, l_line_count, 3);
         tft180_show_int(98, 60, r_line_count, 3);
     }
+}
+/***********************************************
+* @brief : 调试用的LED灯初始化
+* @param : void
+* @return: void
+* @date  : 2023.5.31
+* @author: L
+************************************************/
+void LedInit(void)
+{
+    //核心板上普通的led
+    gpio_init(P20_8, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    gpio_init(P20_9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    gpio_init(P21_5, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    //RGB灯
+//    gpio_init(P23_1, GPO, GPIO_LOW, GPO_PUSH_PULL);
+    pwm_init(GREEN, 12500, 10000);
+    pwm_init(RED,12500,10000);
+    pwm_init(BLUE,12500,10000);
+}
+/***********************************************
+* @brief : 调RGB灯的颜色,pwm越小颜色越亮
+* @param : void
+* @return: green_pwm:绿灯的pwm
+*          red_pwm:红灯的pwm
+*          blue_pwm:蓝灯的pwm
+* @date  : 2023.5.31
+* @author: L
+************************************************/
+void ColorOfRGB(int green_pwm,int red_pwm,int blue_pwm)
+{
+    pwm_set_duty(GREEN, green_pwm);
+    pwm_set_duty(RED, red_pwm);
+    pwm_set_duty(BLUE, blue_pwm);
 }

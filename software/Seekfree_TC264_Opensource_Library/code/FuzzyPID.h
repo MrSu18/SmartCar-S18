@@ -26,17 +26,17 @@
 #define KD_MAX      6   //6
 #define KD_MIN      0
 //电磁模糊PID需要用到的各个参数
-#define E_MAX_A       18
-#define E_MIN_A       -18
-#define EC_MAX_A      10
-#define EC_MIN_A      -10
-#define KP_MAX_A      10
+#define E_MAX_A       20
+#define E_MIN_A       -20
+#define EC_MAX_A      15
+#define EC_MIN_A      -15
+#define KP_MAX_A      14
 #define KP_MIN_A      0
-#define KD_MAX_A      6
+#define KD_MAX_A      8
 #define KD_MIN_A      0
 
 void Fuzzification(float E, float EC, float memership[4], int index_E[2], int index_EC[2]);     //模糊化
-void SoluteFuzzy(float qE, float qEC);                                                          //模糊推理
+void SoluteFuzzy(float qE, float qEC, int8 rule_KP[7][7], int8 rule_KD[7][7]);                  //模糊推理
 void FuzzyPID(void);                                                                            //图像模糊PID计算
 float Quantization(float max, float min, float x);                                              //将x映射到[-3，3]区间
 float InverseQuantization(float max, float min, float x);                                       //将x反映射

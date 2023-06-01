@@ -14,7 +14,26 @@
 
 float qdetail_Kp = 0,qdetail_Kd = 0;                    //kp和kd在论域中的值
 //KP的模糊规则表
-int8 KPFuzzyRule[7][7] = {
+int8 KPFuzzyRule_adc[7][7] = {
+                            {PB,PB,PM,PM,PS,ZO,ZO},
+                            {PB,PB,PM,PS,PS,ZO,NS},
+                            {PM,PM,PM,PS,ZO,NS,NS},
+                            {PM,PM,PS,ZO,NS,NM,NM},
+                            {PS,PS,ZO,NS,NS,NM,NM},
+                            {PS,ZO,NS,NM,NM,NM,NB},
+                            {ZO,ZO,NM,NM,NM,NB,NB}
+                          };
+//KD的模糊规则表
+int8 KDFuzzyRule_adc[7][7] = {
+                            {PS,NS,NB,NB,NB,NM,PS},
+                            {PS,NS,NB,NM,NM,NS,ZO},
+                            {ZO,NS,NM,NM,NS,NS,ZO},
+                            {ZO,NS,NS,NS,NS,NS,ZO},
+                            {ZO,ZO,ZO,ZO,ZO,ZO,ZO},
+                            {PB,NS,PS,PS,PS,PS,PB},
+                            {PB,PM,PM,PM,PS,PS,PB}
+                         };
+int8 KPFuzzyRule_image[7][7] = {
                           {6, 5, 4, 3, 2, 0, 0,},        //   -3
                           {5, 4, 3, 2, 1, 0, 1,},        //   -2
                           {4, 3, 2, 1, 0, 1, 2,},        //   -1
@@ -22,30 +41,15 @@ int8 KPFuzzyRule[7][7] = {
                           {2, 1, 0, 1, 2, 3, 4,},        //    1
                           {1, 0, 1, 2, 3, 4, 5,},        //    2
                           {0, 0, 2, 3, 4, 5, 6}          //    3
-//                            {PB,PB,PM,PM,PS,ZO,ZO},
-//                            {PB,PB,PM,PS,PS,ZO,NS},
-//                            {PM,PM,PM,PS,ZO,NS,NS},
-//                            {PM,PM,PS,ZO,NS,NM,NM},
-//                            {PS,PS,ZO,NS,NS,NM,NM},
-//                            {PS,ZO,NS,NM,NM,NM,NB},
-//                            {ZO,ZO,NM,NM,NM,NB,NB}
-                          };
-//KD的模糊规则表
-int8 KDFuzzyRule[7][7] = {
-                           {2, 2, 6, 5, 6, 4, 2,},   //   -3
-                           {1, 2, 5, 4, 3, 1, 0,},   //   -2
-                           {0, 1, 3, 3, 1, 1, 0,},   //   -1
-                           {0, 1, 1, 1, 1, 1, 0,},   //    0
-                           {0, 0, 0, 0, 0, 0, 0,},   //    1
-                           {5, 1, 1, 1, 1, 1, 1,},   //    2
+                        };
+int8 KDFuzzyRule_image[7][7] = {
+                           {2, 2, 6, 5, 6, 4, 2,},       //   -3
+                           {1, 2, 5, 4, 3, 1, 0,},       //   -2
+                           {0, 1, 3, 3, 1, 1, 0,},       //   -1
+                           {0, 1, 1, 1, 1, 1, 0,},       //    0
+                           {0, 0, 0, 0, 0, 0, 0,},       //    1
+                           {5, 1, 1, 1, 1, 1, 1,},       //    2
                            {6, 4, 4, 3, 3, 1, 1}
-//                            {PS,NS,NB,NB,NB,NM,PS},
-//                            {PS,NS,NB,NM,NM,NS,ZO},
-//                            {ZO,NS,NM,NM,NS,NS,ZO},
-//                            {ZO,NS,NS,NS,NS,NS,ZO},
-//                            {ZO,ZO,ZO,ZO,ZO,ZO,ZO},
-//                            {PB,NS,PS,PS,PS,PS,PB},
-//                            {PB,PM,PM,PM,PS,PS,PB}
                          };
 /***********************************************
 * @brief : 将输入的偏差和偏差的变化量模糊化，计算Kp和Kd的隶属度值
@@ -139,7 +143,7 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
 * @date  : 2023.4.10
 * @author: L
 ************************************************/
-void SoluteFuzzy(float qE,float qEC)
+void SoluteFuzzy(float qE,float qEC,int8 rule_KP[7][7],int8 rule_KD[7][7])
 {
     int index_E[2] = { 0 };//E的隶属度索引
     int index_EC[2] = { 0 };//EC的隶属度索引
@@ -153,8 +157,8 @@ void SoluteFuzzy(float qE,float qEC)
         for (int j = 0; j < 2; j++)
         {
             if (index_EC[j] == -1) continue;
-            qdetail_Kp += memership[(i << i) + j] * KPFuzzyRule[index_E[i]][index_EC[j]];//计算Kp在论域中的值
-            qdetail_Kd += memership[(i << i) + j] * KDFuzzyRule[index_E[i]][index_EC[j]];//计算Kd在论域中的值
+            qdetail_Kp += memership[(i << i) + j] * rule_KP[index_E[i]][index_EC[j]];//计算Kp在论域中的值
+            qdetail_Kd += memership[(i << i) + j] * rule_KD[index_E[i]][index_EC[j]];//计算Kd在论域中的值
         }
     }
 }
@@ -172,7 +176,7 @@ void FuzzyPID(void)
 
     float qE = Quantization(E_MAX, E_MIN, turnpid_image.err);//偏差映射到论域
     float qEC = Quantization(EC_MAX, EC_MIN, EC);//偏差的变化量映射到论域
-    SoluteFuzzy(qE, qEC);//解模糊，得到KP和KD在论域中的值
+    SoluteFuzzy(qE, qEC, KPFuzzyRule_image, KDFuzzyRule_image);//解模糊，得到KP和KD在论域中的值
     //KP和KD解模糊，得到实际的值
     turnpid_image.P = InverseQuantization(KP_MAX, KP_MIN, qdetail_Kp);
     turnpid_image.D = InverseQuantization(KD_MAX, KD_MIN, qdetail_Kd);
@@ -208,7 +212,7 @@ void FuzzyPID_ADC(void)
     float qE = Quantization(E_MAX_A, E_MIN_A, turnpid_adc.err);//偏差映射到论域
     float qEC = Quantization(EC_MAX_A, EC_MAX_A, EC);//偏差的变化量映射到论域
 
-    SoluteFuzzy(qE, qEC);//解模糊，得到KP和KD在论域中的值
+    SoluteFuzzy(qE, qEC, KPFuzzyRule_adc, KDFuzzyRule_adc);//解模糊，得到KP和KD在论域中的值
     //KP和KD解模糊，得到实际的值
     turnpid_adc.P = InverseQuantization(KP_MAX_A, KP_MIN_A, qdetail_Kp);
     turnpid_adc.D = InverseQuantization(KD_MAX_A, KD_MIN_A, qdetail_Kd);
@@ -220,13 +224,13 @@ void FuzzyPID_ADC(void)
 
     if (turnpid_adc.out > 0)//左转
     {
-        target_left_1 = base_speed - turnpid_adc.out;
-        target_right_1 = base_speed;
+        target_left = base_speed - turnpid_adc.out;
+        target_right = base_speed;
     }
     else//右转
     {
-        target_left_1 = base_speed;
-        target_right_1 = base_speed + turnpid_adc.out;
+        target_left = base_speed;
+        target_right = base_speed + turnpid_adc.out;
     }
 }
 /***********************************************

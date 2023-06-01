@@ -11,6 +11,7 @@
 #include "Control.h"
 #include "stdlib.h"
 #include "icm20602.h"
+#include "adc.h"
 
 typedef enum SlopeType
 {
@@ -35,7 +36,7 @@ uint8 SlopeIdentify(void)
     {
         case kSlopeBegin://求左右两个边线的斜率，斜率相反且斜率在0.2到0.5之间
         {
-            dl1a_get_distance();
+            dl1a_get_distance();//测距
             float gradient_l = 0;
             float gradient_r = 0;
             gradient_l = CalculateGradient('l');//求左线斜率
@@ -43,17 +44,24 @@ uint8 SlopeIdentify(void)
             if(((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)||(dl1a_distance_mm < 600))
             {
                 speed_type=kNormalSpeed;//降速
-                base_speed = 50;
+                base_speed = 55;
                 last_track_mode = track_mode;//切换成电磁循迹
                 track_mode = kTrackADC;
-                slope_type = kSlopeEnd;//切换下一个状态
+                slope_type = kSlopeUp;//切换下一个状态
                 encoder_dis_flag = 1;//开启编码器积分
             }
             break;
         }
+        case kSlopeUp:
+        {
+            dl1a_get_distance();
+            if(dl1a_distance_mm > 650)
+                slope_type = kSlopeEnd;
+            break;
+        }
         case kSlopeEnd:
         {
-            if(dis >= 1200)//编码器积分1.2m，跳出坡道状态
+            if((dis >= 2500) || (NORMAL_M >= 4095))//编码器积分1.2m，跳出坡道状态
             {
                 encoder_dis_flag = 0;//编码器积分标志位清零
                 base_speed = original_speed;

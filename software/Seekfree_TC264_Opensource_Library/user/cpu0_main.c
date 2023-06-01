@@ -46,7 +46,6 @@
 #include "ZwPlus_lib.h"
 #include "Control.h"
 #include "debug.h"
-#include "zf_driver_pwm.h"
 
 extern uint8 binary_image[MT9V03X_H][MT9V03X_W];
 
@@ -82,16 +81,9 @@ int core0_main(void)
     GyroOffsetInit();
     dl1a_init();
     //初始化debug的led
-    gpio_init(P20_8, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-    gpio_init(P20_9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-    gpio_init(P21_5, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-    gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-
-    gpio_init(P23_1, GPO, GPIO_LOW, GPO_PUSH_PULL);
-  //  pwm_init(RED,12500,0);
-    pwm_init(BLUE,12500,0);
+    LedInit();
     //给蜂鸣器低电平
-    gpio_init(P21_2,GPO,GPIO_LOW,GPO_PUSH_PULL);
+    gpio_init(BEER,GPO,GPIO_LOW,GPO_PUSH_PULL);
     //初始化中断
     pit_ms_init(CCU60_CH0,2);pit_disable(CCU60_CH0);//速度环
     pit_ms_init(CCU61_CH1,4);pit_disable(CCU61_CH1);//角速度环
@@ -102,16 +94,15 @@ int core0_main(void)
     ADRC_Init();
     KalmanInit(&kalman_adc,25,5);
     KalmanInit(&kalman_gyro,1,100);
-    PIDInit(&speedpid_left,185.8,0.61,0);              //187.52  1.16
-    PIDInit(&speedpid_right,164.8,0.54,0);             //179.06  1.23
-    PIDInit(&turnpid_image,0,0,0);                      //25   5
+    PIDInit(&speedpid_left,185.8,0.61,0);
+    PIDInit(&speedpid_right,164.8,0.54,0);
+    PIDInit(&turnpid_image,0,0,0);
     PIDInit(&turnpid_adc,0,0,0);
     PIDInit(&gyropid,0.00347,0.0001026,0);
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         //等待所有核心初始化完毕
-    pwm_set_duty(RED, 500);
-    pwm_set_duty(BLUE, 500);
+//    ADCScan();
     while (TRUE)
     {
 //        int16 a = GetICM20602Gyro_Y();
@@ -120,15 +111,15 @@ int core0_main(void)
 //        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
 //        ChaBiHe(TRACK);
-        if(gyro_flag == 1)
-        {
-            printf("%d,%d\n",real_gyro,turnpid_image.out);
-            gyro_flag = 0;
-        }
+//        if(gyro_flag == 1)
+//        {
+//            printf("%d,%d\n",real_gyro,turnpid_image.out);
+//            gyro_flag = 0;
+//        }
         // 此处编写需要循环执行的代码
 //       if(c0h0_isr_flag==1)
 //       {
-//           printf("%d,%d,%d,%d\r\n",speed_left,target_left,speed_right,target_right);
+//           printf("%d,%d,%d,%d\r\n",speed_left,target_left_1,speed_right,target_right_1);
 //           c0h0_isr_flag=0;
 //       }
 //        if(mt9v03x_finish_flag)
@@ -137,11 +128,11 @@ int core0_main(void)
 //           Zw_SendImage(binary_image[0]);
 //           system_delay_ms(10);
 //        }
-//       if(c0h1_isr_flag==1)
-//       {
-//           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
-//           c0h1_isr_flag=0;
-//       }
+       if(c0h1_isr_flag==1)
+       {
+           printf("%f,%d\r\n",turnpid_adc.err,turnpid_adc.out);
+           c0h1_isr_flag=0;
+       }
         // 此处编写需要循环执行的代码
     }
 }
