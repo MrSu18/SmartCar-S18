@@ -171,9 +171,11 @@ void SoluteFuzzy(float qE,float qEC,int8 rule_KP[7][7],int8 rule_KD[7][7])
 ************************************************/
 void FuzzyPID(void)
 {
+    static float last_EC=0;
     turnpid_image.err = image_bias;//图像偏差
     float EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
-
+    EC=0.7*EC+0.3*last_EC;
+    last_EC=EC;
     float qE = Quantization(E_MAX, E_MIN, turnpid_image.err);//偏差映射到论域
     float qEC = Quantization(EC_MAX, EC_MIN, EC);//偏差的变化量映射到论域
     SoluteFuzzy(qE, qEC, KPFuzzyRule_image, KDFuzzyRule_image);//解模糊，得到KP和KD在论域中的值
@@ -184,6 +186,10 @@ void FuzzyPID(void)
     qdetail_Kd = 0;
 
     turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * EC + 0.00347*real_gyro);//PID公式计算输出量
+    //*********************转向PID输出限幅***************
+    if(turnpid_image.out>200)   turnpid_image.out=200;
+    else if(turnpid_image.out<-200)   turnpid_image.out=-200;
+    //*********************************************
     turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
     if (turnpid_image.out > 0)//左转

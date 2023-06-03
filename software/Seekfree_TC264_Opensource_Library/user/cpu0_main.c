@@ -76,7 +76,6 @@ int core0_main(void)
     mt9v03x_init();//初始化摄像头
     tft180_init();//初始化tft
     UARTInit();//初始化蓝牙模块
-//    uart_init(BLUETOOTH,3000000,BLUETOOTH_TX,BLUETOOTH_RX);//初始化图传
     icm20602_init();
     GyroOffsetInit();
     dl1a_init();
@@ -130,7 +129,7 @@ int core0_main(void)
 //        }
        if(c0h1_isr_flag==1)
        {
-           printf("%f,%d\r\n",turnpid_adc.err,turnpid_adc.out);
+           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码
