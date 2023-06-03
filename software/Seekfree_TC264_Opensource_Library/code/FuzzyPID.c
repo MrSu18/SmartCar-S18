@@ -186,10 +186,6 @@ void FuzzyPID(void)
     qdetail_Kd = 0;
 
     turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * EC + 0.00347*real_gyro);//PID公式计算输出量
-    //*********************转向PID输出限幅***************
-    if(turnpid_image.out>200)   turnpid_image.out=200;
-    else if(turnpid_image.out<-200)   turnpid_image.out=-200;
-    //*********************************************
     turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
     if (turnpid_image.out > 0)//左转

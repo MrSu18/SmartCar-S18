@@ -109,24 +109,32 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
     pit_clear_flag(CCU61_CH0);
 
 }
-int16 last_real_gyro = 0;
+int16 last_real_gyro = 0;//上一次角速度
 IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
 {
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU61_CH1);
-//    float target_gyro = (float)(turnpid_image.out);
-
+    //获得目标
+    float target_gyro = (float)(-turnpid_image.out);
+//    float target_gyro=5000;
+    //测量当前角速度
     real_gyro = GetICM20602Gyro_X();
-    real_gyro = 0.7 * real_gyro + 0.3*last_real_gyro;
+    real_gyro = 0.3 * real_gyro + 0.7*last_real_gyro;
     last_real_gyro = real_gyro;
-//    gyropid.err = target_gyro - real_gyro;
+    //得到误差
+    gyropid.err = target_gyro - real_gyro;
+    gyropid.integer_err+=gyropid.err;
+    if(gyropid.integer_err>60000) gyropid.integer_err=60000;
+    else if(gyropid.integer_err<-60000) gyropid.integer_err=-60000;
+    //PID计算
+    gyropid.out = (int)(gyropid.P * gyropid.err + gyropid.I * gyropid.integer_err + gyropid.D * (gyropid.err-gyropid.last_err));
+    gyropid.last_err=gyropid.err;
+    //输出限幅度
+    if(gyropid.out>200) gyropid.out=200;
+    else if(gyropid.out<-200) gyropid.out=-200;
 
-//    gyropid.out += gyropid.P * (gyropid.err - gyropid.last_err) + gyropid.I * gyropid.err;
-//    gyropid.last_err = gyropid.err;
-
-//    target_left = base_speed - gyropid.out;
-//    target_right = base_speed + gyropid.out;
     gyro_flag = 1;
+
 //    if(gyropid.out>0)//左转
 //    {
 //        target_left = base_speed - gyropid.out;

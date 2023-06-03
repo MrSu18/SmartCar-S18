@@ -97,7 +97,7 @@ int core0_main(void)
     PIDInit(&speedpid_right,164.8,0.54,0);
     PIDInit(&turnpid_image,0,0,0);
     PIDInit(&turnpid_adc,0,0,0);
-    PIDInit(&gyropid,0.00347,0.0001026,0);
+    PIDInit(&gyropid,-0.03,-0.00015,-0.00015);//0.00347 0.0001026
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         //等待所有核心初始化完毕
@@ -110,11 +110,11 @@ int core0_main(void)
 //        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
 //        ChaBiHe(TRACK);
-//        if(gyro_flag == 1)
-//        {
-//            printf("%d,%d\n",real_gyro,turnpid_image.out);
-//            gyro_flag = 0;
-//        }
+        if(gyro_flag == 1)
+        {
+            printf("%d,%d,%f\n",5000,real_gyro,gyropid.integer_err);
+            gyro_flag = 0;
+        }
         // 此处编写需要循环执行的代码
 //       if(c0h0_isr_flag==1)
 //       {
@@ -127,11 +127,11 @@ int core0_main(void)
 //           Zw_SendImage(binary_image[0]);
 //           system_delay_ms(10);
 //        }
-       if(c0h1_isr_flag==1)
-       {
-           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
-           c0h1_isr_flag=0;
-       }
+//       if(c0h1_isr_flag==1)
+//       {
+//           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
+//           c0h1_isr_flag=0;
+//       }
         // 此处编写需要循环执行的代码
     }
 }

@@ -19,6 +19,7 @@ typedef struct
    float P;
    float I;
    float D;
+   float integer_err;
    float err;
    float last_err;
    int   out;
