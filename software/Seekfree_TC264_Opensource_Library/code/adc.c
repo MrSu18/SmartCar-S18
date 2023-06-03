@@ -9,6 +9,7 @@
 #include "pid.h"
 #include "filter.h"
 #include "stdlib.h"
+#include "ImageSpecial.h"
 
 int16 adc_value[5] = {0};                           //存取获取到的ADC的值
 int16 normalvalue[5] = {0};
@@ -80,9 +81,14 @@ float ChaBiHe(int8 flag)
             else
                err = 20.0*(float)(NORMAL_LM-NORMAL_RM)/(NORMAL_LM+NORMAL_M+NORMAL_RM);
 //                tft180_show_float(0,0,err,3,2);
-//            err=0.7*err+0.3*last_adc_err;
+            err=0.9*err+0.1*last_adc_err;
+            if(cut_flag==1)
+            {
+                if(err>8) err=8;
+                else if(err<-8) err=-8;
+            }
             last_adc_err=err;
-                break;
+            break;
         }
         case JUDGE:
         {

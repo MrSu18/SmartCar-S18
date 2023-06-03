@@ -225,18 +225,18 @@ void FuzzyPID_ADC(void)
     qdetail_Kp = 0;
     qdetail_Kd = 0;
 
-    turnpid_adc.out = (int)(turnpid_adc.P * turnpid_adc.err + turnpid_adc.D * EC);//PID公式计算输出量
+    turnpid_adc.out = (int)(turnpid_adc.P * turnpid_adc.err + turnpid_adc.D * EC + 0.00347*real_gyro);//PID公式计算输出量
     turnpid_adc.last_err = turnpid_adc.err;//更新上一次偏差
 
     if (turnpid_adc.out > 0)//左转
     {
-        target_left = base_speed - turnpid_adc.out;
-        target_right = base_speed;
+        target_left = base_speed - (int)turnpid_adc.out;;
+        target_right = base_speed + (int)0.3*turnpid_adc.out;
     }
     else//右转
     {
-        target_left = base_speed;
-        target_right = base_speed + turnpid_adc.out;
+        target_left = base_speed - (int)0.3*turnpid_adc.out;
+        target_right = base_speed + (int)turnpid_adc.out;
     }
 }
 /***********************************************

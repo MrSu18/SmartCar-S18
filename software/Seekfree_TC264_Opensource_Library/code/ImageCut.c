@@ -11,6 +11,7 @@
 #include "ImageBasic.h"
 #include "ImageProcess.h"
 #include "Control.h"
+#include "motor.h"
 
 typedef enum CutType
 {
@@ -21,6 +22,7 @@ typedef enum CutType
 }CutType;//断路状态机状态结构体
 
 CutType cut_type = kCutBegin;
+uint8 cut_flag=0;
 
 /***********************************************
 * @brief : 断路状态机
@@ -90,12 +92,14 @@ uint8 CutIdentify(void)
                 //切换状态，改成电磁循迹
                 if(corner_id_l < 40 && corner_id_r < 40)
                 {
+                    cut_flag=1;
                     speed_type=kNormalSpeed;
                     base_speed = 60;
                     last_track_mode = track_mode;
                     track_mode = kTrackADC;
                     cut_type = kCutMid;
                     aim_distance = origin_aimdis;
+                    encoder_dis_flag = 1;
                 }
             }
             break;
@@ -108,8 +112,10 @@ uint8 CutIdentify(void)
                 if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
                         over_count++;
             }
-            if(over_count>=MT9V03X_W-2)
+            if(over_count >= MT9V03X_W-2 && dis > 600)
             {
+                encoder_dis_flag = 0;
+                cut_flag=0;
                 base_speed = 65;
                 cut_type = kCutEnd;
             }
