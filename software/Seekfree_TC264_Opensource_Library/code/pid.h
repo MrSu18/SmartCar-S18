@@ -25,11 +25,24 @@ typedef struct
    int   out;
 }PID;
 
+typedef struct
+{
+   float conf_1;
+   float conf_2;
+   float conf_3;
+   int iuput;
+   int last_input;
+   int pre_input;
+   int output;
+}FFC;
+
 extern PID speedpid_left;
 extern PID speedpid_right;
 extern PID turnpid_image;
 extern PID turnpid_adc;
 extern PID gyropid;
+extern FFC speedffc_left;
+extern FFC speedffc_right;
 extern float image_bias;
 extern int16 real_gyro;
 extern uint8 gyro_flag;
@@ -39,5 +52,7 @@ int PIDSpeed(int encoder_data,int target_data,PID* pid);                        
 void PIDTurnImage(int* target_left,int* target_right,PID* pid);                     //摄像头转向环PID
 void PIDTurnADC(int* target_left,int* target_right,PID* pid);                       //电磁转向环PID
 void PIDClear(void);                                                                //复位PID的参数
+void FFCInit(FFC* ffc,float conf_1,float conf_2,float conf_3);
+int FeedForwardCtrl(int target,FFC* ffc);
 
 #endif /* CODE_PID_H_ */

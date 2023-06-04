@@ -136,6 +136,18 @@ void MotorCtrl(void)
 
     pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                     //获取赛道上左电机PWM
     pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);                 //获取赛道上右电机PWM
+
+    //当速度环误差过大时才引入前馈控制
+    if(speedpid_left.err>100 || speedpid_left.err<-100)
+    {
+        pwm_left += FeedForwardCtrl(target_left, &speedffc_left);
+
+    }
+    if(speedpid_left.err>100 || speedpid_left.err<-100)
+    {
+        pwm_right += FeedForwardCtrl(target_right, &speedffc_right);
+    }
+
 //    Fhan_ADRC(&adrc_controller_l,(float)pwm_left);
 //    Fhan_ADRC(&adrc_controller_r,(float)pwm_right);
     MotorSetPWM(pwm_left,pwm_right);                                                //赋给电机一定占空比的PWM

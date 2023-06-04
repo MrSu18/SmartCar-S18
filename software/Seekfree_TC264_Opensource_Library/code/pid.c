@@ -11,6 +11,8 @@ PID speedpid_left;                          //赛道左轮速度环PID
 PID speedpid_right;                         //赛道右轮速度环PID
 PID turnpid_image;                          //图像转向环PID
 PID turnpid_adc;                            //电磁转向环PID
+FFC speedffc_left;
+FFC speedffc_right;
 PID gyropid;
 int16 real_gyro = 0;
 uint8 gyro_flag = 0;
@@ -124,4 +126,29 @@ void PIDClear(void)
     PIDInit(&speedpid_right,164.8,0.54,0);
     PIDInit(&turnpid_image,0,0,0);
     PIDInit(&turnpid_adc, 0, 0, 0);
+}
+
+void FFCInit(FFC* ffc,float conf_1,float conf_2,float conf_3)
+{
+    ffc->conf_1 = conf_1;
+    ffc->conf_2 = conf_2;
+    ffc->conf_3 = conf_3;
+    ffc->iuput = 0;
+    ffc->last_input = 0;
+    ffc->pre_input = 0;
+    ffc->output = 0;
+}
+
+int FeedForwardCtrl(int target,FFC* ffc)
+{
+    ffc->iuput = target;
+
+    ffc->output = (int)(ffc->conf_1*(ffc->iuput-ffc->last_input)+ffc->conf_2*(ffc->iuput-2*ffc->last_input+ffc->pre_input))+ffc->conf_3;
+
+    ffc->pre_input = ffc->last_input;
+    ffc->last_input = ffc->iuput;
+
+    if(ffc->output>5000) ffc->output=5000;
+    else if(ffc->output<-5000) ffc->output=-5000;
+    return ffc->output;
 }

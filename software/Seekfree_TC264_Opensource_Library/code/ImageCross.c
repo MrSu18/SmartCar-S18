@@ -174,25 +174,13 @@ uint8 CrossIdentify(void)
             if(dis > 450)
             {
                 encoder_dis_flag = 0;
+                now_flag=0;
                 aim_distance = origin_aimdis;
                 cross_type = kCrossBegin;
                 return 1;
             }
-
             break;
         }
-        //判断是否已经出了十字
-//        case kCrossOut:
-//        {
-//            //当左右边线都大于10时，确认已经出了十字，退出状态机，状态机复位
-//            if (l_line_count > 10 && r_line_count > 10)
-//            {
-//                aim_distance = 0.45;
-//                cross_type = kCrossBegin;//复位状态机
-//                return 1;
-//            }
-//            break;
-//        }
         default:break;
     }
     return 0;
@@ -267,6 +255,7 @@ void EdgeDetection_Cross(uint8 lr_flag)
     {
         case 'l':
         {
+            if(l_line_count>40) return;//避免本来就有边线错误重新扫线
             myPoint left_seed = left_line[l_line_count - 1];//左种子
             int now_point = 1,last_point = 1;//保存本次的点和上一次的点是否为边缘的点
             //防止种子在边界，导致sobel检测越界
@@ -301,6 +290,7 @@ void EdgeDetection_Cross(uint8 lr_flag)
         }
         case 'r':
         {
+            if(r_line_count>40) return;//避免本来就有边线错误重新扫线
             myPoint right_seed = right_line[r_line_count - 1];//右种子
             int now_point = 1,last_point = 1;//保存本次的点和上一次的点是否为边缘的点
             //防止种子在边界，导致sobel检测越界

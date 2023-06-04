@@ -29,12 +29,12 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==1)
             {
-                base_speed=65;//降速进环
+                base_speed=70;//降速进环
                 status=1;
             }
             else if(L>=CIRCLE_SPECIAL_ADC_THR && LM>CIRCLE_SPECIAL_ADC_THR2)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
             {
-                base_speed=65;//降速进环
+                base_speed=70;//降速进环
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }
@@ -335,12 +335,12 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         case 0: //检测右环岛
             if(CircleIslandRDetection()==1)
             {
-                base_speed=65;//降速进环
+                base_speed=70;//降速进环
                 status=1;
             }
             else if(R>=CIRCLE_SPECIAL_ADC_THR && RM>CIRCLE_SPECIAL_ADC_THR2)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
             {
-                base_speed=65;//降速进环
+                base_speed=70;//降速进环
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }

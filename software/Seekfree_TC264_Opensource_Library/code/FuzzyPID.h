@@ -21,7 +21,7 @@
 #define E_MIN       -13 //-20
 #define EC_MAX      4  //40
 #define EC_MIN      -4 //-40
-#define KP_MAX      22  //800
+#define KP_MAX      20  //800
 #define KP_MIN      0
 #define KD_MAX      6   //60
 #define KD_MIN      0

@@ -98,6 +98,9 @@ int core0_main(void)
     PIDInit(&turnpid_image,0,0,0);
     PIDInit(&turnpid_adc,0,0,0);
     PIDInit(&gyropid,-0.03,-0.00015,-0.00015);//0.00347 0.0001026
+    //前馈控制
+    FFCInit(&speedffc_left,24255,716743,44.5);
+    FFCInit(&speedffc_right,24409,628773,44.42);
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         //等待所有核心初始化完毕
@@ -110,17 +113,17 @@ int core0_main(void)
 //        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
 //        ChaBiHe(TRACK);
-        if(gyro_flag == 1)
-        {
-            printf("%d,%d,%f\n",5000,real_gyro,gyropid.integer_err);
-            gyro_flag = 0;
-        }
+//        if(gyro_flag == 1)
+//        {
+//            printf("%d,%d,%f\n",5000,real_gyro,gyropid.integer_err);
+//            gyro_flag = 0;
+//        }
         // 此处编写需要循环执行的代码
-//       if(c0h0_isr_flag==1)
-//       {
-//           printf("%d,%d,%d,%d\r\n",speed_left,target_left_1,speed_right,target_right_1);
-//           c0h0_isr_flag=0;
-//       }
+       if(c0h0_isr_flag==1)
+       {
+           printf("%f,%f\r\n",speedpid_left.err,speedpid_right.err);
+           c0h0_isr_flag=0;
+       }
 //        if(mt9v03x_finish_flag)
 //        {
 //           gpio_toggle_level(P20_9);
