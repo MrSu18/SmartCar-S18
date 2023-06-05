@@ -7,11 +7,11 @@
 #include "pid.h"
 #include "ImageTrack.h"
 
-PID speedpid_left;                          //赛道左轮速度环PID
+PID speedpid;                          //赛道左轮速度环PID
 PID speedpid_right;                         //赛道右轮速度环PID
 PID turnpid_image;                          //图像转向环PID
 PID turnpid_adc;                            //电磁转向环PID
-FFC speedffc_left;
+FFC speedffc;
 FFC speedffc_right;
 PID gyropid;
 int16 real_gyro = 0;
@@ -122,7 +122,7 @@ void PIDTurnADC(int* target_left,int* target_right,PID* pid)
 ************************************************/
 void PIDClear(void)
 {
-    PIDInit(&speedpid_left,185.8,0.61,0);
+    PIDInit(&speedpid,185.8,0.61,0);
     PIDInit(&speedpid_right,164.8,0.54,0);
     PIDInit(&turnpid_image,0,0,0);
     PIDInit(&turnpid_adc, 0, 0, 0);

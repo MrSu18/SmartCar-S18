@@ -84,7 +84,7 @@ int core0_main(void)
     gpio_init(BEER,GPO,GPIO_LOW,GPO_PUSH_PULL);
     //初始化中断
     pit_ms_init(CCU60_CH0,2);pit_disable(CCU60_CH0);//速度环
-    pit_ms_init(CCU61_CH1,4);pit_disable(CCU61_CH1);//角速度环
+    pit_ms_init(CCU61_CH1,2);pit_disable(CCU61_CH1);//角速度环
     pit_ms_init(CCU60_CH1,8);pit_disable(CCU60_CH1);//方向环
     //陀螺仪中断2ms
     pit_ms_init(CCU61_CH0,2);pit_disable(CCU61_CH0);
@@ -92,13 +92,13 @@ int core0_main(void)
     ADRC_Init();
     KalmanInit(&kalman_adc,25,5);
     KalmanInit(&kalman_gyro,1,100);
-    PIDInit(&speedpid_left,185.8,0.61,0);
+    PIDInit(&speedpid,170,0.5,0);
     PIDInit(&speedpid_right,164.8,0.54,0);
     PIDInit(&turnpid_image,0,0,0);
     PIDInit(&turnpid_adc,0,0,0);
-    PIDInit(&gyropid,-0.03,-0.00015,-0.00015);//0.00347 0.0001026
+    PIDInit(&gyropid,-4,-0.015,0);//-4,-0.015
     //前馈控制
-    FFCInit(&speedffc_left,24255,716743,44.5);
+    FFCInit(&speedffc,24255,716743,44.5);
     FFCInit(&speedffc_right,24409,628773,44.42);
 
     // 此处编写用户代码 例如外设初始化代码等
@@ -112,20 +112,20 @@ int core0_main(void)
 //        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
 //        ChaBiHe(TRACK);
-//        if(gyro_flag == 1)
-//        {
-//            printf("%d,%d,%f\n",5000,real_gyro,gyropid.integer_err);
-//            gyro_flag = 0;
-//        }
+        if(gyro_flag == 1)
+        {
+            printf("%d,%d,%f,%d\n",5000,real_gyro,gyropid.integer_err,gyropid.out);
+            gyro_flag = 0;
+        }
         // 此处编写需要循环执行的代码
-       if(c0h0_isr_flag==1)
-       {
-           printf("%f,%f\r\n",speedpid_left.err,speedpid_right.err);
-           c0h0_isr_flag=0;
-       }
+//       if(c0h0_isr_flag==1)
+//       {
+//           printf("%d,%d\r\n",encoder_speed,target_speed);
+//           c0h0_isr_flag=0;
+//       }
 //       if(c0h1_isr_flag==1)
 //       {
-//           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
+//           printf("%f,%d,%d\r\n",turnpid_image.err,turnpid_image.out,real_gyro);
 //           c0h1_isr_flag=0;
 //       }
         // 此处编写需要循环执行的代码

@@ -289,8 +289,8 @@ void SubParameter(void)
                     tft180_show_float(100, menu.updown*10, turnpid_adc.P, 4, 2);
                     break;
                 case 3:
-                    speedpid_left.P-=10;
-                    tft180_show_float(100, menu.updown*10, speedpid_left.P, 4, 2);
+                    speedpid.P-=10;
+                    tft180_show_float(100, menu.updown*10, speedpid.P, 4, 2);
                     break;
                 case 4:
                     speedpid_right.P-=10;
@@ -318,8 +318,8 @@ void SubParameter(void)
                     tft180_show_float(100, menu.updown*10, turnpid_adc.D, 4, 2);
                     break;
                 case 3:
-                    speedpid_left.I-=0.1;
-                    tft180_show_float(100, menu.updown*10, speedpid_left.I, 4, 2);
+                    speedpid.I-=0.1;
+                    tft180_show_float(100, menu.updown*10, speedpid.I, 4, 2);
                     break;
                 case 4:
                     speedpid_right.I-=0.1;
@@ -374,8 +374,8 @@ void AddParameter(void)
                     tft180_show_float(100, menu.updown*10, turnpid_adc.P, 4, 2);
                     break;
                 case 3:
-                    speedpid_left.P+=10;
-                    tft180_show_float(100, menu.updown*10, speedpid_left.P, 4, 2);
+                    speedpid.P+=10;
+                    tft180_show_float(100, menu.updown*10, speedpid.P, 4, 2);
                     break;
                 case 4:
                     speedpid_right.P+=10;
@@ -403,8 +403,8 @@ void AddParameter(void)
                     tft180_show_float(100, menu.updown*10, turnpid_adc.D, 4, 2);
                     break;
                 case 3:
-                    speedpid_left.I+=0.1;
-                    tft180_show_float(100, menu.updown*10, speedpid_left.I, 4, 2);
+                    speedpid.I+=0.1;
+                    tft180_show_float(100, menu.updown*10, speedpid.I, 4, 2);
                     break;
                 case 4:
                     speedpid_right.I+=0.1;
@@ -574,8 +574,8 @@ void WriteToFlash(void)
     flash_union_buffer[1].uint32_type=*(uint32*)&turnpid_image.D;
     flash_union_buffer[2].uint32_type=*(uint32*)&turnpid_adc.P;
     flash_union_buffer[3].uint32_type=*(uint32*)&turnpid_adc.D;
-    flash_union_buffer[4].uint32_type=*(uint32*)&speedpid_left.P;
-    flash_union_buffer[5].uint32_type=*(uint32*)&speedpid_left.I;
+    flash_union_buffer[4].uint32_type=*(uint32*)&speedpid.P;
+    flash_union_buffer[5].uint32_type=*(uint32*)&speedpid.I;
     flash_union_buffer[6].uint32_type=*(uint32*)&speedpid_right.P;
     flash_union_buffer[7].uint32_type=*(uint32*)&speedpid_right.I;
     flash_union_buffer[8].uint32_type=*(uint32*)&gyropid.P;
@@ -607,8 +607,8 @@ void ReadFromFlash(void)
         turnpid_image.D=flash_union_buffer[1].float_type;
         turnpid_adc.P=flash_union_buffer[2].float_type;
         turnpid_adc.D=flash_union_buffer[3].float_type;
-        speedpid_left.P=flash_union_buffer[4].float_type;
-        speedpid_left.I=flash_union_buffer[5].float_type;
+        speedpid.P=flash_union_buffer[4].float_type;
+        speedpid.I=flash_union_buffer[5].float_type;
         speedpid_right.P=flash_union_buffer[6].float_type;
         speedpid_right.I=flash_union_buffer[7].float_type;
         gyropid.P=flash_union_buffer[8].float_type;

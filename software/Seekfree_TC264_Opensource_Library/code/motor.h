@@ -42,8 +42,9 @@ typedef enum TrackMode
     kTrackADC,
 }TrackMode;//切换图像和电磁巡线的结构体
 
-extern int speed_left,speed_right;
-extern int target_left,target_right;
+extern int speed_left,speed_right,encoder_speed;
+extern int pwm_left,pwm_right;
+extern int target_speed,target_right;
 extern uint8 c0h0_isr_flag,c0h1_isr_flag;
 extern uint8 encoder_dis_flag;
 extern uint16 base_speed;

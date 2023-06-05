@@ -62,7 +62,7 @@ uint8 GarageIdentify_L(void)
             while(1)
             {
                 base_speed = 0;
-                target_left = 0;
+                target_speed = 0;
                 target_right = 0;
                 image_bias = 0;
                 system_delay_ms(200);
@@ -111,7 +111,7 @@ uint8 GarageIdentify_R(void)
             while(1)
             {
                 base_speed = 0;
-                target_left = 0;
+                target_speed = 0;
                 target_right = 0;
                 image_bias = 0;
                 system_delay_ms(200);

@@ -9,8 +9,9 @@
 #include "Control.h"
 #include "ADRC.h"
 
-int speed_left = 0,speed_right = 0;                                     //左右轮当前编码器的值
-int target_left = 0,target_right = 0;                                   //左右轮的目标速度的值
+int speed_left = 0,speed_right = 0,encoder_speed=0;                                     //左右轮当前编码器的值
+int pwm_left=0,pwm_right=0;
+int target_speed = 60,target_right = 0;                                   //左右轮的目标速度的值
 uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 uint16 base_speed = 0;                                                  //基础速度
 TrackMode track_mode = kTrackImage;                                     //巡线模式
@@ -130,27 +131,18 @@ void MotorSetPWM(int pwm_left,int pwm_right)
 ************************************************/
 void MotorCtrl(void)
 {
-    int pwm_left = 0,pwm_right = 0;                                                 //左右电机PWM
-
     EncoderGetCount(&speed_left,&speed_right);                                      //获取编码器的值
 
-    pwm_left = PIDSpeed(speed_left,target_left,&speedpid_left);                     //获取赛道上左电机PWM
-    pwm_right = PIDSpeed(speed_right,target_right,&speedpid_right);                 //获取赛道上右电机PWM
+    encoder_speed=(speed_left+speed_right)/2;
+    PIDSpeed(encoder_speed,target_speed,&speedpid);                     //获取赛道上左电机PWM
 
+    if(speedpid.out>8000) speedpid.out=8000;
+    else if(speedpid.out<-8000) speedpid.out=-8000;
     //当速度环误差过大时才引入前馈控制
-    if(speedpid_left.err>100 || speedpid_left.err<-100)
-    {
-        pwm_left += FeedForwardCtrl(target_left, &speedffc_left);
-
-    }
-    if(speedpid_left.err>100 || speedpid_left.err<-100)
-    {
-        pwm_right += FeedForwardCtrl(target_right, &speedffc_right);
-    }
-
-//    Fhan_ADRC(&adrc_controller_l,(float)pwm_left);
-//    Fhan_ADRC(&adrc_controller_r,(float)pwm_right);
-    MotorSetPWM(pwm_left,pwm_right);                                                //赋给电机一定占空比的PWM
+//    if(speedpid.err>100 || speedpid.err<-100)
+//    {
+//        speedpid.out += FeedForwardCtrl(target_speed, &speedffc);
+//    }
 
     c0h0_isr_flag=1;
 }

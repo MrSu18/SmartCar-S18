@@ -75,7 +75,7 @@ void ImageProcess(void)
         track_type=kTrackRight;
     }
 
-#if 1
+#if 0
     switch(process_status[process_status_cnt])
     {
         case 1://×ó»·µº

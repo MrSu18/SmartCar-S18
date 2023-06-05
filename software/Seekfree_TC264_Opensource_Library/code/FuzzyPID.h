@@ -17,11 +17,11 @@
 #define PM      2
 #define PB      3
 //图像模糊PID需要用到的各个参数
-#define E_MAX       13  //使用舵轮转速纯跟踪算法时20
-#define E_MIN       -13 //-20
+#define E_MAX       20  //使用舵轮转速纯跟踪算法时20
+#define E_MIN      -20  //-20
 #define EC_MAX      4  //40
 #define EC_MIN      -4 //-40
-#define KP_MAX      20  //800
+#define KP_MAX      1500  //800
 #define KP_MIN      0
 #define KD_MAX      6   //60
 #define KD_MIN      0

@@ -36,12 +36,12 @@ typedef struct
    int output;
 }FFC;
 
-extern PID speedpid_left;
+extern PID speedpid;
 extern PID speedpid_right;
 extern PID turnpid_image;
 extern PID turnpid_adc;
 extern PID gyropid;
-extern FFC speedffc_left;
+extern FFC speedffc;
 extern FFC speedffc_right;
 extern float image_bias;
 extern int16 real_gyro;

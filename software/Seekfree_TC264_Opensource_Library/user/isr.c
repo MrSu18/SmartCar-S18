@@ -53,8 +53,24 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU60_CH0);
 
-    MotorCtrl();
-    if(time>8500)
+    MotorCtrl();//速度环PID
+//    pwm_left=speedpid.out;pwm_right=speedpid.out;
+    pwm_left=3800;pwm_right=3800;
+    if(gyropid.out>0)//左转
+    {
+        pwm_left  -= (int)(1.2*gyropid.out);
+        pwm_right += (int)(0.5*gyropid.out);
+    }
+    else
+    {
+        pwm_left  -= (int)(0.5*gyropid.out);
+        pwm_right += (int)(1.2*gyropid.out);
+    }
+
+
+    MotorSetPWM(pwm_left,pwm_right);                                                //赋给电机一定占空比的PWM
+
+    if(time>2000)
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -124,27 +140,17 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
     //得到误差
     gyropid.err = target_gyro - real_gyro;
     gyropid.integer_err+=gyropid.err;
-    if(gyropid.integer_err>60000) gyropid.integer_err=60000;
-    else if(gyropid.integer_err<-60000) gyropid.integer_err=-60000;
+    if(gyropid.integer_err>140000) gyropid.integer_err=140000;
+    else if(gyropid.integer_err<-140000) gyropid.integer_err=-140000;
     //PID计算
     gyropid.out = (int)(gyropid.P * gyropid.err + gyropid.I * gyropid.integer_err + gyropid.D * (gyropid.err-gyropid.last_err));
     gyropid.last_err=gyropid.err;
     //输出限幅度
-    if(gyropid.out>200) gyropid.out=200;
-    else if(gyropid.out<-200) gyropid.out=-200;
+    if(gyropid.out>7000) gyropid.out=7000;
+    else if(gyropid.out<-7000) gyropid.out=-7000;
 
     gyro_flag = 1;
 
-//    if(gyropid.out>0)//左转
-//    {
-//        target_left = base_speed - gyropid.out;
-//        target_right = base_speed;
-//    }
-//    else
-//    {
-//        target_left = base_speed;
-//        target_right = base_speed + gyropid.out;
-//    }
 }
 // **************************** PIT中断函数 ****************************
 

@@ -185,24 +185,13 @@ void FuzzyPID(void)
     qdetail_Kp = 0;
     qdetail_Kd = 0;
 
-    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * EC + 0.00347*real_gyro);//PID公式计算输出量
+    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * EC);//PID公式计算输出量
     turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
     //*********************转向PID输出限幅***************
-   if(turnpid_image.out>200)   turnpid_image.out=200;
-   else if(turnpid_image.out<-200)   turnpid_image.out=-200;
+//   if(turnpid_image.out>200)   turnpid_image.out=200;
+//   else if(turnpid_image.out<-200)   turnpid_image.out=-200;
    //*********************************************
-
-    if (turnpid_image.out > 0)//左转
-    {
-        target_left = base_speed - (int)turnpid_image.out;
-        target_right = base_speed+(int)0.3*turnpid_image.out;
-    }
-    else//右转
-    {
-        target_left = base_speed-(int)0.3*turnpid_image.out;
-        target_right = base_speed + (int)turnpid_image.out;
-    }
 }
 /***********************************************
 * @brief : 对论域中的KP和KD进行反映射，得到实际的值，并代入PID计算公式得到偏差
@@ -231,12 +220,12 @@ void FuzzyPID_ADC(void)
 
     if (turnpid_adc.out > 0)//左转
     {
-        target_left = base_speed - (int)turnpid_adc.out;;
+        target_speed = base_speed - (int)turnpid_adc.out;;
         target_right = base_speed + (int)0.3*turnpid_adc.out;
     }
     else//右转
     {
-        target_left = base_speed - (int)0.3*turnpid_adc.out;
+        target_speed = base_speed - (int)0.3*turnpid_adc.out;
         target_right = base_speed + (int)turnpid_adc.out;
     }
 }
