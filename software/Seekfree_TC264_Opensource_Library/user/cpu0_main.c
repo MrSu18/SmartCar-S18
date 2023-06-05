@@ -43,7 +43,6 @@
 #include "pid.h"
 #include "KeyMenu.h"
 #include "icm20602.h"
-#include "ZwPlus_lib.h"
 #include "Control.h"
 #include "debug.h"
 
@@ -124,12 +123,6 @@ int core0_main(void)
            printf("%f,%f\r\n",speedpid_left.err,speedpid_right.err);
            c0h0_isr_flag=0;
        }
-//        if(mt9v03x_finish_flag)
-//        {
-//           gpio_toggle_level(P20_9);
-//           Zw_SendImage(binary_image[0]);
-//           system_delay_ms(10);
-//        }
 //       if(c0h1_isr_flag==1)
 //       {
 //           printf("%f,%d\r\n",turnpid_image.err,turnpid_image.out);
