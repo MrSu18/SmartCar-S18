@@ -11,6 +11,7 @@
 #include "ImageProcess.h"
 #include "motor.h"
 #include "zf_device_tft180.h"
+#include "debug.h"
 
 typedef enum CrossType
 {
@@ -48,7 +49,10 @@ uint8 CrossIdentify(void)
                 if((corner_id_l > origin_aimdis / SAMPLE_DIST) || (corner_id_r > origin_aimdis / SAMPLE_DIST))
                     break;
                 else
+                {
+                    gpio_toggle_level(BEER);
                     cross_type = kCrossIn;
+                }
             }
             break;
         }
@@ -58,12 +62,6 @@ uint8 CrossIdentify(void)
             int16 corner_id_l = 0, corner_id_r = 0;         //角点在边线的第几个点
             if (CrossFindCorner(&corner_id_l, &corner_id_r) != 0)
             {
-                //角点太远，跳出状态
-//                if((corner_id_l > origin_aimdis / SAMPLE_DIST) || (corner_id_r > origin_aimdis / SAMPLE_DIST))
-//                {
-//                    aim_distance = origin_aimdis;
-//                    break;
-//                }
                 //左边没有角点，右边有角点，寻右线，更改预瞄点
                 if ((corner_id_l == 0) && (corner_id_r != 0))
                 {
@@ -82,13 +80,6 @@ uint8 CrossIdentify(void)
                     track_type = kTrackRight;
                     aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
                 }
-                //角点很近，切换下一个状态
-//                if (corner_id_l < 6 && corner_id_r < 6)
-//                {
-//                    encoder_dis_flag = 1;
-//                    cross_type = kCrossIn;
-//                    aim_distance = origin_aimdis;
-//                }
             }
             if((l_line_count < 2)&&(r_line_count < 2))
             {
@@ -159,18 +150,22 @@ uint8 CrossIdentify(void)
                     if ((fabs(r_angle_1[i]) > 70 * 3.14 / 180) && (fabs(r_angle_1[i]) < 120 * 3.14 / 180))
                     {
                         if(i > 70) break;//角点很远。跳出
+                        else if((i + 6) < origin_aimdis / SAMPLE_DIST)
+                        {
+                            track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+                            track_type = kTrackRight;
+                            aim_distance = origin_aimdis;
+                        }
                         else
                         {
                             track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
                             track_type = kTrackRight;
                             aim_distance = (float)((i + 6) * SAMPLE_DIST);
-                            break;
                         }
-                        if((i + 6) < origin_aimdis / SAMPLE_DIST) aim_distance = origin_aimdis;
                     }
                 }
             }
-
+            //如果编码器积分到45cm也退出状态
             if(dis > 450)
             {
                 encoder_dis_flag = 0;
@@ -182,6 +177,23 @@ uint8 CrossIdentify(void)
             break;
         }
         default:break;
+    }
+    //特殊处理偏差
+    if(cross_type!=kCrossBegin)
+    {
+        if(track_type == kTrackLeft)
+        {
+            image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);//左线偏移出中线
+            track_type = kTrackSpecial;//元素外不再求偏差
+        }
+        else if(track_type == kTrackRight)
+        {
+            image_bias = GetAnchorPointBias(aim_distance, per_r_line_count, center_line_r);//右线偏移出中线
+            track_type = kTrackSpecial;//元素外不再求偏差
+        }
+        //偏差限幅
+        if(image_bias > 3) image_bias = 3;
+        else if(image_bias < -3) image_bias = -3;
     }
     return 0;
 }
