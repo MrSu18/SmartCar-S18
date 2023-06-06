@@ -19,8 +19,8 @@
 #include "debug.h"
 
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入左库 8:入右库 'S':停车*/
-uint8 process_status[30]={3,3,3,3,3,3,3,'S'};//总状态机元素执行顺序数组
-uint16 process_speed[30]={70,70,70,70,70,70,70,70,65,65,65,65,65,65,65,65,65,65};//上面数组对应的元素路段的速度
+uint8 process_status[30]={3,1,5,3,3,3,3,8,'S'};//总状态机元素执行顺序数组
+uint16 process_speed[30]={75,70,75,75,75,75,75,75,65,65,65,65,65,65,65,65,65,65};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
 /***********************************************
@@ -75,7 +75,7 @@ void ImageProcess(void)
         track_type=kTrackRight;
     }
 
-#if 1
+#if 0
     switch(process_status[process_status_cnt])
     {
         case 1://左环岛

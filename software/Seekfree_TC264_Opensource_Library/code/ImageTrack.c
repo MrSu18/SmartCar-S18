@@ -236,6 +236,7 @@ void track_rightline(myPoint_f* in_line, int num, myPoint_f* out_line, int appro
 ************************************************/
 float GetAnchorPointBias(float aim_distance,int track_line_count,myPoint_f *track_line)
 {
+    static float last_pure_angle=0;
     // 车轮对应点(纯跟踪起始点)
     float cx = USE_IMAGE_W/2;
     float cy = USE_IMAGE_H;
@@ -274,14 +275,20 @@ float GetAnchorPointBias(float aim_distance,int track_line_count,myPoint_f *trac
         //float error = -atan2f(dx, dy) * 180 / 3.14;
 
         // 纯跟踪算法(只考虑远点)
-//        pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
-        pure_angle=-PIXEL_PER_METER * 2 * dx / dn / dn * 5;
+        pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
+//        pure_angle=-PIXEL_PER_METER * 2 * dx / dn / dn * 5;
     }
     else
     {
         // 中线点过少(出现问题)，则不控制舵机
         c_line_count = 0;
     }
+    //通过U字弯数据发现，偏差噪声很大当偏差大于11.5的时候引入低通滤波
+    if(pure_angle>11.8 || pure_angle<-11.8)
+    {
+        pure_angle=0.7*pure_angle+0.3*last_pure_angle;
+    }
+    last_pure_angle=pure_angle;
     return pure_angle;
 }
 
