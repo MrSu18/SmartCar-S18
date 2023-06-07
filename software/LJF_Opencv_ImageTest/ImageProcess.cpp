@@ -57,8 +57,7 @@ void ImageProcess(void)
     {
         track_type=kTrackLeft;
     }
-    LeftLineDetectionAgain();
-//    CircleIslandRStatus();
+
     //‘§√Èµ„«Û∆´≤Ó
     if(track_type==kTrackRight)
     {

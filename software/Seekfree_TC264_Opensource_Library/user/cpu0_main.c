@@ -45,6 +45,8 @@
 #include "icm20602.h"
 #include "Control.h"
 #include "debug.h"
+#include "FuzzyPID.h"
+#include "ADRC.h"
 
 extern uint8 binary_image[MT9V03X_H][MT9V03X_W];
 
@@ -94,7 +96,7 @@ int core0_main(void)
     KalmanInit(&kalman_gyro,1,100);
     PIDInit(&speedpid_left,185.8,0.61,0);
     PIDInit(&speedpid_right,164.8,0.54,0);
-    PIDInit(&turnpid_image,0,0,0);
+    PIDInit(&turnpid_image,13,0,2);
     PIDInit(&turnpid_adc,0,0,0);
     PIDInit(&gyropid,-0.03,-0.00015,-0.00015);//0.00347 0.0001026
     //前馈控制
@@ -125,7 +127,7 @@ int core0_main(void)
 //       }
        if(c0h1_isr_flag==1)
        {
-           printf("%f,%d,%f,%f\r\n",turnpid_image.err,turnpid_image.out,turnpid_image.P,turnpid_image.D);
+           printf("%f,%f,%f,%d\r\n",turnpid_image.P,turnpid_image.D,turnpid_image.err,turnpid_image.out);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码

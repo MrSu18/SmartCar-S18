@@ -52,12 +52,13 @@ void ADCGetValue(int16 value[5])
 {
     for(int8 i=0;i<5;i++)
     {
-            value[i]=adc_convert(my_adc_pin[i]);//获取ADC转换的值
-            normalvalue[i] = 100*(value[i]-adc_min[i])/(adc_max[i]-adc_min[i]);//归一化处理
-            for(int8 j=0;j<5;j++)
-                normalvalue[i] = KalmanFilter(&kalman_adc,normalvalue[i]);//卡尔曼滤波
+        value[i]=adc_convert(my_adc_pin[i]);//获取ADC转换的值
+        normalvalue[i] = 100*(value[i]-adc_min[i])/(adc_max[i]-adc_min[i]);//归一化处理
+        for(int8 j=0;j<5;j++)
+        {
+            normalvalue[i] = KalmanFilter(&kalman_adc,normalvalue[i]);//卡尔曼滤波
 //            tft180_show_int(98, 15*i, value[i], 4);
-//        }
+        }
     }
 }
 /***********************************************

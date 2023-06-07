@@ -117,14 +117,14 @@ void PIDTurnADC(int* target_left,int* target_right,PID* pid)
 * @brief : 对摄像头PID的相关参数复位
 * @param : void
 * @return: void
-* @date  : 2023.3.20
+* @date  : 2023.6.7
 * @author: L
 ************************************************/
 void PIDClear(void)
 {
     PIDInit(&speedpid_left,185.8,0.61,0);
     PIDInit(&speedpid_right,164.8,0.54,0);
-    PIDInit(&turnpid_image,0,0,0);
+    PIDInit(&turnpid_image,13,0,2);
     PIDInit(&turnpid_adc, 0, 0, 0);
 }
 

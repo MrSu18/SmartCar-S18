@@ -21,8 +21,10 @@ typedef struct
 
 extern Fhan_Data adrc_controller_l;
 extern Fhan_Data adrc_controller_r;
+extern Fhan_Data adrc_controller_err;//用于模糊PID偏差滤波
+extern Fhan_Data adrc_controller_errc;//用于模糊PID偏差变化量滤波
 
-void ADRC_Init();
+void ADRC_Init(void);
 void Fhan_ADRC(Fhan_Data *fhan_Input,float expect_ADRC);
 
 //数学运算

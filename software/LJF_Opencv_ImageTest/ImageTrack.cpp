@@ -11,7 +11,7 @@
 //Í¼ÏñÑ­¼£Æ«²î
 float image_bias=0;
 //Ô¤Ãéµã
-float aim_distance = 0.32;
+float aim_distance = 0.45;
 //±ä»»ºó×óÓÒ±ßÏß
 myPoint_f per_left_line[EDGELINE_LENGTH]={0},per_right_line[EDGELINE_LENGTH]={0};
 // ±ä»»ºó×óÓÒ±ßÏß+ÂË²¨
@@ -274,8 +274,8 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         //float error = -atan2f(dx, dy) * 180 / 3.14;
 
         // ´¿¸ú×ÙËã·¨(Ö»¿¼ÂÇÔ¶µã)
-//        pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
-        pure_angle=-base_speed*PIXEL_PER_METER * 2 * dx / dn / dn ;
+        pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
+//        pure_angle=-base_speed*PIXEL_PER_METER * 2 * dx / dn / dn ;
     }
     else
     {

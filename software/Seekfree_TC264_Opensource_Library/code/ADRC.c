@@ -3,6 +3,8 @@
 #include "ADRC.h"
 Fhan_Data adrc_controller_l;
 Fhan_Data adrc_controller_r;
+Fhan_Data adrc_controller_err;//用于模糊PID偏差滤波
+Fhan_Data adrc_controller_errc;//用于模糊PID偏差变化量滤波
 /***********************************************
 * @brief : 开根号
 * @param : float number 输入量
@@ -62,7 +64,7 @@ int16_t Fsg_ADRC(float x,float d)
 * @date  : 2023.5.25
 * @author: 黄诚钜
 ************************************************/
-void ADRC_Init()
+void ADRC_Init(void)
 {
     adrc_controller_l.r=1000000;
     adrc_controller_l.h=0.002;
@@ -71,6 +73,14 @@ void ADRC_Init()
     adrc_controller_r.r=1000000;
     adrc_controller_r.h=0.002;
     adrc_controller_r.N0=2;
+
+    adrc_controller_err.r=1000000;
+    adrc_controller_err.h=0.008;
+    adrc_controller_err.N0=2;
+
+    adrc_controller_errc.r=1000000;
+    adrc_controller_errc.h=0.008;
+    adrc_controller_errc.N0=2;
 }
 
 /***********************************************

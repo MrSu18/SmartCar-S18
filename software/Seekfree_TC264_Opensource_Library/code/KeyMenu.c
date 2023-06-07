@@ -281,7 +281,7 @@ void SubParameter(void)
             switch(menu.page)
             {
                 case 1:
-                    turnpid_image.P-=5;
+                    turnpid_image.P-=1;
                     tft180_show_float(100, menu.updown*10, turnpid_image.P, 4, 2);
                     break;
                 case 2:
@@ -310,7 +310,7 @@ void SubParameter(void)
             switch(menu.page)
             {
                 case 1:
-                    turnpid_image.D-=1;
+                    turnpid_image.D-=0.5;
                     tft180_show_float(100, menu.updown*10, turnpid_image.D, 4, 2);
                     break;
                 case 2:
@@ -366,7 +366,7 @@ void AddParameter(void)
             switch(menu.page)
             {
                 case 1:
-                    turnpid_image.P+=5;
+                    turnpid_image.P+=1;
                     tft180_show_float(100, menu.updown*10, turnpid_image.P, 4, 2);
                     break;
                 case 2:
@@ -395,7 +395,7 @@ void AddParameter(void)
             switch(menu.page)
             {
                 case 1:
-                    turnpid_image.D+=1;
+                    turnpid_image.D+=0.5;
                     tft180_show_float(100, menu.updown*10, turnpid_image.D, 4, 2);
                     break;
                 case 2:

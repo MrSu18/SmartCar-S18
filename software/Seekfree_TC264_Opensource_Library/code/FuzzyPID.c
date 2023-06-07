@@ -11,6 +11,10 @@
 #include "adc.h"
 #include "zf_device_tft180.h"
 #include "icm20602.h"
+#include "ADRC.h"
+
+
+float EC=0;
 
 float qdetail_Kp = 0,qdetail_Kd = 0;                    //kp和kd在论域中的值
 //KP的模糊规则表
@@ -140,7 +144,7 @@ void Fuzzification(float E,float EC,float memership[4],int index_E[2],int index_
 * @param : qE:偏差映射在论域[-3,3]的值
 *          EC:偏差的变化量映射在论域[-3,3]的值
 * @return: void
-* @date  : 2023.4.10
+* @date  : 2023.6.7
 * @author: L
 ************************************************/
 void SoluteFuzzy(float qE,float qEC,int8 rule_KP[7][7],int8 rule_KD[7][7])
@@ -157,8 +161,8 @@ void SoluteFuzzy(float qE,float qEC,int8 rule_KP[7][7],int8 rule_KD[7][7])
         for (int j = 0; j < 2; j++)
         {
             if (index_EC[j] == -1) continue;
-            qdetail_Kp += memership[(i << i) + j] * rule_KP[index_E[i]][index_EC[j]];//计算Kp在论域中的值
-            qdetail_Kd += memership[(i << i) + j] * rule_KD[index_E[i]][index_EC[j]];//计算Kd在论域中的值
+            qdetail_Kp += memership[i*(i+1) + j] * rule_KP[index_E[i]][index_EC[j]];//计算Kp在论域中的值
+            qdetail_Kd += memership[i*(i+1) + j] * rule_KD[index_E[i]][index_EC[j]];//计算Kd在论域中的值
         }
     }
 }
@@ -166,31 +170,22 @@ void SoluteFuzzy(float qE,float qEC,int8 rule_KP[7][7],int8 rule_KD[7][7])
 * @brief : 对论域中的KP和KD进行反映射，得到实际的值，并代入PID计算公式得到偏差
 * @param : void
 * @return: void
-* @date  : 2023.4.10
-* @author: L
+* @date  : 2023.6.7
+* @author: L & 刘骏帆
 ************************************************/
 void FuzzyPID(void)
 {
-    static float last_EC=0;
     static int   last_turnpid_out=0;
     turnpid_image.err = image_bias;//图像偏差
-    float EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
-    EC=0.7*EC+0.3*last_EC;//偏差变化量滤波
-    last_EC=EC;
-    float qE = Quantization(E_MAX, E_MIN, turnpid_image.err);//偏差映射到论域
-    float qEC = Quantization(EC_MAX, EC_MIN, EC);//偏差的变化量映射到论域
-    SoluteFuzzy(qE, qEC, KPFuzzyRule_image, KDFuzzyRule_image);//解模糊，得到KP和KD在论域中的值
-    //KP和KD解模糊，得到实际的值
-    turnpid_image.P = InverseQuantization(KP_MAX, KP_MIN, qdetail_Kp);
-    turnpid_image.D = InverseQuantization(KD_MAX, KD_MIN, qdetail_Kd);
-    qdetail_Kp = 0;
-    qdetail_Kd = 0;
+    EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
+    Fhan_ADRC(&adrc_controller_errc, EC);//对EC进行TD滤波
 
-    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * EC + 0.00347*real_gyro);//PID公式计算输出量
+    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1 + 0.00347*real_gyro);//PID公式计算输出量
     turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
-    turnpid_image.out=0.7*turnpid_image.out+0.3*last_turnpid_out;//输出滤波
-    last_turnpid_out=turnpid_image.out;
+    //模糊PID时滤波
+//    turnpid_image.out=0.7*turnpid_image.out+0.3*last_turnpid_out;//输出滤波
+//    last_turnpid_out=turnpid_image.out;
 
     //*********************转向PID输出限幅***************
    if(turnpid_image.out>200)   turnpid_image.out=200;
@@ -272,3 +267,26 @@ float InverseQuantization(float max, float min, float x)
 
     return value;
 }
+
+/***********************************************
+* @brief : 人为根据偏差设定出转向P和D
+* @param : 无
+* @return: 无
+* @date  : 2023.6.7
+* @author: 刘骏帆
+************************************************/
+void GetTurnImagePID(void)
+{
+    //P
+    if(turnpid_image.err>5 || turnpid_image.err<-5)
+    {
+        turnpid_image.P=20;
+    }
+    else//直道偏差很小
+    {
+        turnpid_image.P=8;
+    }
+    //D
+    turnpid_image.D=6;
+}
+
