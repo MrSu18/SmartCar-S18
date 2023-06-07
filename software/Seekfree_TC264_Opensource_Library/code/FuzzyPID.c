@@ -180,28 +180,28 @@ void FuzzyPID(void)
     EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
     Fhan_ADRC(&adrc_controller_errc, EC);//对EC进行TD滤波
 
-    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1 + 0.00347*real_gyro);//PID公式计算输出量
+    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1);//PID公式计算输出量
     turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
     //模糊PID时滤波
 //    turnpid_image.out=0.7*turnpid_image.out+0.3*last_turnpid_out;//输出滤波
 //    last_turnpid_out=turnpid_image.out;
 
-    //*********************转向PID输出限幅***************
-   if(turnpid_image.out>200)   turnpid_image.out=200;
-   else if(turnpid_image.out<-200)   turnpid_image.out=-200;
+    //*********************双环串级时转向PID输出限幅***************
+//   if(turnpid_image.out>200)   turnpid_image.out=200;
+//   else if(turnpid_image.out<-200)   turnpid_image.out=-200;
    //*********************************************
 
-    if (turnpid_image.out > 0)//左转
-    {
-        target_left = base_speed - (int)turnpid_image.out;
-        target_right = base_speed+(int)0.3*turnpid_image.out;
-    }
-    else//右转
-    {
-        target_left = base_speed-(int)0.3*turnpid_image.out;
-        target_right = base_speed + (int)turnpid_image.out;
-    }
+//    if (turnpid_image.out > 0)//左转
+//    {
+//        target_left = base_speed - (int)turnpid_image.out;
+//        target_right = base_speed+(int)0.3*turnpid_image.out;
+//    }
+//    else//右转
+//    {
+//        target_left = base_speed-(int)0.3*turnpid_image.out;
+//        target_right = base_speed + (int)turnpid_image.out;
+//    }
 }
 /***********************************************
 * @brief : 对论域中的KP和KD进行反映射，得到实际的值，并代入PID计算公式得到偏差

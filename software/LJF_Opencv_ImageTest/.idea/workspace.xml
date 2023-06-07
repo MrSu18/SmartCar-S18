@@ -20,20 +20,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="识别环岛的电磁条件放宽">
-      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../docs/财务/第十八届智能车队内开销.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/财务/第十八届智能车队内开销.xlsx" afterDir="false" />
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageProcess.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageProcess.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageTrack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ADRC.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ADRC.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ADRC.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ADRC.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/adc.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/adc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/bluetooth.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/bluetooth.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
@@ -329,14 +322,8 @@
       <workItem from="1685610343273" duration="3022000" />
       <workItem from="1685797427067" duration="248000" />
       <workItem from="1686052689034" duration="1073000" />
-      <workItem from="1686138965186" duration="693000" />
-    </task>
-    <task id="LOCAL-00005" summary="对边线处理增加了三角滤波，初步尝试了半宽补线（还没封装好），在考虑要不要后续把边线数组变成float类型">
-      <created>1673278544225</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1673278544225</updated>
+      <workItem from="1686138965186" duration="797000" />
+      <workItem from="1686145464548" duration="2000" />
     </task>
     <task id="LOCAL-00006" summary="加入丢线数组，记录边线丢线，这样在后续查看是否丢线的时候不用查询两个数组（边线数组和边界数组）">
       <created>1673330221059</created>
@@ -674,7 +661,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685609308786</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯">
+      <created>1686139960979</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1686139960979</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -692,7 +686,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="把扫线的八零域标号改成全局变量，为了在元素再次扫线的时候保存标号值" />
     <MESSAGE value="十字修改八零域标号，实地测试失败" />
     <MESSAGE value="0.36的前瞻跑普通赛道效果好，但是环岛会飘出去，不知道为什么，电机控制有注释东西，不知道是不是之前没注释这个就跑不了" />
     <MESSAGE value="灰度扫线" />
@@ -717,7 +710,8 @@
     <MESSAGE value="修改纯跟踪算法求偏差的方式，PID参数进行对应调整，路障出状态和结束状态的循迹使用图像识别" />
     <MESSAGE value="图像加入防止右边重新扫线到左边的错误，引入种子生长方向记录去检测这种错误，135度角接环岛能看到拐点，但是现在问题就是要到环岛中部才能检测到环岛，如果不强制寻左线会从第一个口进去" />
     <MESSAGE value="修改模糊PID规则表" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改模糊PID规则表" />
+    <MESSAGE value="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯" />
+    <option name="LAST_COMMIT_MESSAGE" value="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

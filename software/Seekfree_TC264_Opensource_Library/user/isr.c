@@ -42,6 +42,8 @@
 #include "Fuzzypid.h"
 #include "zf_device_tft180.h"
 #include "ImageSpecial.h"
+#include "ADRC.h"
+
 float icm_target_angle_z,icm_target_angle_x,icm_target_angle_y;   //陀螺仪*轴积分的目标角度
 
 uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //陀螺仪*轴积分达到目标角度 标志位  可作为环岛出环标志位 //待整合
@@ -54,7 +56,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(time>8500)
+    if(time>2200)
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -115,6 +117,7 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU61_CH1);
     //获得目标
+    static int last_gyropid_out=0;
     float target_gyro = (float)(-turnpid_image.out);
 //    float target_gyro=5000;
     //测量当前角速度
@@ -124,27 +127,29 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
     //得到误差
     gyropid.err = target_gyro - real_gyro;
     gyropid.integer_err+=gyropid.err;
-    if(gyropid.integer_err>60000) gyropid.integer_err=60000;
-    else if(gyropid.integer_err<-60000) gyropid.integer_err=-60000;
+    if(gyropid.integer_err>100000) gyropid.integer_err=100000;
+    else if(gyropid.integer_err<-100000) gyropid.integer_err=-100000;
     //PID计算
     gyropid.out = (int)(gyropid.P * gyropid.err + gyropid.I * gyropid.integer_err + gyropid.D * (gyropid.err-gyropid.last_err));
     gyropid.last_err=gyropid.err;
+    gyropid.out=0.7*gyropid.out+0.3*last_gyropid_out;
+    last_gyropid_out=gyropid.out;
     //输出限幅度
     if(gyropid.out>200) gyropid.out=200;
     else if(gyropid.out<-200) gyropid.out=-200;
 
     gyro_flag = 1;
 
-//    if(gyropid.out>0)//左转
-//    {
-//        target_left = base_speed - gyropid.out;
-//        target_right = base_speed;
-//    }
-//    else
-//    {
-//        target_left = base_speed;
-//        target_right = base_speed + gyropid.out;
-//    }
+    if(gyropid.out>0)//左转
+    {
+        target_left = base_speed - gyropid.out;
+        target_right = base_speed;
+    }
+    else
+    {
+        target_left = base_speed;
+        target_right = base_speed + gyropid.out;
+    }
 }
 // **************************** PIT中断函数 ****************************
 
