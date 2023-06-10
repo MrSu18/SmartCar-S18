@@ -76,9 +76,11 @@ void EncoderGetCount(int* data_left,int* data_right)
 void MotorInit(void)
 {
     pwm_init(MOTOR_LEFT_1,12500,0);                   //初始化左电机
-    pwm_init(MOTOR_LEFT_2,12500,0);                   //初始化左电机
+    //pwm_init(MOTOR_LEFT_2,12500,0);                   //初始化左电机
+    gpio_init(MOTOR_LEFT_2, GPO, 0, GPO_PUSH_PULL);
     pwm_init(MOTOR_RIGHT_1,12500,0);                  //初始化右电机
-    pwm_init(MOTOR_RIGHT_2,12500,0);                  //初始化右电机
+    gpio_init(MOTOR_RIGHT_2, GPO, 0, GPO_PUSH_PULL);
+    //pwm_init(MOTOR_RIGHT_2,12500,0);                  //初始化右电机
 }
 /***********************************************
 * @brief : 控制左右两个电机的转速和正反转,采用H桥的单极模式
@@ -100,26 +102,14 @@ void MotorSetPWM(int pwm_left,int pwm_right)
     else if(pwm_right<-MOTOR_PWM_MAX)
         pwm_right = -MOTOR_PWM_MAX;
     //控制电机正反转和转速
-    if(pwm_left>=0)
-    {
-        pwm_set_duty(MOTOR_LEFT_2,0);
-        pwm_set_duty(MOTOR_LEFT_1,pwm_left);
-    }
-    else
-    {
-        pwm_set_duty(MOTOR_LEFT_2,-pwm_left);
-        pwm_set_duty(MOTOR_LEFT_1,0);
-    }
-    if(pwm_right>=0)
-    {
-        pwm_set_duty(MOTOR_RIGHT_1,0);
-        pwm_set_duty(MOTOR_RIGHT_2,pwm_right);
-    }
-    else
-    {
-        pwm_set_duty(MOTOR_RIGHT_1,-pwm_right);
-        pwm_set_duty(MOTOR_RIGHT_2,0);
-    }
+    //左电机
+    //pwm_set_duty(MOTOR_LEFT_2,9999);
+    gpio_set_level(MOTOR_LEFT_2, 1);
+    pwm_set_duty(MOTOR_LEFT_1,5000+(int)(pwm_left/2));
+    //右电机
+    gpio_set_level(MOTOR_RIGHT_2, 1);
+    pwm_set_duty(MOTOR_RIGHT_1,5000-(int)(pwm_right/2));
+    //pwm_set_duty(MOTOR_RIGHT_2,9999);
 }
 /***********************************************
 * @brief : 增量式PI控制电机转速

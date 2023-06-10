@@ -19,8 +19,7 @@ typedef struct
     float fh;//最速微分加速度跟踪量
 }Fhan_Data;
 
-extern Fhan_Data adrc_controller_gyro;//角速度滤波
-extern Fhan_Data adrc_controller_err;//用于模糊PID偏差滤波
+extern Fhan_Data adrc_controller_gyro_out;//角速度环输出滤波
 extern Fhan_Data adrc_controller_errc;//用于模糊PID偏差变化量滤波
 
 void ADRC_Init(void);

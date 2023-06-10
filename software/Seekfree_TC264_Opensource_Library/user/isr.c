@@ -56,7 +56,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(time>2200)
+    if(time>8600)
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -132,23 +132,24 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
     //PID计算
     gyropid.out = (int)(gyropid.P * gyropid.err + gyropid.I * gyropid.integer_err + gyropid.D * (gyropid.err-gyropid.last_err));
     gyropid.last_err=gyropid.err;
-    gyropid.out=0.7*gyropid.out+0.3*last_gyropid_out;
-    last_gyropid_out=gyropid.out;
+    Fhan_ADRC(&adrc_controller_gyro_out,(float)gyropid.out);
+//    gyropid.out=0.6*gyropid.out+0.4*last_gyropid_out;
+//    last_gyropid_out=gyropid.out;
     //输出限幅度
-    if(gyropid.out>200) gyropid.out=200;
-    else if(gyropid.out<-200) gyropid.out=-200;
+    if(adrc_controller_gyro_out.x1>200) adrc_controller_gyro_out.x1=200;
+    else if(adrc_controller_gyro_out.x1<-200) adrc_controller_gyro_out.x1=-200;
 
     gyro_flag = 1;
 
-    if(gyropid.out>0)//左转
+    if(adrc_controller_gyro_out.x1>0)//左转
     {
-        target_left = base_speed - gyropid.out;
+        target_left = base_speed - (int)(adrc_controller_gyro_out.x1);
         target_right = base_speed;
     }
     else
     {
         target_left = base_speed;
-        target_right = base_speed + gyropid.out;
+        target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
     }
 }
 // **************************** PIT中断函数 ****************************

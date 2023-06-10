@@ -12,6 +12,7 @@
 #include "stdlib.h"
 #include "icm20602.h"
 #include "adc.h"
+#include "debug.h"
 
 typedef enum SlopeType
 {
@@ -43,6 +44,7 @@ uint8 SlopeIdentify(void)
             gradient_r = CalculateGradient('r');//求右线斜率
             if(((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)||(dl1a_distance_mm < 600))
             {
+                gpio_toggle_level(BEER);
                 speed_type=kNormalSpeed;//降速
                 base_speed = 55;
                 last_track_mode = track_mode;//切换成电磁循迹

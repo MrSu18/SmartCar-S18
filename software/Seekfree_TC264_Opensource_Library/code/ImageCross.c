@@ -192,8 +192,8 @@ uint8 CrossIdentify(void)
             track_type = kTrackSpecial;//元素外不再求偏差
         }
         //偏差限幅
-        if(image_bias > 3) image_bias = 3;
-        else if(image_bias < -3) image_bias = -3;
+        if(image_bias > 4) image_bias = 4;
+        else if(image_bias < -4) image_bias = -4;
     }
     return 0;
 }
