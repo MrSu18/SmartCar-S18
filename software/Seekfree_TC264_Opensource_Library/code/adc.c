@@ -15,8 +15,8 @@ int16 adc_value[5] = {0};                           //存取获取到的ADC的值
 int16 normalvalue[5] = {0};
 
 //赛道扫描时得到的最大值和最小值
-int16 adc_max[5] = {4095,4095,4095,4068,4095};
-int16 adc_min[5] = {64,71,74,59,68};
+int16 adc_max[5] = {3753,3968,3569,4095,3258};
+int16 adc_min[5] = {58,68,66,64,67};
 
 adc_channel_enum my_adc_pin[5]=
 {
@@ -55,8 +55,9 @@ void ADCGetValue(int16 value[5])
         value[i]=adc_convert(my_adc_pin[i]);//获取ADC转换的值
         normalvalue[i] = 100*(value[i]-adc_min[i])/(adc_max[i]-adc_min[i]);//归一化处理
         for(int8 j=0;j<5;j++)
-            normalvalue[j] = KalmanFilter(&kalman_adc,normalvalue[j]);//卡尔曼滤波
+            normalvalue[i] = KalmanFilter(&kalman_adc,normalvalue[i]);//卡尔曼滤波
 //        tft180_show_int(98, 15*i, value[i], 4);
+//        tft180_show_int(98, 15*i, normalvalue[i], 4);
     }
 }
 /***********************************************
@@ -76,13 +77,13 @@ float ChaBiHe(int8 flag)
         case TRACK:
         {
             if((NORMAL_L + NORMAL_R) < 10 && fabs(NORMAL_LM - NORMAL_RM) < 10)
-                err = turnpid_adc.err;
+                err = last_adc_err;
             else
                err = 20.0*(float)(NORMAL_LM-NORMAL_RM)/(NORMAL_LM+NORMAL_M+NORMAL_RM);
-//                tft180_show_float(0,0,err,3,2);
-            err=0.9*err+0.1*last_adc_err;
+//                tft180_show_float(0,0,err,3,4);
             if(cut_flag==1)
             {
+                err=0.9*err+0.1*last_adc_err;
                 if(err>8) err=8;
                 else if(err<-8) err=-8;
             }

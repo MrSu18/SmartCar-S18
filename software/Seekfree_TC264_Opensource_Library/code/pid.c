@@ -124,10 +124,19 @@ void PIDClear(void)
 {
     PIDInit(&speedpid_left,185.8,0.61,0);
     PIDInit(&speedpid_right,164.8,0.54,0);
-    PIDInit(&turnpid_image,turnpid_image.P,0,turnpid_image.D);
-    PIDInit(&turnpid_adc, 0, 0, 0);
+    PIDInit(&turnpid_image,turnpid_image.P,turnpid_image.I,turnpid_image.D);
+    PIDInit(&turnpid_adc, turnpid_adc.P, turnpid_adc.I, turnpid_adc.D);
 }
-
+/***********************************************
+* @brief : 初始化前馈控制参数
+* @param : ffc:前馈控制结构体
+*          conf_1:
+*          conf_2:
+*          conf_3:
+* @return: void
+* @date  : 2023.6.7
+* @author: L
+************************************************/
 void FFCInit(FFC* ffc,float conf_1,float conf_2,float conf_3)
 {
     ffc->conf_1 = conf_1;
@@ -138,7 +147,14 @@ void FFCInit(FFC* ffc,float conf_1,float conf_2,float conf_3)
     ffc->pre_input = 0;
     ffc->output = 0;
 }
-
+/***********************************************
+* @brief : 前馈控制
+* @param : target:前馈控制输入
+*          ffc:前馈控制结构体
+* @return: ffc->output:前馈控制输出量
+* @date  : 2023.6.7
+* @author: L
+************************************************/
 int FeedForwardCtrl(int target,FFC* ffc)
 {
     ffc->iuput = target;

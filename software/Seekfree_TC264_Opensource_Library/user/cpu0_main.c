@@ -96,8 +96,8 @@ int core0_main(void)
     KalmanInit(&kalman_gyro,1,100);
     PIDInit(&speedpid_left,185.8,0.61,0);
     PIDInit(&speedpid_right,164.8,0.54,0);
-    PIDInit(&turnpid_image,500,0,15);
-    PIDInit(&turnpid_adc,0,0,0);
+    PIDInit(&turnpid_image,11,0,2);//500,15
+    PIDInit(&turnpid_adc,10,0,12);
     PIDInit(&gyropid,-0.04,-0.00018,-0.00015);//0.00347 0.0001026
     //前馈控制
     FFCInit(&speedffc_left,24255,716743,44.5);
@@ -114,22 +114,22 @@ int core0_main(void)
 //        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
 //        ChaBiHe(TRACK);
-        if(gyro_flag == 1)
-        {
-            printf("%d,%d,%d,%f\n",-turnpid_image.out,real_gyro,gyropid.out,adrc_controller_gyro_out.x1);
-            gyro_flag = 0;
-        }
+//        if(gyro_flag == 1)
+//        {
+//            printf("%d,%d,%d,%f\n",-turnpid_image.out,real_gyro,gyropid.out,adrc_controller_gyro_out.x1);
+//            gyro_flag = 0;
+//        }
         // 此处编写需要循环执行的代码
 //       if(c0h0_isr_flag==1)
 //       {
 //           printf("%f,%f\r\n",speedpid_left.err,speedpid_right.err);
 //           c0h0_isr_flag=0;
 //       }
-//       if(c0h1_isr_flag==1)
-//       {
-//           printf("%f,%f,%f,%d\r\n",turnpid_image.P,turnpid_image.D,turnpid_image.err,turnpid_image.out);
-//           c0h1_isr_flag=0;
-//       }
+       if(c0h1_isr_flag==1)
+       {
+           printf("%d,%f,%f\r\n",turnpid_adc.out,turnpid_adc.err,turnpid_adc.P);
+           c0h1_isr_flag=0;
+       }
         // 此处编写需要循环执行的代码
     }
 }

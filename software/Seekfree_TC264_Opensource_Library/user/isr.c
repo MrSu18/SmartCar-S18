@@ -56,7 +56,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(time>8600)
+    if(time>8000)
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -141,16 +141,16 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
 
     gyro_flag = 1;
 
-    if(adrc_controller_gyro_out.x1>0)//左转
-    {
-        target_left = base_speed - (int)(adrc_controller_gyro_out.x1);
-        target_right = base_speed;
-    }
-    else
-    {
-        target_left = base_speed;
-        target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
-    }
+//    if(adrc_controller_gyro_out.x1>0)//左转
+//    {
+//        target_left = base_speed - (int)(adrc_controller_gyro_out.x1);
+//        target_right = base_speed;
+//    }
+//    else
+//    {
+//        target_left = base_speed;
+//        target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
+//    }
 }
 // **************************** PIT中断函数 ****************************
 

@@ -28,8 +28,8 @@
 //电磁模糊PID需要用到的各个参数
 #define E_MAX_A       20
 #define E_MIN_A       -20
-#define EC_MAX_A      15
-#define EC_MIN_A      -15
+#define EC_MAX_A      10
+#define EC_MIN_A      -10
 #define KP_MAX_A      14
 #define KP_MIN_A      0
 #define KD_MAX_A      8

@@ -133,7 +133,7 @@ void MotorCtrl(void)
         pwm_left += FeedForwardCtrl(target_left, &speedffc_left);
 
     }
-    if(speedpid_left.err>100 || speedpid_left.err<-100)
+    if(speedpid_right.err>100 || speedpid_right.err<-100)
     {
         pwm_right += FeedForwardCtrl(target_right, &speedffc_right);
     }
