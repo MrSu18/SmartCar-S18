@@ -96,7 +96,7 @@ int core0_main(void)
     KalmanInit(&kalman_gyro,1,100);
     PIDInit(&speedpid_left,185.8,0.61,0);
     PIDInit(&speedpid_right,164.8,0.54,0);
-    PIDInit(&turnpid_image,11,0,2);//500,15
+    PIDInit(&turnpid_image,11,0,1);//500,15
     PIDInit(&turnpid_adc,10,0,12);
     PIDInit(&gyropid,-0.04,-0.00018,-0.00015);//0.00347 0.0001026
     //Ç°À¡¿ØÖÆ

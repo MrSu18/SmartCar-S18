@@ -20,17 +20,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ADRC.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ADRC.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ADRC.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ADRC.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/bluetooth.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/bluetooth.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
-    </list>
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -323,14 +313,7 @@
       <workItem from="1685797427067" duration="248000" />
       <workItem from="1686052689034" duration="1073000" />
       <workItem from="1686138965186" duration="797000" />
-      <workItem from="1686145464548" duration="2000" />
-    </task>
-    <task id="LOCAL-00006" summary="加入丢线数组，记录边线丢线，这样在后续查看是否丢线的时候不用查询两个数组（边线数组和边界数组）">
-      <created>1673330221059</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1673330221059</updated>
+      <workItem from="1686145464548" duration="144000" />
     </task>
     <task id="LOCAL-00007" summary="修改bug，避免边线数组存储的时候越界">
       <created>1673339224768</created>
@@ -668,7 +651,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686139960979</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着">
+      <created>1686145591056</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1686145591056</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -686,7 +676,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="十字修改八零域标号，实地测试失败" />
     <MESSAGE value="0.36的前瞻跑普通赛道效果好，但是环岛会飘出去，不知道为什么，电机控制有注释东西，不知道是不是之前没注释这个就跑不了" />
     <MESSAGE value="灰度扫线" />
     <MESSAGE value="边线进行透视" />
@@ -711,7 +700,8 @@
     <MESSAGE value="图像加入防止右边重新扫线到左边的错误，引入种子生长方向记录去检测这种错误，135度角接环岛能看到拐点，但是现在问题就是要到环岛中部才能检测到环岛，如果不强制寻左线会从第一个口进去" />
     <MESSAGE value="修改模糊PID规则表" />
     <MESSAGE value="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯" />
-    <option name="LAST_COMMIT_MESSAGE" value="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯" />
+    <MESSAGE value="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着" />
+    <option name="LAST_COMMIT_MESSAGE" value="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -95,7 +95,7 @@ uint8 GarageIdentify_R(void)
             {
                 StartIntegralAngle_X(70);//开启陀螺仪角度积分
                 speed_type=kNormalSpeed;//降速
-                base_speed = 65;
+                base_speed = 60;
                 track_type = kTrackLeft;//寻左线
                 if (corner_id < 18)//角点很近时切换下一个状态
                     garage_type_r = kGarage_End_r;

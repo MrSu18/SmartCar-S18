@@ -46,7 +46,7 @@ uint8 SlopeIdentify(void)
             {
                 gpio_toggle_level(BEER);
                 speed_type=kNormalSpeed;//降速
-                base_speed = 55;
+                base_speed = 60;
                 last_track_mode = track_mode;//切换成电磁循迹
                 track_mode = kTrackADC;
                 slope_type = kSlopeUp;//切换下一个状态

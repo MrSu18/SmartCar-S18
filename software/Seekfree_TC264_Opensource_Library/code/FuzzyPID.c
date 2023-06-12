@@ -188,18 +188,18 @@ void FuzzyPID(void)
 //    last_turnpid_out=turnpid_image.out;
 
     //*********************双环串级时转向PID输出限幅***************
-   if(turnpid_image.out>200)   turnpid_image.out=200;
-   else if(turnpid_image.out<-200)   turnpid_image.out=-200;
+   if(turnpid_image.out>140)   turnpid_image.out=140;
+   else if(turnpid_image.out<-140)   turnpid_image.out=-140;
    //*********************************************
 
     if (turnpid_image.out > 0)//左转
     {
-        target_left = base_speed - (int)turnpid_image.out;
-        target_right = base_speed+(int)0.5*turnpid_image.out;
+        target_left = base_speed  - (int)turnpid_image.out;
+        target_right = base_speed + (int)(0.4*turnpid_image.out);
     }
     else//右转
     {
-        target_left = base_speed-(int)0.5*turnpid_image.out;
+        target_left = base_speed  - (int)(0.4*turnpid_image.out);
         target_right = base_speed + (int)turnpid_image.out;
     }
 }
