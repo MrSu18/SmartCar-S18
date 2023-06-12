@@ -57,7 +57,7 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     }
     s=i-(int)(aim_distance/SAMPLE_DIST);//得到位移
     vt= (uint16)sqrt(original_speed*original_speed+2*a*s);
-//    if(vt>100) vt=100;//限幅
+    if(vt>70) vt=70;//限幅
     if(vt<original_speed) vt=original_speed;
     return vt;
 }
@@ -72,11 +72,11 @@ uint16 SpeedDecision(uint16 original_speed,float a)
 void OutGarage(void)
 {
     encoder_dis_flag=1;
-    image_bias=0.5;
+    image_bias=-0.5;
     while(dis<200);//给时间车加速
     encoder_dis_flag=0;
-    image_bias=5;    //向左打死
+    image_bias=-5;    //向左打死
     StartIntegralAngle_X(70);
     while(!icm_angle_x_flag);   //左转70°进入正常寻迹
-//    speed_type=kImageSpeed;//出库之后启动速度决策
+    speed_type=kImageSpeed;//出库之后启动速度决策
 }

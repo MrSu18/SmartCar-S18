@@ -29,6 +29,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 0: //检测左环岛
             if(CircleIslandLDetection()==1)
             {
+                speed_type=kNormalSpeed;//关闭速度决策
                 base_speed=60;//降速进环
                 status=1;
             }
@@ -80,7 +81,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
             if (CircleIslandLEnd()==1)
             {
                 base_speed=original_speed;//恢复速度
-//                speed_type=kImageSpeed;
+                speed_type=kImageSpeed;//开启速度决策
                 status=0;
                 return 1;
             }
@@ -335,6 +336,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
         case 0: //检测右环岛
             if(CircleIslandRDetection()==1)
             {
+                speed_type=kNormalSpeed;//关闭速度决策
 //                base_speed=60;//降速进环
                 status=1;
             }
@@ -387,6 +389,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
             if (CircleIslandREnd()==1)
             {
                 base_speed=original_speed;//恢复速度
+                speed_type=kImageSpeed;//启动速度决策
                 status=0;
                 return 1;
             }

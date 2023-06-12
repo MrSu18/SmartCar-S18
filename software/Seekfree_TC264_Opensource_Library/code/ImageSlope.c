@@ -45,8 +45,8 @@ uint8 SlopeIdentify(void)
             if(((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)||(dl1a_distance_mm < 600))
             {
                 gpio_toggle_level(BEER);
-                speed_type=kNormalSpeed;//降速
-                base_speed = 60;
+                speed_type=kNormalSpeed;//关闭速度决策
+                base_speed = 60;//降速
                 last_track_mode = track_mode;//切换成电磁循迹
                 track_mode = kTrackADC;
                 slope_type = kSlopeUp;//切换下一个状态
@@ -68,6 +68,7 @@ uint8 SlopeIdentify(void)
                 encoder_dis_flag = 0;//编码器积分标志位清零
                 base_speed = original_speed;
                 last_track_mode = track_mode;//改成图像循迹
+                speed_type=kImageSpeed;//启动速度决策
                 track_mode = kTrackImage;
                 slope_type = kSlopeBegin;//复位状态机
                 return 1;

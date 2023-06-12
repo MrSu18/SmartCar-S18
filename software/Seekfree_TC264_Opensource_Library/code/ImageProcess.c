@@ -17,10 +17,12 @@
 #include "pid.h"
 #include "Control.h"
 #include "debug.h"
+#include "icm20602.h"
+#include "motor.h"
 
 //内轮纯减速可以跑72环岛70环内加速到75，入库前降速到65，转向P为12D为1
-/*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入左库 8:入右库 'S':停车*/
-uint8 process_status[30]={3,3,3,3,5,2,1,7,'S'};//总状态机元素执行顺序数组
+/*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入左库 8:入右库 'S':停车 'E':编码器测距1m 'G:陀螺仪积分70°*/
+uint8 process_status[30]={2,1,5,3,3,3,3,8,'S'};//总状态机元素执行顺序数组
 uint16 process_speed[30]={60,60,60,60,60,60,60,60,60,60,60,60,65,65,65,65,65,65};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
@@ -33,6 +35,7 @@ uint8 process_status_cnt=0;//元素状态数组的计数器
 ************************************************/
 void ImageProcess(void)
 {
+    static uint8 encoder_status=0,gyro_status=0;;
     //扫线
     EdgeDetection();
     //边线进行透视
@@ -93,7 +96,6 @@ void ImageProcess(void)
             {
                 gpio_toggle_level(BEER);
                 process_status_cnt++;
-                aim_distance=0.36;
                 original_speed=process_speed[process_status_cnt];
                 base_speed=original_speed;
             }
@@ -151,6 +153,43 @@ void ImageProcess(void)
             pit_disable(CCU60_CH0);//关闭电机中断
             MotorSetPWM(0,0);
             break;
+        case 'E':
+            if(encoder_status==0)
+            {
+                encoder_status=1;
+                encoder_dis_flag=1;//开启编码器测距
+            }
+            else
+            {
+                if(dis>1000)
+                {
+                    encoder_dis_flag=0;
+                    encoder_status=0;
+                    gpio_toggle_level(BEER);
+                    process_status_cnt++;
+                    original_speed=process_speed[process_status_cnt];
+                    base_speed=original_speed;
+                }
+            }
+            break;
+        case 'G':
+            if(gyro_status==0)
+            {
+                gyro_status=1;
+                StartIntegralAngle_X(70);//开启陀螺仪积70度
+            }
+            else
+            {
+                if(icm_angle_x_flag==1)//积分到达
+                {
+                    gyro_status=0;
+                    gpio_toggle_level(BEER);
+                    process_status_cnt++;
+                    original_speed=process_speed[process_status_cnt];
+                    base_speed=original_speed;
+                }
+            }
+            break;
         default:break;
     }
 #endif
@@ -182,10 +221,10 @@ void ImageProcess(void)
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
     //速度决策
-    if(speed_type==kImageSpeed)
-    {
-        base_speed=SpeedDecision(original_speed,5);//弯道是68直道是80
-    }
+//    if(speed_type==kImageSpeed)
+//    {
+//        base_speed=SpeedDecision(original_speed,5);//弯道是68直道是80
+//    }
 //    tft180_show_uint(0, 0, base_speed, 3);
 }
 
