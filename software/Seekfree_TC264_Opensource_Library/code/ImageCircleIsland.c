@@ -50,7 +50,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
         case 2: //进入环岛
             if(CircleIslandLIn()==1)
             {
-                base_speed=65;//环内加速
+//                base_speed=65;//环内加速
                 status=3;
             }
             else  if (CircleIslandLOutFinish()==1)//防止太切内而看不到外环使得状态错乱，陀螺仪积分到了则强制出环
