@@ -19,6 +19,7 @@ uint8 BarrierIdentify(void);//路障状态机
 uint8 GarageFindCorner(int* corner_id);//车库找角点
 uint8 GarageIdentify_L(void);//左车库状态机
 uint8 GarageIdentify_R(void);//右车库状态机
+uint8 GarageIdentify_Straight(void);//识别到车库不入库的状态机
 //断路函数
 uint8 CutIdentify(void);//断路状态机
 uint8 CutFindCorner(int16* corner_id_l,int16* coener_id_r);//断路找角点

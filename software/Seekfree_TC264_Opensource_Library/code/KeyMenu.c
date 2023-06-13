@@ -12,6 +12,7 @@
 #include "ImageProcess.h"
 #include "Control.h"
 #include "zf_driver_flash.h"
+#include "adc.h"
 
 static Menu menu={0,0,0};
 static int index=0;
@@ -206,7 +207,8 @@ void ShowFunction(uint8 page)
         case 9:
             tft180_show_string(0, 0, "  show per_image");
             tft180_show_string(0, 10,"  show gray_image");
-            tft180_show_string(0, 20,"  exit");
+            tft180_show_string(0, 20,"  show adc_value");
+            tft180_show_string(0, 30,"  exit");
             break;
         case 10:
             tft180_show_string(0, 0, "  show peredge_line");
@@ -525,6 +527,15 @@ void EnterKey(uint8* exit_flag)
             menu.enter=2;
         }
         else if(menu.updown==2)
+        {
+            tft180_clear();
+            while(1)
+            {
+                for(int i=0;i<5;i++)
+                    tft180_show_int(98, 15*i, adc_value[i], 4);
+            }
+        }
+        else if(menu.updown==3)
         {
             menu.page=0;
             menu.updown=0;

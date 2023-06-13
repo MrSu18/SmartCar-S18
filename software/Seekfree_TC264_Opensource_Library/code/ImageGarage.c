@@ -26,8 +26,16 @@ typedef enum GarageType_r
     kGarage_End_r,
 }GarageType_r;//右库状态机状态结构体
 
+typedef enum GarageType
+{
+    kGarage_In = 0,
+    kGarage_End,
+}GarageType;
+
 GarageType_l garage_type_l = kGarage_In_l;
 GarageType_r garage_type_r = kGarage_In_r;
+GarageType   garage_type = kGarage_In;
+
 /***********************************************
 * @brief : 左库状态机
 * @param : void
@@ -122,6 +130,58 @@ uint8 GarageIdentify_R(void)
             break;
         }
         default:break;
+    }
+    return 0;
+}
+/***********************************************
+* @brief : 右库状态机
+* @param : void
+* @return: 0:不是十断路
+*          1:识别到断路
+* @date  : 2023.5.9
+* @author: L
+************************************************/
+uint8 GarageIdentify_Straight(void)
+{
+    uint8 lr_flag = 0;//左库或右库的标志位
+    switch(garage_type)
+    {
+        case kGarage_In://判断是否有角点且另外一边的边线存在
+        {
+            int corner_id = 0;
+            if(GarageFindCorner(&corner_id) == 1)
+            {
+                track_type = kTrackRight;//寻右线
+                lr_flag = 1;//是左车库
+            }
+            else if(GarageFindCorner(&corner_id) == 2)
+            {
+                track_type = kTrackLeft;//寻左线
+                lr_flag = 2;//是右车库
+            }
+
+            if(corner_id < 5 && lr_flag != 0)
+            {
+                garage_type = kGarage_End;//切换下一个状态
+                encoder_dis_flag = 1;//开启编码器测距
+            }
+            break;
+        }
+        case kGarage_End://编码器测距出状态
+        {
+            if(lr_flag == 1)
+                track_type = kTrackRight;//默认寻右线
+            else if(lr_flag == 2)
+                track_type = kTrackLeft;//默认寻左线
+
+            if(dis > 450)//积分45cm出状态
+            {
+                garage_type = kGarage_In;//复位状态机
+                encoder_dis_flag = 0;//关闭编码器测距
+                return 1;
+            }
+            break;
+        }
     }
     return 0;
 }

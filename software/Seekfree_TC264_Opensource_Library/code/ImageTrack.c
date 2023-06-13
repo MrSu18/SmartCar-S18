@@ -29,7 +29,7 @@ myPoint_f center_line_l[PER_EDGELINE_LENGTH]={0},center_line_r[PER_EDGELINE_LENG
 myPoint_f center_line[PER_EDGELINE_LENGTH]={0};//归一化中线
 int c_line_count=0;//归一化中线长度
 //当前的巡线方向
-enum TrackType track_type=kTrackRight;
+enum TrackType track_type=kTrackLeft;
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
