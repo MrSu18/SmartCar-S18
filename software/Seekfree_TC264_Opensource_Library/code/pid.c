@@ -42,14 +42,19 @@ void PIDInit(PID* pid,float P,float I,float D)
 *          target_data:目标值
 *          pid:电机度环的PID
 * @return: out:给电机的PWM大小
-* @date  : 2023.1.17
-* @author: L
+* @date  : 2023.6.15
+* @author: L & 刘骏帆
 ************************************************/
 int PIDSpeed(int encoder_speed,int target_speed,PID* pid)
 {
+    float integral_out=0;
     pid->err = (float)(target_speed-encoder_speed);                                  //计算偏差
-
-    pid->out += (int)(pid->P*(pid->err-pid->last_err)+pid->I*pid->err);
+    //积分输出限幅
+    integral_out=pid->I*pid->err;
+    if(integral_out>pid->I*65)  integral_out=pid->I*65;
+    else if(integral_out<-pid->I*65) integral_out=-pid->I*65;
+    //PID计算
+    pid->out += (int)(pid->P*(pid->err-pid->last_err)+integral_out);
     pid->last_err = pid->err;                                                        //保存上一次的值
 
     return pid->out;

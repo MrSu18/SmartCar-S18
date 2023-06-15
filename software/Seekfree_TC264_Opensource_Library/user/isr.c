@@ -45,8 +45,10 @@
 #include "ADRC.h"
 
 float icm_target_angle_z,icm_target_angle_x,icm_target_angle_y;   //陀螺仪*轴积分的目标角度
-
 uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //陀螺仪*轴积分达到目标角度 标志位  可作为环岛出环标志位 //待整合
+
+uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
+
 // **************************** PIT中断函数 ****************************
 IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
 {
@@ -63,6 +65,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
         pit_disable(CCU61_CH1);
         MotorSetPWM(0,0);
     }
+    c0h0_isr_flag=1;
 }
 
 

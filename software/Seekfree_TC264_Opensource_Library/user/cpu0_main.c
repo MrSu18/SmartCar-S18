@@ -94,9 +94,9 @@ int core0_main(void)
     ADRC_Init();
     KalmanInit(&kalman_adc,25,5);
     KalmanInit(&kalman_gyro,1,100);
-    PIDInit(&speedpid_left,185.8,0.61,0);
-    PIDInit(&speedpid_right,164.8,0.54,0);
-    PIDInit(&turnpid_image,11,0,3);//500,15
+    PIDInit(&speedpid_left,185.8,0.50,0);
+    PIDInit(&speedpid_right,164.8,0.45,0);
+    PIDInit(&turnpid_image,10,0,3);//500,15
     PIDInit(&turnpid_adc,10,0,12);
     PIDInit(&gyropid,-0.04,-0.00018,-0.00015);//0.00347 0.0001026
     //前馈控制
@@ -120,16 +120,16 @@ int core0_main(void)
 //            gyro_flag = 0;
 //        }
         // 此处编写需要循环执行的代码
-//       if(c0h0_isr_flag==1)
-//       {
-//           printf("%f,%f\r\n",speedpid_left.err,speedpid_right.err);
-//           c0h0_isr_flag=0;
-//       }
-       if(c0h1_isr_flag==1)
+       if(c0h0_isr_flag==1)
        {
-           printf("%d,%f,%f\r\n",turnpid_adc.out,turnpid_adc.err,turnpid_adc.P);
-           c0h1_isr_flag=0;
+           printf("%d,%d,%d,%f\r\n",target_left,speed_left,speedpid_left.out,speedpid_left.err);
+           c0h0_isr_flag=0;
        }
+//       if(c0h1_isr_flag==1)
+//       {
+//           printf("%d,%f,%f\r\n",turnpid_adc.out,turnpid_adc.err,turnpid_adc.P);
+//           c0h1_isr_flag=0;
+//       }
         // 此处编写需要循环执行的代码
     }
 }

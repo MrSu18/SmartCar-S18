@@ -22,6 +22,7 @@ typedef struct
    float integer_err;
    float err;
    float last_err;
+   float errc;//Æ«²î±ä»¯Á¿
    int   out;
 }PID;
 
