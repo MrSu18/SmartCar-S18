@@ -74,7 +74,7 @@ void core1_main(void)
     base_speed=original_speed=process_speed[0];
     KeyCtrl();//按键控制
     pit_enable(CCU60_CH0);
-    OutGarage();//出库
+//    OutGarage();//出库
     while (TRUE)
     {
         // 此处编写需要循环执行的代码

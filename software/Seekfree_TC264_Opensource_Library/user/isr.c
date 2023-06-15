@@ -130,30 +130,31 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
     //得到误差
     gyropid.err = target_gyro - real_gyro;
     gyropid.integer_err+=gyropid.err;
-    if(gyropid.integer_err>100000) gyropid.integer_err=100000;
-    else if(gyropid.integer_err<-100000) gyropid.integer_err=-100000;
+    if(gyropid.integer_err>50000) gyropid.integer_err=50000;
+    else if(gyropid.integer_err<-50000) gyropid.integer_err=-50000;
     //PID计算
     gyropid.out = (int)(gyropid.P * gyropid.err + gyropid.I * gyropid.integer_err + gyropid.D * (gyropid.err-gyropid.last_err));
     gyropid.last_err=gyropid.err;
     Fhan_ADRC(&adrc_controller_gyro_out,(float)gyropid.out);
-//    gyropid.out=0.6*gyropid.out+0.4*last_gyropid_out;
-//    last_gyropid_out=gyropid.out;
     //输出限幅度
     if(adrc_controller_gyro_out.x1>200) adrc_controller_gyro_out.x1=200;
     else if(adrc_controller_gyro_out.x1<-200) adrc_controller_gyro_out.x1=-200;
 
     gyro_flag = 1;
 
-//    if(adrc_controller_gyro_out.x1>0)//左转
-//    {
-//        target_left = base_speed - (int)(adrc_controller_gyro_out.x1);
-//        target_right = base_speed;
-//    }
-//    else
-//    {
-//        target_left = base_speed;
-//        target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
-//    }
+    if(track_mode == kTrackImage)
+    {
+        if(adrc_controller_gyro_out.x1>0)//左转
+        {
+            target_left = base_speed  - (int)(adrc_controller_gyro_out.x1);
+            target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
+        }
+        else
+        {
+            target_left = base_speed  - (int)(adrc_controller_gyro_out.x1);
+            target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
+        }
+    }
 }
 // **************************** PIT中断函数 ****************************
 

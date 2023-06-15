@@ -127,8 +127,8 @@ void PIDTurnADC(int* target_left,int* target_right,PID* pid)
 ************************************************/
 void PIDClear(void)
 {
-    PIDInit(&speedpid_left,185.8,0.61,0);
-    PIDInit(&speedpid_right,164.8,0.54,0);
+    PIDInit(&speedpid_left,speedpid_left.P,speedpid_left.I,0);
+    PIDInit(&speedpid_right,speedpid_right.P,speedpid_right.I,0);
     PIDInit(&turnpid_image,turnpid_image.P,turnpid_image.I,turnpid_image.D);
     PIDInit(&turnpid_adc, turnpid_adc.P, turnpid_adc.I, turnpid_adc.D);
 }
