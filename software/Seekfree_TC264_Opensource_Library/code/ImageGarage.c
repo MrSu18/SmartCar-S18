@@ -55,7 +55,7 @@ uint8 GarageIdentify_L(void)
             {
                 StartIntegralAngle_X(70);//开启陀螺仪角度积分
                 speed_type=kNormalSpeed;//降速
-                base_speed = 65;
+                base_speed = 60;
                 track_type = kTrackRight;//寻右线
                 if (corner_id < 18)//角点很近时切换下一个状态
                     garage_type_l = kGarage_End_l;
@@ -143,7 +143,7 @@ uint8 GarageIdentify_R(void)
 ************************************************/
 uint8 GarageIdentify_Straight(void)
 {
-    uint8 lr_flag = 0;//左库或右库的标志位
+    static uint8 lr_flag = 0;//左库或右库的标志位
     switch(garage_type)
     {
         case kGarage_In://判断是否有角点且另外一边的边线存在
@@ -174,7 +174,7 @@ uint8 GarageIdentify_Straight(void)
             else if(lr_flag == 2)
                 track_type = kTrackLeft;//默认寻左线
 
-            if(dis > 450)//积分45cm出状态
+            if(dis > 800)//积分45cm出状态
             {
                 garage_type = kGarage_In;//复位状态机
                 encoder_dis_flag = 0;//关闭编码器测距
@@ -182,6 +182,7 @@ uint8 GarageIdentify_Straight(void)
             }
             break;
         }
+        default:break;
     }
     return 0;
 }

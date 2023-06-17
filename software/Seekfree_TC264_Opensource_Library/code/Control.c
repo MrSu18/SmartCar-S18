@@ -12,6 +12,8 @@
 #include "icm20602.h"
 #include "motor.h"
 
+//不同速度对应的控制参数
+ControlParam contro_param[10]={0};
 //当前的速度决策方式
 enum SpeedType speed_type=kNormalSpeed;
 //设定的速度
@@ -79,4 +81,18 @@ void OutGarage(void)
     StartIntegralAngle_X(70);
     while(!icm_angle_x_flag);   //左转70°进入正常寻迹
     speed_type=kImageSpeed;//出库之后启动速度决策
+}
+
+/***********************************************
+* @brief : 初始化不同速度得到不同的控制参数
+* @param : void
+* @return: void
+* @date  : 2023.6.17
+* @author: 刘骏帆
+************************************************/
+void ControlParmInit(void)
+{
+    contro_param[0].speed=60;contro_param[0].turn_kp=13;contro_param[0].turn_kd=0;contro_param[0].turn_gkd=0.01;contro_param[0].aim=0.26;
+    contro_param[1].speed=62;contro_param[1].turn_kp=13;contro_param[1].turn_kd=0;contro_param[1].turn_gkd=0.0125;contro_param[1].aim=0.26;
+    contro_param[2].speed=65;contro_param[2].turn_kp=13;contro_param[2].turn_kd=1;contro_param[2].turn_gkd=0.0125;contro_param[2].aim=0.28;
 }

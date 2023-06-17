@@ -96,7 +96,7 @@ int core0_main(void)
     KalmanInit(&kalman_gyro,1,100);
     PIDInit(&speedpid_left,185.8,0.50,0);
     PIDInit(&speedpid_right,164.8,0.45,0);
-    PIDInit(&turnpid_image,700,0,40);//500,15     10,3
+    PIDInit(&turnpid_image,13,0,0);//700,40有角速度只能跑50     10,3
     PIDInit(&turnpid_adc,10,0,12);
     PIDInit(&gyropid,-0.01125,-0.00024,-0);
     //前馈控制

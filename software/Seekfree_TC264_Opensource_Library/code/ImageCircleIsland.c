@@ -128,7 +128,7 @@ uint8 CircleIslandLInDetection(void)
     }
     else if(status==1)
     {
-        if(dis>200)//20cm
+        if(dis>150)//20cm
         {
             encoder_dis_flag = 0;
             status=0;
@@ -437,7 +437,7 @@ uint8 CircleIslandRInDetection(void)
     }
     else if(status==1)
     {
-        if(dis>200)//20cm
+        if(dis>300)//20cm
         {
             encoder_dis_flag = 0;
             status=0;

@@ -130,6 +130,7 @@ uint8 CutIdentify(void)
                 track_mode = kTrackImage;
                 cut_type = kCutBegin;//¸´Î»×´Ì¬»ú
                 base_speed = original_speed;
+                now_flag = 0;
                 return 1;
             }
             break;

@@ -142,19 +142,19 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
 
     gyro_flag = 1;
 
-    if(track_mode == kTrackImage)
-    {
-        if(adrc_controller_gyro_out.x1>0)//左转
-        {
-            target_left = base_speed  - (int)(adrc_controller_gyro_out.x1);
-            target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
-        }
-        else
-        {
-            target_left = base_speed  - (int)(adrc_controller_gyro_out.x1);
-            target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
-        }
-    }
+//    if(track_mode == kTrackImage)
+//    {
+//        if(adrc_controller_gyro_out.x1>0)//左转
+//        {
+//            target_left = base_speed  - (int)(adrc_controller_gyro_out.x1);
+//            target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
+//        }
+//        else
+//        {
+//            target_left = base_speed  - (int)(adrc_controller_gyro_out.x1);
+//            target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
+//        }
+//    }
 }
 // **************************** PIT中断函数 ****************************
 
