@@ -127,6 +127,7 @@ uint8 CutIdentify(void)
             if (l_line_count>80 && r_line_count>80)
             {
                 last_track_mode = track_mode;
+                speed_type=kImageSpeed;
                 track_mode = kTrackImage;
                 cut_type = kCutBegin;//¸´Î»×´Ì¬»ú
                 base_speed = original_speed;
