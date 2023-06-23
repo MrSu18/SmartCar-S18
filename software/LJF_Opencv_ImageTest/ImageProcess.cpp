@@ -69,7 +69,7 @@ void ImageProcess(void)
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
     //速度决策
-    base_speed=SpeedDecision(160,25);
+    base_speed=SpeedDecision(60,6);
 }
 
 /***********************************************

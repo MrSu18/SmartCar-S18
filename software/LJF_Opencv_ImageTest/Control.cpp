@@ -18,6 +18,7 @@ uint16 base_speed=65;
 uint16 SpeedDecision(uint16 original_speed,float a)
 {
     int len=0;
+    if(image_bias>6 || image_bias<-6)   return original_speed;
     float* angle;
     switch (track_type)
     {
@@ -40,13 +41,14 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     for(;i<len;i++)
     {
         float temp=fabs(angle[i]);
-        if(temp>(10. / 180. * 3.14))
+        if(temp>(5. / 180. * 3.14))
         {
             break;
         }
     }
-    s=i;//得到位移
+    s=i-(int)(0.5/SAMPLE_DIST);//得到位移
     vt= (uint16)sqrt(original_speed*original_speed+2*a*s);
-    if(vt>220) vt=220;//限幅
+//    if(vt>70) vt=70;//限幅
+//    if(vt<original_speed) vt=original_speed;
     return vt;
 }

@@ -25,14 +25,14 @@ int main()
 	//初始化逆透视图像并压缩
     ImagePerspective_Init();
 	ImageBorderInit();
-    String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230606_195521\\img0005000.png");
+    String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230531_224921\\img0010215.png");
     ScanImage(str);
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    for (int i = 5000 ; i < 20000; i++)
+    for (int i = 10215 ; i < 20000; i++)
     {
         /******************************************总钻风获取灰度图***************************************/
-        String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230606_195521\\img000%d.png", i);
+        String str = format("E:\\IDE\\AdjustParamter\\tuchuanV2.4\\tuchuanV2.4\\record\\RecordDir_230531_224921\\img00%d.png", i);
         ScanImage(str);
         /************************************************************************************************/
 
@@ -56,7 +56,7 @@ int main()
 //        PrintEdgeLine(center_line_l,0,per_l_line_count,0,0,255);//左边跟踪出来的中线
 //        PrintEdgeLine(center_line_r,0,per_r_line_count,255,100,0);//循迹的中线
         PrintEdgeLine(center_line,0,Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count),255,0,0);//循迹的中线
-        printf("%f,%d\r\n",image_bias,track_type);
+        printf("%f,%d\r\n",image_bias,base_speed);
         //显示图像
         imshow("use_img", use_mat);
         waitKey(0);//等待键盘按下
