@@ -19,6 +19,7 @@
 
 extern uint8 process_status[30];
 extern uint16 process_speed[30];
+extern uint8 process_status_cnt;//元素状态数组的计数器
 
 void OutProtect(void);
 void ImageProcess(void);

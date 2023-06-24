@@ -47,8 +47,7 @@
 #include "debug.h"
 #include "FuzzyPID.h"
 #include "ADRC.h"
-
-extern uint8 binary_image[MT9V03X_H][MT9V03X_W];
+#include "ImageProcess.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -120,16 +119,16 @@ int core0_main(void)
 //            gyro_flag = 0;
 //        }
         // 此处编写需要循环执行的代码
-       if(c0h0_isr_flag==1)
-       {
-           printf("%d,%d,%f\r\n",base_speed,speed_type,image_bias);
-           c0h0_isr_flag=0;
-       }
-//       if(c0h1_isr_flag==1)
+//       if(c0h0_isr_flag==1)
 //       {
-//           printf("%d,%f,%f\r\n",turnpid_adc.out,turnpid_adc.err,turnpid_adc.P);
-//           c0h1_isr_flag=0;
+//           printf("%d,%d,%f\r\n",base_speed,speed_type,image_bias);
+//           c0h0_isr_flag=0;
 //       }
+       if(c0h1_isr_flag==1)
+       {
+           printf("%d,%f,%d,%d\r\n",s,image_bias,process_status_cnt,base_speed);
+           c0h1_isr_flag=0;
+       }
         // 此处编写需要循环执行的代码
     }
 }

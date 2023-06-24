@@ -18,6 +18,7 @@ ControlParam contro_param[10]={0};
 enum SpeedType speed_type=kNormalSpeed;
 //设定的速度
 uint16 original_speed=65;
+int s=0;//速度决策的位移
 
 /***********************************************
 * @brief : 速度决策
@@ -48,7 +49,8 @@ uint16 SpeedDecision(uint16 original_speed,float a)
             break;
     }
     //速度计算
-    int s=0,i=3;
+    s=0;
+    int i=3;
     uint16 vt=0;
     for(;i<len;i++)
     {
@@ -58,10 +60,18 @@ uint16 SpeedDecision(uint16 original_speed,float a)
             break;
         }
     }
-    s=i-(int)(0.5/SAMPLE_DIST);//得到位移
-    vt= (uint16)sqrt(original_speed*original_speed+2*a*s);
-    if(vt>75) vt=75;//限幅
-    if(vt<60) vt=60;
+    s=i-(int)(0.3/SAMPLE_DIST);//得到位移
+    //长直道特殊处理
+    if(s>=220)//参数由实际数据采集得到
+    {
+        vt=90;
+    }
+    else
+    {
+        vt= (uint16)sqrt(original_speed*original_speed+2*a*s);
+        if(vt>80) vt=80;//限幅
+        if(vt<60) vt=60;
+    }
     return vt;
 }
 

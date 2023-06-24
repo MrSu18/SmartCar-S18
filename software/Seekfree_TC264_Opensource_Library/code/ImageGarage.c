@@ -53,11 +53,11 @@ uint8 GarageIdentify_L(void)
             int corner_id = 0;
             if (GarageFindCorner(&corner_id) == 1)//判断是否找到角点
             {
-                StartIntegralAngle_X(70);//开启陀螺仪角度积分
+                StartIntegralAngle_X(80);//开启陀螺仪角度积分
                 speed_type=kNormalSpeed;//降速
                 base_speed = 60;
                 track_type = kTrackRight;//寻右线
-                if (corner_id < 18)//角点很近时切换下一个状态
+                if (corner_id < 35)//角点很近时切换下一个状态
                     garage_type_l = kGarage_End_l;
             }
             break;
@@ -73,7 +73,7 @@ uint8 GarageIdentify_L(void)
                 target_left = 0;
                 target_right = 0;
                 image_bias = 0;
-                system_delay_ms(200);
+                system_delay_ms(500);
                 pit_disable(CCU60_CH0);
                 pit_disable(CCU60_CH1);
                 MotorSetPWM(0,0);
