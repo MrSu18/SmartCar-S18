@@ -11,7 +11,7 @@
 //Í¼ÏñÑ­¼£Æ«²î
 float image_bias=0;
 //Ô¤Ãéµã
-float aim_distance = 0.26;
+float aim_distance = 0.32;
 //±ä»»ºó×óÓÒ±ßÏß
 myPoint_f per_left_line[EDGELINE_LENGTH]={0},per_right_line[EDGELINE_LENGTH]={0};
 // ±ä»»ºó×óÓÒ±ßÏß+ÂË²¨
@@ -360,7 +360,7 @@ void FillingLine(char choose, myPoint_f point1, myPoint_f point2)
 ************************************************/
 void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
 {
-    double change_inverse_Mat[3][3]={{-0.341791768150339,-2.26212141886477,126.895884301698},{0,-3.21916280178245,163.571383383108},{0,-0.0238225030081667,1.00003300383400}};
+    double change_inverse_Mat[3][3]={{-0.436724513740008,-2.68225460836311,134.828057006092},{0,-3.82738237165181,170.456836310779},{0,-0.0285350419014467,0.999958150225339}};
     for(uint8 count=0;count<num;count++)
     {
         float i=in_line[count].X;float j=in_line[count].Y;

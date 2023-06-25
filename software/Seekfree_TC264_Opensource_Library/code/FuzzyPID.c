@@ -231,11 +231,11 @@ void FuzzyPID_ADC(void)
     if (turnpid_adc.out > 0)//×ó×ª
     {
         target_left = base_speed - (int)turnpid_adc.out;
-        target_right = base_speed + (int)0.3*turnpid_adc.out;
+        target_right = base_speed + (int)(0.3*turnpid_adc.out);
     }
     else//ÓÒ×ª
     {
-        target_left = base_speed - (int)0.3*turnpid_adc.out;
+        target_left = base_speed - (int)(0.3*turnpid_adc.out);
         target_right = base_speed + (int)turnpid_adc.out;
     }
 }

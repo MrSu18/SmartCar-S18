@@ -74,12 +74,12 @@ void SowSeed(myPoint* left_seed,myPoint* right_seed)
 * @date  : 2023.4.12
 * @author: 刘骏帆
 ************************************************/
-#define GRAY_DIF_THRES  10//灰度差比和算法的阈值
+#define GRAY_DIF_THRES  20//灰度差比和算法的阈值
 void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed)//通过差比和算法先找到左右种子
 {
     int dif_gray_value;//灰度值差比和的值
     static uint8 column=USE_IMAGE_W / 2;
-    for(left_seed->Y = USE_IMAGE_H_MAX - half - 1;left_seed->Y > 100; left_seed->Y--)
+    for(left_seed->Y = USE_IMAGE_H_MAX - half - 1;left_seed->Y > 90; left_seed->Y--)
     {
         for (left_seed->X = column;left_seed->X > half; left_seed->X--)
         {
@@ -90,7 +90,7 @@ void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_
         }
         if(dif_gray_value>dif_thres) break;
     }
-    for(right_seed->Y = USE_IMAGE_H_MAX - half - 1;right_seed->Y > 100; right_seed->Y--)
+    for(right_seed->Y = USE_IMAGE_H_MAX - half - 1;right_seed->Y > 90; right_seed->Y--)
     {
         for (right_seed->X = column;right_seed->X < USE_IMAGE_W - half - 1; right_seed->X++)
         {

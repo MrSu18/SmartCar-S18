@@ -95,10 +95,10 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)//转向环
 
         FuzzyPID_ADC();
     }
-    if(speed_type==kImageSpeed)
-    {
-        base_speed=SpeedDecision(original_speed,8);//弯道是68直道是80
-    }
+//    if(speed_type==kImageSpeed)
+//    {
+//        base_speed=SpeedDecision(original_speed,8);//弯道是68直道是80
+//    }
 
     c0h1_isr_flag=1;
 }
