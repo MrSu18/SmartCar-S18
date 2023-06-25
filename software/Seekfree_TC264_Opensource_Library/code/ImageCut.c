@@ -76,18 +76,9 @@ uint8 CutIdentify(void)
                 //两边都有角点，哪边边线长就寻那条边线
                 else if(corner_find == 3)
                 {
-//                    if(per_l_line_count > per_r_line_count)
-//                    {
-                        per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
-                        track_type = kTrackLeft;
-                        aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
-//                    }
-//                    else if(per_r_line_count > per_l_line_count)
-//                    {
-//                        per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
-//                        track_type = kTrackRight;
-//                        aim_distance = (float)corner_id_r*SAMPLE_DIST;
-//                    }
+                    per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
+                    track_type = kTrackLeft;
+                    aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
                 }
                 //切换状态，改成电磁循迹
                 if(corner_id_l < 40 && corner_id_r < 40)
@@ -112,11 +103,11 @@ uint8 CutIdentify(void)
                 if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
                         over_count++;
             }
-            if(over_count >= MT9V03X_W-2 && dis > 600)
+            if(over_count >= MT9V03X_W-2 && dis > 450)
             {
                 encoder_dis_flag = 0;
                 cut_flag=0;
-                base_speed = 65;
+                base_speed = 62;
                 cut_type = kCutEnd;
             }
             break;
