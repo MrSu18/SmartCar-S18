@@ -80,6 +80,7 @@ uint8 CrossIdentify(void)
                     track_type = kTrackRight;
                     aim_distance = (float)(corner_id_r) * SAMPLE_DIST;
                 }
+                if(aim_distance > origin_aimdis) aim_distance = origin_aimdis;
             }
             if((l_line_count < 2)&&(r_line_count < 2))
             {
@@ -155,12 +156,14 @@ uint8 CrossIdentify(void)
                             track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
                             track_type = kTrackRight;
                             aim_distance = origin_aimdis;
+                            break;
                         }
                         else
                         {
                             track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
                             track_type = kTrackRight;
                             aim_distance = (float)((i + 6) * SAMPLE_DIST);
+                            break;
                         }
                     }
                 }

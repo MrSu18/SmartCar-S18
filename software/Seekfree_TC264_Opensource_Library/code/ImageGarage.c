@@ -57,7 +57,7 @@ uint8 GarageIdentify_L(void)
                 speed_type=kNormalSpeed;//降速
                 base_speed = 60;
                 track_type = kTrackRight;//寻右线
-                if (corner_id < 35)//角点很近时切换下一个状态
+                if (corner_id < 28)//角点很近时切换下一个状态
                     garage_type_l = kGarage_End_l;
             }
             break;

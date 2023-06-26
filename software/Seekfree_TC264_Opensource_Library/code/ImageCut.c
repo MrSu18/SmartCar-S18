@@ -46,7 +46,7 @@ uint8 CutIdentify(void)
             int16 corner_id_l = 0,corner_id_r = 0;
             if(CutFindCorner(&corner_id_l, &corner_id_r)!=0)
             {
-                if((corner_id_l > origin_aimdis / SAMPLE_DIST) || (corner_id_r > origin_aimdis / SAMPLE_DIST))
+                if((corner_id_l > 0.45 / SAMPLE_DIST) || (corner_id_r > 0.45 / SAMPLE_DIST))
                     break;
                 else
                     cut_type = kCutIn;

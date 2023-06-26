@@ -87,7 +87,7 @@ void OutGarage(void)
 {
     encoder_dis_flag=1;
     image_bias=0.5;
-    while(dis<200);//给时间车加速
+    while(dis<150);//给时间车加速
     encoder_dis_flag=0;
     image_bias=5;    //向左打死
     StartIntegralAngle_X(70);
@@ -105,6 +105,6 @@ void OutGarage(void)
 void ControlParmInit(void)
 {
     contro_param[0].speed=60;contro_param[0].turn_kp=13;contro_param[0].turn_kd=0;contro_param[0].turn_gkd=0.01;contro_param[0].aim=0.32;
-    contro_param[1].speed=62;contro_param[1].turn_kp=13;contro_param[1].turn_kd=2;contro_param[1].turn_gkd=0.01;contro_param[1].aim=0.32;
+    contro_param[1].speed=62;contro_param[1].turn_kp=13;contro_param[1].turn_kd=1;contro_param[1].turn_gkd=0.01;contro_param[1].aim=0.36;
     contro_param[2].speed=64;contro_param[2].turn_kp=15;contro_param[2].turn_kd=3;contro_param[2].turn_gkd=0.01;contro_param[2].aim=0.4;
 }

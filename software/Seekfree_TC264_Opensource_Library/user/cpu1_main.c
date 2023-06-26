@@ -79,7 +79,7 @@ void core1_main(void)
     {
         // 此处编写需要循环执行的代码
 
-        if(mt9v03x_finish_flag)
+        if(1)
         {
 #if 1
             memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
@@ -96,12 +96,12 @@ void core1_main(void)
             //赛道基础信息变量重置
             TrackBasicClear();
 #else
-//            MotorSetPWM(-3200,-2900);
-//            system_delay_ms(3000);
-//            while(1)
-//            {
-//                MotorSetPWM(0, 0);
-//            }
+            MotorSetPWM(3000,3200);
+            system_delay_ms(3000);
+            while(1)
+            {
+                MotorSetPWM(0, 0);
+            }
 //            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
             mt9v03x_finish_flag=0;
