@@ -93,11 +93,13 @@ int core0_main(void)
     ADRC_Init();
     KalmanInit(&kalman_adc,25,5);
     KalmanInit(&kalman_gyro,1,100);
+    //速度环PID初始化
     PIDInit(&speedpid_left,317.90,0.69,0);//185.8,0.50
     PIDInit(&speedpid_right,313.16,0.74,0);//164.8,0.45
 //    PIDInit(&speedpid_left,279.04,0.84,0);
 //    PIDInit(&speedpid_right,279.04,0.84,0);
-    PIDInit(&turnpid_image,13,0,0);//700,40有角速度只能跑50     10,3
+    //转向环PID初始化
+    PIDInit(&turnpid_image,13,0,0);//700,40有角速度只能跑50
     PIDInit(&turnpid_adc,9,0,4);
     PIDInit(&gyropid,-0.01125,-0.00024,-0);
     //前馈控制

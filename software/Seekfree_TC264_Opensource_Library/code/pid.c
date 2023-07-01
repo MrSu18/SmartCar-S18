@@ -9,12 +9,16 @@
 
 PID speedpid_left;                          //赛道左轮速度环PID
 PID speedpid_right;                         //赛道右轮速度环PID
-PID turnpid_image;                          //图像转向环PID
+//图像转向环PID
+PID turnpid_image;//左转
+//电磁转向环PID
 PID turnpid_adc;                            //电磁转向环PID
+//速度环前馈控制
 FFC speedffc_left;
 FFC speedffc_right;
+//角速度环PID
 PID gyropid;
-int16 real_gyro = 0;
+int16 real_gyro = 0;//实时角速度
 uint8 gyro_flag = 0;
 
 /***********************************************

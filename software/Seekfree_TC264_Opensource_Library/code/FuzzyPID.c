@@ -175,17 +175,19 @@ void SoluteFuzzy(float qE,float qEC,int8 rule_KP[7][7],int8 rule_KD[7][7])
 ************************************************/
 void FuzzyPID(void)
 {
-    static int   last_turnpid_out=0;
     turnpid_image.err = image_bias;//图像偏差
     EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
     Fhan_ADRC(&adrc_controller_errc, EC);//对EC进行TD滤波
 
-    turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1 + 0.01*real_gyro);//PID公式计算输出量
-    turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
-
-    //模糊PID时滤波
-//    turnpid_image.out=0.7*turnpid_image.out+0.3*last_turnpid_out;//输出滤波
-//    last_turnpid_out=turnpid_image.out;
+    if (turnpid_image.out > 0)//左转
+    {
+        turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1 + 0.01*real_gyro);//PID公式计算输出量
+    }
+    else//右转
+    {
+        turnpid_image.out = (int)(12 * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1 + 0.01*real_gyro);//PID公式计算输出量
+    }
+        turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
     //*********************双环串级时转向PID输出限幅***************
    if(turnpid_image.out>200)   turnpid_image.out=200;

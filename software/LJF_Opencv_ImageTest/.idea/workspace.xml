@@ -20,30 +20,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着">
-      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../docs/财务/第十八届智能车队内开销.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/财务/第十八届智能车队内开销.xlsx" afterDir="false" />
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="加配重跑的丝滑之后再来直接废掉，而且很明显右转就是跳轮，左转不会">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageConversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageConversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageConversion.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageTrack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageWR.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageWR.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/FuzzyPID.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCross.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCross.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCut.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCut.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageTrack.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageTrack.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_mt9v03x.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/libraries/zf_device/zf_device_mt9v03x.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -342,14 +320,7 @@
       <workItem from="1687509858689" duration="468000" />
       <workItem from="1687519204043" duration="2184000" />
       <workItem from="1687936351103" duration="216000" />
-      <workItem from="1688198430132" duration="1561000" />
-    </task>
-    <task id="LOCAL-00007" summary="修改bug，避免边线数组存储的时候越界">
-      <created>1673339224768</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1673339224768</updated>
+      <workItem from="1688198430132" duration="2269000" />
     </task>
     <task id="LOCAL-00008" summary="封装了画点画线的函数">
       <created>1673341081125</created>
@@ -687,7 +658,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686145591056</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="加配重跑的丝滑之后再来直接废掉，而且很明显右转就是跳轮，左转不会">
+      <created>1688203736904</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1688203736904</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -705,7 +683,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.36的前瞻跑普通赛道效果好，但是环岛会飘出去，不知道为什么，电机控制有注释东西，不知道是不是之前没注释这个就跑不了" />
     <MESSAGE value="灰度扫线" />
     <MESSAGE value="边线进行透视" />
     <MESSAGE value="测试环岛，有很多问题，问题是在于经常把电磁线检测到边线，使得状态错乱，灰度扫线在同色区域的时候会扫出错误边线需要解决" />
@@ -730,7 +707,8 @@
     <MESSAGE value="修改模糊PID规则表" />
     <MESSAGE value="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯" />
     <MESSAGE value="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着" />
-    <option name="LAST_COMMIT_MESSAGE" value="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着" />
+    <MESSAGE value="加配重跑的丝滑之后再来直接废掉，而且很明显右转就是跳轮，左转不会" />
+    <option name="LAST_COMMIT_MESSAGE" value="加配重跑的丝滑之后再来直接废掉，而且很明显右转就是跳轮，左转不会" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

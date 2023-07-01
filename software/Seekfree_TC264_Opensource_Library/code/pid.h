@@ -39,6 +39,7 @@ typedef struct
 
 extern PID speedpid_left;
 extern PID speedpid_right;
+//Í¼Ïñ×ªÏò»·PID
 extern PID turnpid_image;
 extern PID turnpid_adc;
 extern PID gyropid;
