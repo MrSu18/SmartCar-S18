@@ -121,7 +121,7 @@ uint8 CutIdentify(void)
         case kCutEnd:
         {
             //±ßÏßÖØĞÂ³öÏÖ£¬¶ÏÂ·×´Ì¬½áÊø£¬ÇĞ»»³ÉÍ¼ÏñÑ­¼£
-            if (l_line_count>80 && r_line_count>80 && (left_line[l_line_count-1].Y>70 || right_line[r_line_count-1].Y>70))
+            if (l_line_count>80 && r_line_count>80 && (left_line[l_line_count-1].Y<70 || right_line[r_line_count-1].Y<70))
             {
                 last_track_mode = track_mode;
                 speed_type=kImageSpeed;
