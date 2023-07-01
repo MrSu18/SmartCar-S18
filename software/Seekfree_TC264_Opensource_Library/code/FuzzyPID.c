@@ -215,17 +215,7 @@ void FuzzyPID_ADC(void)
     turnpid_adc.err = ChaBiHe(TRACK);//电磁偏差
     float EC = turnpid_adc.err - turnpid_adc.last_err;//偏差变化量
 
-//    float qE = Quantization(E_MAX_A, E_MIN_A, turnpid_adc.err);//偏差映射到论域
-//    float qEC = Quantization(EC_MAX_A, EC_MAX_A, EC);//偏差的变化量映射到论域
-//
-//    SoluteFuzzy(qE, qEC, KPFuzzyRule_adc, KDFuzzyRule_adc);//解模糊，得到KP和KD在论域中的值
-//    //KP和KD解模糊，得到实际的值
-//    turnpid_adc.P = InverseQuantization(KP_MAX_A, KP_MIN_A, qdetail_Kp);
-//    turnpid_adc.D = InverseQuantization(KD_MAX_A, KD_MIN_A, qdetail_Kd);
-//    qdetail_Kp = 0;
-//    qdetail_Kd = 0;
-
-    turnpid_adc.out = (int)(turnpid_adc.P * turnpid_adc.err + turnpid_adc.D * EC + 0.00347*real_gyro);//PID公式计算输出量
+    turnpid_adc.out = (int)(turnpid_adc.P * turnpid_adc.err + turnpid_adc.D * EC + 0.01*real_gyro);//PID公式计算输出量
     turnpid_adc.last_err = turnpid_adc.err;//更新上一次偏差
 
     if (turnpid_adc.out > 0)//左转

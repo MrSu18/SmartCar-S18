@@ -287,7 +287,7 @@ void SubParameter(void)
                     tft180_show_float(100, menu.updown*10, turnpid_image.P, 4, 2);
                     break;
                 case 2:
-                    turnpid_adc.P-=5;
+                    turnpid_adc.P-=1;
                     tft180_show_float(100, menu.updown*10, turnpid_adc.P, 4, 2);
                     break;
                 case 3:
@@ -372,7 +372,7 @@ void AddParameter(void)
                     tft180_show_float(100, menu.updown*10, turnpid_image.P, 4, 2);
                     break;
                 case 2:
-                    turnpid_adc.P+=5;
+                    turnpid_adc.P+=1;
                     tft180_show_float(100, menu.updown*10, turnpid_adc.P, 4, 2);
                     break;
                 case 3:
@@ -388,7 +388,7 @@ void AddParameter(void)
                     tft180_show_float(100, menu.updown*10, gyropid.P, 2, 5);
                     break;
                 case 8:
-                    original_speed+=5;
+                    original_speed+=1;
                     tft180_show_int(100, menu.updown*14, original_speed, 3);
                     break;
             }

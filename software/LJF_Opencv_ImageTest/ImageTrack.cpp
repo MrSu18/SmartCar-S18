@@ -272,7 +272,6 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
         float dy = cy - center_line[aim_idx].Y + 0.2 * PIXEL_PER_METER;
         float dn = sqrt(dx * dx + dy * dy);
         //float error = -atan2f(dx, dy) * 180 / 3.14;
-
         // ´¿¸ú×ÙËã·¨(Ö»¿¼ÂÇÔ¶µã)
         pure_angle = -atanf(PIXEL_PER_METER * 2 * 0.2 * dx / dn / dn) / 3.14 * 180 / 2.4;
 //        pure_angle=-base_speed*PIXEL_PER_METER * 2 * dx / dn / dn ;
@@ -353,8 +352,7 @@ void FillingLine(char choose, myPoint_f point1, myPoint_f point2)
 ************************************************/
 void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
 {
-    double change_inverse_Mat[3][3]={{-0.360547899722757,-2.11222817050679,125.119194800980},{-0.0219325308988181,-3.06300742600148,165.389828731780},{-0.000322621439041103,-0.0223099279886759,0.999927776948517}};
-//    double change_inverse_Mat[3][3]={{-0.3489,-2.1373,124.7762},{-0.0120,-3.2388,172.5025},{-0.0002,-0.0227, 1.0000}};
+    double change_inverse_Mat[3][3]={{-0.436724513740008,-2.68225460836311,134.828057006092},{0,-3.82738237165181,170.456836310779},{0,-0.0285350419014467,0.999958150225339}};
     for(uint8 count=0;count<num;count++)
     {
         float i=in_line[count].X;float j=in_line[count].Y;

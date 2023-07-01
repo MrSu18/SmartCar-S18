@@ -69,7 +69,7 @@ void UseImageDataToUseMat()
     {
         for (int j = 0; j < USE_IMAGE_W; j++)
         {
-            img.at<uchar>(i, j)=*PerImg_ip[i][j];//二维数组数据传给img2的第i行第j列
+            img.at<uchar>(i, j)=use_image[i][j];//二维数组数据传给img2的第i行第j列
         }
     }
     //颜色通道转换 Gray-->BGR!!!!,否则后面会没颜色

@@ -18,12 +18,12 @@ uint8 l_growth_direction[8]={0},r_growth_direction[8]={0};//×óÓÒÏßÉú³¤·½Ïò,Êý×éÎ
 * @date  : 2023.4.22
 * @author: Áõ¿¥·«
 ************************************************/
-#define GRAY_DIF_THRES  10//»Ò¶È²î±ÈºÍËã·¨µÄãÐÖµ
+#define GRAY_DIF_THRES  20//»Ò¶È²î±ÈºÍËã·¨µÄãÐÖµ
 void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_seed)//Í¨¹ý²î±ÈºÍËã·¨ÏÈÕÒµ½×óÓÒÖÖ×Ó
 {
     int dif_gray_value;//»Ò¶ÈÖµ²î±ÈºÍµÄÖµ
     static uint8 column=USE_IMAGE_W / 2;
-    for(left_seed->Y = USE_IMAGE_H_MAX - half - 1;left_seed->Y > 100; left_seed->Y--)
+    for(left_seed->Y = USE_IMAGE_H_MAX - half - 1;left_seed->Y > 90; left_seed->Y--)
     {
         for (left_seed->X = column;left_seed->X > half; left_seed->X--)
         {
@@ -34,7 +34,7 @@ void SowSeedGray(uint8 half, char dif_thres, myPoint *left_seed, myPoint *right_
         }
         if(dif_gray_value>dif_thres) break;
     }
-    for(right_seed->Y = USE_IMAGE_H_MAX - half - 1;right_seed->Y > 100; right_seed->Y--)
+    for(right_seed->Y = USE_IMAGE_H_MAX - half - 1;right_seed->Y > 90; right_seed->Y--)
     {
         for (right_seed->X = column;right_seed->X < USE_IMAGE_W - half - 1; right_seed->X++)
         {

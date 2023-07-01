@@ -12,6 +12,7 @@
 #include "motor.h"
 #include "zf_device_tft180.h"
 #include "debug.h"
+#include "zf_driver_gpio.h"
 
 typedef enum CrossType
 {
@@ -50,7 +51,7 @@ uint8 CrossIdentify(void)
                     break;
                 else
                 {
-                    gpio_toggle_level(BEER);
+                    gpio_set_level(BEER,1);//¿ªÆô·äÃùÆ÷
                     cross_type = kCrossIn;
                 }
             }
@@ -98,6 +99,7 @@ uint8 CrossIdentify(void)
             {
                 encoder_dis_flag = 0;
                 cross_type = kCrossBegin;
+                gpio_set_level(BEER,0);//¹Ø±Õ·äÃùÆ÷
                 aim_distance = origin_aimdis;
                 return 1;
             }

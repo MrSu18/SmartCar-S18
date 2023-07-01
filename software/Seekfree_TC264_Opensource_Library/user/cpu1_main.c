@@ -79,7 +79,7 @@ void core1_main(void)
     {
         // 此处编写需要循环执行的代码
 
-        if(1)
+        if(mt9v03x_finish_flag)
         {
 #if 1
             memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
@@ -96,7 +96,7 @@ void core1_main(void)
             //赛道基础信息变量重置
             TrackBasicClear();
 #else
-            MotorSetPWM(3000,3200);
+            MotorSetPWM(3000,3300);
             system_delay_ms(3000);
             while(1)
             {

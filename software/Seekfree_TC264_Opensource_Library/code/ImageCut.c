@@ -12,6 +12,8 @@
 #include "ImageProcess.h"
 #include "Control.h"
 #include "motor.h"
+#include "debug.h"
+#include "zf_driver_gpio.h"
 
 typedef enum CutType
 {
@@ -49,7 +51,11 @@ uint8 CutIdentify(void)
                 if((corner_id_l > 0.45 / SAMPLE_DIST) || (corner_id_r > 0.45 / SAMPLE_DIST))
                     break;
                 else
+                {
+                    gpio_set_level(BEER,1);//¿ªÆô·äÃùÆ÷
                     cut_type = kCutIn;
+                }
+
             }
             break;
         }
@@ -97,13 +103,13 @@ uint8 CutIdentify(void)
         }
         case kCutMid:
         {
-            int over_count = 0;
-            for(int16 i = 0;i < MT9V03X_W;i++)
-            {
-                if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
-                        over_count++;
-            }
-            if(over_count >= MT9V03X_W-2 && dis > 450)
+//            int over_count = 0;
+//            for(int16 i = 0;i < MT9V03X_W;i++)
+//            {
+//                if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
+//                        over_count++;
+//            }
+            if(dis > 450)
             {
                 encoder_dis_flag = 0;
                 cut_flag=0;
@@ -115,12 +121,13 @@ uint8 CutIdentify(void)
         case kCutEnd:
         {
             //±ßÏßÖØÐÂ³öÏÖ£¬¶ÏÂ·×´Ì¬½áÊø£¬ÇÐ»»³ÉÍ¼ÏñÑ­¼£
-            if (l_line_count>80 && r_line_count>80)
+            if (l_line_count>80 && r_line_count>80 && (left_line[l_line_count-1].Y>70 || right_line[r_line_count-1].Y>70))
             {
                 last_track_mode = track_mode;
                 speed_type=kImageSpeed;
                 track_mode = kTrackImage;
                 cut_type = kCutBegin;//¸´Î»×´Ì¬»ú
+                gpio_set_level(BEER,0);//¹Ø±Õ·äÃùÆ÷
                 base_speed = original_speed;
                 now_flag = 0;
                 return 1;

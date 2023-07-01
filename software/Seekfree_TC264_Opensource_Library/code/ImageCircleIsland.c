@@ -11,13 +11,14 @@
 #include "motor.h"
 #include "icm20602.h"
 #include "Control.h"
+#include "zf_driver_gpio.h"
 
 //#define PI 3.1415926
 #define CIRCLE_SIDE_LARGE_ADC_THR 2000 //车到了环岛中下部时靠近环岛那边边ADC的值应该大于这个阈值
 #define CIRCLE_SIDE_SMALL_ADC_THR 1000 //车到了环岛中下部时另外一边ADC的值应该小于于这个阈值
 #define CIRCLE_MID_ADC_THR        3000 //车到了环岛中下部时，中间电感应该大于这个阈值
 #define CIRCLE_SPECIAL_ADC_THR    4095 //车子由于路径完全平行远离环岛，这时候双边电感会等于4095并且车在环岛中部需要及时入环
-#define CIRCLE_SPECIAL_ADC_THR2   3000 //车子由于路径完全平行远离环岛，这时候靠近环侧内八会大于3000并且车在环岛中部需要及时入环
+#define CIRCLE_SPECIAL_ADC_THR2   4000 //车子由于路径完全平行远离环岛，这时候靠近环侧内八会大于3000并且车在环岛中部需要及时入环
 
 /**************************************************左环岛***************************************************************/
 uint8 CircleIslandLStatus()//左边环岛状态状态机
@@ -31,12 +32,14 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
             {
                 speed_type=kNormalSpeed;//关闭速度决策
                 base_speed=60;//降速进环
+                gpio_set_level(BEER,1);
                 status=1;
             }
             else if(L>=CIRCLE_SPECIAL_ADC_THR && LM>CIRCLE_SPECIAL_ADC_THR2)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
             {
                 speed_type=kNormalSpeed;//关闭速度决策
                 base_speed=60;//降速进环
+                gpio_set_level(BEER,1);
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }
@@ -60,6 +63,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
             }
             break;
         case 3: //检测出环
+            track_type=kTrackRight;//在环内默认寻外圆
             if(CircleIslandLOutDetection()==1)
             {
                 track_type=kTrackRight;
@@ -83,6 +87,7 @@ uint8 CircleIslandLStatus()//左边环岛状态状态机
             {
                 base_speed=original_speed;//恢复速度
                 speed_type=kImageSpeed;//开启速度决策
+                gpio_set_level(BEER,0);
                 status=0;
                 return 1;
             }
@@ -238,9 +243,6 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
 * @date  : 2023.4.16
 * @author: 刘骏帆
 ************************************************/
-#define TRACK_RIGHTLINE_OUT_THR  (aim_distance/SAMPLE_DIST+5)  //寻左边线出环
-#define OUT_LISLAND_RIGHTADC_THR    80                         //左环出环最右边电感ADC阈值
-#define OUT_LISLAND_CENTREADC_THR   80                         //左环出环中间电感ADC阈值
 uint8 CircleIslandLOutFinish(void)//检测环岛是否结束
 {
     if(icm_angle_x_flag==1)
@@ -339,12 +341,14 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
             {
                 speed_type=kNormalSpeed;//关闭速度决策
                 base_speed=60;//降速进环
+                gpio_set_level(BEER,1);//开启蜂鸣器
                 status=1;
             }
             else if(R>=CIRCLE_SPECIAL_ADC_THR && RM>CIRCLE_SPECIAL_ADC_THR2)//避免由于车子是平行偏离环岛的特殊电磁情况，这时候车子大概在环岛中部已经需要入环了所以跳过状态1
             {
                 speed_type=kNormalSpeed;//关闭速度决策
                 base_speed=60;//降速进环
+                gpio_set_level(BEER,1);
                 StartIntegralAngle_X(320);//开启陀螺仪准备积分出环
                 status=2;
             }
@@ -369,6 +373,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
             }
             break;
         case 3: //检测出环
+            track_type=kTrackLeft;//在环内默认寻外圆
             if(CircleIslandROutDetection()==1)
             {
                 track_type=kTrackLeft;
@@ -392,6 +397,7 @@ uint8 CircleIslandRStatus()//右边环岛状态状态机
             {
                 base_speed=original_speed;//恢复速度
                 speed_type=kImageSpeed;//启动速度决策
+                gpio_set_level(BEER,0);
                 status=0;
                 return 1;
             }
