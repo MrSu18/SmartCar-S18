@@ -39,11 +39,11 @@
 #include "bluetooth.h"
 #include "adc.h"
 #include "motor.h"
-#include "Fuzzypid.h"
 #include "zf_device_tft180.h"
 #include "ImageSpecial.h"
 #include "ADRC.h"
 #include "Control.h"
+#include "pid.h"
 
 float icm_target_angle_z,icm_target_angle_x,icm_target_angle_y;   //陀螺仪*轴积分的目标角度
 uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //陀螺仪*轴积分达到目标角度 标志位  可作为环岛出环标志位 //待整合
@@ -75,25 +75,18 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)//转向环
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU60_CH1);
 
+    //测量当前角速度
+    real_gyro = GetICM20602Gyro_X();
+    real_gyro = 0.3 * real_gyro + 0.7*last_real_gyro;
+    last_real_gyro = real_gyro;
+    //转向环
     if(track_mode == kTrackImage)                                                   //当前为摄像头循迹
     {
-//        if(last_track_mode == kTrackADC)                                            //上一次循迹为电磁循迹则复位PID参数
-//        {
-//            last_track_mode = track_mode;
-//            PIDClear();
-//        }
-
-        FuzzyPID();                                                                 //摄像头方向环PID
+        PIDTurnImage();//摄像头方向环PID
     }
     else if(track_mode == kTrackADC)                                                //当前为电磁循迹
     {
-//        if(last_track_mode == kTrackImage)                                          //上一次循迹为摄像头循迹则复位PID参数
-//        {
-//            last_track_mode = track_mode;
-//            PIDClear();
-//        }
-
-        FuzzyPID_ADC();
+        PIDTurnADC();
     }
 //    if(speed_type==kImageSpeed)
 //    {
@@ -119,47 +112,11 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
     pit_clear_flag(CCU61_CH0);
 
 }
-int16 last_real_gyro = 0;//上一次角速度
+
 IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
 {
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU61_CH1);
-    //获得目标
-    static int last_gyropid_out=0;
-    float target_gyro = (float)(-turnpid_image.out);
-//    float target_gyro=5000;
-    //测量当前角速度
-    real_gyro = GetICM20602Gyro_X();
-    real_gyro = 0.3 * real_gyro + 0.7*last_real_gyro;
-    last_real_gyro = real_gyro;
-    //得到误差
-    gyropid.err = target_gyro - real_gyro;
-    gyropid.integer_err+=gyropid.err;
-    if(gyropid.integer_err>50000) gyropid.integer_err=50000;
-    else if(gyropid.integer_err<-50000) gyropid.integer_err=-50000;
-    //PID计算
-    gyropid.out = (int)(gyropid.P * gyropid.err + gyropid.I * gyropid.integer_err + gyropid.D * (gyropid.err-gyropid.last_err));
-    gyropid.last_err=gyropid.err;
-    Fhan_ADRC(&adrc_controller_gyro_out,(float)gyropid.out);
-    //输出限幅度
-    if(adrc_controller_gyro_out.x1>200) adrc_controller_gyro_out.x1=200;
-    else if(adrc_controller_gyro_out.x1<-200) adrc_controller_gyro_out.x1=-200;
-
-    gyro_flag = 1;
-
-//    if(track_mode == kTrackImage)
-//    {
-//        if(adrc_controller_gyro_out.x1>0)//左转
-//        {
-//            target_left = base_speed  - (int)(adrc_controller_gyro_out.x1);
-//            target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
-//        }
-//        else
-//        {
-//            target_left = base_speed  - (int)(adrc_controller_gyro_out.x1);
-//            target_right = base_speed + (int)(adrc_controller_gyro_out.x1);
-//        }
-//    }
 }
 // **************************** PIT中断函数 ****************************
 
@@ -172,18 +129,11 @@ IFX_INTERRUPT(exti_ch0_ch4_isr, 0, EXTI_CH0_CH4_INT_PRIO)
     {
         exti_flag_clear(ERU_CH0_REQ0_P15_4);
         wireless_module_uart_handler();                 // 无线模块统一回调函数
-
-
-
     }
 
     if(exti_flag_get(ERU_CH4_REQ13_P15_5))          // 通道4中断
     {
         exti_flag_clear(ERU_CH4_REQ13_P15_5);
-
-
-
-
     }
 }
 
@@ -193,18 +143,11 @@ IFX_INTERRUPT(exti_ch1_ch5_isr, 0, EXTI_CH1_CH5_INT_PRIO)
     if(exti_flag_get(ERU_CH1_REQ10_P14_3))          // 通道1中断
     {
         exti_flag_clear(ERU_CH1_REQ10_P14_3);
-
-
-
     }
 
     if(exti_flag_get(ERU_CH5_REQ1_P15_8))           // 通道5中断
     {
         exti_flag_clear(ERU_CH5_REQ1_P15_8);
-
-
-
-
     }
 }
 
@@ -233,10 +176,6 @@ IFX_INTERRUPT(exti_ch3_ch7_isr, 0, EXTI_CH3_CH7_INT_PRIO)
     if(exti_flag_get(ERU_CH7_REQ16_P15_1))          // 通道7中断
     {
         exti_flag_clear(ERU_CH7_REQ16_P15_1);
-
-
-
-
     }
 }
 // **************************** 外部中断函数 ****************************
@@ -273,9 +212,6 @@ IFX_INTERRUPT(uart0_er_isr, 0, UART0_ER_INT_PRIO)
 {
     interrupt_global_enable(0);                     // 开启中断嵌套
     IfxAsclin_Asc_isrError(&uart0_handle);
-
-
-
 }
 
 // 串口1默认连接到摄像头配置串口
@@ -283,10 +219,6 @@ IFX_INTERRUPT(uart1_tx_isr, 0, UART1_TX_INT_PRIO)
 {
     interrupt_global_enable(0);                     // 开启中断嵌套
     IfxAsclin_Asc_isrTransmit(&uart1_handle);
-
-
-
-
 }
 IFX_INTERRUPT(uart1_rx_isr, 0, UART1_RX_INT_PRIO)
 {
@@ -298,10 +230,6 @@ IFX_INTERRUPT(uart1_er_isr, 0, UART1_ER_INT_PRIO)
 {
     interrupt_global_enable(0);                     // 开启中断嵌套
     IfxAsclin_Asc_isrError(&uart1_handle);
-
-
-
-
 }
 
 

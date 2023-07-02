@@ -6,6 +6,9 @@
  */
 #include "pid.h"
 #include "ImageTrack.h"
+#include "ADRC.h"
+#include "motor.h"
+#include "adc.h"
 
 PID speedpid_left;                          //赛道左轮速度环PID
 PID speedpid_right;                         //赛道右轮速度环PID
@@ -19,6 +22,7 @@ FFC speedffc_right;
 //角速度环PID
 PID gyropid;
 int16 real_gyro = 0;//实时角速度
+int16 last_real_gyro = 0;//上一次角速度
 uint8 gyro_flag = 0;
 
 /***********************************************
@@ -65,76 +69,68 @@ int PIDSpeed(int encoder_speed,int target_speed,PID* pid)
 }
 /***********************************************
 * @brief : 摄像头转向环位置式PD控制
-* @param : pid:图像转向环的PID
-* @return: out:左右轮目标速度的变化量
-* @date  : 2023.3.2
-* @author: L
+* @param : void
+* @return: void
+* @date  : 2023.7.2
+* @author: L & 刘骏帆
 ************************************************/
-void PIDTurnImage(int* target_left,int* target_right,PID* pid)
+void PIDTurnImage(void)
 {
-    pid->err = image_bias;
+    turnpid_image.err = image_bias;//图像偏差
+    float EC = turnpid_image.err - turnpid_image.last_err;//偏差的变化量
+    Fhan_ADRC(&adrc_controller_errc, EC);//对EC进行TD滤波
 
-    pid->out = (int)(pid->P*pid->err+pid->D*(pid->err-pid->last_err));
-    pid->last_err = pid->err;                                               //保存上一次的值
+    if (turnpid_image.out > 0)//左转
+    {
+        turnpid_image.out = (int)(turnpid_image.P * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1 + gyropid.P*real_gyro);//PID公式计算输出量
+    }
+    else//右转
+    {
+        turnpid_image.out = (int)(12 * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1 + gyropid.P*real_gyro);//PID公式计算输出量
+    }
+        turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
 
-#if 0
-    //内减外加差速    转向PID P:13 D:0 速度:120 预瞄点:0.32 连续弯道会加速，暂时不采用这种
-    *target_left = base_speed - pid->out;
-    *target_right = base_speed + pid->out;
-#else
-    //内轮减速外轮不变
-    if(pid->out>0)//左转
+    //*********************双环串级时转向PID输出限幅***************
+   if(turnpid_image.out>200)   turnpid_image.out=200;
+   else if(turnpid_image.out<-200)   turnpid_image.out=-200;
+   //*********************************************
+
+    if (turnpid_image.out > 0)//左转
     {
-        *target_left = base_speed - pid->out;
-        *target_right = base_speed;
+        target_left = base_speed  - (int)turnpid_image.out;
+        target_right = base_speed + (int)(0.5*turnpid_image.out);
     }
-    else
+    else//右转
     {
-        *target_left = base_speed;
-        *target_right = base_speed + pid->out;
+        target_left = base_speed  - (int)(0.5*turnpid_image.out);
+        target_right = base_speed + (int)turnpid_image.out;
     }
-#endif
 }
 /***********************************************
 * @brief : 电磁转向环位置式PD控制
-* @param : pid:电磁转向环的PID
-* @return: out:左右轮目标速度的变化量
-* @date  : 2023.3.16
-* @author: L
-************************************************/
-void PIDTurnADC(int* target_left,int* target_right,PID* pid)
-{
-        //获取此时电磁偏差
-        ADCGetValue(adc_value);
-//        ChaBiHe(&pid->err,TRACK);
-
-        pid->out = (int)(pid->P*pid->err+pid->D*(pid->err-pid->last_err));
-        pid->last_err = pid->err;                                               //保存上一次的值
-
-        if(pid->out>0)//左转
-        {
-            *target_left = base_speed - pid->out;
-            *target_right = base_speed;
-        }
-        else
-        {
-            *target_left = base_speed;
-            *target_right = base_speed + pid->out;
-        }
-}
-/***********************************************
-* @brief : 对摄像头PID的相关参数复位
 * @param : void
 * @return: void
-* @date  : 2023.6.7
-* @author: L
+* @date  : 2023.7.2
+* @author: L & 刘骏帆
 ************************************************/
-void PIDClear(void)
+void PIDTurnADC(void)
 {
-    PIDInit(&speedpid_left,speedpid_left.P,speedpid_left.I,0);
-    PIDInit(&speedpid_right,speedpid_right.P,speedpid_right.I,0);
-    PIDInit(&turnpid_image,turnpid_image.P,turnpid_image.I,turnpid_image.D);
-    PIDInit(&turnpid_adc, turnpid_adc.P, turnpid_adc.I, turnpid_adc.D);
+    turnpid_adc.err = ChaBiHe(TRACK);//电磁偏差
+    float EC = turnpid_adc.err - turnpid_adc.last_err;//偏差变化量
+
+    turnpid_adc.out = (int)(turnpid_adc.P * turnpid_adc.err + turnpid_adc.D * EC + gyropid.P*real_gyro);//PID公式计算输出量
+    turnpid_adc.last_err = turnpid_adc.err;//更新上一次偏差
+
+    if (turnpid_adc.out > 0)//左转
+    {
+        target_left = base_speed - (int)turnpid_adc.out;
+        target_right = base_speed + (int)(0.3*turnpid_adc.out);
+    }
+    else//右转
+    {
+        target_left = base_speed - (int)(0.3*turnpid_adc.out);
+        target_right = base_speed + (int)turnpid_adc.out;
+    }
 }
 /***********************************************
 * @brief : 初始化前馈控制参数

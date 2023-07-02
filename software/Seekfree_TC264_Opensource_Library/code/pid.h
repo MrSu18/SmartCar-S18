@@ -47,13 +47,12 @@ extern FFC speedffc_left;
 extern FFC speedffc_right;
 extern float image_bias;
 extern int16 real_gyro;
-extern uint8 gyro_flag;
+extern int16 last_real_gyro;//上一次角速度
 
-void PIDInit(PID* pid,float P,float I,float D);                                     //初始化PID参数
-int PIDSpeed(int encoder_data,int target_data,PID* pid);                            //速度环PID计算
-void PIDTurnImage(int* target_left,int* target_right,PID* pid);                     //摄像头转向环PID
-void PIDTurnADC(int* target_left,int* target_right,PID* pid);                       //电磁转向环PID
-void PIDClear(void);                                                                //复位PID的参数
+void PIDInit(PID* pid,float P,float I,float D);                          //初始化PID参数
+int PIDSpeed(int encoder_data,int target_data,PID* pid);                 //速度环PID计算
+void PIDTurnImage(void);                                                //摄像头转向环PID
+void PIDTurnADC(void);                                                  //电磁转向环PID
 void FFCInit(FFC* ffc,float conf_1,float conf_2,float conf_3);
 int FeedForwardCtrl(int target,FFC* ffc);
 

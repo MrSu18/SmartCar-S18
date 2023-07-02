@@ -263,7 +263,6 @@ void KeyCtrl(void)
             encoder_clear_count(ENCODER_RIGHT);                                     //Çå¿ÕÓÒ±ß±àÂëÆ÷¼ÆÊý
             pit_enable(CCU60_CH0);
             pit_enable(CCU60_CH1);
-            pit_enable(CCU61_CH1);
             break;
         }
     }

@@ -45,7 +45,6 @@
 #include "icm20602.h"
 #include "Control.h"
 #include "debug.h"
-#include "FuzzyPID.h"
 #include "ADRC.h"
 #include "ImageProcess.h"
 
@@ -85,7 +84,6 @@ int core0_main(void)
     gpio_init(BEER,GPO,GPIO_LOW,GPO_PUSH_PULL);
     //初始化中断
     pit_ms_init(CCU60_CH0,2);pit_disable(CCU60_CH0);//速度环
-    pit_ms_init(CCU61_CH1,4);pit_disable(CCU61_CH1);//角速度环
     pit_ms_init(CCU60_CH1,8);pit_disable(CCU60_CH1);//方向环
     //陀螺仪中断2ms
     pit_ms_init(CCU61_CH0,2);pit_disable(CCU61_CH0);
@@ -96,12 +94,10 @@ int core0_main(void)
     //速度环PID初始化
     PIDInit(&speedpid_left,317.90,0.69,0);//185.8,0.50
     PIDInit(&speedpid_right,313.16,0.74,0);//164.8,0.45
-//    PIDInit(&speedpid_left,279.04,0.84,0);
-//    PIDInit(&speedpid_right,279.04,0.84,0);
     //转向环PID初始化
     PIDInit(&turnpid_image,13,0,0);//700,40有角速度只能跑50
     PIDInit(&turnpid_adc,9,0,4);
-    PIDInit(&gyropid,-0.01125,-0.00024,-0);
+    PIDInit(&gyropid,0.01,0,0);//角速度环的P用于转向环的微分项
     //前馈控制
     FFCInit(&speedffc_left,24255,716743,44.5);
     FFCInit(&speedffc_right,24409,628773,44.42);
