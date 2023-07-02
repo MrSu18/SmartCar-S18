@@ -105,7 +105,7 @@ uint8 GarageIdentify_R(void)
                 speed_type=kNormalSpeed;//降速
                 base_speed = 60;
                 track_type = kTrackLeft;//寻左线
-                if (corner_id < 18)//角点很近时切换下一个状态
+                if (corner_id < 28)//角点很近时切换下一个状态
                     garage_type_r = kGarage_End_r;
             }
             break;
@@ -122,7 +122,7 @@ uint8 GarageIdentify_R(void)
                 target_left = 0;
                 target_right = 0;
                 image_bias = 0;
-                system_delay_ms(200);
+                system_delay_ms(500);
                 pit_disable(CCU60_CH0);
                 pit_disable(CCU60_CH1);
                 MotorSetPWM(0,0);

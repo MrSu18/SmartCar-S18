@@ -119,16 +119,16 @@ int core0_main(void)
 //            gyro_flag = 0;
 //        }
         // 此处编写需要循环执行的代码
-       if(c0h0_isr_flag==1)
-       {
-           printf("%d,%d,%d,%d\r\n",speed_left,target_left,speed_right,target_right);
-           c0h0_isr_flag=0;
-       }
-//       if(c0h1_isr_flag==1)
+//       if(c0h0_isr_flag==1)
 //       {
-//           printf("%d,%f,%d,%d\r\n",s,image_bias,process_status_cnt,base_speed);
-//           c0h1_isr_flag=0;
+//           printf("%d,%d,%d,%d\r\n",speed_left,target_left,speed_right,target_right);
+//           c0h0_isr_flag=0;
 //       }
+       if(c0h1_isr_flag==1)
+       {
+           printf("%d,%f,%d,%f\r\n",base_speed,image_bias,process_status_cnt,adrc_speed_detection.x1);
+           c0h1_isr_flag=0;
+       }
         // 此处编写需要循环执行的代码
     }
 }

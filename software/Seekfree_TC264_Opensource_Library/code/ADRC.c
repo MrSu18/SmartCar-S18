@@ -4,6 +4,7 @@
 Fhan_Data adrc_controller_gyro_out;//角速度滤波
 Fhan_Data adrc_controller_err;//用于模糊PID偏差滤波
 Fhan_Data adrc_controller_errc;//用于模糊PID偏差变化量滤波
+Fhan_Data adrc_speed_detection;//用于速度决策的S进行滤波
 /***********************************************
 * @brief : 开根号
 * @param : float number 输入量
@@ -72,6 +73,10 @@ void ADRC_Init(void)
     adrc_controller_errc.r=1000000;
     adrc_controller_errc.h=0.008;
     adrc_controller_errc.N0=2;
+
+    adrc_speed_detection.r=1000000;
+    adrc_speed_detection.h=0.008;
+    adrc_speed_detection.N0=2;
 }
 
 /***********************************************

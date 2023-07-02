@@ -21,6 +21,7 @@ typedef struct
 
 extern Fhan_Data adrc_controller_gyro_out;//角速度环输出滤波
 extern Fhan_Data adrc_controller_errc;//用于模糊PID偏差变化量滤波
+extern Fhan_Data adrc_speed_detection;//用于速度决策的S进行滤波
 
 void ADRC_Init(void);
 void Fhan_ADRC(Fhan_Data *fhan_Input,float expect_ADRC);

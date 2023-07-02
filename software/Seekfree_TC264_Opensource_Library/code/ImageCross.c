@@ -196,9 +196,10 @@ uint8 CrossIdentify(void)
             image_bias = GetAnchorPointBias(aim_distance, per_r_line_count, center_line_r);//右线偏移出中线
             track_type = kTrackSpecial;//元素外不再求偏差
         }
-        //偏差限幅
-        if(image_bias > 4) image_bias = 4;
-        else if(image_bias < -4) image_bias = -4;
+        //偏差后处理
+        image_bias=0.5*image_bias;
+        if(image_bias > 8) image_bias = 8;
+        else if(image_bias < -8) image_bias = -8;
     }
     return 0;
 }

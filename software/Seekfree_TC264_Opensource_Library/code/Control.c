@@ -11,6 +11,8 @@
 #include "zf_common_headfile.h"
 #include "icm20602.h"
 #include "motor.h"
+#include "ADRC.h"
+#include "ImageProcess.h"
 
 //不同速度对应的控制参数
 ControlParam contro_param[10]={0};
@@ -50,29 +52,38 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     }
     //速度计算
     s=0;
-    int i=3;
+    int i=3,inflection_flag=0;
     uint16 vt=0;
     for(;i<len;i++)
     {
         float temp=fabs(angle[i]);
         if(temp>(10. / 180. * 3.14))
         {
+            if((70. / 180. * 3.14)<temp && temp<(120. / 180. * 3.14) && i<50)//判断拐点
+            {
+                inflection_flag=1;
+            }
             break;
         }
     }
-    s=i-(int)(0.3/SAMPLE_DIST);//得到位移
-    //长直道特殊处理
-    if(s>=220)//参数由实际数据采集得到
+    if(inflection_flag==1 && process_status[process_status_cnt]==3 && (image_bias<3 && image_bias>-3))//十字有拐点并且偏差很小的时候
     {
-        vt=90;
+        vt=75;
     }
     else
     {
-//        vt=original_speed;
-        vt= (uint16)sqrt(original_speed*original_speed+2*a*s);
-        if(vt>80) vt=80;//限幅
-        if(vt<60) vt=60;
+        s=i-(int)(0.3/SAMPLE_DIST);//得到位移
+        Fhan_ADRC(&adrc_speed_detection, (float)s);
+        vt= (uint16)sqrt(original_speed*original_speed+2*a*adrc_speed_detection.x1);
+        //这里加权考虑偏差
+        if(-4<image_bias && image_bias<4)
+        {
+            vt+=5;
+        }
     }
+    //速度限幅
+    if(vt>90) vt=90;
+    else if(vt<60) vt=60;
     return vt;
 }
 
