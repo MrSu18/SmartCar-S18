@@ -11,6 +11,8 @@
 #include "icm20602.h"
 #include "Control.h"
 #include "string.h"
+#include "debug.h"
+#include "zf_driver_gpio.h"
 
 typedef enum BarrierType
 {
@@ -26,8 +28,8 @@ BarrierType barrier_type = kBarrierBegin;
 * @param : void
 * @return: 0:不是路障
 *          1:识别到路障
-* @date  : 2023.5.19
-* @author: L & 刘骏帆
+* @date  : 2023.7.5
+* @author: 刘骏帆
 ************************************************/
 uint8 BarrierIdentify(void)
 {
@@ -38,24 +40,26 @@ uint8 BarrierIdentify(void)
             dl1a_get_distance();
             if(dl1a_distance_mm <= 1000)
             {
+                gpio_set_level(BEER, 1);
                 speed_type=kNormalSpeed;
-                StartIntegralAngle_X(50);
+                base_speed=60;
+                StartIntegralAngle_X(40);
                 barrier_type = kBarrierNear;
             }
             break;
         }
         case kBarrierNear://开始陀螺仪积分拐出去
         {
-            image_bias = 6;//舵轮转向是5
+            image_bias = 5;//舵轮转向是5
             while(!icm_angle_x_flag);
             image_bias=0;
-            StartIntegralAngle_X(70);
+            StartIntegralAngle_X(60);
             barrier_type = kBarrierOut;
             break;
         }
         case kBarrierOut://陀螺仪积分拐回来
         {
-            image_bias = -6;//舵轮转向是-5
+            image_bias = -5;//舵轮转向是-5
             while(!icm_angle_x_flag);
             image_bias=0;
             barrier_type = kBarrierEnd;
@@ -65,6 +69,7 @@ uint8 BarrierIdentify(void)
         {
             if (l_line_count>10)//有左边线的时候即回到赛道
             {
+                gpio_set_level(BEER, 0);
                 barrier_type = kBarrierBegin;
                 return 1;
             }

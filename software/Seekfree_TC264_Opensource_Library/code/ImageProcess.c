@@ -22,7 +22,7 @@
 
 //内轮纯减速可以跑72环岛70环内加速到75，入库前降速到65，转向P为12D为1
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入左库 8:入右库 9:库直行 'S':停车 'E':编码器测距1m 'G':陀螺仪积分70°*/
-uint8 process_status[30]={3,3,3,3,5,2,1,3,4,5,3,3,3,7,'S'};//总状态机元素执行顺序数组
+uint8 process_status[30]={3,3,3,3,5,2,1,3,4,6,5,3,3,3,7,'S'};//总状态机元素执行顺序数组
 uint16 process_speed[30]={60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60};//上面数组对应的元素路段的速度
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
@@ -272,8 +272,8 @@ void OutProtect(void)
         if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
                 over_count++;
     }
-
-    if(over_count>=MT9V03X_W-2 && adc_sum < 10)                             //如果全部超过阈值则停止
+    //如果全部超过阈值则停止
+    if(over_count>=MT9V03X_W-2 && adc_sum < 10 && process_status[process_status_cnt]!=6)//路障的时候关闭出界保护
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);

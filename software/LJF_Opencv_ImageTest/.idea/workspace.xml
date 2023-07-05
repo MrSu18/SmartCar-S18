@@ -20,13 +20,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="增加入库之后，插入屏幕，五轴按键按下确认键能够查看单片机运行时间，便于比赛的时候查看自己的速度有没有快">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="重新写坡道函数，使用陀螺仪出状态">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Seekfree_TC264_Opensource_Library.launch" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/Seekfree_TC264_Opensource_Library.launch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -330,14 +327,8 @@
       <workItem from="1688300408971" duration="1837000" />
       <workItem from="1688311867252" duration="52000" />
       <workItem from="1688557287239" duration="119000" />
-      <workItem from="1688564474789" duration="2000" />
-    </task>
-    <task id="LOCAL-00012" summary="把边线数组长度设定为图像高度">
-      <created>1674207008940</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1674207008940</updated>
+      <workItem from="1688564474789" duration="80000" />
+      <workItem from="1688571385426" duration="1000" />
     </task>
     <task id="LOCAL-00013" summary="封装了一下是否选择去畸变">
       <created>1674207033523</created>
@@ -675,7 +666,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688557360866</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="重新写坡道函数，使用陀螺仪出状态">
+      <created>1688564530371</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1688564530372</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -693,7 +691,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="采图" />
     <MESSAGE value="修改环岛入环条件，160入环不了，只能跑150" />
     <MESSAGE value="debug文件但是不能用" />
     <MESSAGE value="将播种函数修改为sobel" />
@@ -718,7 +715,8 @@
     <MESSAGE value="删除模糊PID和角速度环等不用的东西" />
     <MESSAGE value="增加速度决策，但是感觉加的还不行，有一些地方还是没加起来速度" />
     <MESSAGE value="增加入库之后，插入屏幕，五轴按键按下确认键能够查看单片机运行时间，便于比赛的时候查看自己的速度有没有快" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加入库之后，插入屏幕，五轴按键按下确认键能够查看单片机运行时间，便于比赛的时候查看自己的速度有没有快" />
+    <MESSAGE value="重新写坡道函数，使用陀螺仪出状态" />
+    <option name="LAST_COMMIT_MESSAGE" value="重新写坡道函数，使用陀螺仪出状态" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
