@@ -108,8 +108,8 @@ int core0_main(void)
 //    ADCScan();
     while (TRUE)
     {
-//        int16 a = GetICM20602Gyro_Y();
-//        tft180_show_int(0, 0, a, 5);
+//        float a = GetICM20602Angle_Y(0);
+//        tft180_show_float(0, 0, a, 3,3);
 //        dl1a_get_distance();
 //        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);

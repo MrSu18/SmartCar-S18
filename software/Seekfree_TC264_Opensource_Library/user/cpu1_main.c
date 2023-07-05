@@ -91,12 +91,13 @@ void core1_main(void)
 //            sobel(mt9v03x_image,binary_image);
             //显示灰度图
             ShowImage();
-            gpio_toggle_level(P20_8);
             //显示边线
             ShowLine();
             //赛道基础信息变量重置
             TrackBasicClear();
 #else
+//            memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
+//            LCDShowPerImage();
 //            MotorSetPWM(3000,3300);
 //            system_delay_ms(3000);
 //            while(1)
@@ -105,6 +106,7 @@ void core1_main(void)
 //            }
 //            seekfree_sendimg_03x(UART_2, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
+            gpio_toggle_level(P20_8);//核心板上的led显示图像CPU1没有卡死
             mt9v03x_finish_flag=0;
         }
 
