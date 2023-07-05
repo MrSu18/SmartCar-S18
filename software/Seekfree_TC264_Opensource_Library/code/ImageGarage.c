@@ -66,17 +66,19 @@ uint8 GarageIdentify_L(void)
         {
             image_bias = 10;
             while(!icm_angle_x_flag);
-
+            //陀螺仪积分结束就刹车
+            base_speed = 0;
+            target_left = 0;
+            target_right = 0;
+            image_bias = 0;
+            system_delay_ms(500);
+            pit_disable(CCU60_CH0);
+            pit_disable(CCU60_CH1);
+            MotorSetPWM(0,0);
+            //屏幕查看时间
             while(1)
             {
-                base_speed = 0;
-                target_left = 0;
-                target_right = 0;
-                image_bias = 0;
-                system_delay_ms(500);
-                pit_disable(CCU60_CH0);
-                pit_disable(CCU60_CH1);
-                MotorSetPWM(0,0);
+                WakeUpScreen();
             }
             break;
         }
@@ -115,17 +117,19 @@ uint8 GarageIdentify_R(void)
             image_bias = -10;
             while(!icm_angle_x_flag);
             turnpid_image.last_err = 0;
-
+            //入库时间到了刹车
+            base_speed = 0;
+            target_left = 0;
+            target_right = 0;
+            image_bias = 0;
+            system_delay_ms(500);
+            pit_disable(CCU60_CH0);
+            pit_disable(CCU60_CH1);
+            MotorSetPWM(0,0);
+            //屏幕查看时间
             while(1)
             {
-                base_speed = 0;
-                target_left = 0;
-                target_right = 0;
-                image_bias = 0;
-                system_delay_ms(500);
-                pit_disable(CCU60_CH0);
-                pit_disable(CCU60_CH1);
-                MotorSetPWM(0,0);
+                WakeUpScreen();
             }
             break;
         }

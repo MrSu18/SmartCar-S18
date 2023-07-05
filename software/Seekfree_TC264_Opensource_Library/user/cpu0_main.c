@@ -47,6 +47,7 @@
 #include "debug.h"
 #include "ADRC.h"
 #include "ImageProcess.h"
+#include "isr.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -113,11 +114,6 @@ int core0_main(void)
 //        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
 //        ChaBiHe(TRACK);
-//        if(gyro_flag == 1)
-//        {
-//            printf("%f,%d,%d,%f\n",image_bias,5000,real_gyro,gyropid.integer_err);
-//            gyro_flag = 0;
-//        }
         // 此处编写需要循环执行的代码
 //       if(c0h0_isr_flag==1)
 //       {

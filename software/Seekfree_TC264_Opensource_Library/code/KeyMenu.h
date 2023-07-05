@@ -49,5 +49,6 @@ void AddParameter(void);                        //参数加
 void EnterKey(uint8* exit_flag);                //确认键实现对应功能
 void WriteToFlash(void);                        //将需要修改的值写入Flash
 void ReadFromFlash(void);                       //从Flash获取值到对应的变量
+void WakeUpScreen(void);                        //唤醒屏幕查看跑车时间
 
 #endif /* CODE_KEYMENU_H_ */

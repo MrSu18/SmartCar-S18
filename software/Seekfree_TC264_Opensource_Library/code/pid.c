@@ -23,7 +23,6 @@ FFC speedffc_right;
 PID gyropid;
 int16 real_gyro = 0;//实时角速度
 int16 last_real_gyro = 0;//上一次角速度
-uint8 gyro_flag = 0;
 
 /***********************************************
 * @brief : 初始化PID参数

@@ -13,6 +13,7 @@
 #include "Control.h"
 #include "zf_driver_flash.h"
 #include "adc.h"
+#include "isr.h"
 
 static Menu menu={0,0,0};
 static int index=0;
@@ -632,5 +633,29 @@ void ReadFromFlash(void)
             process_speed[i-13]=flash_union_buffer[i+15].uint16_type;
         }
         flash_buffer_clear();//清空缓冲区
+    }
+}
+
+
+/***********************************************
+* @brief : 按下按键唤醒屏幕查看跑车时间，为了应对赛场上调试不给用计时器
+* @param : void
+* @return: void
+* @date  : 2023.7.5
+* @author: 刘骏帆
+************************************************/
+void WakeUpScreen(void)
+{
+    float time=0;
+    while(1)
+    {
+        if(KeyGet()==KEY_ENTER)
+        {
+            tft180_init();
+            tft180_clear();
+            time=elapsed_time*2/1000;//换算成s
+            tft180_show_float(0, 0,time,3,2);
+            tft180_show_char(30, 0, 's');
+        }
     }
 }
