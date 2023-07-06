@@ -14,6 +14,7 @@
 #include "debug.h"
 #include "zf_driver_gpio.h"
 #include "adc.h"
+#include "math.h"
 
 #define BARRIER_COMEBACK_ADC_THR 200 //车回到赛道时的ADC阈值
 
@@ -29,11 +30,14 @@ typedef enum BarrierType
 }BarrierType;//障碍状态机状态结构体
 
 BarrierType barrier_type = kBarrierBegin;
+
+uint8 BarrierImageVerify(void);//路障图像二次验证
+
 /***********************************************
 * @brief : 识别路障的状态机
 * @param : void
-* @return: 0:不是路障
-*          1:识别到路障
+* @return: 0:路障状态还没结束
+*          1:路障状态已经结束
 * @date  : 2023.7.5
 * @author: 刘骏帆
 ************************************************/
@@ -48,14 +52,14 @@ uint8 BarrierIdentify(void)
             {
                 barrier_flag=1;
                 //图像二次判断
-//                if(left_line[l_line_count-1].X>right_line[r_line_count-1].X)
-//                {
+                if(BarrierImageVerify()==1)
+                {
                     gpio_set_level(BEER, 1);
                     speed_type=kNormalSpeed;
                     base_speed=60;
                     StartIntegralAngle_X(40);
                     barrier_type = kBarrierNear;
-//                }
+                }
             }
             break;
         }
@@ -114,3 +118,37 @@ uint8 BarrierIdentify(void)
     return 0;
 }
 
+/***********************************************
+* @brief : 使用角点二次验证是否是路障
+* @param : void
+* @return: 0:不是路障
+*          1:识别到路障
+* @date  : 2023.7.5
+* @author: 刘骏帆
+************************************************/
+uint8 BarrierImageVerify(void)
+{
+    uint8 len=0;
+    float* angle;
+    //哪条边线比较长就去遍历哪条边线
+    if(l_line_count>r_line_count)
+    {
+        len=l_line_count;
+        angle=l_angle_1;
+    }
+    else
+    {
+        len=r_line_count;
+        angle=r_angle_1;
+    }
+    //遍历边线查看是否有角点
+    for(uint8 i=0;i<len;i++)
+    {
+        float temp=fabs(angle[i]);
+        if(temp>(70. / 180. * 3.14) && temp<(120. / 180. * 3.14))
+        {
+            return 1;
+        }
+    }
+    return 0;
+}

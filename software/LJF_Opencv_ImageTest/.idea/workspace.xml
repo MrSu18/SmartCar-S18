@@ -20,10 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="调路障，路障现在拐回来比较及时了，解决了，路障还再拐出去提前出状态的BUG">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="路障回到赛道的状态使用最右边的电磁进行判断，避免摄像头的误判">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -330,14 +329,8 @@
       <workItem from="1688564474789" duration="80000" />
       <workItem from="1688571385426" duration="60000" />
       <workItem from="1688630209979" duration="4792000" />
-      <workItem from="1688643856880" duration="1000" />
-    </task>
-    <task id="LOCAL-00015" summary="增加边线处理函数注释，理解局部曲率计算函数，极大值抑制后，能够较好的找出直角拐点，但是还会存在一定程度的误判">
-      <created>1676731094083</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1676731094083</updated>
+      <workItem from="1688643856880" duration="425000" />
+      <workItem from="1688646125552" duration="1000" />
     </task>
     <task id="LOCAL-00016" summary="把师弟的摄像头参数输入，现在工程的测试图片是140摄像头，曝光太低，二值化出问题，打算试试灰度扫线算法">
       <created>1676968090901</created>
@@ -675,7 +668,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688641363940</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="路障回到赛道的状态使用最右边的电磁进行判断，避免摄像头的误判">
+      <created>1688644257934</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1688644257935</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -693,7 +693,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="将播种函数修改为sobel" />
     <MESSAGE value="播种修改为差比和播种，从110行到100行" />
     <MESSAGE value="环岛重写了入环判断，和种子列继承有一定作用，起码入环失败不会直着冲出去" />
     <MESSAGE value="入环重新扫线限制扫线的长度" />
@@ -718,7 +717,8 @@
     <MESSAGE value="重新写坡道函数，使用陀螺仪出状态" />
     <MESSAGE value="重新调路障，不是很稳，但是可以跑完" />
     <MESSAGE value="调路障，路障现在拐回来比较及时了，解决了，路障还再拐出去提前出状态的BUG" />
-    <option name="LAST_COMMIT_MESSAGE" value="调路障，路障现在拐回来比较及时了，解决了，路障还再拐出去提前出状态的BUG" />
+    <MESSAGE value="路障回到赛道的状态使用最右边的电磁进行判断，避免摄像头的误判" />
+    <option name="LAST_COMMIT_MESSAGE" value="路障回到赛道的状态使用最右边的电磁进行判断，避免摄像头的误判" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
