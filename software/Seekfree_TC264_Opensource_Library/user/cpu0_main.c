@@ -49,6 +49,8 @@
 #include "ImageProcess.h"
 #include "isr.h"
 
+extern uint8 barrier_flag;
+
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
 // 然后在右侧的窗口中找到C/C++ Compiler->Optimization->Optimization level处设置优化等级
@@ -122,7 +124,7 @@ int core0_main(void)
 //       }
        if(c0h1_isr_flag==1)
        {
-           printf("%d,%f,%d,%f\r\n",base_speed,image_bias,process_status_cnt,adrc_speed_detection.x1);
+           printf("%d,%d,%d,%d\r\n",barrier_flag,L,M,R);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码

@@ -20,14 +20,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="重新调路障，不是很稳，但是可以跑完">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="调路障，路障现在拐回来比较及时了，解决了，路障还再拐出去提前出状态的BUG">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -333,14 +329,8 @@
       <workItem from="1688557287239" duration="119000" />
       <workItem from="1688564474789" duration="80000" />
       <workItem from="1688571385426" duration="60000" />
-      <workItem from="1688630209979" duration="4166000" />
-    </task>
-    <task id="LOCAL-00014" summary="修改扫线，现在边界不涂黑也可以了">
-      <created>1675409349358</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1675409349358</updated>
+      <workItem from="1688630209979" duration="4792000" />
+      <workItem from="1688643856880" duration="1000" />
     </task>
     <task id="LOCAL-00015" summary="增加边线处理函数注释，理解局部曲率计算函数，极大值抑制后，能够较好的找出直角拐点，但是还会存在一定程度的误判">
       <created>1676731094083</created>
@@ -678,7 +668,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688571422621</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="调路障，路障现在拐回来比较及时了，解决了，路障还再拐出去提前出状态的BUG">
+      <created>1688641363940</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1688641363940</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -696,7 +693,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="debug文件但是不能用" />
     <MESSAGE value="将播种函数修改为sobel" />
     <MESSAGE value="播种修改为差比和播种，从110行到100行" />
     <MESSAGE value="环岛重写了入环判断，和种子列继承有一定作用，起码入环失败不会直着冲出去" />
@@ -721,7 +717,8 @@
     <MESSAGE value="增加入库之后，插入屏幕，五轴按键按下确认键能够查看单片机运行时间，便于比赛的时候查看自己的速度有没有快" />
     <MESSAGE value="重新写坡道函数，使用陀螺仪出状态" />
     <MESSAGE value="重新调路障，不是很稳，但是可以跑完" />
-    <option name="LAST_COMMIT_MESSAGE" value="重新调路障，不是很稳，但是可以跑完" />
+    <MESSAGE value="调路障，路障现在拐回来比较及时了，解决了，路障还再拐出去提前出状态的BUG" />
+    <option name="LAST_COMMIT_MESSAGE" value="调路障，路障现在拐回来比较及时了，解决了，路障还再拐出去提前出状态的BUG" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
