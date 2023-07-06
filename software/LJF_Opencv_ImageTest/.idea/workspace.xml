@@ -20,10 +20,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="重新写坡道函数，使用陀螺仪出状态">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="重新调路障，不是很稳，但是可以跑完">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -328,14 +332,8 @@
       <workItem from="1688311867252" duration="52000" />
       <workItem from="1688557287239" duration="119000" />
       <workItem from="1688564474789" duration="80000" />
-      <workItem from="1688571385426" duration="1000" />
-    </task>
-    <task id="LOCAL-00013" summary="封装了一下是否选择去畸变">
-      <created>1674207033523</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1674207033523</updated>
+      <workItem from="1688571385426" duration="60000" />
+      <workItem from="1688630209979" duration="4166000" />
     </task>
     <task id="LOCAL-00014" summary="修改扫线，现在边界不涂黑也可以了">
       <created>1675409349358</created>
@@ -673,7 +671,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688564530372</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="重新调路障，不是很稳，但是可以跑完">
+      <created>1688571422620</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1688571422621</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -691,7 +696,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="修改环岛入环条件，160入环不了，只能跑150" />
     <MESSAGE value="debug文件但是不能用" />
     <MESSAGE value="将播种函数修改为sobel" />
     <MESSAGE value="播种修改为差比和播种，从110行到100行" />
@@ -716,7 +720,8 @@
     <MESSAGE value="增加速度决策，但是感觉加的还不行，有一些地方还是没加起来速度" />
     <MESSAGE value="增加入库之后，插入屏幕，五轴按键按下确认键能够查看单片机运行时间，便于比赛的时候查看自己的速度有没有快" />
     <MESSAGE value="重新写坡道函数，使用陀螺仪出状态" />
-    <option name="LAST_COMMIT_MESSAGE" value="重新写坡道函数，使用陀螺仪出状态" />
+    <MESSAGE value="重新调路障，不是很稳，但是可以跑完" />
+    <option name="LAST_COMMIT_MESSAGE" value="重新调路障，不是很稳，但是可以跑完" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

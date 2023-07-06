@@ -13,12 +13,16 @@
 #include "string.h"
 #include "debug.h"
 #include "zf_driver_gpio.h"
+#include "adc.h"
+
+#define BARRIER_COMEBACK_ADC_THR 1000 //车回到赛道时的ADC阈值
 
 typedef enum BarrierType
 {
     kBarrierBegin = 0,
     kBarrierNear,
     kBarrierOut,
+    kBarrierIn,
     kBarrierEnd,
 }BarrierType;//障碍状态机状态结构体
 
@@ -35,43 +39,45 @@ uint8 BarrierIdentify(void)
 {
     switch(barrier_type)
     {
-        case kBarrierBegin://tof检测到路障
+        case kBarrierBegin://检测路障
         {
             dl1a_get_distance();
-            if(dl1a_distance_mm <= 1000)
+            if(dl1a_distance_mm <= 900)//tof检测到路障
             {
-                gpio_set_level(BEER, 1);
-                speed_type=kNormalSpeed;
-                base_speed=60;
-                StartIntegralAngle_X(40);
-                barrier_type = kBarrierNear;
+                //图像二次判断
+//                if(left_line[l_line_count-1].X>right_line[r_line_count-1].X)
+//                {
+                    gpio_set_level(BEER, 1);
+                    speed_type=kNormalSpeed;
+                    base_speed=60;
+                    StartIntegralAngle_X(40);
+                    barrier_type = kBarrierNear;
+//                }
             }
             break;
         }
         case kBarrierNear://开始陀螺仪积分拐出去
         {
+            track_type=kTrackSpecial;//给特定偏差
             image_bias = 5;//舵轮转向是5
             while(!icm_angle_x_flag);
-            image_bias=0;
-            StartIntegralAngle_X(60);
+            StartIntegralAngle_X(70);
             barrier_type = kBarrierOut;
             break;
         }
         case kBarrierOut://陀螺仪积分拐回来
         {
-            image_bias = -5;//舵轮转向是-5
+            track_type=kTrackSpecial;//给特定偏差
+            image_bias = -7;//舵轮转向是-5
             while(!icm_angle_x_flag);
-            image_bias=0;
-            barrier_type = kBarrierEnd;
+            barrier_type = kBarrierIn;
             break;
         }
-        case kBarrierEnd://图像控制是否回到赛道
+        case kBarrierIn://判断是否拐回赛道
         {
-            if (l_line_count>10)//有左边线的时候即回到赛道
+            if (l_line_count>10)//电磁有值即回到赛道
             {
-                gpio_set_level(BEER, 0);
-                barrier_type = kBarrierBegin;
-                return 1;
+                barrier_type = kBarrierEnd;
             }
             //没有回到赛道的时候只有右边线没有左边线,那就把右边线给左边线，单边寻左边线
             else if(r_line_count>10 && l_line_count<3)
@@ -83,6 +89,16 @@ uint8 BarrierIdentify(void)
                 ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
                 track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
                 track_type=kTrackLeft;
+            }
+            break;
+        }
+        case kBarrierEnd://判断是否该出状态
+        {
+            if(r_line_count>10)
+            {
+                gpio_set_level(BEER, 0);
+                barrier_type = kBarrierBegin;
+                return 1;
             }
             break;
         }
