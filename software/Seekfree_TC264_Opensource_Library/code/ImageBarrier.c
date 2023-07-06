@@ -16,7 +16,7 @@
 #include "adc.h"
 #include "math.h"
 
-#define BARRIER_COMEBACK_ADC_THR 200 //车回到赛道时的ADC阈值
+#define BARRIER_COMEBACK_ADC_THR 150 //车回到赛道时的ADC阈值
 
 uint8 barrier_flag=0;
 
@@ -48,7 +48,7 @@ uint8 BarrierIdentify(void)
         case kBarrierBegin://检测路障
         {
             dl1a_get_distance();
-            if(dl1a_distance_mm <= 900)//tof检测到路障
+            if(dl1a_distance_mm <= 1000)//tof检测到路障
             {
                 barrier_flag=1;
                 //图像二次判断
