@@ -22,6 +22,8 @@
   <component name="ChangeListManager">
     <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="增加路障tof检测之后图像角点的二次验证，避免比赛的时候由于挡板误判">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageBasic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageBasic.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -334,6 +336,7 @@
       <workItem from="1688646946591" duration="10000" />
       <workItem from="1688651281453" duration="4000" />
       <workItem from="1688655582418" duration="486000" />
+      <workItem from="1688731792070" duration="2313000" />
     </task>
     <task id="LOCAL-00017" summary="上传边线处理函数，但是还没验证，有点问题">
       <created>1677502297463</created>

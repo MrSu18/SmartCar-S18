@@ -48,7 +48,7 @@ uint8 BarrierIdentify(void)
         case kBarrierBegin://检测路障
         {
             dl1a_get_distance();
-            if(dl1a_distance_mm <= 1000)//tof检测到路障
+            if(dl1a_distance_mm <= 1000 && dl1a_finsh_flag==1)//tof检测到路障
             {
                 barrier_flag=1;
                 //图像二次判断
@@ -85,6 +85,9 @@ uint8 BarrierIdentify(void)
         }
         case kBarrierIn://判断是否拐回赛道
         {
+            track_type=kTrackSpecial;//在这里面求偏差
+            float last_image_bias=image_bias;
+            if(last_image_bias>0) last_image_bias=-7;//不让他左拐
             if (R>BARRIER_COMEBACK_ADC_THR)//电磁有值即回到赛道
             {
                 barrier_flag=4;
@@ -99,19 +102,35 @@ uint8 BarrierIdentify(void)
                 BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
                 ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
                 track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
-                track_type=kTrackLeft;
+                image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
             }
+            if(image_bias>0) image_bias=last_image_bias;//不让他左拐
             break;
         }
         case kBarrierEnd://判断是否该出状态
         {
-            if(r_line_count>10)
+            track_type=kTrackSpecial;//在这里面求偏差
+            float last_image_bias=image_bias;
+            if(last_image_bias>0) last_image_bias=-7;//不让他左拐
+            if(r_line_count>10 && l_line_count>20)
             {
                 barrier_flag=5;
                 gpio_set_level(BEER, 0);
                 barrier_type = kBarrierBegin;
                 return 1;
             }
+            //没有回到赛道的时候只有右边线没有左边线,那就把右边线给左边线，单边寻左边线
+            else if(r_line_count>10 && l_line_count<20)
+            {
+                memcpy(left_line,right_line,r_line_count);
+                l_line_count=r_line_count;
+                EdgeLinePerspective(left_line,l_line_count,per_left_line);
+                BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
+                ResamplePoints(f_left_line, l_line_count, f_left_line1, &per_l_line_count, SAMPLE_DIST*PIXEL_PER_METER);
+                track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+                image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
+            }
+            if(image_bias>0) image_bias=last_image_bias;//不让他左拐
             break;
         }
         default:break;

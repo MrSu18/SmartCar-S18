@@ -166,7 +166,7 @@ void EdgeDetection(void)
     //左边线生长
     while(l_line_count<EDGELINE_LENGTH)
     {
-        LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
+//        LCDDrawPoint(left_seed.Y,left_seed.X,0,255,0);
         uint8 seed_grow_result=EightAreasSeedGrownGray(&left_seed, 'l', &left_seed_num);
         if (seed_grow_result==1)
         {
@@ -179,7 +179,7 @@ void EdgeDetection(void)
     //右边线生长
     while(r_line_count<EDGELINE_LENGTH)
     {
-        LCDDrawPoint(right_seed.Y,right_seed.X,255,0,0);
+//        LCDDrawPoint(right_seed.Y,right_seed.X,255,0,0);
         uint8 seed_grow_result= EightAreasSeedGrownGray(&right_seed, 'r', &right_seed_num);
         if (seed_grow_result==1)
         {
