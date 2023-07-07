@@ -13,6 +13,7 @@
 #include "icm20602.h"
 #include "adc.h"
 #include "debug.h"
+#include "ImageProcess.h"
 
 /***********************************************
 * @brief : 坡道状态机
@@ -45,7 +46,7 @@ uint8 SlopeIdentify(void)
             {
                 gpio_set_level(BEER,1);//开启蜂鸣器
                 speed_type=kNormalSpeed;//关闭速度决策
-                base_speed = 58;//降速
+                base_speed = process_property[process_status_cnt].min_speed;//降速
                 track_mode = kTrackADC;//切换成电磁循迹
                 StartIntegralAngle_Y(-30);//检测下坡
                 status=2;//跳转状态到检测下坡状态

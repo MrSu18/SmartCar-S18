@@ -663,7 +663,7 @@ void WakeUpScreen(void)
         {
             tft180_init();
             tft180_clear();
-            time=elapsed_time*2/1000;//ªªÀ„≥…s
+            time=(float)(elapsed_time*2/1000);//ªªÀ„≥…s
             tft180_show_float(0, 0,time,3,2);
             tft180_show_char(30, 0, 's');
         }

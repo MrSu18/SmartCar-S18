@@ -20,10 +20,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="修改路障，避免没回到赛道就因为图像的错乱使得车子沿着赛道外边缘循迹">
-      <change beforePath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/日记/刘骏帆.md" afterDir="false" />
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="调路障重大突破的日记">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -337,14 +345,9 @@
       <workItem from="1688655582418" duration="486000" />
       <workItem from="1688731792070" duration="3517000" />
       <workItem from="1688736141097" duration="375000" />
-      <workItem from="1688736795506" duration="1000" />
-    </task>
-    <task id="LOCAL-00018" summary="加入求偏差处理，测试图用的是师弟的140镜头那份">
-      <created>1677651480026</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1677651480026</updated>
+      <workItem from="1688736795506" duration="1723000" />
+      <workItem from="1688740472913" duration="7000" />
+      <workItem from="1688740686390" duration="1334000" />
     </task>
     <task id="LOCAL-00019" summary="封装图像处理的总体函数，删去第一次等距采样，变量变成全局变量，参数变成宏定义">
       <created>1678101380709</created>
@@ -682,7 +685,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688734852976</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="调路障重大突破的日记">
+      <created>1688736810805</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1688736810806</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -700,7 +710,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="入环重新扫线限制扫线的长度" />
     <MESSAGE value="同步我的opencv工程" />
     <MESSAGE value="摄像头角度改变修改透视矩阵，差速改回内减外不变，修改出库" />
     <MESSAGE value="右环岛函数" />
@@ -725,7 +734,8 @@
     <MESSAGE value="路障回到赛道的状态使用最右边的电磁进行判断，避免摄像头的误判" />
     <MESSAGE value="增加路障tof检测之后图像角点的二次验证，避免比赛的时候由于挡板误判" />
     <MESSAGE value="修改路障，避免没回到赛道就因为图像的错乱使得车子沿着赛道外边缘循迹" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改路障，避免没回到赛道就因为图像的错乱使得车子沿着赛道外边缘循迹" />
+    <MESSAGE value="调路障重大突破的日记" />
+    <option name="LAST_COMMIT_MESSAGE" value="调路障重大突破的日记" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

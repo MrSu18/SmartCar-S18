@@ -104,6 +104,8 @@ int core0_main(void)
     //前馈控制
     FFCInit(&speedffc_left,24255,716743,44.5);
     FFCInit(&speedffc_right,24409,628773,44.42);
+    //状态机初始化
+    ProcessPropertyInit();
 
     // 此处编写用户代码 例如外设初始化代码等
     cpu_wait_event_ready();         //等待所有核心初始化完毕
@@ -124,7 +126,7 @@ int core0_main(void)
 //       }
        if(c0h1_isr_flag==1)
        {
-           printf("%d,%d,%d\r\n",barrier_flag,dl1a_distance_mm,R);
+           printf("%d,%d\r\n",gyropid.out,turnpid_image.out);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码

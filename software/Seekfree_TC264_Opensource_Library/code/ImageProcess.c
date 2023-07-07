@@ -22,8 +22,9 @@
 
 //内轮纯减速可以跑72环岛70环内加速到75，入库前降速到65，转向P为12D为1
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入左库 8:入右库 9:库直行 'S':停车 'E':编码器测距1m 'G':陀螺仪积分70°*/
-uint8 process_status[30]={3,3,3,3,5,2,1,3,4,6,5,3,3,3,7,'S'};//总状态机元素执行顺序数组
-uint16 process_speed[30]={60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60};//上面数组对应的元素路段的速度
+uint8 process_status[PROCESS_LENGTH]={3,3,3,3,5,2,1,'S',3,4,6,5,3,3,3,7,'S'};//总状态机元素执行顺序数组
+uint16 process_speed[PROCESS_LENGTH]={60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60};//上面数组对应的元素路段的速度
+ProcessProperty process_property[PROCESS_LENGTH];
 uint8 process_status_cnt=0;//元素状态数组的计数器
 
 /***********************************************
@@ -278,5 +279,45 @@ void OutProtect(void)
         pit_disable(CCU60_CH1);
         pit_disable(CCU61_CH1);
         MotorSetPWM(0,0);
+    }
+}
+
+/***********************************************
+* @brief : 状态机变量属性初始
+* @param : void
+* @return: void
+* @date  : 2023.3.1
+* @author: L & 刘骏帆
+************************************************/
+void ProcessPropertyInit(void)
+{
+    for(uint8 i=0;i<PROCESS_LENGTH;i++)
+    {
+        if(process_status[i]==7 || process_status[i]==8)//入库
+        {
+            process_property[i].min_speed=60;
+        }
+        switch(process_status[i])
+        {
+            case 1://左环岛
+                process_property[i].max_speed=65;
+                process_property[i].min_speed=60;
+                break;
+            case 2://右环岛
+                process_property[i].max_speed=60;
+                process_property[i].min_speed=60;
+                break;
+            case 4://断路
+                process_property[i].max_speed=60;
+                process_property[i].min_speed=62;
+                break;
+            case 5://坡道
+                process_property[i].min_speed=60;
+                break;
+            case 6://路障
+                process_property[i].min_speed=60;
+                break;
+            default:break;
+        }
     }
 }

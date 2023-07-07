@@ -56,7 +56,11 @@ int main()
 //        PrintEdgeLine(center_line_l,0,per_l_line_count,0,0,255);//左边跟踪出来的中线
 //        PrintEdgeLine(center_line_r,0,per_r_line_count,255,100,0);//循迹的中线
         PrintEdgeLine(center_line,0,Limit(round(aim_distance / SAMPLE_DIST), 0, c_line_count),255,0,0);//循迹的中线
-        printf("%f,%d\r\n",image_bias,base_speed);
+//        printf("%f,%d\r\n",image_bias,base_speed);
+        printf("种子生长方向:\r\n");
+        printf("%d,%d,%d\r\n",r_growth_direction[1],r_growth_direction[2],r_growth_direction[3]);
+        printf("%d,S,%d\r\n",r_growth_direction[0],r_growth_direction[4]);
+        printf("%d,%d,%d\r\n",r_growth_direction[7],r_growth_direction[6],r_growth_direction[5]);
         //显示图像
         imshow("use_img", use_mat);
         waitKey(0);//等待键盘按下
