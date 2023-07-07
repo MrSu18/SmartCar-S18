@@ -38,7 +38,7 @@ uint8 BarrierImageVerify(void);//路障图像二次验证
 * @param : void
 * @return: 0:路障状态还没结束
 *          1:路障状态已经结束
-* @date  : 2023.7.5
+* @date  : 2023.7.7
 * @author: 刘骏帆
 ************************************************/
 uint8 BarrierIdentify(void)
