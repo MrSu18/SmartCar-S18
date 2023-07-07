@@ -209,7 +209,8 @@ void ShowFunction(uint8 page)
             tft180_show_string(0, 0, "  show per_image");
             tft180_show_string(0, 10,"  show gray_image");
             tft180_show_string(0, 20,"  show adc_value");
-            tft180_show_string(0, 30,"  exit");
+            tft180_show_string(0, 30,"  show tof_value");
+            tft180_show_string(0, 40,"  exit");
             break;
         case 10:
             tft180_show_string(0, 0, "  show peredge_line");
@@ -536,6 +537,15 @@ void EnterKey(uint8* exit_flag)
             }
         }
         else if(menu.updown==3)
+        {
+            tft180_clear();
+            while(1)
+            {
+                dl1a_get_distance();
+                tft180_show_int(98, 0, dl1a_distance_mm,5);
+            }
+        }
+        else if(menu.updown==4)
         {
             menu.page=0;
             menu.updown=0;

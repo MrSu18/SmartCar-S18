@@ -68,7 +68,7 @@ uint8 BarrierIdentify(void)
             track_type=kTrackSpecial;//给特定偏差
             image_bias = 5;//舵轮转向是5
             while(!icm_angle_x_flag);
-            StartIntegralAngle_X(70);
+            StartIntegralAngle_X(60);
             barrier_flag=2;
             barrier_type = kBarrierOut;
             break;
@@ -78,6 +78,7 @@ uint8 BarrierIdentify(void)
             track_type=kTrackSpecial;//给特定偏差
             image_bias = -7;//舵轮转向是-5
             while(!icm_angle_x_flag);
+            image_bias=0;
             barrier_flag=3;
             barrier_type = kBarrierIn;
             break;

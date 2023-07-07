@@ -124,7 +124,7 @@ int core0_main(void)
 //       }
        if(c0h1_isr_flag==1)
        {
-           printf("%d,%d,%d,%d\r\n",barrier_flag,L,M,R);
+           printf("%d,%d,%d\r\n",barrier_flag,dl1a_distance_mm,R);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码

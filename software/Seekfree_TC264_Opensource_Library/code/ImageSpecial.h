@@ -23,11 +23,12 @@ uint8 GarageIdentify_Straight(void);//识别到车库不入库的状态机
 //断路函数
 uint8 CutIdentify(void);//断路状态机
 uint8 CutFindCorner(int16* corner_id_l,int16* coener_id_r);//断路找角点
+void CutChangeLine(int16 corner_id_l,int16 corner_id_r,uint8 corner_find);//切换巡线
 extern uint8 cut_flag;
 //十字路口函数
 uint8 CrossIdentify(void);//十字状态机
 uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r);//十字找角点
-void EdgeDetection_Cross(uint8 lr_flag);
+void EdgeDetection_Cross(uint8 lr_flag);//十字重新扫线
 extern float origin_aimdis;
 extern uint8 now_flag;
 //左环岛元素函数

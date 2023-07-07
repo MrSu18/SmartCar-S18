@@ -20,7 +20,8 @@ typedef enum CutType
     kCutBegin=0,
     kCutIn,
     kCutMid,
-    kCutEnd,
+    kCutEndL,
+    kCutEndR,
 }CutType;//断路状态机状态结构体
 
 CutType cut_type = kCutBegin;
@@ -43,7 +44,7 @@ uint8 CutIdentify(void)
     }
     switch(cut_type)
     {
-        case kCutBegin:
+        case kCutBegin://找角点，当有一个角点在边线45个点以内时为识别到断路，切换下一个状态
         {
             int16 corner_id_l = 0,corner_id_r = 0;
             if(CutFindCorner(&corner_id_l, &corner_id_r)!=0)
@@ -59,76 +60,58 @@ uint8 CutIdentify(void)
             }
             break;
         }
-        case kCutIn:
+        case kCutIn://当角点在40个点以内时，切换成电磁循迹，到下一个状态
         {
-            int16 corner_id_l = 0,corner_id_r = 0;
+            int16 corner_id_l = 0,corner_id_r = 0;//角点在边线第几个点
             uint8 corner_find = CutFindCorner(&corner_id_l, &corner_id_r);//找角点
+
             if(corner_find != 0)
             {
-                //有右角点，没有左角点
-                if(corner_find == 2)
-                {
-                    per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
-                    track_type = kTrackRight;
-                    aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
-                }
-                //有左角点，没有右角点
-                else if(corner_find == 1)
-                {
-                    per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
-                    track_type = kTrackLeft;
-                    aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
-                }
-                //两边都有角点，哪边边线长就寻那条边线
-                else if(corner_find == 3)
-                {
-                    per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
-                    track_type = kTrackLeft;
-                    aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
-                }
+                CutChangeLine(corner_find, corner_id_r, corner_find);
                 //切换状态，改成电磁循迹
                 if(corner_id_l < 40 && corner_id_r < 40)
                 {
-                    cut_flag=1;
-                    speed_type=kNormalSpeed;
-                    base_speed = 60;
-                    last_track_mode = track_mode;
-                    track_mode = kTrackADC;
+                    cut_flag=1;//电磁偏差限幅
+                    speed_type=kNormalSpeed;//关闭速度决策
+                    base_speed = 60;//降速入断路
+                    track_mode = kTrackADC;//切换电磁循迹
                     cut_type = kCutMid;
-                    aim_distance = origin_aimdis;
+                    aim_distance = origin_aimdis;//恢复预瞄点
                     encoder_dis_flag = 1;
                 }
             }
+            else
+                aim_distance = origin_aimdis;
             break;
         }
-        case kCutMid:
+        case kCutMid://等跑到断路里面，加一点速
         {
-//            int over_count = 0;
-//            for(int16 i = 0;i < MT9V03X_W;i++)
-//            {
-//                if(mt9v03x_image[106][i] <= OUT_THRESHOLD)
-//                        over_count++;
-//            }
             if(dis > 450)
             {
-                encoder_dis_flag = 0;
-                cut_flag=0;
-                base_speed = 62;
-                cut_type = kCutEnd;
+                encoder_dis_flag = 0;//关闭编码器积分
+                cut_flag=0;//取消电磁偏差限幅
+                base_speed = 62;//环内加一点速
+                cut_type = kCutEndR;
             }
             break;
         }
-        case kCutEnd:
+        case kCutEndR://先判断右边线是否存在
+        {
+            //右边线出现，切换下一个状态
+            if(r_line_count > 80 && right_line[r_line_count - 1].Y < 70)
+                cut_type = kCutEndL;//切换下一个状态
+            break;
+        }
+        case kCutEndL://先判断右边线是否存在
         {
             //边线重新出现，断路状态结束，切换成图像循迹
-            if (l_line_count>80 && r_line_count>80 && (left_line[l_line_count-1].Y<70 || right_line[r_line_count-1].Y<70))
+            if (l_line_count > 80 && left_line[l_line_count - 1].Y < 70)
             {
-                last_track_mode = track_mode;
-                speed_type=kImageSpeed;
-                track_mode = kTrackImage;
+                speed_type=kImageSpeed;//开启速度决策
+                track_mode = kTrackImage;//切换图像循迹
                 cut_type = kCutBegin;//复位状态机
                 gpio_set_level(BEER,0);//关闭蜂鸣器
-                base_speed = original_speed;
+                base_speed = original_speed;//恢复速度
                 now_flag = 0;
                 return 1;
             }
@@ -142,7 +125,7 @@ uint8 CutIdentify(void)
 * @brief : 断路寻找角点
 * @param : corner_id[2]:存取角点在边线的第几个点
 * @return: corner_count:角点的数量
-* @date  : 2023.4.21
+* @date  : 2023.7.7
 * @author: L
 ************************************************/
 uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
@@ -186,4 +169,51 @@ uint8 CutFindCorner(int16* corner_id_l,int16* corner_id_r)
     //没找到角点
     return 0;
 }
+/***********************************************
+* @brief : 断路切换左右边线判断
+* @param : corner_id_l:左角点的位置
+*          corner_id_r:右角点的位置
+*          corner_find:找到的是哪个角点
+* @return: void
+* @date  : 2023.7.7
+* @author: L
+************************************************/
+void CutChangeLine(int16 corner_id_l,int16 corner_id_r,uint8 corner_find)
+{
+    //有右角点，没有左角点
+    if(corner_find == 2)
+    {
+        per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
+        track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        track_type = kTrackRight;
+        aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
+    }
+    //有左角点，没有右角点
+    else if(corner_find == 1)
+    {
+        per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
+        track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        track_type = kTrackLeft;
+        aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
+    }
+    //两边都有角点，哪边边线长就寻那条边线
+    else if(corner_find == 3)
+    {
+        per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
+        track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
+        track_type = kTrackLeft;
+        aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
+    }
 
+    if(aim_distance > origin_aimdis) aim_distance = origin_aimdis;//如果预瞄点比原来的远，使用原来的
+
+    //有一边的边线不正常则寻另外一条边线
+    if(r_growth_direction[7] > 25 && (r_growth_direction[0] + r_growth_direction[1]) > 20)
+    {
+        track_type = kTrackLeft;
+    }
+    else if(l_growth_direction[7] > 25 && (l_growth_direction[0] + l_growth_direction[1]) > 20)
+    {
+        track_type = kTrackRight;
+    }
+}
