@@ -56,7 +56,6 @@ uint8 CutIdentify(void)
                     gpio_set_level(BEER,1);//开启蜂鸣器
                     cut_type = kCutIn;
                 }
-
             }
             break;
         }
@@ -98,14 +97,14 @@ uint8 CutIdentify(void)
         case kCutEndR://先判断右边线是否存在
         {
             //右边线出现，切换下一个状态
-            if(r_line_count > 80 && right_line[r_line_count - 1].Y < 70)
+            if((r_line_count > 80 && right_line[r_line_count - 1].Y < 70) || CutIgnoreNoise('r'))
                 cut_type = kCutEndL;//切换下一个状态
             break;
         }
         case kCutEndL://先判断右边线是否存在
         {
             //边线重新出现，断路状态结束，切换成图像循迹
-            if (l_line_count > 80 && left_line[l_line_count - 1].Y < 70)
+            if ((l_line_count > 80 && left_line[l_line_count - 1].Y < 70) || CutIgnoreNoise('l'))
             {
                 speed_type=kImageSpeed;//开启速度决策
                 track_mode = kTrackImage;//切换图像循迹
@@ -216,4 +215,47 @@ void CutChangeLine(int16 corner_id_l,int16 corner_id_r,uint8 corner_find)
     {
         track_type = kTrackRight;
     }
+}
+/***********************************************
+* @brief : 在断路里面忽略边线为一圈的噪点的影响,避免提前出状态
+* @param : lr_flag:选择是判断左边线还是右边线
+* @return: 1:边线正确
+*          0:边线异常
+* @date  : 2023.7.8
+* @author: L
+************************************************/
+uint8 CutIgnoreNoise(uint8 lr_flag)
+{
+    int grown_up = 0,grown_down = 0,grown_left = 0,grown_right = 0;//存种子生长方向
+    switch(lr_flag)
+    {
+        case 'r':
+        {
+            grown_up = r_growth_direction[1] + r_growth_direction[2] + r_growth_direction[3];//往上走的种子
+            grown_down = r_growth_direction[5] + r_growth_direction[6] + r_growth_direction[7];//往下走的种子
+            grown_left = r_growth_direction[1] + r_growth_direction[0] + r_growth_direction[7];//往左走的种子
+            grown_right = r_growth_direction[3] + r_growth_direction[4] + r_growth_direction[5];//往右走的种子
+            //如果向上和向下生长的种子数都大于30，而且向左和向右生长的种子数差不多则认为是异常边线
+            if(grown_up > 30 && grown_down > 30 && (abs(grown_right - grown_left) < 6))
+                return 0;
+            else
+                return 1;
+            break;
+        }
+        case 'l':
+        {
+            grown_up = l_growth_direction[1] + l_growth_direction[2] + l_growth_direction[3];//往上走的种子
+            grown_down = l_growth_direction[5] + l_growth_direction[6] + l_growth_direction[7];//往下走的种子
+            grown_left = l_growth_direction[1] + l_growth_direction[0] + l_growth_direction[7];//往左走的种子
+            grown_right = l_growth_direction[3] + l_growth_direction[4] + l_growth_direction[5];//往右走的种子
+            //如果向上和向下生长的种子数都大于30，而且向左和向右生长的种子数差不多则认为是异常边线
+            if(grown_up > 30 && grown_down > 30 && (abs(grown_right - grown_left) < 6))
+                return 0;
+            else
+                return 1;
+            break;
+        }
+        default:break;
+    }
+    return 0;
 }
