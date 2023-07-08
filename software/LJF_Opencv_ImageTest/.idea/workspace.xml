@@ -20,15 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="增加状态机速度属性，修改环岛条件，多加了条件不然大环进不去，好奇怪">
-      <change beforePath="$PROJECT_DIR$/../../docs/财务/第十八届智能车队内开销.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/财务/第十八届智能车队内开销.xlsx" afterDir="false" />
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="环岛条件修改，删除二值化相关代码和变量">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageCircleIsland.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageCircleIsland.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageProcess.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageProcess.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageSpecial.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageSpecial.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCircleIsland.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
@@ -349,14 +343,8 @@
       <workItem from="1688736795506" duration="1723000" />
       <workItem from="1688740472913" duration="7000" />
       <workItem from="1688740686390" duration="1367000" />
-      <workItem from="1688806594356" duration="1738000" />
-    </task>
-    <task id="LOCAL-00020" summary="封装循迹的左右线切换">
-      <created>1678627282210</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1678627282210</updated>
+      <workItem from="1688806594356" duration="1802000" />
+      <workItem from="1688827387290" duration="1000" />
     </task>
     <task id="LOCAL-00021" summary="ADS工程进行相应修改">
       <created>1678627653418</created>
@@ -694,7 +682,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688743380119</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="环岛条件修改，删除二值化相关代码和变量">
+      <created>1688818240233</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1688818240233</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -712,7 +707,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="摄像头角度改变修改透视矩阵，差速改回内减外不变，修改出库" />
     <MESSAGE value="右环岛函数" />
     <MESSAGE value="环岛避免车身太靠偏离环岛那边而检测不到角点，还有避免车身太靠外，而你想让他寻左右但是左右却没线则在求偏差进行判断并且重新扫线" />
     <MESSAGE value="环岛判断出环结束中删去多余的操作" />
@@ -737,7 +731,8 @@
     <MESSAGE value="修改路障，避免没回到赛道就因为图像的错乱使得车子沿着赛道外边缘循迹" />
     <MESSAGE value="调路障重大突破的日记" />
     <MESSAGE value="增加状态机速度属性，修改环岛条件，多加了条件不然大环进不去，好奇怪" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加状态机速度属性，修改环岛条件，多加了条件不然大环进不去，好奇怪" />
+    <MESSAGE value="环岛条件修改，删除二值化相关代码和变量" />
+    <option name="LAST_COMMIT_MESSAGE" value="环岛条件修改，删除二值化相关代码和变量" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

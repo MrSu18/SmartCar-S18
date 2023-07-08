@@ -83,7 +83,7 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     }
     //速度限幅
     if(vt>90) vt=90;
-    else if(vt<60) vt=60;
+    else if(vt<65) vt=65;
     return vt;
 }
 
@@ -115,7 +115,9 @@ void OutGarage(void)
 ************************************************/
 void ControlParmInit(void)
 {
+    //右转的P是12
     contro_param[0].speed=60;contro_param[0].turn_kp=13;contro_param[0].turn_kd=0;contro_param[0].turn_gkd=0.01;contro_param[0].aim=0.32;
-    contro_param[1].speed=62;contro_param[1].turn_kp=13;contro_param[1].turn_kd=1;contro_param[1].turn_gkd=0.01;contro_param[1].aim=0.34;
-    contro_param[2].speed=64;contro_param[2].turn_kp=15;contro_param[2].turn_kd=3;contro_param[2].turn_gkd=0.01;contro_param[2].aim=0.4;
+    contro_param[1].speed=62;contro_param[1].turn_kp=13;contro_param[1].turn_kd=0;contro_param[1].turn_gkd=0.01;contro_param[1].aim=0.32;
+    contro_param[2].speed=64;contro_param[2].turn_kp=13;contro_param[2].turn_kd=0;contro_param[2].turn_gkd=0.01;contro_param[2].aim=0.32;
+    contro_param[3].speed=66;contro_param[3].turn_kp=13;contro_param[3].turn_kd=5;contro_param[3].turn_gkd=0.01;contro_param[3].aim=0.32;
 }

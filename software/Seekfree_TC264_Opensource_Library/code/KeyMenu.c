@@ -300,7 +300,7 @@ void SubParameter(void)
                     tft180_show_float(100, menu.updown*10, speedpid_right.P, 4, 2);
                     break;
                 case 5:
-                    gyropid.P+=0.01;
+                    gyropid.P-=0.0005;
                     tft180_show_float(100, menu.updown*10, gyropid.P, 2, 5);
                     break;
                 case 8:
@@ -329,7 +329,7 @@ void SubParameter(void)
                     tft180_show_float(100, menu.updown*10, speedpid_right.I, 4, 2);
                     break;
                 case 5:
-                    gyropid.I+=0.0001;
+                    gyropid.I-=0.0001;
                     tft180_show_float(100, menu.updown*10, gyropid.I, 2, 5);
                     break;
                 case 8:
@@ -385,7 +385,7 @@ void AddParameter(void)
                     tft180_show_float(100, menu.updown*10, speedpid_right.P, 4, 2);
                     break;
                 case 5:
-                    gyropid.P-=0.01;
+                    gyropid.P+=0.0005;
                     tft180_show_float(100, menu.updown*10, gyropid.P, 2, 5);
                     break;
                 case 8:
