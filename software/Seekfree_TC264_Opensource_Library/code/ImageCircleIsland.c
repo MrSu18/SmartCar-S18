@@ -18,8 +18,8 @@
 #define CIRCLE_SIDE_LARGE_ADC_THR 2000 //车到了环岛中下部时靠近环岛那边边ADC的值应该大于这个阈值
 #define CIRCLE_SIDE_SMALL_ADC_THR 1000 //车到了环岛中下部时另外一边ADC的值应该小于于这个阈值
 #define CIRCLE_MID_ADC_THR        3000 //车到了环岛中下部时，中间电感应该大于这个阈值
-#define CIRCLE_SPECIAL_ADC_THR    4095 //车子由于路径完全平行远离环岛，这时候双边电感会等于4095并且车在环岛中部需要及时入环
-#define CIRCLE_SPECIAL_ADC_THR2   3000 //车子由于路径完全平行远离环岛，这时候靠近环侧内八会大于3000并且车在环岛中部需要及时入环
+#define CIRCLE_SPECIAL_ADC_THR    4020 //车子由于路径完全平行远离环岛，这时候双边电感会等于4095并且车在环岛中部需要及时入环
+#define CIRCLE_SPECIAL_ADC_THR2   2000 //车子由于路径完全平行远离环岛，这时候靠近环侧内八会大于3000并且车在环岛中部需要及时入环
 
 /**************************************************左环岛***************************************************************/
 uint8 CircleIslandLStatus()//左边环岛状态状态机

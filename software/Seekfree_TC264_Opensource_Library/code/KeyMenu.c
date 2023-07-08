@@ -659,11 +659,13 @@ void WakeUpScreen(void)
     float time=0;
     while(1)
     {
+        pit_disable(CCU60_CH0);//关闭电机中断
+        pit_disable(CCU60_CH1);
         if(KeyGet()==KEY_ENTER)
         {
             tft180_init();
             tft180_clear();
-            time=(float)(elapsed_time*2/1000);//换算成s
+            time=(float)(elapsed_time*2)/1000;//换算成s
             tft180_show_float(0, 0,time,3,2);
             tft180_show_char(30, 0, 's');
         }

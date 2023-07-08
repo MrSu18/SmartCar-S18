@@ -7,8 +7,8 @@
 
 #include "main.h"
 
-void LeftLineDetectionAgain(void);
-void RightLineDetectionAgain(void);
+void LeftLineDetectionAgain(char choose);
+void RightLineDetectionAgain(char choose);
 //×ó»·µºÔªËØº¯Êý
 uint8 CircleIslandLStatus(void);//×ó»·µº×´Ì¬×´Ì¬»ú
 uint8 CircleIslandLDetection(void);//¼ì²â×ó»·µº

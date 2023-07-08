@@ -123,44 +123,40 @@ uint8 CircleIslandLInDetection(void)
 * @date  : 2023.4.15
 * @author: 刘骏帆
 ************************************************/
-#define JUDGE_IN_EDD_THR    10//判断入环状态结束的右边线两端X坐标的差值阈值
+#define JUDGE_IN_EDD_THR    40//判断入环状态结束的右边线两端X坐标的差值阈值
 uint8 CircleIslandLIn()//入环状态
 {
-    //进入此状态之后就一直开启左边线的特殊扫线（指导扫到赛道边界才开始记录数组）
-    //同样的，如果第一个点的Y在图像很上方，说明这时候的车是右斜的，则进入特殊状态
-
     //这里是判断是否跳出入环状态
-    uint8 len=0;
-    if (per_r_line_count>EDGELINE_LENGTH) len=EDGELINE_LENGTH;
-    else                                  len=per_r_line_count;
+    int len=0;
+    if (per_r_line_count>EDGELINE_LENGTH-10) len=EDGELINE_LENGTH-10;
+    else                                     len=per_r_line_count;
     if(f_right_line1[0].X-f_right_line1[len-1].X>JUDGE_IN_EDD_THR && right_line[r_line_count-1].X<80)
     {
         return 1;//入环结束
     }
     //对入环状态进行偏差处理
-    if(l_line_count<2)//左边90行都丢线，说明只能沿着外边进去
+    if(l_line_count<5)//左边90行都丢线，说明只能沿着外边进去
     {
         //重新扫线
-        LeftLineDetectionAgain();
+        LeftLineDetectionAgain('n');
         //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
-        if(left_line[0].X<left_line[l_line_count-1].X)//左边看不到圆环内环，只能看到圆环外环
+        if(left_line[0].X<left_line[l_line_count-1].X && left_line[0].Y<100)//左边看不到圆环内环，只能看到圆环外环
         {
-            uint8 y=0;//
+            uint8 y=0;//flag是连续变量
             r_line_count=1;
-            for (uint8 i=0;i<l_line_count;i++)
+            for (uint8 i=0;i<l_line_count-2;i++)
             {
                 if(left_line[l_line_count-1-i].Y>=y)
                 {
                     y=left_line[l_line_count-1-i].Y;
                 }
-                else if (left_line[l_line_count-1-i].Y>60)//因为灰度扫线在远处会乱打转把线搞乱，所以这里先临时这么用，后续要修改
+                else if (left_line[l_line_count-1-i].X>left_line[l_line_count-2-i].X)//在y开始回升的情况下下一个点的x还是在这个点的左边
                 {
                     right_line[r_line_count]=left_line[l_line_count-i];
                     r_line_count++;
                 }
             }
-
-//            l_line_count=per_l_line_count=0;
+//            l_line_count=0;per_l_line_count=0;
             per_r_line_count=PER_EDGELINE_LENGTH;
             //对边线进行透视
             EdgeLinePerspective(right_line,r_line_count,per_right_line);
@@ -169,6 +165,7 @@ uint8 CircleIslandLIn()//入环状态
             track_rightline(f_right_line1, per_r_line_count, center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
             track_type=kTrackRight;
         }
+        else track_type=kTrackLeft;//如果没丢线寻左边线的圆环进去
     }
     else
     {
@@ -189,7 +186,7 @@ uint8 CircleIslandLOutDetection()//左环岛出环状态
     if (r_line_count<2)//右边一开始就丢线
     {
         //重新扫线
-        RightLineDetectionAgain();
+        RightLineDetectionAgain('n');
         per_r_line_count=PER_EDGELINE_LENGTH;
         EdgeLinePerspective(right_line,r_line_count,per_right_line);
         BlurPoints(per_right_line, r_line_count, f_right_line, LINE_BLUR_KERNEL);
@@ -335,7 +332,7 @@ uint8 CircleIslandLEnd(void)
     else//这里对偏差进行处理，避免由于出环的时候就左拐太多，使得右边线不存在而继承上一次的偏差
     {
         //重新扫线
-        RightLineDetectionAgain();
+        RightLineDetectionAgain('n');
         EdgeLinePerspective(right_line,r_line_count,per_right_line);
         if(per_r_line_count>aim_distance/SAMPLE_DIST)
         {
@@ -366,7 +363,7 @@ uint8 CircleIslandROutDetection()//左环岛出环状态
     if (l_line_count<2)//右边一开始就丢线
     {
         //左边重新扫线
-        LeftLineDetectionAgain();
+        LeftLineDetectionAgain('n');
         per_l_line_count=PER_EDGELINE_LENGTH;
         EdgeLinePerspective(left_line,l_line_count,per_left_line);
         BlurPoints(per_left_line, l_line_count, f_left_line, LINE_BLUR_KERNEL);
@@ -516,7 +513,7 @@ uint8 CircleIslandRIn()//入环状态
     if(r_line_count<2)//左边90行都丢线，说明只能沿着外边进去
     {
         //重新扫线
-        RightLineDetectionAgain();
+        RightLineDetectionAgain('n');
         //对重新扫出来的线的两端来对车体位置进行判断,然后对中线进行处理
         if(right_line[0].X>right_line[r_line_count-1].X)//右边看不到圆环内环，只能看到圆环外环
         {
@@ -645,7 +642,7 @@ uint8 CircleIslandREnd(void)
     else//这里对偏差进行处理，避免由于出环的时候就左拐太多，使得右边线不存在而继承上一次的偏差
     {
         //重新扫线
-        LeftLineDetectionAgain();
+        LeftLineDetectionAgain('n');
         EdgeLinePerspective(left_line,l_line_count,per_left_line);
         if(per_l_line_count>aim_distance/SAMPLE_DIST)
         {
@@ -667,12 +664,12 @@ uint8 CircleIslandREnd(void)
 
 /***********************************************
 * @brief : 从丢线找到不丢线再记录边线，左边线重新扫线
-* @param : 无
+* @param : char choose:选择是否开启重新扫线错边的检测，'y': 开启 'n': 不开启
 * @return: 无
-* @date  : 2023.4.21
+* @date  : 2023.5.25
 * @author: 刘骏帆
 ************************************************/
-void LeftLineDetectionAgain()
+void LeftLineDetectionAgain(char choose)
 {
     uint8 half=GRAY_BLOCK/2;
     myPoint left_seed=left_line[l_line_count-1];//左种子
@@ -701,7 +698,7 @@ void LeftLineDetectionAgain()
         }
         else break;
     }
-    if ((l_growth_direction[1]+l_growth_direction[2])<(l_growth_direction[7]+l_growth_direction[6]))//种子生长的右上生长的趋势比右下要小说明重新扫线是错误的
+    if ((l_growth_direction[1]+l_growth_direction[2])<(l_growth_direction[7]+l_growth_direction[6]) && choose=='y')//种子生长的右上生长的趋势比右下要小说明重新扫线是错误的
     {
         l_line_count=0;
     }
@@ -709,12 +706,12 @@ void LeftLineDetectionAgain()
 
 /***********************************************
 * @brief : 从丢线找到不丢线再记录边线，右边线重新扫线
-* @param : 无
+* @param : char choose:选择是否开启重新扫线错边的检测，'y': 开启 'n': 不开启
 * @return: 无
-* @date  : 2023.4.21
+* @date  : 2023.5.25
 * @author: 刘骏帆
 ************************************************/
-void RightLineDetectionAgain()
+void RightLineDetectionAgain(char choose)
 {
     uint8 half=GRAY_BLOCK/2;
     myPoint right_seed=right_line[r_line_count-1];//右种子
@@ -743,7 +740,7 @@ void RightLineDetectionAgain()
         }
         else break;
     }
-    if ((r_growth_direction[1]+r_growth_direction[2])<(r_growth_direction[7]+r_growth_direction[6]))//种子生长的左上生长的趋势比左下要小说明重新扫线是错误的
+    if ((r_growth_direction[1]+r_growth_direction[2])<(r_growth_direction[7]+r_growth_direction[6]) && choose=='y')//种子生长的左上生长的趋势比左下要小说明重新扫线是错误的
     {
         r_line_count=0;
     }

@@ -99,7 +99,8 @@ void core1_main(void)
 //            memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
 //            LCDShowPerImage();
 //            MotorSetPWM(3000,3300);
-//            system_delay_ms(3000);
+            system_delay_ms(3300);
+            WakeUpScreen();
 //            while(1)
 //            {
 //                MotorSetPWM(0, 0);
