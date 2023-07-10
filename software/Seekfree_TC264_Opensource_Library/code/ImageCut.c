@@ -67,7 +67,6 @@ uint8 CutIdentify(void)
 
             if(corner_find != 0)
             {
-                CutChangeLine(corner_find, corner_id_r, corner_find);
                 //切换状态，改成电磁循迹
                 if(corner_id_l < 40 && corner_id_r < 40)
                 {
@@ -79,6 +78,10 @@ uint8 CutIdentify(void)
                     aim_distance = origin_aimdis;//恢复预瞄点
                     encoder_dis_flag = 1;
                 }
+                else//如果还用图像跑
+                {
+                    CutChangeLine(corner_find, corner_id_r, corner_find);//切换左右线
+                }
             }
             else
                 aim_distance = origin_aimdis;
@@ -86,11 +89,11 @@ uint8 CutIdentify(void)
         }
         case kCutMid://等跑到断路里面，加一点速
         {
-            if(dis > 500)
+            if(dis > 450 && r_line_count < 10 &&l_line_count < 10)
             {
                 encoder_dis_flag = 0;//关闭编码器积分
                 cut_flag=0;//取消电磁偏差限幅
-                base_speed = 60;//环内加一点速
+                base_speed = 62;//环内加一点速
                 cut_type = kCutEndR;
             }
             break;
@@ -201,10 +204,13 @@ void CutChangeLine(int16 corner_id_l,int16 corner_id_r,uint8 corner_find)
         }
         else//边线正常，且角点存在，修改预瞄点，寻右线
         {
-            per_r_line_count = (int)corner_id_r;//修改边线长度到角点位置
-            track_rightline(f_right_line1, per_r_line_count , center_line_r, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
             track_type = kTrackRight;
-            aim_distance = (float)(corner_id_r/2)*SAMPLE_DIST;
+            //对预瞄点进行修改
+            if(corner_id_r<origin_aimdis/SAMPLE_DIST)
+            {
+                if(corner_id_r>3) aim_distance = (float)(corner_id_r-3)*SAMPLE_DIST;
+            }
+
         }
     }
     //有左角点，没有右角点
@@ -218,27 +224,57 @@ void CutChangeLine(int16 corner_id_l,int16 corner_id_r,uint8 corner_find)
         }
         else
         {
-            per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
-            track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
             track_type = kTrackLeft;
-            aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
+            //对预瞄点进行修改
+            if(corner_id_l<origin_aimdis/SAMPLE_DIST)
+            {
+                if(corner_id_l>3) aim_distance = (float)(corner_id_l-3)*SAMPLE_DIST;
+            }
         }
     }
     //两边都有角点，哪边边线长就寻那条边线
     else if(corner_find == 3)
     {
-        //边线不正常，寻左线，恢复预瞄点
-        if(l_growth_direction[7] > 25 && (l_growth_direction[0] + l_growth_direction[1]) > 20 && l_growth_direction[4] < 10)
+        //左边线不正常，则寻右边线
+        if(l_growth_direction[7] > 20 && (l_growth_direction[0] + l_growth_direction[1]) > 20 && l_growth_direction[4] < 10)
         {
             track_type = kTrackRight;
-            aim_distance = origin_aimdis;
+            //对预瞄点进行修改
+            if(corner_id_r<origin_aimdis/SAMPLE_DIST)
+            {
+                if(corner_id_r>3) aim_distance = (float)(corner_id_r-3)*SAMPLE_DIST;
+            }
         }
-        else//修改边线长度到角点位置
+        //右边线不正常，则寻左边线
+        else if(r_growth_direction[7] > 20 && (r_growth_direction[0] + r_growth_direction[1]) > 20 && r_growth_direction[4] < 10)//修改边线长度到角点位置
         {
-            per_l_line_count = (int)corner_id_l;//修改边线长度到角点位置
-            track_leftline(f_left_line1, per_l_line_count, center_line_l, (int) round(ANGLE_DIST/SAMPLE_DIST), PIXEL_PER_METER*(TRACK_WIDTH/2));
             track_type = kTrackLeft;
-            aim_distance = (float)(corner_id_l/2)*SAMPLE_DIST;
+            //对预瞄点进行修改
+            if(corner_id_l<origin_aimdis/SAMPLE_DIST)
+            {
+                if(corner_id_l>3) aim_distance = (float)(corner_id_l-3)*SAMPLE_DIST;
+            }
+        }
+        else
+        {
+            if(corner_id_l >= corner_id_r)//左角点比右角点远
+            {
+                track_type = kTrackLeft;
+                //对预瞄点进行修改
+                if(corner_id_l<origin_aimdis/SAMPLE_DIST)
+                {
+                    if(corner_id_l>3) aim_distance = (float)(corner_id_l-3)*SAMPLE_DIST;
+                }
+            }
+            else//右角点比左角点远
+            {
+                track_type = kTrackRight;
+                //对预瞄点进行修改
+                if(corner_id_r<origin_aimdis/SAMPLE_DIST)
+                {
+                    if(corner_id_r>3) aim_distance = (float)(corner_id_r-3)*SAMPLE_DIST;
+                }
+            }
         }
     }
 
@@ -263,10 +299,12 @@ uint8 CutIgnoreNoise(uint8 lr_flag)
             grown_left = r_growth_direction[1] + r_growth_direction[0] + r_growth_direction[7];//往左走的种子
             grown_right = r_growth_direction[3] + r_growth_direction[4] + r_growth_direction[5];//往右走的种子
             //如果向上和向下生长的种子数都大于30，而且向左和向右生长的种子数差不多则认为是异常边线
-            if(grown_up > 30 && grown_down > 30 && (abs(grown_right - grown_left) < 6))
+            if(grown_up > 30 && grown_down > 30 && (abs(grown_right - grown_left) < 10))
                 return 0;
-            else
-                return 1;
+            //如果向右和向左生长的种子数都大于30，而且向上和向下生长的种子数差不多则认为是异常边线
+            else if(grown_right > 30 && grown_left > 30 && (abs(grown_up - grown_left) < 10))
+                return 0;
+            return 1;
             break;
         }
         case 'l':
@@ -276,10 +314,12 @@ uint8 CutIgnoreNoise(uint8 lr_flag)
             grown_left = l_growth_direction[1] + l_growth_direction[0] + l_growth_direction[7];//往左走的种子
             grown_right = l_growth_direction[3] + l_growth_direction[4] + l_growth_direction[5];//往右走的种子
             //如果向上和向下生长的种子数都大于30，而且向左和向右生长的种子数差不多则认为是异常边线
-            if(grown_up > 30 && grown_down > 30 && (abs(grown_right - grown_left) < 6))
+            if(grown_up > 30 && grown_down > 30 && (abs(grown_right - grown_left) < 10))
                 return 0;
-            else
-                return 1;
+            //如果向右和向左生长的种子数都大于30，而且向上和向下生长的种子数差不多则认为是异常边线
+            else if(grown_right > 30 && grown_left > 30 && (abs(grown_up - grown_left) < 10))
+                return 0;
+            return 1;
             break;
         }
         default:break;
