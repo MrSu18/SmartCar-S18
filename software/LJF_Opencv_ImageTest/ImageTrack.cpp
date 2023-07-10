@@ -350,6 +350,23 @@ void FillingLine(char choose, myPoint_f point1, myPoint_f point2)
 * @date  : 2023.4.12
 * @author: ΑυΏ₯·«
 ************************************************/
+uint8 perspectiv_x[120][188];
+uint8 perspectiv_y[120][188];
+void perspective_init(void)
+{
+    double change_inverse_Mat[3][3]={{-0.436724513740008,-2.68225460836311,134.828057006092},{0,-3.82738237165181,170.456836310779},{0,-0.0285350419014467,0.999958150225339}};
+    for (int i = 0; i < 188; ++i)
+    {
+        for (int j = 0; j < 120; ++j)
+        {
+            float solve_x = (uint8)((change_inverse_Mat[0][0]*i+change_inverse_Mat[0][1]*j+change_inverse_Mat[0][2])
+                             /(change_inverse_Mat[2][0]*i+change_inverse_Mat[2][1]*j+change_inverse_Mat[2][2]));
+            float solve_y = (uint8)((change_inverse_Mat[1][0]*i+change_inverse_Mat[1][1]*j+change_inverse_Mat[1][2])
+                             /(change_inverse_Mat[2][0]*i+change_inverse_Mat[2][1]*j+change_inverse_Mat[2][2]));
+            perspectiv_x[j][i]=solve_x;perspectiv_y[j][i]=solve_y;
+        }
+    }
+}
 void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
 {
     double change_inverse_Mat[3][3]={{-0.436724513740008,-2.68225460836311,134.828057006092},{0,-3.82738237165181,170.456836310779},{0,-0.0285350419014467,0.999958150225339}};
@@ -362,6 +379,8 @@ void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
                    /(change_inverse_Mat[2][0]*i+change_inverse_Mat[2][1]*j+change_inverse_Mat[2][2]));
         out_line[count].X = solve_x;
         out_line[count].Y = solve_y;
+//        out_line[count].X = perspectiv_x[in_line[count].Y][in_line[count].X];
+//        out_line[count].Y = perspectiv_y[in_line[count].Y][in_line[count].X];
     }
 }
 

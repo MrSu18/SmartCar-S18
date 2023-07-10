@@ -27,6 +27,8 @@ uint8 CircleIslandROutDetection(void);//环岛检测出环
 uint8 CircleIslandROutFinish(void);//检测环岛是否结束
 void CircleIslandROut(void);//右环岛出环
 uint8 CircleIslandREnd(void);//判断右环岛是否结束
+//路障元素函数
+void BarrierIn(void);
 
 
 #endif //LJF_OPENCV_IMAGETEST_IMAGESPECIAL_H

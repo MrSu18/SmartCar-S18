@@ -57,7 +57,7 @@ void ImageProcess(void)
     {
         track_type=kTrackLeft;
     }
-    CircleIslandLIn();
+//    BarrierIn();
     //‘§√Èµ„«Û∆´≤Ó
     if(track_type==kTrackRight)
     {

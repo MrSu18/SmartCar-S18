@@ -16,8 +16,6 @@
 
 extern uint8 binary_image[MT9V03X_H][MT9V03X_W];//二值化图像
 extern uint8 gray_image[MT9V03X_H][MT9V03X_W];//使用的缓存灰度图像,避免因为dma把图像冲走
-extern uint8 left_border[USE_IMAGE_H];//图像左边界
-extern uint8 right_border[USE_IMAGE_H];//图像右边界
 extern uint8 otsu_thr;//大津法对sobel算法之后的图像求得阈值
 
 void ImageBinary(void);//图像二值化

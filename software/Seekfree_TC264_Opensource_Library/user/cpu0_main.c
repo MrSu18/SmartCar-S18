@@ -49,7 +49,7 @@
 #include "ImageProcess.h"
 #include "isr.h"
 
-extern uint8 barrier_flag;
+extern uint8 barrier_status;
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -112,10 +112,6 @@ int core0_main(void)
 //    ADCScan();
     while (TRUE)
     {
-//        float a = GetICM20602Angle_Y(0);
-//        tft180_show_float(0, 0, a, 3,3);
-//        dl1a_get_distance();
-//        tft180_show_int(0, 0, dl1a_distance_mm, 5);
         ADCGetValue(adc_value);
 //        ChaBiHe(TRACK);
         // 此处编写需要循环执行的代码
@@ -126,7 +122,7 @@ int core0_main(void)
 //       }
        if(c0h1_isr_flag==1)
        {
-           printf("%d,%d\r\n",gyropid.out,turnpid_image.out);
+           printf("%d,%f,%f\r\n",barrier_status,dis,image_bias);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码

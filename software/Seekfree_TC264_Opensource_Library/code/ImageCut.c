@@ -90,7 +90,7 @@ uint8 CutIdentify(void)
             {
                 encoder_dis_flag = 0;//关闭编码器积分
                 cut_flag=0;//取消电磁偏差限幅
-                base_speed = 62;//环内加一点速
+                base_speed = 60;//环内加一点速
                 cut_type = kCutEndR;
             }
             break;

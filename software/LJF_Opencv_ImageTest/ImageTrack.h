@@ -56,5 +56,6 @@ float GetAnchorPointBias(float aim_distance,uint8 track_line_count,myPoint_f *tr
 void FillingLine(char choose, myPoint_f point1, myPoint_f point2);
 void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line);//±ßÏßÄæÍ¸ÊÓ
 myPoint_f PointPerspective(myPoint point);
+void perspective_init(void);
 
 #endif //LJF_OPENCV_IMAGETEST_IMAGETRACK_H
