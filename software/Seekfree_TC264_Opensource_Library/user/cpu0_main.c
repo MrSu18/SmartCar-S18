@@ -122,7 +122,7 @@ int core0_main(void)
 //       }
        if(c0h1_isr_flag==1)
        {
-           printf("%d,%f,%f\r\n",barrier_status,dis,image_bias);
+           printf("%f,%d,%f,%d\r\n",adrc_speed_detection.x1,process_status[process_status_cnt],image_bias,base_speed);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码

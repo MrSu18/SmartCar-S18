@@ -20,23 +20,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="环岛条件修改，删除二值化相关代码和变量">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="重写路障，写死路障配合编码器和陀螺仪写死，效果60的时候暂时还行">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageProcess.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageProcess.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageSpecial.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageSpecial.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageTrack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImageTrack.h" beforeDir="false" afterPath="$PROJECT_DIR$/ImageTrack.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCut.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageCut.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSpecial.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSpecial.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/motor.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/motor.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,11 +101,6 @@
 }</component>
   <component name="RunManager">
     <configuration name="LJF_Opencv_ImageTest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$/../../../../../../../IDE/OpenCVcpp/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/x64/mingw/bin" PASS_PARENT_ENVS_2="true" PROJECT_NAME="LJF_Opencv_ImageTest" TARGET_NAME="LJF_Opencv_ImageTest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="LJF_Opencv_ImageTest" RUN_TARGET_NAME="LJF_Opencv_ImageTest">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -363,14 +350,8 @@
       <workItem from="1688829215370" duration="491000" />
       <workItem from="1688883624290" duration="1972000" />
       <workItem from="1688901409601" duration="9546000" />
-      <workItem from="1688969049611" duration="5276000" />
-    </task>
-    <task id="LOCAL-00021" summary="ADS工程进行相应修改">
-      <created>1678627653418</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1678627653418</updated>
+      <workItem from="1688969049611" duration="5820000" />
+      <workItem from="1688998424701" duration="312000" />
     </task>
     <task id="LOCAL-00022" summary="初步写环岛的入环图像处理，还欠缺出入环状态和对寻圆环外圆进去处理的不好">
       <created>1678880717546</created>
@@ -708,7 +689,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688818240233</updated>
     </task>
-    <option name="localTasksCounter" value="70" />
+    <task id="LOCAL-00070" summary="重写路障，写死路障配合编码器和陀螺仪写死，效果60的时候暂时还行">
+      <created>1688988219084</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1688988219084</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -726,7 +714,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="右环岛函数" />
     <MESSAGE value="环岛避免车身太靠偏离环岛那边而检测不到角点，还有避免车身太靠外，而你想让他寻左右但是左右却没线则在求偏差进行判断并且重新扫线" />
     <MESSAGE value="环岛判断出环结束中删去多余的操作" />
     <MESSAGE value="环岛修改角点最小限" />
@@ -751,7 +738,8 @@
     <MESSAGE value="调路障重大突破的日记" />
     <MESSAGE value="增加状态机速度属性，修改环岛条件，多加了条件不然大环进不去，好奇怪" />
     <MESSAGE value="环岛条件修改，删除二值化相关代码和变量" />
-    <option name="LAST_COMMIT_MESSAGE" value="环岛条件修改，删除二值化相关代码和变量" />
+    <MESSAGE value="重写路障，写死路障配合编码器和陀螺仪写死，效果60的时候暂时还行" />
+    <option name="LAST_COMMIT_MESSAGE" value="重写路障，写死路障配合编码器和陀螺仪写死，效果60的时候暂时还行" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

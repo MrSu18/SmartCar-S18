@@ -34,6 +34,7 @@ uint8 BarrierImageVerify(void);//路障图像二次验证
 ************************************************/
 uint8 BarrierIdentify(void)
 {
+    speed_type=kNormalSpeed;
     switch(barrier_status)
     {
         case 0://识别路障
@@ -63,6 +64,7 @@ uint8 BarrierIdentify(void)
             //左边有边线，并且是往左上生长的，说明是正常的回到了赛道，结束状态
             if(l_line_count>20 && r_line_count<3 && (l_growth_direction[4]+l_growth_direction[3]-l_growth_direction[1]-l_growth_direction[0])>l_line_count-20)
             {
+                speed_type=kImageSpeed;
                 encoder_dis_flag=0;
                 barrier_status=0;
                 return 1;

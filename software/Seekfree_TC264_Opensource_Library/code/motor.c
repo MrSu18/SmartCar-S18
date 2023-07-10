@@ -134,6 +134,5 @@ void MotorCtrl(void)
     {
         pwm_right += FeedForwardCtrl(target_right, &speedffc_right);
     }
-
     MotorSetPWM(pwm_left,pwm_right);                                                //赋给电机一定占空比的PWM
 }

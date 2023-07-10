@@ -58,7 +58,8 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
     pit_clear_flag(CCU60_CH0);
 
     MotorCtrl();
-    if(elapsed_time>3000)
+
+    if(elapsed_time>6500)
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -86,11 +87,11 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)//转向环
     {
         PIDTurnADC();
     }
-//    if(speed_type==kImageSpeed)
-//    {
-//        base_speed=SpeedDecision(original_speed,7);//弯道是68直道是80
-//    }
-//    SpeedDecision(original_speed,7);//弯道是68直道是80
+    if(speed_type==kImageSpeed)
+    {
+        base_speed=gyropid.out;
+    }
+    gyropid.out=SpeedDecision(original_speed,7);
 
     c0h1_isr_flag=1;
 }

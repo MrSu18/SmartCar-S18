@@ -38,11 +38,11 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     switch (track_type)
     {
         case kTrackRight:
-            angle=r_angle_1;
+            angle=r_angle;
             len=per_r_line_count;
             break;
         case kTrackLeft:
-            angle=l_angle_1;
+            angle=l_angle;
             len=per_l_line_count;
             break;
         case kTrackSpecial:
@@ -66,14 +66,14 @@ uint16 SpeedDecision(uint16 original_speed,float a)
             break;
         }
     }
+    s=i-(int)(0.3/SAMPLE_DIST);//得到位移
+    Fhan_ADRC(&adrc_speed_detection, (float)s);
     if(inflection_flag==1 && process_status[process_status_cnt]==3 && (image_bias<3 && image_bias>-3))//十字有拐点并且偏差很小的时候
     {
         vt=75;
     }
     else
     {
-        s=i-(int)(0.3/SAMPLE_DIST);//得到位移
-        Fhan_ADRC(&adrc_speed_detection, (float)s);
         vt= (uint16)sqrt(original_speed*original_speed+2*a*adrc_speed_detection.x1);
         //这里加权考虑偏差
         if(-4<image_bias && image_bias<4)
@@ -83,7 +83,7 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     }
     //速度限幅
     if(vt>90) vt=90;
-    else if(vt<65) vt=65;
+    else if(vt<original_speed) vt=original_speed;
     return vt;
 }
 
@@ -103,7 +103,7 @@ void OutGarage(void)
 //    image_bias=5;    //向左打死
 //    StartIntegralAngle_X(70);
 //    while(!icm_angle_x_flag);   //左转70°进入正常寻迹
-//    speed_type=kImageSpeed;//出库之后启动速度决策
+    speed_type=kImageSpeed;//出库之后启动速度决策
 }
 
 /***********************************************

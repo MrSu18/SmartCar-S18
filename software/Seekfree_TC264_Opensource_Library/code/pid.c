@@ -91,7 +91,7 @@ void PIDTurnImage(void)
     //*********************双环串级时转向PID输出限幅***************
    if(turnpid_image.out>150)   turnpid_image.out=150;
    else if(turnpid_image.out<-150)   turnpid_image.out=-150;
-   //*********************************************
+   //********************************************************
 
     if (turnpid_image.out > 0)//左转
     {
