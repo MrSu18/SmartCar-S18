@@ -7,7 +7,7 @@
 #include "ImageConversion.h"
 #include "ImageTrack.h"
 #include "zf_device_tft180.h"
-#include "KeyMenu.h"
+#include "Menu.h"
 #include "debug.h"
 
 #define PER_IMAGE_W     188             //ÄæÍ¸ÊÓÍ¼ÏñµÄ¿í¶È

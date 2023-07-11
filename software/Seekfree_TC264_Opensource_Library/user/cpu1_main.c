@@ -42,12 +42,12 @@
 #include "bluetooth.h"
 #include "ImageProcess.h"
 #include "pid.h"
-#include "KeyMenu.h"
 #include "debug.h"
 #include "icm20602.h"
 #include "Control.h"
 #include "ImageSpecial.h"
 #include "isr.h"
+#include "Menu.h"
 
 // 工程导入到软件之后，应该选中工程然后点击refresh刷新一下之后再编译
 // 工程默认设置为关闭优化，可以自己右击工程选择properties->C/C++ Build->Setting
@@ -71,9 +71,8 @@ void core1_main(void)
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    ReadFromFlash();//从flash中读取值
     base_speed=original_speed=process_speed[0];
-    KeyCtrl();//按键控制
+    KeyStateMachine();//按键控制
     pit_enable(CCU60_CH0);
     OutGarage();//出库
     while (TRUE)

@@ -305,14 +305,24 @@ void ProcessPropertyInit(void)
                 process_property[i].max_speed=60;
                 process_property[i].min_speed=60;
                 break;
+            case 3://十字
+                process_property[i].max_speed=60;
+                process_property[i].min_speed=60;
+                break;
             case 4://断路
                 process_property[i].max_speed=60;
                 process_property[i].min_speed=62;
                 break;
             case 5://坡道
+                process_property[i].max_speed=60;
                 process_property[i].min_speed=55;
                 break;
             case 6://路障
+                process_property[i].max_speed=60;
+                process_property[i].min_speed=60;
+                break;
+            case 7://入左库
+                process_property[i].max_speed=60;
                 process_property[i].min_speed=60;
                 break;
             default:break;
