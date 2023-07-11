@@ -20,12 +20,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="调了一下路障和坡道，路障用图像做一层判断，速度决策很大问题不知道为什么，坡道的陀螺仪俯仰角上坡不行，加速会翘头">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
-    </list>
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="调路障，把距离和角度改了" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -350,14 +345,8 @@
       <workItem from="1688998424701" duration="671000" />
       <workItem from="1688999618229" duration="24000" />
       <workItem from="1689066908483" duration="271000" />
-      <workItem from="1689074523363" duration="1000" />
-    </task>
-    <task id="LOCAL-00024" summary="增加补线函数，添加环岛出环补线">
-      <created>1679311996850</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1679311996850</updated>
+      <workItem from="1689074523363" duration="230000" />
+      <workItem from="1689081833186" duration="1000" />
     </task>
     <task id="LOCAL-00025" summary="增加补线函数，添加环岛出环补线">
       <created>1679312409166</created>
@@ -695,7 +684,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689067154761</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="调路障，把距离和角度改了">
+      <created>1689074553067</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1689074553067</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -713,7 +709,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="环岛修改角点最小限" />
     <MESSAGE value="十字重新扫线取消掉线的缩短" />
     <MESSAGE value="路障OK了，能跑65" />
     <MESSAGE value="修改纯跟踪算法求偏差的方式，PID参数进行对应调整，路障出状态和结束状态的循迹使用图像识别" />
@@ -738,7 +733,8 @@
     <MESSAGE value="重写路障，写死路障配合编码器和陀螺仪写死，效果60的时候暂时还行" />
     <MESSAGE value="调了下速度决策，62的时候坡道下来跑的很烂，也许可以把那个+=5去掉" />
     <MESSAGE value="调了一下路障和坡道，路障用图像做一层判断，速度决策很大问题不知道为什么，坡道的陀螺仪俯仰角上坡不行，加速会翘头" />
-    <option name="LAST_COMMIT_MESSAGE" value="调了一下路障和坡道，路障用图像做一层判断，速度决策很大问题不知道为什么，坡道的陀螺仪俯仰角上坡不行，加速会翘头" />
+    <MESSAGE value="调路障，把距离和角度改了" />
+    <option name="LAST_COMMIT_MESSAGE" value="调路障，把距离和角度改了" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
