@@ -26,7 +26,7 @@
 uint8 SlopeIdentify(void)
 {
     static uint8 status=0;//坡道状态转移变量
-    tft180_show_uint(120, 100, status, 2);
+//    tft180_show_uint(120, 100, status, 2);
     switch(status)
     {
         case 0://开启陀螺仪检测上坡
@@ -42,7 +42,7 @@ uint8 SlopeIdentify(void)
             gradient_l = CalculateGradient('l');//求左线斜率
             gradient_r = CalculateGradient('r');//求右线斜率
             //正常情况是图像和tof可以检测到坡道
-            if(((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)||(dl1a_distance_mm < 600)||(icm_angle_y_flag==1))
+            if(((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)||(dl1a_distance_mm < 600))
             {
                 gpio_set_level(BEER,1);//开启蜂鸣器
                 speed_type=kNormalSpeed;//关闭速度决策

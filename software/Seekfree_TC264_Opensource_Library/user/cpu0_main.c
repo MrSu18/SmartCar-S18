@@ -115,6 +115,11 @@ int core0_main(void)
         ADCGetValue(adc_value);
 //        ChaBiHe(TRACK);
         // 此处编写需要循环执行的代码
+//        if(c1h0_isr_flag==1)
+//        {
+//            printf("%f,%f,%f,%d\r\n",my_angle_x,dis,image_bias,dl1a_distance_mm);
+//            c1h0_isr_flag=0;
+//        }
 //       if(c0h0_isr_flag==1)
 //       {
 //           printf("%d,%d,%d,%d\r\n",speed_left,target_left,speed_right,target_right);
@@ -122,7 +127,7 @@ int core0_main(void)
 //       }
        if(c0h1_isr_flag==1)
        {
-           printf("%f,%d,%f,%d\r\n",adrc_speed_detection.x1,process_status[process_status_cnt],image_bias,base_speed);
+           printf("%d,%d,%f,%f\r\n",base_speed,process_status[process_status_cnt],image_bias,my_angle_y);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码

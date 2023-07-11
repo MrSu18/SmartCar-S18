@@ -33,7 +33,7 @@ int s=0;//速度决策的位移
 uint16 SpeedDecision(uint16 original_speed,float a)
 {
     int len=0;
-    if(image_bias>6 || image_bias<-6)   return original_speed;
+    if(image_bias>5 || image_bias<-5)   return original_speed;
     float* angle;
     switch (track_type)
     {
@@ -76,14 +76,14 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     {
         vt= (uint16)sqrt(original_speed*original_speed+2*a*adrc_speed_detection.x1);
         //这里加权考虑偏差
-        if(-4<image_bias && image_bias<4)
+        if(-3<image_bias && image_bias<3)
         {
-            vt+=5;
+            vt+=2;
         }
     }
     //速度限幅
     if(vt>90) vt=90;
-    else if(vt<original_speed) vt=original_speed;
+    else if(vt<60) vt=60;
     return vt;
 }
 

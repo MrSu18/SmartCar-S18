@@ -38,7 +38,7 @@
 
 #include "zf_common_headfile.h"
 
-extern uint8 c0h0_isr_flag,c0h1_isr_flag;
+extern uint8 c0h0_isr_flag,c0h1_isr_flag,c1h0_isr_flag;
 extern uint32 elapsed_time;//运行时间，记录车跑了多久
 
 

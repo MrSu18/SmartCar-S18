@@ -48,7 +48,7 @@
 float icm_target_angle_z,icm_target_angle_x,icm_target_angle_y;   //陀螺仪*轴积分的目标角度
 uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //陀螺仪*轴积分达到目标角度 标志位  可作为环岛出环标志位 //待整合
 uint32 elapsed_time=0;//运行时间，记录车跑了多久
-uint8 c0h0_isr_flag=0,c0h1_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
+uint8 c0h0_isr_flag=0,c0h1_isr_flag=0,c1h0_isr_flag=0;                                  //0核通道0的标志位 0:没进中断 1:中断
 
 // **************************** PIT中断函数 ****************************
 IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
@@ -59,7 +59,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//速度环
 
     MotorCtrl();
 
-    if(elapsed_time>6500)
+    if(elapsed_time>14500)
     {
         pit_disable(CCU60_CH0);//关闭电机中断
         pit_disable(CCU60_CH1);
@@ -103,6 +103,7 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
     if(icm_angle_x_flag==0)//航向角需要积分的标志变量判断
     {
         float angle_x=GetICM20602Angle_X(0);            //角度积分
+        c1h0_isr_flag=1;
         if(angle_x>icm_target_angle_x||angle_x<-icm_target_angle_x)  //判断积分角度是否大于目标角度
         //if(my_angle_x>icm_target_angle_x||my_angle_x<-icm_target_angle_x)  //如果上句出bug 使用这句
         {

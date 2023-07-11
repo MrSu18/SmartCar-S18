@@ -20,15 +20,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="重写路障，写死路障配合编码器和陀螺仪写死，效果60的时候暂时还行">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="调了下速度决策，62的时候坡道下来跑的很烂，也许可以把那个+=5去掉">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/motor.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/motor.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -351,14 +351,9 @@
       <workItem from="1688883624290" duration="1972000" />
       <workItem from="1688901409601" duration="9546000" />
       <workItem from="1688969049611" duration="5820000" />
-      <workItem from="1688998424701" duration="312000" />
-    </task>
-    <task id="LOCAL-00022" summary="初步写环岛的入环图像处理，还欠缺出入环状态和对寻圆环外圆进去处理的不好">
-      <created>1678880717546</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1678880717546</updated>
+      <workItem from="1688998424701" duration="671000" />
+      <workItem from="1688999618229" duration="24000" />
+      <workItem from="1689066908483" duration="1000" />
     </task>
     <task id="LOCAL-00023" summary="同步工程">
       <created>1679205162022</created>
@@ -696,7 +691,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688988219084</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="调了下速度决策，62的时候坡道下来跑的很烂，也许可以把那个+=5去掉">
+      <created>1688999479662</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1688999479662</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -714,7 +716,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="环岛避免车身太靠偏离环岛那边而检测不到角点，还有避免车身太靠外，而你想让他寻左右但是左右却没线则在求偏差进行判断并且重新扫线" />
     <MESSAGE value="环岛判断出环结束中删去多余的操作" />
     <MESSAGE value="环岛修改角点最小限" />
     <MESSAGE value="十字重新扫线取消掉线的缩短" />
@@ -739,7 +740,8 @@
     <MESSAGE value="增加状态机速度属性，修改环岛条件，多加了条件不然大环进不去，好奇怪" />
     <MESSAGE value="环岛条件修改，删除二值化相关代码和变量" />
     <MESSAGE value="重写路障，写死路障配合编码器和陀螺仪写死，效果60的时候暂时还行" />
-    <option name="LAST_COMMIT_MESSAGE" value="重写路障，写死路障配合编码器和陀螺仪写死，效果60的时候暂时还行" />
+    <MESSAGE value="调了下速度决策，62的时候坡道下来跑的很烂，也许可以把那个+=5去掉" />
+    <option name="LAST_COMMIT_MESSAGE" value="调了下速度决策，62的时候坡道下来跑的很烂，也许可以把那个+=5去掉" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
