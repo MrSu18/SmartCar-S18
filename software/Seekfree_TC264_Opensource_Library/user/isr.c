@@ -91,7 +91,7 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)//×ªÏò»·
     {
         base_speed=gyropid.out;
     }
-    gyropid.out=SpeedDecision(original_speed,7);
+    gyropid.out=SpeedDecision(original_speed,9);
 
     c0h1_isr_flag=1;
 }

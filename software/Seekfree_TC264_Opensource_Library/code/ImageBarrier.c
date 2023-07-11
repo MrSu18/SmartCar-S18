@@ -18,7 +18,7 @@
 #include "ImageProcess.h"
 
 #define TOF_DISTANCE_THR 2000//TOF测距的阈值
-#define IMAGE_DISTANCE_THR  0.65//图像拐点的阈值
+#define IMAGE_DISTANCE_THR  0.55//图像拐点的阈值
 #define ADC_IN_TRACK_THR    300//判断车是否在赛道内的ADC阈值
 
 uint8 barrier_status=0;//路障状态
@@ -51,12 +51,12 @@ uint8 BarrierIdentify(void)
                     speed_type=kNormalSpeed;base_speed=process_property[process_status_cnt].min_speed;//降速
                     track_type=kTrackSpecial;image_bias=6;//左拐
                     encoder_dis_flag=1;
-                    StartIntegralAngle_X(40);while(!icm_angle_x_flag);//等待40度
+                    StartIntegralAngle_X(50);while(!icm_angle_x_flag);//等待40度
                     image_bias=0;
                     while(dis<575.11);encoder_dis_flag=0;
                     track_type=kTrackSpecial;image_bias=-8;//右拐
                     encoder_dis_flag=1;
-                    StartIntegralAngle_X(90);while(!icm_angle_x_flag);//等待70度
+                    StartIntegralAngle_X(100);while(!icm_angle_x_flag);//等待70度
                     image_bias=0;
                     while(dis<780);encoder_dis_flag=0;
 //                    return 1;
