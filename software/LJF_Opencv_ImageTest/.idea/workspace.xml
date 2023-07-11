@@ -20,16 +20,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="重新调速度环">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="按键菜单调状态机">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/KeyMenu.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/debug.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/debug.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -357,14 +351,8 @@
       <workItem from="1689066908483" duration="271000" />
       <workItem from="1689074523363" duration="230000" />
       <workItem from="1689081833186" duration="181000" />
-      <workItem from="1689088017763" duration="1000" />
-    </task>
-    <task id="LOCAL-00026" summary="将环岛的东西加入到ADS中还没实地测试">
-      <created>1679313369169</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1679313369169</updated>
+      <workItem from="1689088017763" duration="67000" />
+      <workItem from="1689089607095" duration="41000" />
     </task>
     <task id="LOCAL-00027" summary="把扫线的八零域标号改成全局变量，为了在元素再次扫线的时候保存标号值">
       <created>1679321735889</created>
@@ -702,7 +690,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689081866692</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="按键菜单调状态机">
+      <created>1689088039896</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1689088039896</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -720,7 +715,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="路障OK了，能跑65" />
     <MESSAGE value="修改纯跟踪算法求偏差的方式，PID参数进行对应调整，路障出状态和结束状态的循迹使用图像识别" />
     <MESSAGE value="图像加入防止右边重新扫线到左边的错误，引入种子生长方向记录去检测这种错误，135度角接环岛能看到拐点，但是现在问题就是要到环岛中部才能检测到环岛，如果不强制寻左线会从第一个口进去" />
     <MESSAGE value="修改模糊PID规则表" />
@@ -745,7 +739,8 @@
     <MESSAGE value="调了一下路障和坡道，路障用图像做一层判断，速度决策很大问题不知道为什么，坡道的陀螺仪俯仰角上坡不行，加速会翘头" />
     <MESSAGE value="调路障，把距离和角度改了" />
     <MESSAGE value="重新调速度环" />
-    <option name="LAST_COMMIT_MESSAGE" value="重新调速度环" />
+    <MESSAGE value="按键菜单调状态机" />
+    <option name="LAST_COMMIT_MESSAGE" value="按键菜单调状态机" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

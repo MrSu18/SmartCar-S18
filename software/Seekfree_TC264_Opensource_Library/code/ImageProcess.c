@@ -284,8 +284,8 @@ void OutProtect(void)
 * @brief : 状态机变量属性初始
 * @param : void
 * @return: void
-* @date  : 2023.3.1
-* @author: L & 刘骏帆
+* @date  : 2023.7.8
+* @author: 刘骏帆
 ************************************************/
 void ProcessPropertyInit(void)
 {
@@ -327,5 +327,45 @@ void ProcessPropertyInit(void)
                 break;
             default:break;
         }
+    }
+}
+
+void ProcessPropertyDefault(uint8 i)
+{
+    if(process_status[i]==7 || process_status[i]==8)//入库
+    {
+        process_property[i].min_speed=60;
+    }
+    switch(process_status[i])
+    {
+        case 1://左环岛
+            process_property[i].max_speed=65;
+            process_property[i].min_speed=60;
+            break;
+        case 2://右环岛
+            process_property[i].max_speed=60;
+            process_property[i].min_speed=60;
+            break;
+        case 3://十字
+            process_property[i].max_speed=60;
+            process_property[i].min_speed=60;
+            break;
+        case 4://断路
+            process_property[i].max_speed=60;
+            process_property[i].min_speed=60;
+            break;
+        case 5://坡道
+            process_property[i].max_speed=60;
+            process_property[i].min_speed=55;
+            break;
+        case 6://路障
+            process_property[i].max_speed=60;
+            process_property[i].min_speed=60;
+            break;
+        case 7://入左库
+            process_property[i].max_speed=60;
+            process_property[i].min_speed=60;
+            break;
+        default:break;
     }
 }
