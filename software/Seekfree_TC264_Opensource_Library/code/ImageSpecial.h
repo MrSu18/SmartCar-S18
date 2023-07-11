@@ -27,7 +27,6 @@ uint8 CutIdentify(void);//断路状态机
 uint8 CutFindCorner(int16* corner_id_l,int16* coener_id_r);//断路找角点
 void CutChangeLine(int16 corner_id_l,int16 corner_id_r,uint8 corner_find);//切换巡线
 uint8 CutIgnoreNoise(uint8 lr_flag);//避免噪点的影响
-extern uint8 cut_flag;
 //十字路口函数
 uint8 CrossIdentify(void);//十字状态机
 uint8 CrossFindCorner(int16* corner_id_l, int16* corner_id_r);//十字找角点

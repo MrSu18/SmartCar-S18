@@ -47,7 +47,7 @@ void KeyCtrl(void);                             //按键整体控制
 void SubParameter(void);                        //参数减
 void AddParameter(void);                        //参数加
 void EnterKey(uint8* exit_flag);                //确认键实现对应功能
-void WriteToFlash(void);                        //将需要修改的值写入Flash
+void WriteToFlash(uint32 page,uint32 read_flag);
 void ReadFromFlash(void);                       //从Flash获取值到对应的变量
 void WakeUpScreen(void);                        //唤醒屏幕查看跑车时间
 

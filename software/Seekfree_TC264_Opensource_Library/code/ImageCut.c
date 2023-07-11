@@ -26,7 +26,6 @@ typedef enum CutType
 }CutType;//断路状态机状态结构体
 
 CutType cut_type = kCutBegin;
-uint8 cut_flag=0;
 
 /***********************************************
 * @brief : 断路状态机
@@ -70,13 +69,12 @@ uint8 CutIdentify(void)
                 //切换状态，改成电磁循迹
                 if(corner_id_l < 40 && corner_id_r < 40)
                 {
-                    cut_flag=1;//电磁偏差限幅
                     speed_type=kNormalSpeed;//关闭速度决策
                     base_speed = 60;//降速入断路
                     track_mode = kTrackADC;//切换电磁循迹
                     cut_type = kCutMid;
                     aim_distance = origin_aimdis;//恢复预瞄点
-                    encoder_dis_flag = 1;
+//                    encoder_dis_flag = 1;
                 }
                 else//如果还用图像跑
                 {
@@ -89,10 +87,8 @@ uint8 CutIdentify(void)
         }
         case kCutMid://等跑到断路里面，加一点速
         {
-            if(dis > 450 && r_line_count < 10 &&l_line_count < 10)
+            if(r_line_count < 10 && l_line_count < 10)
             {
-                encoder_dis_flag = 0;//关闭编码器积分
-                cut_flag=0;//取消电磁偏差限幅
                 base_speed = 62;//环内加一点速
                 cut_type = kCutEndR;
             }

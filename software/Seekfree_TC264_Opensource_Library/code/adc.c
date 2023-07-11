@@ -81,12 +81,7 @@ float ChaBiHe(int8 flag)
             else
                err = 20.0*(float)(NORMAL_LM-NORMAL_RM)/(NORMAL_LM+NORMAL_M+NORMAL_RM);
 //                tft180_show_float(0,0,err,3,4);
-            if(cut_flag==1)
-            {
-                err=0.9*err+0.1*last_adc_err;
-                if(err>8) err=8;
-                else if(err<-8) err=-8;
-            }
+            err=0.9*err+0.1*last_adc_err;
             last_adc_err=err;
             break;
         }

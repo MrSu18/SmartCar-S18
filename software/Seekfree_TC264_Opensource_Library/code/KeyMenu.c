@@ -462,7 +462,7 @@ void EnterKey(uint8* exit_flag)
                     tft180_clear();
                 }
                 else if(menu.updown==9)//写入flash
-                    WriteToFlash();
+                    WriteToFlash(0,0);
                 else if(menu.updown==10)//擦除flash
                 {
                     if(flash_check(0, 0)==1)//如果Flash不为空，则擦除
@@ -580,68 +580,89 @@ void EnterKey(uint8* exit_flag)
 }
 /***********************************************
 * @brief : 将需要修改的变量写入Flash
-* @param : void
+* @param : page:选择写入哪一页
+*          read_flag:1表示会读取0页的内容，0表示使用原程序的参数(只有page为1时该项才有效)
 * @return: void
-* @date  : 2023.5.14
+* @date  : 2023.7.11
 * @author: L
 ************************************************/
-void WriteToFlash(void)
+void WriteToFlash(uint32 page,uint32 read_flag)
 {
-    if(flash_check(0, 0)==1)//如果Flash有值，擦除
-        flash_erase_page(0, 0);
-    flash_buffer_clear();//清空缓冲区
-    //将需要修改的变量写到缓冲区
-    flash_union_buffer[0].uint32_type=*(uint32*)&turnpid_image.P;
-    flash_union_buffer[1].uint32_type=*(uint32*)&turnpid_image.D;
-    flash_union_buffer[2].uint32_type=*(uint32*)&turnpid_adc.P;
-    flash_union_buffer[3].uint32_type=*(uint32*)&turnpid_adc.D;
-    flash_union_buffer[4].uint32_type=*(uint32*)&speedpid_left.P;
-    flash_union_buffer[5].uint32_type=*(uint32*)&speedpid_left.I;
-    flash_union_buffer[6].uint32_type=*(uint32*)&speedpid_right.P;
-    flash_union_buffer[7].uint32_type=*(uint32*)&speedpid_right.I;
-    flash_union_buffer[8].uint32_type=*(uint32*)&gyropid.P;
-    flash_union_buffer[9].uint32_type=*(uint32*)&gyropid.I;
-    flash_union_buffer[10].uint32_type=*(uint32*)&gyropid.D;
-    flash_union_buffer[11].uint32_type=*(uint32*)&original_speed;
-    flash_union_buffer[12].uint32_type=*(uint32*)&aim_distance;
-    for(int i=13;i<13+15;i++)
+    switch(page)
     {
-        flash_union_buffer[i].uint32_type=*((uint32*)process_status+(i-13));
-        flash_union_buffer[i+15].uint32_type=*((uint32*)process_speed+(i-13));
+        case 0:
+            if(flash_check(0, 0)==1)//如果Flash的0页有值，擦除0页中的值
+                flash_erase_page(0, 0);
+            flash_buffer_clear();//清空缓冲区
+
+            int index = 0;//缓冲区数组索引
+            //将需要修改的变量写到缓冲区
+            for(;index<PROCESS_LENGTH;index++)//状态机和状态机速度
+            {
+                flash_union_buffer[index].uint32_type=*((uint32*)(process_status+index));
+                flash_union_buffer[index+PROCESS_LENGTH].uint32_type=*((uint32*)(process_speed+index));
+            }
+            flash_union_buffer[index++].uint32_type=*(uint32*)&turnpid_image.P;//图像方向环P
+            flash_union_buffer[index++].uint32_type=*(uint32*)&turnpid_image.D;//图像方向环D
+            flash_union_buffer[index++].uint32_type=*(uint32*)&turnpid_adc.P;//电磁方向环P
+            flash_union_buffer[index++].uint32_type=*(uint32*)&turnpid_adc.D;//电磁方向环D
+            flash_union_buffer[index++].uint32_type=*(uint32*)&speedpid_left.P;//左轮速度环P
+            flash_union_buffer[index++].uint32_type=*(uint32*)&speedpid_left.I;//左轮速度环I
+            flash_union_buffer[index++].uint32_type=*(uint32*)&speedpid_right.P;//右轮速度环P
+            flash_union_buffer[index++].uint32_type=*(uint32*)&speedpid_right.I;//右轮速度环I
+            flash_union_buffer[index++].uint32_type=*(uint32*)&gyropid.P;//角速度环P
+            flash_union_buffer[index++].uint32_type=*(uint32*)&gyropid.I;//角速度环I
+            flash_union_buffer[index++].uint32_type=*(uint32*)&gyropid.D;//角速度环D
+            flash_union_buffer[index++].uint32_type=*(uint32*)&aim_distance;//预瞄点
+
+            flash_write_page_from_buffer(0, 0);//将缓冲区中的值写入Flash
+            break;
+        case 1:
+            if(flash_check(0, 1)==1)//如果Flash的1页有值，擦除1页的内容
+                flash_erase_page(0, 1);
+
+            flash_write_page(0, page, &read_flag, 1);//向1页中写入一个值,用来确认是否使用0页中的参数
+            break;
+        default:break;
     }
-    flash_write_page_from_buffer(0, 0);//将缓冲区中的值写入Flash
+
 }
 /***********************************************
 * @brief : 从Flash中读取值到对应的变量
 * @param : void
 * @return: void
-* @date  : 2023.5.14
+* @date  : 2023.7.11
 * @author: L
 ************************************************/
 void ReadFromFlash(void)
 {
-    if(flash_check(0, 0)==1)//如果Flash中有值，则读取，否则不读取
+    uint32 read_flag = 0;//存储是否读0页的参数的标志位
+    flash_read_page(0, 1, &read_flag, 1);//读取1页的第一个字符
+
+    if(flash_check(0, 0)==1 && read_flag==1)//如果Flash中有值，则读取，否则不读取
     {
-        flash_read_page_to_buffer(0, 0);//读取Flash的值
+        flash_buffer_clear();//清空缓冲区
+        flash_read_page_to_buffer(0, 0);//读取Flash的0页的参数到缓冲区
         //从缓冲区获得对应变量的值
-        turnpid_image.P=flash_union_buffer[0].float_type;
-        turnpid_image.D=flash_union_buffer[1].float_type;
-        turnpid_adc.P=flash_union_buffer[2].float_type;
-        turnpid_adc.D=flash_union_buffer[3].float_type;
-        speedpid_left.P=flash_union_buffer[4].float_type;
-        speedpid_left.I=flash_union_buffer[5].float_type;
-        speedpid_right.P=flash_union_buffer[6].float_type;
-        speedpid_right.I=flash_union_buffer[7].float_type;
-        gyropid.P=flash_union_buffer[8].float_type;
-        gyropid.I=flash_union_buffer[9].float_type;
-        gyropid.D=flash_union_buffer[10].float_type;
-        original_speed=flash_union_buffer[11].uint16_type;
-        aim_distance=flash_union_buffer[12].float_type;
-        for(int i=13;i<13+15;i++)
+        int index = 0;//索引值
+        for(;index<PROCESS_LENGTH;index++)//状态机和状态机速度
         {
-            process_status[i-13]=flash_union_buffer[i].uint8_type;
-            process_speed[i-13]=flash_union_buffer[i+15].uint16_type;
+            process_status[index]=flash_union_buffer[index].uint8_type;
+            process_speed[index+PROCESS_LENGTH]=flash_union_buffer[index+PROCESS_LENGTH].uint16_type;
         }
+        turnpid_image.P=flash_union_buffer[index++].float_type;//图像方向环P
+        turnpid_image.D=flash_union_buffer[index++].float_type;//图像方向环D
+        turnpid_adc.P=flash_union_buffer[index++].float_type;//电磁方向环P
+        turnpid_adc.D=flash_union_buffer[index++].float_type;//电磁方向环D
+        speedpid_left.P=flash_union_buffer[index++].float_type;//左轮速度环P
+        speedpid_left.I=flash_union_buffer[index++].float_type;//左轮速度环I
+        speedpid_right.P=flash_union_buffer[index++].float_type;//右轮速度环P
+        speedpid_right.I=flash_union_buffer[index++].float_type;//右轮速度环I
+        gyropid.P=flash_union_buffer[index++].float_type;//角速度环P
+        gyropid.I=flash_union_buffer[index++].float_type;//角速度环I
+        gyropid.D=flash_union_buffer[index++].float_type;//角速度环D
+        aim_distance=flash_union_buffer[index++].float_type;//预瞄点
+
         flash_buffer_clear();//清空缓冲区
     }
 }
