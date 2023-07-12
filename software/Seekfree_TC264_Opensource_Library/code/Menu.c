@@ -488,6 +488,7 @@ void Func_Pid(Menu Father,uint8 Maxsize){
      tft180_show_string(20,10*Line3,"Gyro_pid");
      tft180_show_string(20,10*Line4,"kImagepid");
      tft180_show_string(20,10*Line5,"kAdcpid");
+
      tft180_show_string(20,10*Maxsize,"EXIT");
     
     //------------FUNC-----------------------//
@@ -587,6 +588,7 @@ void Func_State_speed(Menu Father,uint8 Maxsize){
         tft180_show_string(20,10*Maxsize,"EXIT");
        //------------FUNC-----------------------//
      do{
+         tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
         }
        while(KeySelect(Maxsize)<0);
        switch (select)
@@ -646,6 +648,7 @@ void Func_process_speed(Menu Father,uint8 Maxsize){
            if(select<TFT_MAX_LINE&&select!=Line2)
            tft180_show_char(20+10*(No_States%8),10*select,'1');
 
+
           //------------FUNC-----------------------//
            //屎山第一步，有机会优化底层key_selete
         do
@@ -697,6 +700,7 @@ void Func_Basetrack(Menu Father,uint8 Maxsize){
          tft180_show_string(20,10*Maxsize,"EXIT");
         //------------FUNC-----------------------//
       do{
+          tft180_show_int(100,10*TFT_MAX_LINE,key_N*0.001,3);
              my_sel=KeySelect(Maxsize);
          }
         while(my_sel<0);
@@ -734,6 +738,7 @@ void Func_Imagepid(Menu Father,uint8 Maxsize){
       tft180_show_string(20,10*Maxsize,"EXIT");
      //------------FUNC-----------------------//
    do{
+       tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
           my_sel=KeySelect(Maxsize);
       }while(my_sel<0);
      switch (select)
@@ -781,12 +786,10 @@ void Func_ADCpid(Menu Father,uint8 Maxsize){
          tft180_show_string(20,10*Maxsize,"EXIT");
         //------------FUNC-----------------------//
       do{
-             tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
+          tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
              my_sel=KeySelect(Maxsize);
          }
         while(my_sel<0);
-         tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
         switch (select)
         {
         case Line1:
@@ -828,9 +831,11 @@ void Func_Leftpid(Menu Father,uint8 Maxsize){
             tft180_show_float(80,10*Line2,speedpid_left.I,4,2);
             tft180_show_string(20,10*Line3,"PIDLeft.D:");
             tft180_show_float(80,10*Line3,speedpid_left.D,4,2);
+            tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
             tft180_show_string(20,10*Maxsize,"EXIT");
             //------------FUNC-----------------------//
          do{
+             tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
                 my_sel=KeySelect(Maxsize);
             }while(my_sel<0);
            switch (select)
@@ -874,10 +879,13 @@ void Func_Rightpid(Menu Father,uint8 Maxsize){
             tft180_show_float(80,10*Line2,speedpid_right.I,4,2);
             tft180_show_string(20,10*Line3,"PIDRIGHT.D:");
             tft180_show_float(80,10*Line3,speedpid_right.D,4,2);
+            tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
             tft180_show_string(20,10*Maxsize,"EXIT");
            //------------FUNC-----------------------//
          do{
-                my_sel=KeySelect(Maxsize);
+             tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+
+             my_sel=KeySelect(Maxsize);
             }while(my_sel<0);
            switch (select)
            {
@@ -923,7 +931,8 @@ void Func_Gyropid(Menu Father,uint8 Maxsize){
             tft180_show_string(20,10*Maxsize,"EXIT");
            //------------FUNC-----------------------//
          do{
-                my_sel=KeySelect(Maxsize);
+             tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+             my_sel=KeySelect(Maxsize);
             }
            while(my_sel<0);
            switch (select)
@@ -1278,6 +1287,8 @@ void Func_EXP_TIME(Menu Father,uint8 Maxsize){
                 tft180_show_string(20,10*Maxsize,"EXIT");
                //------------FUNC-----------------------//
     while(KeySelect(Maxsize)<0){
+        tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+
           }
       switch (select){
           case Line1:
@@ -1559,8 +1570,8 @@ void WriteToFlash(uint32 page,uint32 read_flag)
             //将需要修改的变量写到缓冲区
             for(;index<PROCESS_LENGTH;index++)//状态机和状态机速度
             {
-                flash_union_buffer[index].uint8_type=process_status[index];//状态机状态
-                flash_union_buffer[index+PROCESS_LENGTH].uint16_type=process_speed[index];//状态机识别到元素前的速度
+                flash_union_buffer[index+PROCESS_LENGTH].uint8_type=process_status[index];//状态机状态
+                flash_union_buffer[index].uint16_type=process_speed[index];//状态机识别到元素前的速度
                 flash_union_buffer[index+2*PROCESS_LENGTH].uint8_type=process_property[index].min_speed;//元素中的最低速度
                 flash_union_buffer[index+3*PROCESS_LENGTH].uint8_type=process_property[index].max_speed;//元素中的最高速度
                 flash_union_buffer[index+4*PROCESS_LENGTH].uint8_type=process_property[index].speed_detaction_flag;//每个元素是否开启速度决策
@@ -1617,8 +1628,10 @@ void ReadFromFlash(void)
         int index = 0;//索引值
         for(;index<PROCESS_LENGTH;index++)//状态机和状态机速度
         {
-            process_status[index]=flash_union_buffer[index].uint8_type;//状态机的状态
-            process_speed[index]=flash_union_buffer[index+PROCESS_LENGTH].uint16_type;//识别到元素前的速度
+//            process_status[index]=flash_union_buffer[index].uint8_type;//状态机的状态
+//            process_speed[index]=flash_union_buffer[index+PROCESS_LENGTH].uint16_type;//识别到元素前的速度
+            process_status[index]=flash_union_buffer[index+PROCESS_LENGTH].uint8_type;//状态机的状态
+            process_speed[index]=flash_union_buffer[index].uint16_type;//识别到元素前的速度
             process_property[index].min_speed=flash_union_buffer[index+2*PROCESS_LENGTH].uint8_type;//元素中的最低速度
             process_property[index].max_speed=flash_union_buffer[index+3*PROCESS_LENGTH].uint8_type;//元素中的最高速度
             process_property[index].speed_detaction_flag=flash_union_buffer[index+4*PROCESS_LENGTH].uint8_type;//每个元素是否开启速度决策
