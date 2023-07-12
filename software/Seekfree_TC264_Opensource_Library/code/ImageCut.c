@@ -70,7 +70,7 @@ uint8 CutIdentify(void)
                 if(corner_id_l < 40 && corner_id_r < 40)
                 {
                     speed_type=kNormalSpeed;//关闭速度决策
-                    base_speed = 60;//降速入断路
+                    base_speed = process_property[process_status_cnt].min_speed;//降速入断路
                     track_mode = kTrackADC;//切换电磁循迹
                     cut_type = kCutMid;
                     aim_distance = origin_aimdis;//恢复预瞄点
@@ -89,7 +89,7 @@ uint8 CutIdentify(void)
         {
             if(r_line_count < 10 && l_line_count < 10)
             {
-                base_speed = 62;//环内加一点速
+                base_speed = process_property[process_status_cnt].max_speed;//环内加一点速
                 cut_type = kCutEndR;
             }
             break;
