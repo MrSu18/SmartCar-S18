@@ -54,25 +54,29 @@ uint8 BarrierIdentify(void)
                     encoder_dis_flag=1;
                     StartIntegralAngle_X(50);while(!icm_angle_x_flag);//等待40度
                     image_bias=0;
-                    while(dis<575.11);encoder_dis_flag=0;
+                    while(dis<589.54);encoder_dis_flag=0;
                     track_type=kTrackSpecial;image_bias=-8;//右拐
                     encoder_dis_flag=1;
-                    StartIntegralAngle_X(100);while(!icm_angle_x_flag);//等待70度
+                    StartIntegralAngle_X(90);while(!icm_angle_x_flag);//等待70度
                     image_bias=0;
-                    while(dis<780);encoder_dis_flag=0;
+                    while(dis<760.44);encoder_dis_flag=0;
 //                    return 1;
                 }
             }
             break;
         case 1://写死拐出去拐回来后，判断此时的左边线是不是真的左边线
-            //左边有边线，并且是往左上生长的，说明是正常的回到了赛道，结束状态
-            if(l_line_count>20 && r_line_count<3 && (l_growth_direction[4]+l_growth_direction[3]-l_growth_direction[1]-l_growth_direction[0])>l_line_count-20)
+            //电磁判断是否出状态
+            if((L>ADC_IN_TRACK_THR && LM>ADC_IN_TRACK_THR) || M>ADC_IN_TRACK_THR || (RM>ADC_IN_TRACK_THR && R>ADC_IN_TRACK_THR))
             {
                 gpio_set_level(BEER, 0);//状态结束关闭蜂鸣器
                 speed_type=kImageSpeed;
-                encoder_dis_flag=0;
                 barrier_status=0;
                 return 1;
+            }
+            //左边有边线，并且是往左上生长的，说明是正常的回到了赛道,寻左边线
+            else if(l_line_count>20 && r_line_count<3 && (l_growth_direction[4]+l_growth_direction[3]-l_growth_direction[1]-l_growth_direction[0])>l_line_count-20)
+            {
+                track_type=kTrackLeft;
             }
             //电磁判断是否在赛道内
             else if(L<ADC_IN_TRACK_THR && LM<ADC_IN_TRACK_THR && M<ADC_IN_TRACK_THR && RM<ADC_IN_TRACK_THR && R<ADC_IN_TRACK_THR)
@@ -91,6 +95,11 @@ uint8 BarrierIdentify(void)
                     image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
                 }
             }
+//            else//都不满足，可能扫线到赛道外了,偏差给0
+//            {
+//                track_type=kTrackSpecial;//在这里面求偏差
+//                image_bias=0;
+//            }
             break;
         default:break;
     }

@@ -95,8 +95,8 @@ int core0_main(void)
     KalmanInit(&kalman_adc,25,5);
     KalmanInit(&kalman_gyro,1,100);
     //速度环PID初始化
-    PIDInit(&speedpid_left,558.8,1.35,0);//558.8,1.35 317.9,0.69
-    PIDInit(&speedpid_right,578.35,1.41,0);//578.35,1.41 313.16,0.74
+    PIDInit(&speedpid_left,317.9,0.69,0);//558.8,1.35 317.9,0.69
+    PIDInit(&speedpid_right,313.16,0.74,0);//578.35,1.41 313.16,0.74
     //转向环PID初始化
     PIDInit(&turnpid_image,13,0,0);//700,40有角速度只能跑50
     PIDInit(&turnpid_adc,9,0,4);
@@ -120,16 +120,16 @@ int core0_main(void)
 //            printf("%f,%f,%f,%d\r\n",my_angle_x,dis,image_bias,dl1a_distance_mm);
 //            c1h0_isr_flag=0;
 //        }
-//       if(c0h0_isr_flag==1)
-//       {
-//           printf("%d,%d,%d,%d\r\n",speed_left,target_left,speed_right,target_right);
-//           c0h0_isr_flag=0;
-//       }
-       if(c0h1_isr_flag==1)
+       if(c0h0_isr_flag==1)
        {
-           printf("%d,%d,%f,%f\r\n",base_speed,process_status[process_status_cnt],image_bias,my_angle_y);
-           c0h1_isr_flag=0;
+           printf("%d,%d,%d,%d\r\n",speed_left,target_left,speed_right,target_right);
+           c0h0_isr_flag=0;
        }
+//       if(c0h1_isr_flag==1)
+//       {
+//           printf("%f,%d,%f,%f\r\n",dis,process_status[process_status_cnt],image_bias,my_angle_x);
+//           c0h1_isr_flag=0;
+//       }
         // 此处编写需要循环执行的代码
     }
 }

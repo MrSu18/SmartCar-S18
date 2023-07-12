@@ -20,14 +20,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="修正了sobel显示不了的Bug,速度环参数是新的速度环参数">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="clip_value可以按键修改">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBasic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageConversion.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -361,14 +360,7 @@
       <workItem from="1689147932501" duration="17000" />
       <workItem from="1689151671611" duration="217000" />
       <workItem from="1689151939033" duration="1065000" />
-      <workItem from="1689153103347" duration="617000" />
-    </task>
-    <task id="LOCAL-00029" summary="0.36的前瞻跑普通赛道效果好，但是环岛会飘出去，不知道为什么，电机控制有注释东西，不知道是不是之前没注释这个就跑不了">
-      <created>1681118236639</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1681118236639</updated>
+      <workItem from="1689153103347" duration="1826000" />
     </task>
     <task id="LOCAL-00030" summary="灰度扫线">
       <created>1681194170586</created>
@@ -706,7 +698,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689151877645</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="clip_value可以按键修改">
+      <created>1689154451990</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1689154451991</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -724,7 +723,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="修改模糊PID规则表" />
     <MESSAGE value="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯" />
     <MESSAGE value="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着" />
     <MESSAGE value="加配重跑的丝滑之后再来直接废掉，而且很明显右转就是跳轮，左转不会" />
@@ -749,7 +747,8 @@
     <MESSAGE value="按键菜单调状态机" />
     <MESSAGE value="按键菜单添加元素时默认元素属性是默认的而不依据代码里面的初始化" />
     <MESSAGE value="修正了sobel显示不了的Bug,速度环参数是新的速度环参数" />
-    <option name="LAST_COMMIT_MESSAGE" value="修正了sobel显示不了的Bug,速度环参数是新的速度环参数" />
+    <MESSAGE value="clip_value可以按键修改" />
+    <option name="LAST_COMMIT_MESSAGE" value="clip_value可以按键修改" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
