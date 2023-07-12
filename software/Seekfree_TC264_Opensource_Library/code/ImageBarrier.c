@@ -37,6 +37,7 @@ uint8 BarrierImageVerify(void);//路障图像二次验证
 uint8 BarrierIdentify(void)
 {
     speed_type=kNormalSpeed;
+    base_speed=original_speed;
     switch(barrier_status)
     {
         case 0://识别路障

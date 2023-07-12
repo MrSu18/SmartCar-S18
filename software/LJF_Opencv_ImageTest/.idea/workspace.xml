@@ -20,10 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="按键菜单调状态机">
+    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="按键菜单添加元素时默认元素属性是默认的而不依据代码里面的初始化">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -352,14 +351,8 @@
       <workItem from="1689074523363" duration="230000" />
       <workItem from="1689081833186" duration="181000" />
       <workItem from="1689088017763" duration="67000" />
-      <workItem from="1689089607095" duration="41000" />
-    </task>
-    <task id="LOCAL-00027" summary="把扫线的八零域标号改成全局变量，为了在元素再次扫线的时候保存标号值">
-      <created>1679321735889</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1679321735890</updated>
+      <workItem from="1689089607095" duration="68000" />
+      <workItem from="1689146027973" duration="1000" />
     </task>
     <task id="LOCAL-00028" summary="十字修改八零域标号，实地测试失败">
       <created>1679323011116</created>
@@ -697,7 +690,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689088039896</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="按键菜单添加元素时默认元素属性是默认的而不依据代码里面的初始化">
+      <created>1689089661837</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1689089661838</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -715,7 +715,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="修改纯跟踪算法求偏差的方式，PID参数进行对应调整，路障出状态和结束状态的循迹使用图像识别" />
     <MESSAGE value="图像加入防止右边重新扫线到左边的错误，引入种子生长方向记录去检测这种错误，135度角接环岛能看到拐点，但是现在问题就是要到环岛中部才能检测到环岛，如果不强制寻左线会从第一个口进去" />
     <MESSAGE value="修改模糊PID规则表" />
     <MESSAGE value="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯" />
@@ -740,7 +739,8 @@
     <MESSAGE value="调路障，把距离和角度改了" />
     <MESSAGE value="重新调速度环" />
     <MESSAGE value="按键菜单调状态机" />
-    <option name="LAST_COMMIT_MESSAGE" value="按键菜单调状态机" />
+    <MESSAGE value="按键菜单添加元素时默认元素属性是默认的而不依据代码里面的初始化" />
+    <option name="LAST_COMMIT_MESSAGE" value="按键菜单添加元素时默认元素属性是默认的而不依据代码里面的初始化" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
