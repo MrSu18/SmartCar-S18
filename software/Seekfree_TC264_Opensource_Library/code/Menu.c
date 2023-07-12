@@ -47,8 +47,8 @@ typedef enum Menu {//注册菜单
     State_machine,
     Parameter,
     Checkout,
+    Flash,
     //三级菜单
-
     /*Parameter*/
     kPid,
     kState_speed,
@@ -154,7 +154,6 @@ uint8 KeyGet(void)
 
     return key_down;
 }
-
 /***********************************************
 * @brief : 按键选择功能
 * @param : Maxsize 当前目录最大行数
@@ -292,14 +291,16 @@ void Func_State_machine(Menu Father,uint8 Maxsize){
      //------------------EXIT----------------//
      //tft180_show_string(20,10*Maxsize,"Exit");
      //-------------------FUNC----------------//
-     tft180_set_color(RGB565_WHITE,RGB565_BLACK);
+
     while(KeySelect(Maxsize)<0){
+        tft180_set_color(RGB565_BLACK,RGB565_WHITE);
         if(process_status[No_States]<10)//0-9的状态
             tft180_show_int(110+10*(No_States%3),10*(Line3+No_States/3) ,process_status[No_States],1);
         else
             tft180_show_char(110+10*(No_States%3),10*(Line3+No_States/3),process_status[No_States]);
+        tft180_set_color(RGB565_RED,RGB565_WHITE);
     }
-    tft180_set_color(RGB565_BLACK,RGB565_WHITE);
+
     switch (select)
     {
         case Line1:
@@ -1225,21 +1226,29 @@ void Func_gray_image(Menu Father,uint8 Maxsize){
 * @author: 黄诚钜
 ************************************************/
 void Func_sobel(Menu Father,uint8 Maxsize){
-    tft180_show_uint(120, 20, otsu_thr, 3);
     while(KeySelect(Maxsize)<0){
-            if(mt9v03x_finish_flag){
-                sobel(mt9v03x_image,binary_image);
-                tft180_show_binary_image(0, 0,binary_image[0],MT9V03X_W, MT9V03X_H, 160, 120);
-                mt9v03x_finish_flag=0;
-            }
+        select=Line3;
+        if(mt9v03x_finish_flag){
+            sobel(mt9v03x_image,binary_image);
+            tft180_show_binary_image(0, 0,binary_image[0],MT9V03X_W, MT9V03X_H, 160, 120);
+            mt9v03x_finish_flag=0;
         }
-        switch (select){
-            case KEY_EXIT:
-                page = kImage ;
-                break;
-            default :
-                break;
-        }
+        tft180_set_color(RGB565_WHITE,RGB565_BLACK);
+        tft180_show_uint(120, 10*Line3,otsu_thr,3);
+        tft180_set_color(RGB565_RED,RGB565_WHITE);
+    }
+    switch (select){
+        case Line3 :
+            if(LR_flag==PushRight) otsu_thr+=key_N;
+            else if(LR_flag==PushLeft) otsu_thr-=key_N;
+            else  MenuErrorLog("Sobel"); //Loading
+            break;
+        case KEY_EXIT:
+            page = kImage ;
+            break;
+        default :
+            break;
+    }
 }
 /***********************************************
 * @brief : 曝光调整函数
@@ -1284,15 +1293,15 @@ void Func_EXP_TIME(Menu Father,uint8 Maxsize){
 ************************************************/
 void Func_Outgarage(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
-                   tft180_show_string(30,10*Line1,"Left or Right");
-                   switch (Outgarage_dir)
-                   {
-                       case 0: tft180_show_string(20,10*Line2,"Left"); break;
-                       case 1: tft180_show_string(20,10*Line2,"Right"); break;
-                       break;
-                   }
-                   tft180_show_string(20,10*Maxsize,"EXIT");
-                  //------------FUNC-----------------------//
+   tft180_show_string(30,10*Line1,"Left or Right");
+   switch (Outgarage_dir)
+   {
+       case 0: tft180_show_string(20,10*Line2,"Left"); break;
+       case 1: tft180_show_string(20,10*Line2,"Right"); break;
+       break;
+   }
+   tft180_show_string(20,10*Maxsize,"EXIT");
+  //------------FUNC-----------------------//
        while(KeySelect(Maxsize)<0){
 
              }
@@ -1308,6 +1317,45 @@ void Func_Outgarage(Menu Father,uint8 Maxsize){
                  break;
          }
 }
+/***********************************************
+* @brief : Flash函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
+void Func_Flash(Menu Father,uint8 Maxsize){
+//-----------Display-------------------//
+  tft180_show_string(30,10*Line1,"Flash");
+
+  tft180_show_string(20,10*Line2,"1"); break;
+  tft180_show_string(20,10*Line2,"2"); break;
+
+  tft180_show_string(20,10*Maxsize,"EXIT");
+ //------------FUNC-----------------------//
+      while(KeySelect(Maxsize)<0){
+
+            }
+        switch (select){
+            case Line2:
+                break;
+            case Line3:
+                page = Father;
+                break;
+
+            default :
+                break;
+        }
+}
+/***********************************************
+* @brief : 自适应图像函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
+
+
 /***********************************************
 * @brief : 按键控制状态机
 * @param : void
@@ -1333,6 +1381,9 @@ void KeyStateMachine(void)
                 break;
             case Checkout:
                 Func_Checkout(HOME,6);
+                break;
+            case Flash:
+                Func_Flash(HOME,5);
                 break;
             //----------------三级菜单---------------//
             case kState_speed:
@@ -1406,6 +1457,7 @@ void KeyStateMachine(void)
     pit_enable(CCU60_CH0);//速度环
     pit_enable(CCU60_CH1);//方向环
 }
+
 /***********************************************
 * @brief : 按下按键唤醒屏幕查看跑车时间，为了应对赛场上调试不给用计时器
 * @param : void
