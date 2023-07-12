@@ -74,7 +74,7 @@ void core1_main(void)
     base_speed=original_speed=process_speed[0];
     KeyStateMachine();//按键控制
     pit_enable(CCU60_CH0);
-    OutGarage();//出库
+//    OutGarage();//出库
     while (TRUE)
     {
         // 此处编写需要循环执行的代码
@@ -95,8 +95,9 @@ void core1_main(void)
             //赛道基础信息变量重置
             TrackBasicClear();
 #else
-//            memcpy(gray_image,mt9v03x_image,USE_IMAGE_H*USE_IMAGE_W);//37us
-//            LCDShowPerImage();
+            myadaptiveThreshold(mt9v03x_image[0],binary_image[0],MT9V03X_W,MT9V03X_H,GRAY_BLOCK ,clip_value);
+            tft180_show_uint(120, 10, clip_value, 1);
+            tft180_show_binary_image(0, 0,binary_image[0],MT9V03X_W, MT9V03X_H, 160, 120);
 //            MotorSetPWM(3000,3300);
 //            system_delay_ms(3300);
 //            WakeUpScreen();

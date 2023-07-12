@@ -57,29 +57,15 @@ uint8 otsuThreshold(uint8* image, uint16 width, uint16 height)
     }
     return threshold;
 }
+
 /***********************************************
-* @brief : 全图计算阈值对全图进行二值化
-* @param : 灰度图像（全局变量）
-* @return: 灰度图像变成二值化图像（全局变量）
-* @date  : 2021.12.15
+* @brief : sobel二值化
+* @param : uint8_t imag[MT9V03X_H][MT9V03X_W]:灰度图
+*          uint8_t imag1[MT9V03X_H][MT9V03X_W]:二值化图
+* @return: 无
+* @date  : 2023.4.16
 * @author: 刘骏帆
 ************************************************/
-void ImageBinary(void)
-{
-    //压缩图像的二值化
-    uint8 Image_Threshold = otsuThreshold(mt9v03x_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    for (int i = 0; i < MT9V03X_H; i++)
-    {
-        for (int j = 0; j < MT9V03X_W; j++)
-        {
-            if (mt9v03x_image[i][j] <= Image_Threshold)//进行二值化之前只是得到阈值
-                binary_image[i][j] = IMAGE_BLACK;//0是黑色  //图像原点不变
-            else
-                binary_image[i][j] = IMAGE_WHITE;//1是白色  //图像原点不变
-        }
-    }
-}
-
 void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W])
 {
     int tempx=0,tempy=0,temp=0,i=0,j=0;
@@ -110,6 +96,42 @@ void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W
             }
             else
                 imag1[i][j]=temp;
+        }
+    }
+}
+
+/********************************************************************************************
+ ** 函数功能: 自适应阈值二值化图像
+ ** 参    数: uint8* img_data：灰度图像
+ **           uint8* output_data：二值化图像
+ **           int width：图像宽度
+ **           int height：图像高度
+ **           int block：分割局部阈值的方块大小例如7*7
+ **           uint8 clip_value: 局部阈值减去的经验值一般为（2~5）
+ ** 返 回 值: 无
+ ** 作    者: 上海交大16届智能车智能视觉组SJTUAuTop
+ **           https://zhuanlan.zhihu.com/p/391051197
+ ** 注    意：adaptiveThreshold(mt9v03x_image[0],BinaryImage[0],MT9V03X_W,MT9V03X_H,5,1);//但是没d用跟大津法一样
+ *********************************************************************************************/
+void myadaptiveThreshold(uint8 *img_data, uint8 *output_data, int width, int height, int block, uint8 clip_value)
+{
+    int half_block = block / 2;
+    for(int y=half_block; y<height-half_block; y++)
+    {
+        for(int x=half_block; x<width-half_block; x++)
+        {
+            // 计算局部阈值
+            int thres = 0;
+            for(int dy=-half_block; dy<=half_block; dy++)
+            {
+                for(int dx=-half_block; dx<=half_block; dx++)
+                {
+                    thres += img_data[(x+dx)+(y+dy)*width];
+                }
+            }
+            thres = thres / (block * block) - clip_value;
+            // 进行二值化
+            output_data[x+y*width] = img_data[x+y*width]>thres ? 255 : 0;
         }
     }
 }

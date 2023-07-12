@@ -18,8 +18,8 @@ extern uint8 binary_image[MT9V03X_H][MT9V03X_W];//二值化图像
 extern uint8 gray_image[MT9V03X_H][MT9V03X_W];//使用的缓存灰度图像,避免因为dma把图像冲走
 extern uint8 otsu_thr;//大津法对sobel算法之后的图像求得阈值
 
-void ImageBinary(void);//图像二值化
 void sobel(uint8_t imag[MT9V03X_H][MT9V03X_W],uint8_t imag1[MT9V03X_H][MT9V03X_W]);
+void myadaptiveThreshold(uint8 *img_data, uint8 *output_data, int width, int height, int block, uint8 clip_value);//上交大自适应二值化
 uint8 otsuThreshold(uint8* image, uint16 width, uint16 height);
 
 #endif

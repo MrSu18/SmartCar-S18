@@ -2,9 +2,9 @@
 #include "ImageBasic.h"
 #include "zf_common_headfile.h"
 //=========================赛道特征变量=============================
+uint8 clip_value=CLIP_VALUE;//灰度扫线的参数（1~5）
 myPoint left_line[EDGELINE_LENGTH]={0},right_line[EDGELINE_LENGTH]={0};//左右边线
 uint8 l_line_count=0,r_line_count=0;//左右边线记录总共有多长
-uint8 l_lostline_num = 0, r_lostline_num = 0;//左右丢线数
 uint8 l_growth_direction[8]={0},r_growth_direction[8]={0};//左右线生长方向,数组位置对应的是种子生长的时候号位的生长次数
 //================================================================
 
@@ -108,7 +108,7 @@ uint8 EightAreasSeedGrownGray(myPoint* seed,char choose,uint8 *seed_num)
     }
     local_thres += gray;
     local_thres /= (point_num+1);
-    local_thres -= CLIP_VALUE;
+    local_thres -= clip_value;
     char dx=0,dy=0;
     for(uint8 seed_count=0;seed_count<8;seed_count++)
     {

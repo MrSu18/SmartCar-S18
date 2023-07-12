@@ -79,8 +79,8 @@ void ImageProcess(void)
     {
         track_type=kTrackRight;
     }
-
-#if 1
+    CircleIslandLIn();
+#if 0
     switch(process_status[process_status_cnt])
     {
         case 1://左环岛
@@ -245,7 +245,6 @@ void TrackBasicClear(void)
     //边线丢线数组清零
     l_line_count=0;r_line_count=0;//边线的计数指针清零
     per_l_line_count=PER_EDGELINE_LENGTH,per_r_line_count=PER_EDGELINE_LENGTH;
-    l_lostline_num=0;r_lostline_num=0;//丢线数清零
     //生长趋势的数组清零
     memset(l_growth_direction,0,8);
     memset(r_growth_direction,0,8);
