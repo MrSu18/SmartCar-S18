@@ -227,6 +227,7 @@ void Func_Home(Menu Father,uint8 Maxsize){
      tft180_show_string(20,10*Line1,"State_machine");
      tft180_show_string(20,10*Line2,"Parameter");
      tft180_show_string(20,10*Line3,"Checkout");
+     tft180_show_string(20,10*Line4,"Flash");
      tft180_show_string(20,10*Maxsize,"EXIT");
     //------------FUNC-----------------------//
      do{
@@ -237,19 +238,18 @@ void Func_Home(Menu Father,uint8 Maxsize){
     case Line1:
         page = State_machine;
         LR_flag = PushRight;//默认展开
-        tft180_clear();
         break;
     case Line2:
         page = Parameter;
-        tft180_clear();
         break;
      case Line3:
         page = Checkout;
-        tft180_clear();
         break;
-    case Line4:
+     case Line4:
+         page = Flash;
+         break;
+    case Line5:
         page = Father;
-        tft180_clear();
         Departure_flag=0;
         break;
     default:
@@ -1330,29 +1330,43 @@ void Func_Outgarage(Menu Father,uint8 Maxsize){
 * @date  : 2023.7.12
 * @author: 黄诚钜
 ************************************************/
+bool Read_Flag = 0;
 void Func_Flash(Menu Father,uint8 Maxsize){
-//-----------Display-------------------//
-  tft180_show_string(30,10*Line1,"Flash");
-
-//  tft180_show_string(20,10*Line2,"1"); break;
-//  tft180_show_string(20,10*Line2,"2"); break;
-
-  tft180_show_string(20,10*Maxsize,"EXIT");
- //------------FUNC-----------------------//
+    //-----------Display-------------------//
+      tft180_show_string(20,10*Line1,"Write_Flash");
+      tft180_show_string(20,10*Line2,"Read_Flash_Nexttime");
+      tft180_show_string(20,10*Line3,"Don't,Read_Nexttime");
+      tft180_show_string(20,10*Line4,"Clear Flash");
+      //tft180_show_string(50,10*Maxsize-1,"Flash");
+      tft180_show_string(20,10*Maxsize,"EXIT");
+     //------------FUNC-----------------------//
       while(KeySelect(Maxsize)<0){
 
             }
         switch (select){
+            case Line1:
+                WriteToFlash(0, 0);
+                break;
             case Line2:
+                WriteToFlash(1, 1);
                 break;
             case Line3:
+                WriteToFlash(1, 0);
+                break;
+            case Line4:
+                flash_erase_page(0, 0);
+                flash_erase_page(0, 1);
+                break;
+            case Line5:
                 page = Father;
                 break;
-
             default :
+                select = Line1;
                 break;
         }
 }
+
+
 /***********************************************
 * @brief : 自适应图像函数
 * @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
@@ -1401,7 +1415,7 @@ void KeyStateMachine(void)
         switch(page){
             //-------------一级菜单-----------------//
             case HOME:
-                Func_Home(HOME,3);
+                Func_Home(HOME,4);
                 break;
             //-------------二级菜单-----------------//
             case State_machine:
@@ -1414,7 +1428,7 @@ void KeyStateMachine(void)
                 Func_Checkout(HOME,6);
                 break;
             case Flash:
-                Func_Flash(HOME,5);
+                Func_Flash(HOME,4);
                 break;
             //----------------三级菜单---------------//
             case kState_speed:
@@ -1516,4 +1530,111 @@ void WakeUpScreen(void)
     }
 }
 
+/***********************************************
+* @brief : 将需要修改的变量写入Flash
+* @param : page:选择写入哪一页
+*          read_flag:1表示会读取0页的内容，0表示使用原程序的参数(只有page为1时该项才有效)
+* @return: void
+* @date  : 2023.7.12
+* @author: L
+************************************************/
+void WriteToFlash(uint32 page,uint32 read_flag)
+{
+    switch(page)
+    {
+        case 0:
+            if(flash_check(0, 0)==1)//如果Flash的0页有值，擦除0页中的值
+                flash_erase_page(0, 0);
+            flash_buffer_clear();//清空缓冲区
+
+            int index = 0;//缓冲区数组索引
+            //将需要修改的变量写到缓冲区
+            for(;index<PROCESS_LENGTH;index++)//状态机和状态机速度
+            {
+                flash_union_buffer[index].uint8_type=process_status[index];//状态机状态
+                flash_union_buffer[index+PROCESS_LENGTH].uint16_type=process_speed[index];//状态机识别到元素前的速度
+                flash_union_buffer[index+2*PROCESS_LENGTH].uint8_type=process_property[index].min_speed;//元素中的最低速度
+                flash_union_buffer[index+3*PROCESS_LENGTH].uint8_type=process_property[index].max_speed;//元素中的最高速度
+                flash_union_buffer[index+4*PROCESS_LENGTH].uint8_type=process_property[index].speed_detaction_flag;//每个元素是否开启速度决策
+                flash_union_buffer[index+5*PROCESS_LENGTH].uint8_type=process_property[index].integral;//编码器或陀螺仪积分多少
+            }
+            flash_union_buffer[index++].float_type=turnpid_image.P;//图像方向环P
+            flash_union_buffer[index++].float_type=turnpid_image.I;//图像方向环I
+            flash_union_buffer[index++].float_type=turnpid_image.D;//图像方向环D
+            flash_union_buffer[index++].float_type=turnpid_adc.P;//电磁方向环P
+            flash_union_buffer[index++].float_type=turnpid_adc.I;//电磁方向环I
+            flash_union_buffer[index++].float_type=turnpid_adc.D;//电磁方向环D
+            flash_union_buffer[index++].float_type=speedpid_left.P;//左轮速度环P
+            flash_union_buffer[index++].float_type=speedpid_left.I;//左轮速度环I
+            flash_union_buffer[index++].float_type=speedpid_left.D;//左轮速度环D
+            flash_union_buffer[index++].float_type=speedpid_right.P;//右轮速度环P
+            flash_union_buffer[index++].float_type=speedpid_right.I;//右轮速度环I
+            flash_union_buffer[index++].float_type=speedpid_right.D;//右轮速度环D
+            flash_union_buffer[index++].float_type=gyropid.P;//角速度环P
+            flash_union_buffer[index++].float_type=gyropid.I;//角速度环I
+            flash_union_buffer[index++].float_type=gyropid.D;//角速度环D
+            flash_union_buffer[index++].float_type=aim_distance;//预瞄点
+            flash_union_buffer[index++].int16_type=Change_EXP_TIME_DEF;//摄像头曝光时间
+            flash_union_buffer[index++].uint8_type=Outgarage_dir;//出库方向
+
+            flash_write_page_from_buffer(0, 0);//将缓冲区中的值写入Flash
+            break;
+        case 1:
+            if(flash_check(0, 1)==1)//如果Flash的1页有值，擦除1页的内容
+                flash_erase_page(0, 1);
+
+            flash_write_page(0, page, &read_flag, 1);//向1页中写入一个值,用来确认是否使用0页中的参数
+            break;
+        default:break;
+    }
+
+}
+/***********************************************
+* @brief : 从Flash中读取值到对应的变量
+* @param : void
+* @return: void
+* @date  : 2023.7.12
+* @author: L
+************************************************/
+void ReadFromFlash(void)
+{
+    uint32 read_flag = 0;//存储是否读0页的参数的标志位
+    flash_read_page(0, 1, &read_flag, 1);//读取1页的第一个字符
+    if(flash_check(0, 0)==1 && flash_check(0, 1)==1 && read_flag==1)//如果Flash中有值，则读取，否则不读取
+    {
+        flash_buffer_clear();//清空缓冲区
+        flash_read_page_to_buffer(0, 0);//读取Flash的0页的参数到缓冲区
+        //从缓冲区获得对应变量的值
+        int index = 0;//索引值
+        for(;index<PROCESS_LENGTH;index++)//状态机和状态机速度
+        {
+            process_status[index]=flash_union_buffer[index].uint8_type;//状态机的状态
+            process_speed[index]=flash_union_buffer[index+PROCESS_LENGTH].uint16_type;//识别到元素前的速度
+            process_property[index].min_speed=flash_union_buffer[index+2*PROCESS_LENGTH].uint8_type;//元素中的最低速度
+            process_property[index].max_speed=flash_union_buffer[index+3*PROCESS_LENGTH].uint8_type;//元素中的最高速度
+            process_property[index].speed_detaction_flag=flash_union_buffer[index+4*PROCESS_LENGTH].uint8_type;//每个元素是否开启速度决策
+            process_property[index].integral=flash_union_buffer[index+5*PROCESS_LENGTH].uint8_type;//编码器或陀螺仪积分多少
+        }
+        turnpid_image.P=flash_union_buffer[index++].float_type;//图像方向环P
+        turnpid_image.I=flash_union_buffer[index++].float_type;//图像方向环I
+        turnpid_image.D=flash_union_buffer[index++].float_type;//图像方向环D
+        turnpid_adc.P=flash_union_buffer[index++].float_type;//电磁方向环P
+        turnpid_adc.I=flash_union_buffer[index++].float_type;//电磁方向环I
+        turnpid_adc.D=flash_union_buffer[index++].float_type;//电磁方向环D
+        speedpid_left.P=flash_union_buffer[index++].float_type;//左轮速度环P
+        speedpid_left.I=flash_union_buffer[index++].float_type;//左轮速度环I
+        speedpid_left.D=flash_union_buffer[index++].float_type;//左轮速度环D
+        speedpid_right.P=flash_union_buffer[index++].float_type;//右轮速度环P
+        speedpid_right.I=flash_union_buffer[index++].float_type;//右轮速度环I
+        speedpid_right.D=flash_union_buffer[index++].float_type;//右轮速度环D
+        gyropid.P=flash_union_buffer[index++].float_type;//角速度环P
+        gyropid.I=flash_union_buffer[index++].float_type;//角速度环I
+        gyropid.D=flash_union_buffer[index++].float_type;//角速度环D
+        aim_distance=flash_union_buffer[index++].float_type;//预瞄点
+        Change_EXP_TIME_DEF=flash_union_buffer[index++].int16_type;//摄像头曝光时间
+        Outgarage_dir=flash_union_buffer[index++].uint8_type;//出库方向
+
+        flash_buffer_clear();//清空缓冲区
+    }
+}
 #endif

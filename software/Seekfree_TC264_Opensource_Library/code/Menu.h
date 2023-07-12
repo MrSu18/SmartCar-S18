@@ -50,12 +50,14 @@ extern int page,key_N;
 extern uint8 per_image_flag,gray_image_flag;
 extern uint8 edgeline_flag,c_line_flag,per_edgeline_flag;
 extern int16 Change_EXP_TIME_DEF;
-extern uint8 No_States,LR_flag;//内部测试数据，无需extern
+
 
 void KEYInit(void);                             //初始化按键引脚
 uint8 KEYScan(void);                            //扫描是否有按键被按下
 uint8 KeyGet(void);                             //确认按键按下并且只执行一次
 void KeyStateMachine(void);                     //按键状态机
 void WakeUpScreen(void);
+void WriteToFlash(uint32 page,uint32 read_flag);
+void ReadFromFlash(void);
 
 #endif /* CODE_MENU_H_ */
