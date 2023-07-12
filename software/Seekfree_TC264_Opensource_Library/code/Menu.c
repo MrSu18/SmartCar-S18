@@ -581,6 +581,9 @@ void Func_State_speed(Menu Father,uint8 Maxsize){
         tft180_show_int(90,10*Line3,process_property[No_States-1].min_speed,4);
         tft180_show_string(20,10*Line4,"integral:");
         tft180_show_int(90,10*Line4,process_property[No_States-1].integral,4);
+        if(process_speed[No_States-1]==0) process_speed[No_States-1]=60;
+        tft180_show_string(20,10*Line5,"proc_speed:");
+        tft180_show_int(90,10*Line5,process_speed[No_States-1],4);
         tft180_show_string(20,10*Maxsize,"EXIT");
        //------------FUNC-----------------------//
      do{
@@ -604,6 +607,11 @@ void Func_State_speed(Menu Father,uint8 Maxsize){
            else  MenuErrorLog("Prop"); //Loading
            break;
        case Line5:
+           if(LR_flag==PushRight) process_speed[No_States-1]+=key_N;
+           else if(LR_flag==PushLeft) process_speed[No_States-1]-=key_N;
+           else  MenuErrorLog("Prop"); //Loading
+           break;
+       case Line6:
            if(Father==kprocess_speed){
                Return_flag =1;
            }
@@ -1366,7 +1374,6 @@ void Func_Flash(Menu Father,uint8 Maxsize){
         }
 }
 
-
 /***********************************************
 * @brief : 自适应图像函数
 * @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
@@ -1432,7 +1439,7 @@ void KeyStateMachine(void)
                 break;
             //----------------三级菜单---------------//
             case kState_speed:
-                Func_State_speed(State_machine,4);
+                Func_State_speed(State_machine,5);
                 break;
             case kPid:
                 Func_Pid(Parameter,5);
@@ -1494,7 +1501,9 @@ void KeyStateMachine(void)
                 break;
             case kadaptiveThreshold:
                 Func_adaptiveThreshold(kImage,TFT_MAX_LINE);
-            default:break;
+                break;
+            default:
+                break;
         }
     }
     //Departure_退出后
