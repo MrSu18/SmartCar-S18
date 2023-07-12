@@ -526,7 +526,7 @@ void Func_Pid(Menu Father,uint8 Maxsize){
         }
 }
 /***********************************************
-* @brief : 调节单个状态的函数
+* @brief : 调节单个状态的函数 //如果是从Proc 跳转来的 记得调整proc处的内部调用
 * @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
 * @return: void
 * @date  : 2023.7.12
@@ -673,7 +673,7 @@ void Func_process_speed(Menu Father,uint8 Maxsize){
               No_States = No_States+1+((my_sel/2-1)*8);//特殊译码进入状态机
               tft180_clear();
               do{
-              Func_State_speed(kprocess_speed,4);//临时跳转
+              Func_State_speed(kprocess_speed,5);//临时跳转
               }while(Return_flag !=1);
               No_States=CacheOfNo_States;
               break;
@@ -1345,7 +1345,6 @@ void Func_Flash(Menu Father,uint8 Maxsize){
       tft180_show_string(20,10*Line2,"Read_Flash_Nexttime");
       tft180_show_string(20,10*Line3,"Don't,Read_Nexttime");
       tft180_show_string(20,10*Line4,"Clear Flash");
-      //tft180_show_string(50,10*Maxsize-1,"Flash");
       tft180_show_string(20,10*Maxsize,"EXIT");
      //------------FUNC-----------------------//
       while(KeySelect(Maxsize)<0){
@@ -1552,8 +1551,8 @@ void WriteToFlash(uint32 page,uint32 read_flag)
     switch(page)
     {
         case 0:
-            if(flash_check(0, 0)==1)//如果Flash的0页有值，擦除0页中的值
-                flash_erase_page(0, 0);
+            if(flash_check(0, 2)==1)//如果Flash的0页有值，擦除0页中的值
+                flash_erase_page(0, 2);
             flash_buffer_clear();//清空缓冲区
 
             int index = 0;//缓冲区数组索引
@@ -1567,6 +1566,7 @@ void WriteToFlash(uint32 page,uint32 read_flag)
                 flash_union_buffer[index+4*PROCESS_LENGTH].uint8_type=process_property[index].speed_detaction_flag;//每个元素是否开启速度决策
                 flash_union_buffer[index+5*PROCESS_LENGTH].uint8_type=process_property[index].integral;//编码器或陀螺仪积分多少
             }
+            index+=5*PROCESS_LENGTH+1;
             flash_union_buffer[index++].float_type=turnpid_image.P;//图像方向环P
             flash_union_buffer[index++].float_type=turnpid_image.I;//图像方向环I
             flash_union_buffer[index++].float_type=turnpid_image.D;//图像方向环D
@@ -1586,7 +1586,7 @@ void WriteToFlash(uint32 page,uint32 read_flag)
             flash_union_buffer[index++].int16_type=Change_EXP_TIME_DEF;//摄像头曝光时间
             flash_union_buffer[index++].uint8_type=Outgarage_dir;//出库方向
 
-            flash_write_page_from_buffer(0, 0);//将缓冲区中的值写入Flash
+            flash_write_page_from_buffer(0, 2);//将缓冲区中的值写入Flash
             break;
         case 1:
             if(flash_check(0, 1)==1)//如果Flash的1页有值，擦除1页的内容
@@ -1609,10 +1609,10 @@ void ReadFromFlash(void)
 {
     uint32 read_flag = 0;//存储是否读0页的参数的标志位
     flash_read_page(0, 1, &read_flag, 1);//读取1页的第一个字符
-    if(flash_check(0, 0)==1 && flash_check(0, 1)==1 && read_flag==1)//如果Flash中有值，则读取，否则不读取
+    if(flash_check(0, 2)==1 && flash_check(0, 1)==1 && read_flag==1)//如果Flash中有值，则读取，否则不读取
     {
         flash_buffer_clear();//清空缓冲区
-        flash_read_page_to_buffer(0, 0);//读取Flash的0页的参数到缓冲区
+        flash_read_page_to_buffer(0, 2);//读取Flash的0页的参数到缓冲区
         //从缓冲区获得对应变量的值
         int index = 0;//索引值
         for(;index<PROCESS_LENGTH;index++)//状态机和状态机速度
@@ -1624,6 +1624,7 @@ void ReadFromFlash(void)
             process_property[index].speed_detaction_flag=flash_union_buffer[index+4*PROCESS_LENGTH].uint8_type;//每个元素是否开启速度决策
             process_property[index].integral=flash_union_buffer[index+5*PROCESS_LENGTH].uint8_type;//编码器或陀螺仪积分多少
         }
+        index+=5*PROCESS_LENGTH+1;
         turnpid_image.P=flash_union_buffer[index++].float_type;//图像方向环P
         turnpid_image.I=flash_union_buffer[index++].float_type;//图像方向环I
         turnpid_image.D=flash_union_buffer[index++].float_type;//图像方向环D

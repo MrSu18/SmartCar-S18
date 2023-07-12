@@ -79,7 +79,6 @@ void ImageProcess(void)
     {
         track_type=kTrackRight;
     }
-//    CircleIslandLIn();
 #if 1
     switch(process_status[process_status_cnt])
     {

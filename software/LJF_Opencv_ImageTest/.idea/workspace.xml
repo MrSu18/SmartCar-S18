@@ -21,12 +21,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="clip_value可以按键修改">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageBarrier.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageGarage.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageGarage.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Menu.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Menu.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -361,6 +360,7 @@
       <workItem from="1689151671611" duration="217000" />
       <workItem from="1689151939033" duration="1065000" />
       <workItem from="1689153103347" duration="1826000" />
+      <workItem from="1689177320719" duration="2000" />
     </task>
     <task id="LOCAL-00030" summary="灰度扫线">
       <created>1681194170586</created>

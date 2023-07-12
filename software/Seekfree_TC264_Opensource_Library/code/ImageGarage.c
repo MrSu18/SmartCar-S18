@@ -13,6 +13,7 @@
 #include "zf_driver_pit.h"
 #include "icm20602.h"
 #include "Control.h"
+#include "ImageProcess.h"
 
 typedef enum GarageType_l
 {

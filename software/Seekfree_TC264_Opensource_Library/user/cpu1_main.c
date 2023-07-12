@@ -71,9 +71,9 @@ void core1_main(void)
     cpu_wait_event_ready();                 // 等待所有核心初始化完毕
     sobel(mt9v03x_image,binary_image);
     otsu_thr=otsuThreshold(binary_image[0], MT9V03X_W, MT9V03X_H);//使用大津法得到二值化阈值
-    base_speed=original_speed=process_speed[0];
     ReadFromFlash();
     KeyStateMachine();//按键控制
+    base_speed=original_speed=process_speed[0];
     pit_enable(CCU60_CH0);
     OutGarage();//出库
     while (TRUE)
