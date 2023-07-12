@@ -17,6 +17,7 @@
 #include "ImageTrack.h"
 #include "isr.h"
 #include "ImageConversion.h"
+#include "ImageBasic.h"
 
 #define TFT_MAX_LINE 11 //可显示12行 从0开始数起
 #define Unknown_sta -5 //未知状态标志位，可用于检错
@@ -88,6 +89,7 @@ typedef enum Menu {//注册菜单
     kper_image,
     kgray_image,
     ksobel,
+    kadaptiveThreshold,
     /*kImage*/
 
 }Menu;
@@ -955,6 +957,7 @@ void Func_Image(Menu Father,uint8 Maxsize){
     tft180_show_string(20,10*Line2,"per_image");
     tft180_show_string(20,10*Line3,"gray_image");
     tft180_show_string(20,10*Line4,"Sobel");
+    tft180_show_string(20,10*Line5,"AdaptiveThreshold");
     tft180_show_string(20,10*Maxsize,"EXIT");
    //------------FUNC-----------------------//
      do{
@@ -975,6 +978,9 @@ void Func_Image(Menu Father,uint8 Maxsize){
               page = ksobel;
               break;
            case Line5:
+             page = kadaptiveThreshold;
+             break;
+           case Line6:
                page = Father;
                tft180_clear();
                break;
@@ -1328,8 +1334,8 @@ void Func_Flash(Menu Father,uint8 Maxsize){
 //-----------Display-------------------//
   tft180_show_string(30,10*Line1,"Flash");
 
-  tft180_show_string(20,10*Line2,"1"); break;
-  tft180_show_string(20,10*Line2,"2"); break;
+//  tft180_show_string(20,10*Line2,"1"); break;
+//  tft180_show_string(20,10*Line2,"2"); break;
 
   tft180_show_string(20,10*Maxsize,"EXIT");
  //------------FUNC-----------------------//
@@ -1354,7 +1360,32 @@ void Func_Flash(Menu Father,uint8 Maxsize){
 * @date  : 2023.7.12
 * @author: 黄诚钜
 ************************************************/
+void Func_adaptiveThreshold(Menu Father,uint8 Maxsize){
+    while(KeySelect(Maxsize)<0){
+        select=Line3;
+        if(mt9v03x_finish_flag){
 
+            myadaptiveThreshold(mt9v03x_image, binary_image, MT9V03X_W, MT9V03X_H,GRAY_BLOCK, clip_value);
+            tft180_show_binary_image(0, 0,binary_image[0],MT9V03X_W, MT9V03X_H, 160, 120);
+            mt9v03x_finish_flag=0;
+        }
+        tft180_set_color(RGB565_WHITE,RGB565_BLACK);
+        tft180_show_uint(120, 10*Line3,clip_value,3);
+        tft180_set_color(RGB565_RED,RGB565_WHITE);
+    }
+    switch (select){
+        case Line3 :
+            if(LR_flag==PushRight) clip_value+=key_N;
+            else if(LR_flag==PushLeft) clip_value-=key_N;
+            else  MenuErrorLog("adaptimg"); //Loading
+            break;
+        case KEY_EXIT:
+            page = kImage ;
+            break;
+        default :
+            break;
+    }
+}
 
 /***********************************************
 * @brief : 按键控制状态机
@@ -1405,7 +1436,7 @@ void KeyStateMachine(void)
                 Func_Outgarage(Parameter, 2);
                 break;
             case kImage:
-                Func_Image(Checkout, 4);
+                Func_Image(Checkout, 5);
                 break;
             case kTof:
                 Func_Tof(Checkout, 2);
@@ -1445,8 +1476,10 @@ void KeyStateMachine(void)
                 Func_gray_image(kImage,4);
                 break;
             case ksobel:
-                Func_sobel(kImage,4);
+                Func_sobel(kImage,TFT_MAX_LINE);
                 break;
+            case kadaptiveThreshold:
+                Func_adaptiveThreshold(kImage,TFT_MAX_LINE);
             default:break;
         }
     }
