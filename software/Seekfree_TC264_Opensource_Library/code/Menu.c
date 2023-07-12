@@ -19,15 +19,28 @@
 #include "ImageConversion.h"
 
 #define TFT_MAX_LINE 11 //可显示12行 从0开始数起
-#define Unknown_sta -5 
-#define Unselected -1
+#define Unknown_sta -5 //未知状态标志位，可用于检错
+#define Unselected -1 //未确定标志
+#define PushLeft 2 //推左 仅用于判断，可改值
+#define PushRight 3 //推右 仅用于判断，可改值
+#define KEY_EXIT 13 //按下keytop select返回值
 
 uint8 per_image_flag=0,gray_image_flag=0;
 uint8 edgeline_flag=0,c_line_flag=0,per_edgeline_flag=0;
 uint8 Return_flag=0; //菜单返回标志  待修正
+uint8 LR_flag;//左右摇杆标志
+uint8 No_States;//状态机状态计数器
+uint8 States_amount;//状态机总数
 int16 Change_EXP_TIME_DEF=MT9V03X_EXP_TIME_DEF;  //要想曝光生效，必须要改摄像头配置文件里的参数
+bool Outgarage_dir=0;//出库方向 0为左 1为右
+int page; //页数--即状态机状态
+short select;//实时获取行数
+short my_sel;//保存上一个select
+bool Departure_flag;//退出按键状态机标志位_0即退出
+int key_N=1;//按键步长
 
-typedef enum Menu {
+
+typedef enum Menu {//注册菜单
     //一级菜单
     HOME,
     //二级菜单
@@ -35,6 +48,7 @@ typedef enum Menu {
     Parameter,
     Checkout,
     //三级菜单
+
     /*Parameter*/
     kPid,
     kState_speed,
@@ -43,6 +57,7 @@ typedef enum Menu {
     kEXP_TIME,
     kOutgarage,
     /*Parameter*/
+
     /*Checkout*/
     kImage,
     kTof,
@@ -51,6 +66,7 @@ typedef enum Menu {
     kADC,
     kMPU,
     /*Checkout*/
+
     //四级菜单
     /*kPid*/
     kImagepid,
@@ -59,24 +75,22 @@ typedef enum Menu {
     kRightpid,
     kGyropid,
     /*kPid*/
-    /*kState_speed*/
-    kLeftCircle,
-    kRightCircle,
-    kCut,
-    kSlope,
-    kBarrier,
-    /*kState_speed*/
+
+//    /*kState_speed*/----测试无误后，可删除
+//    kLeftCircle,
+//    kRightCircle,
+//    kCut,
+//    kSlope,
+//    kBarrier,
+//    /*kState_speed*/
+
     /*kImage*/
     kper_image,
     kgray_image,
     ksobel,
     /*kImage*/
-}Menu;
 
-int page;
-short select;
-bool departure;
-int key_N=1;//按键步长
+}Menu;
 
 /***********************************************
 * @brief : 按键初始化
@@ -93,8 +107,9 @@ void KEYInit(void)
     gpio_init(P33_13,GPI,LOOSE,GPI_PULL_DOWN);
     gpio_init(P32_4,GPI,LOOSE,GPI_PULL_DOWN);
     gpio_init(P33_9,GPI,LOOSE,GPI_PULL_DOWN);
-    page = HOME;
-    departure=1;
+    page = HOME;//首页为HOME
+    Departure_flag=1;//进入按键状态机模式
+    key_N=1;//步长为1
 }
 /***********************************************
 * @brief : 按键扫描程序，扫描是否有按键被按下
@@ -144,13 +159,9 @@ uint8 KeyGet(void)
 * @brief : 按键选择功能
 * @param : Maxsize 当前目录最大行数
 * @return: 未确认既为Unselected(-1),未知状态为Unknown_sta(-5)
-* @date  : 2023.7.7
-* @author: L
+* @date  : 2023.7.12
+* @author: 黄诚钜
 ************************************************/
-uint8 LR_flag;//左右摇杆标志
-#define PushLeft 2
-#define PushRight 3
-#define KEY_EXIT 13
 short KeySelect(uint8 Page_Maxline){
     if(select==KEY_EXIT)select = 0;
     tft180_show_string(0, select*10, ">>");
@@ -175,35 +186,53 @@ short KeySelect(uint8 Page_Maxline){
             else return select;                     break;//确认键
             case KEY_LOOSE:                         break;//未按下
             case KEY_TOP: select =KEY_EXIT;   return KEY_EXIT;  break;//按下top键退出，滑动菜单前的无奈之举
-            case KEY_LOW: key_N = (key_N*10)%1000;if(key_N==0) key_N =1; break;//很蠢的循环，可改进
+            case KEY_LOW:
+                if(page == State_machine){//状态机选择特殊处理
+                    if(No_States>0)
+                        No_States --;
+                    break;
+                }
+                //普遍处理
+                key_N = (key_N*10)%1000;
+                if(key_N==0) key_N =1;
+                break;//很蠢的循环，可改进
             default :       return Unknown_sta;   break;//未知状态
 
         }
         return Unselected;
 }
+/***********************************************
+* @brief : Menu报错-用于调试
+* @param : Page 输入报错字符串
+* @return: viod
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void MenuErrorLog(const char Page[]){
     tft180_show_string(30,10*TFT_MAX_LINE,Page);
     tft180_show_string(80,10*TFT_MAX_LINE,"Error");
 }
-
-short my_sel;
+/***********************************************
+* @brief : 主菜单函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Home(Menu Father,uint8 Maxsize){
     //  for(int i = 0;i < Maxsize;i++)
     // tft180_show_string(0, i*10, home[i]);//这里可以集成为一个显示内容的字符数组，但节约内存暂时不考虑
     //-----------Display-------------------//
-
      tft180_show_string(20,10*Line1,"State_machine");
      tft180_show_string(20,10*Line2,"Parameter");
      tft180_show_string(20,10*Line3,"Checkout");
      tft180_show_string(20,10*Maxsize,"EXIT");
     //------------FUNC-----------------------//
-  do{
+     do{
          my_sel=KeySelect(Maxsize);
-     }
-    while(my_sel<0);
+     }while(my_sel<0);
     switch (select)
     {
-
     case Line1:
         page = State_machine;
         LR_flag = PushRight;//默认展开
@@ -220,18 +249,22 @@ void Func_Home(Menu Father,uint8 Maxsize){
     case Line4:
         page = Father;
         tft180_clear();
-        departure=0;
+        Departure_flag=0;
         break;
     default:
         select=0;//宏定义
         tft180_clear();
         break;
     }
-
     //-------EXIT-----------//
-   
 }
-uint8 No_States;
+/***********************************************
+* @brief : 状态机函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_State_machine(Menu Father,uint8 Maxsize){
     //  for(int i = 0;i < Maxsize;i++)
     // tft180_show_string(0, i*10, home[i]);//这里可以集成为一个显示内容的字符数组，但节约内存暂时不考虑
@@ -255,12 +288,18 @@ void Func_State_machine(Menu Father,uint8 Maxsize){
          tft180_show_char(110+10*(i%3),10*(Line3+i/3),process_status[i]);
          if(process_status[i]==0) break;
      }
+     tft180_show_int(110,10*Line1,No_States,2); //显示第几个状态
      //------------------EXIT----------------//
-//     tft180_show_string(20,10*Maxsize,"Exit");
-    //-------------------FUNC----------------//
+     //tft180_show_string(20,10*Maxsize,"Exit");
+     //-------------------FUNC----------------//
+     tft180_set_color(RGB565_WHITE,RGB565_BLACK);
     while(KeySelect(Maxsize)<0){
-        tft180_show_int(110,10*Line1,No_States,2); //显示第几个状态
+        if(process_status[No_States]<10)//0-9的状态
+            tft180_show_int(110+10*(No_States%3),10*(Line3+No_States/3) ,process_status[No_States],1);
+        else
+            tft180_show_char(110+10*(No_States%3),10*(Line3+No_States/3),process_status[No_States]);
     }
+    tft180_set_color(RGB565_BLACK,RGB565_WHITE);
     switch (select)
     {
         case Line1:
@@ -314,7 +353,7 @@ void Func_State_machine(Menu Father,uint8 Maxsize){
 //--------------EXIT---------------------------------//
         case Line14:
             page = Father;
-//            process_status_cnt=No_States;
+            States_amount=No_States;
             No_States=0;
             LR_flag =0;
             tft180_clear();
@@ -324,7 +363,13 @@ void Func_State_machine(Menu Father,uint8 Maxsize){
             break;
     }
 }
-void Func_SetStateSpeed(uint8 No_States){}//待废除
+/***********************************************
+* @brief : 选择调整参数种类函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Parameter(Menu Father,uint8 Maxsize){
      //-----------Display-------------------//
      tft180_show_string(20,10*Line1,"Pid");
@@ -333,43 +378,48 @@ void Func_Parameter(Menu Father,uint8 Maxsize){
      tft180_show_string(20,10*Line4,"EXP_TIME");
      tft180_show_string(20,10*Line5,"OutGarage_dir");
      tft180_show_string(20,10*Maxsize,"EXIT");
-    
     //------------FUNC-----------------------//
-  do{
-         my_sel=KeySelect(Maxsize);
-     }
-    while(my_sel<0);
+    do{
+        my_sel=KeySelect(Maxsize);
+    }while(my_sel<0);
     switch (select)
     {
-    case Line1:
-        page = kPid;
-        tft180_clear();
-        break;
-    case Line2:
-        page = kprocess_speed;
-        tft180_clear();
-        break;
-    case Line3:
-        page = kBasetrack;
-        tft180_clear();
-        break;
-    case Line4:
-        page = kEXP_TIME;
-        tft180_clear();
-        break;
-    case Line5:
-        page = kOutgarage;
-        tft180_clear();
-        break;
-    case Line6:
-        page = Father;
-        tft180_clear();
-        break;
-    default:
-        select=0;//宏定义
-        break;
+        case Line1:
+            page = kPid;
+            tft180_clear();
+            break;
+        case Line2:
+            page = kprocess_speed;
+            tft180_clear();
+            break;
+        case Line3:
+            page = kBasetrack;
+            tft180_clear();
+            break;
+        case Line4:
+            page = kEXP_TIME;
+            tft180_clear();
+            break;
+        case Line5:
+            page = kOutgarage;
+            tft180_clear();
+            break;
+        case Line6:
+            page = Father;
+            tft180_clear();
+            break;
+        default:
+            select=0;//宏定义
+            break;
     }
 }
+/***********************************************
+* @brief : 调试选择函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Checkout(Menu Father,uint8 Maxsize){
        //-----------Display-------------------//
      tft180_show_string(20,10*Line1,"kImage");
@@ -380,49 +430,54 @@ void Func_Checkout(Menu Father,uint8 Maxsize){
      tft180_show_string(20,10*Line6,"kMpu");
      tft180_show_string(20,10*Maxsize,"EXIT");
     //------------FUNC-----------------------//
-  do{
-         tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-         my_sel=KeySelect(Maxsize);
-     }
-    while(my_sel<0);
-     tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
+    do{
+        tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
+        my_sel=KeySelect(Maxsize);
+    }while(my_sel<0);
+        tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
     switch (select)
     {
-
-    case Line1:
-        page = kImage;
-        tft180_clear();
-        break;
-    case Line2:
-        page = kTof;
-        tft180_clear();
-        break;
+        case Line1:
+            page = kImage;
+            tft180_clear();
+            break;
+        case Line2:
+            page = kTof;
+            tft180_clear();
+            break;
         case Line3:
-        page = kEncoder;
-        tft180_clear();
-        break;
-    case Line4:
-        page = kMotor;
-        tft180_clear();
-        break;
-    case Line5:
-        page = kADC;
-        tft180_clear();
-        break;
-    case Line6:
-        page = kMPU;
-        tft180_clear();
-        break;
-    case Line7:
-        page = Father;
-        tft180_clear();
-        break;
-    default:
-        select=0;//宏定义
-        break;
+            page = kEncoder;
+            tft180_clear();
+            break;
+        case Line4:
+            page = kMotor;
+            tft180_clear();
+            break;
+        case Line5:
+            page = kADC;
+            tft180_clear();
+            break;
+        case Line6:
+            page = kMPU;
+            tft180_clear();
+            break;
+        case Line7:
+            page = Father;
+            tft180_clear();
+            break;
+        default:
+            select=0;//宏定义
+            break;
     }
     //-------EXIT-----------//
 }
+/***********************************************
+* @brief : Pid调节选择函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Pid(Menu Father,uint8 Maxsize){
       //-----------Display-------------------//
      tft180_show_string(20,10*Line1,"kLeftpid");
@@ -433,46 +488,47 @@ void Func_Pid(Menu Father,uint8 Maxsize){
      tft180_show_string(20,10*Maxsize,"EXIT");
     
     //------------FUNC-----------------------//
-  do{
-         tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-         my_sel=KeySelect(Maxsize);
-     }
-    while(my_sel<0);
-     tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
-    switch (select)
-    {
-
-    case Line1:
-        page = kLeftpid;
-        tft180_clear();
-        break;
-    case Line2:
-        page = kRightpid;
-        tft180_clear();
-        break;
-    case Line3:
-        page = kGyropid;
-        tft180_clear();
-        break;
-    case Line4:
-        page = kImagepid;
-        tft180_clear();
-        break;
-    case Line5:
-        page = kAdcpid;
-        tft180_clear();
-        break;
-    case Line6:
-        page = Father;
-        tft180_clear();
-        break;
-
-    default:
-        select=0;//宏定义
-        break;
-    }
+      do{
+             my_sel=KeySelect(Maxsize);
+         }while(my_sel<0);
+        switch (select)
+        {
+        case Line1:
+            page = kLeftpid;
+            tft180_clear();
+            break;
+        case Line2:
+            page = kRightpid;
+            tft180_clear();
+            break;
+        case Line3:
+            page = kGyropid;
+            tft180_clear();
+            break;
+        case Line4:
+            page = kImagepid;
+            tft180_clear();
+            break;
+        case Line5:
+            page = kAdcpid;
+            tft180_clear();
+            break;
+        case Line6:
+            page = Father;
+            tft180_clear();
+            break;
+        default:
+            select=0;//宏定义
+            break;
+        }
 }
+/***********************************************
+* @brief : 调节单个状态的函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_State_speed(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
     switch(process_status[No_States-1]){//因为每次选择完之后nostate都会+1，于是到这里就进行-1操作
@@ -527,7 +583,6 @@ void Func_State_speed(Menu Father,uint8 Maxsize){
      do{
         }
        while(KeySelect(Maxsize)<0);
-
        switch (select)
        {
        case Line2:
@@ -557,7 +612,13 @@ void Func_State_speed(Menu Father,uint8 Maxsize){
            break;
        }
 }
-
+/***********************************************
+* @brief : 选择调节第几个状态机函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_process_speed(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
            select=my_sel;
@@ -594,25 +655,29 @@ void Func_process_speed(Menu Father,uint8 Maxsize){
           case Line10:
               page = Father;
               No_States=0;
-
               break;
           case KEY_EXIT://暂时充当跳转位
               Return_flag =0;
               uint8 CacheOfNo_States =No_States;
               No_States = No_States+1+((my_sel/2-1)*8);//特殊译码进入状态机
               tft180_clear();
-
               do{
-              Func_State_speed(kprocess_speed,4);
+              Func_State_speed(kprocess_speed,4);//临时跳转
               }while(Return_flag !=1);
               No_States=CacheOfNo_States;
-
               break;
           default:
               //select=Line2;//宏定义
               break;
           }
 }
+/***********************************************
+* @brief : 预瞄点调节函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Basetrack(Menu Father,uint8 Maxsize){
         //-----------Display-------------------//
          tft180_show_string(50,10*Line1,"Basetrack");
@@ -640,6 +705,13 @@ void Func_Basetrack(Menu Father,uint8 Maxsize){
             break;
         }
 }
+/***********************************************
+* @brief : ImgPID调节函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Imagepid(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
       tft180_show_string(20,10*Line1,"Img.P:");
@@ -649,15 +721,10 @@ void Func_Imagepid(Menu Father,uint8 Maxsize){
       tft180_show_string(20,10*Line3,"Img.D:");
       tft180_show_float(80,10*Line3,turnpid_image.D,4,2);
       tft180_show_string(20,10*Maxsize,"EXIT");
-
      //------------FUNC-----------------------//
    do{
-          tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
           my_sel=KeySelect(Maxsize);
-      }
-     while(my_sel<0);
-      tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
+      }while(my_sel<0);
      switch (select)
      {
      case Line1:
@@ -685,6 +752,13 @@ void Func_Imagepid(Menu Father,uint8 Maxsize){
          break;
      }
 }
+/***********************************************
+* @brief : ADCPID调节函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_ADCpid(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
          tft180_show_string(20,10*Line1,"PIDADC.P:");
@@ -728,6 +802,13 @@ void Func_ADCpid(Menu Father,uint8 Maxsize){
             break;
         }
 }
+/***********************************************
+* @brief : LeftPID调节函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Leftpid(Menu Father,uint8 Maxsize){
             //-----------Display-------------------//
             tft180_show_string(20,10*Line1,"PIDLeft.P:");
@@ -739,12 +820,8 @@ void Func_Leftpid(Menu Father,uint8 Maxsize){
             tft180_show_string(20,10*Maxsize,"EXIT");
             //------------FUNC-----------------------//
          do{
-                tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
                 my_sel=KeySelect(Maxsize);
-            }
-           while(my_sel<0);
-            tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
+            }while(my_sel<0);
            switch (select)
            {
            case Line1:
@@ -771,6 +848,13 @@ void Func_Leftpid(Menu Father,uint8 Maxsize){
                break;
            }
 }
+/***********************************************
+* @brief : RightPID调节函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Rightpid(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
             tft180_show_string(20,10*Line1,"PIDRIGHT.P:");
@@ -782,12 +866,8 @@ void Func_Rightpid(Menu Father,uint8 Maxsize){
             tft180_show_string(20,10*Maxsize,"EXIT");
            //------------FUNC-----------------------//
          do{
-                tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
                 my_sel=KeySelect(Maxsize);
-            }
-           while(my_sel<0);
-            tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
+            }while(my_sel<0);
            switch (select)
            {
            case Line1:
@@ -814,6 +894,13 @@ void Func_Rightpid(Menu Father,uint8 Maxsize){
                break;
            }
 }
+/***********************************************
+* @brief : GyroPID调节函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Gyropid(Menu Father,uint8 Maxsize){
             //-----------Display-------------------//
             tft180_show_string(20,10*Line1,"Gyro.P:");
@@ -825,12 +912,9 @@ void Func_Gyropid(Menu Father,uint8 Maxsize){
             tft180_show_string(20,10*Maxsize,"EXIT");
            //------------FUNC-----------------------//
          do{
-                tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
                 my_sel=KeySelect(Maxsize);
             }
            while(my_sel<0);
-            tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
            switch (select)
            {
            case Line1:
@@ -857,9 +941,15 @@ void Func_Gyropid(Menu Father,uint8 Maxsize){
                break;
            }
 }
+/***********************************************
+* @brief : 图像查看选择函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Image(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
-
     tft180_show_string(20,10*Line1,"Image");
     tft180_show_string(20,10*Line2,"per_image");
     tft180_show_string(20,10*Line3,"gray_image");
@@ -869,9 +959,7 @@ void Func_Image(Menu Father,uint8 Maxsize){
      do{
 
             my_sel=KeySelect(Maxsize);
-        }
-       while(my_sel<0);
-
+        }while(my_sel<0);
        switch (select)
        {
            case Line2 :
@@ -885,16 +973,22 @@ void Func_Image(Menu Father,uint8 Maxsize){
            case Line4:
               page = ksobel;
               break;
-       case Line5:
-           page = Father;
-           tft180_clear();
-           break;
-       default:
-           select=Line2;//宏定义
-           break;
+           case Line5:
+               page = Father;
+               tft180_clear();
+               break;
+           default:
+               select=Line2;//宏定义
+               break;
        }
-
 }
+/***********************************************
+* @brief : TOF调试函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Tof(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
 
@@ -920,71 +1014,80 @@ void Func_Tof(Menu Father,uint8 Maxsize){
                break;
            }
 }
+/***********************************************
+* @brief : 编码器调试函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Encoder(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
     tft180_show_string(20,10*Line1,"L_Encoder:");
     tft180_show_string(20,10*Line2,"R_Encoder:");
     tft180_show_string(20,10*Maxsize,"EXIT");
    //------------FUNC-----------------------//
+    select=Line3;//因为没有其他功能，所以默认退出
      do{
          EncoderGetCount(&speed_left, &speed_right);
          system_delay_ms(2);
          tft180_show_int(80,10*Line2,speed_right,4);
          tft180_show_int(80,10*Line1,speed_left,4);
          my_sel=KeySelect(Maxsize);
-        }
-       while(my_sel<0);
+        }while(my_sel<0);
        switch (select)
        {
-
-       case Line3:
-           page = Father;
-           tft180_clear();
-           break;
-       default:
-           //select=0;//宏定义
-           break;
+            case Line3:
+                page = Father;
+                tft180_clear();
+                break;
+            default:
+            break;
        }
 }
+/***********************************************
+* @brief : 电机调试函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Motor(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
-        tft180_show_string(20,10*Line1,"Motor:");
-        tft180_show_int(80,10*Line1,speed_left,4);
-        tft180_show_string(20,10*Line2,"Motor:");
-        tft180_show_int(80,10*Line2,speed_left,4);
-        tft180_show_string(20,10*Maxsize,"EXIT");
-        MotorSetPWM(3000,3000);
-       //------------FUNC-----------------------//
-         do{
-                tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-                my_sel=KeySelect(Maxsize);
-            }
-           while(my_sel<0);
-            tft180_show_string(00,10*TFT_MAX_LINE,"Selectend");
-           switch (select)
-           {
-
+    tft180_show_string(20,10*Line1,"Motor:");
+    tft180_show_int(80,10*Line1,speed_left,4);
+    tft180_show_string(20,10*Line2,"Motor:");
+    tft180_show_int(80,10*Line2,speed_left,4);
+    tft180_show_string(20,10*Maxsize,"EXIT");
+    MotorSetPWM(3000,3000);
+   //------------FUNC-----------------------//
+     do{
+            my_sel=KeySelect(Maxsize);
+        }while(my_sel<0);
+       switch (select)
+       {
            case Line3:
                page = Father;
                tft180_clear();
                MotorSetPWM(0,0);
                break;
            default:
-               //select=0;//宏定义
                break;
-           }
+       }
 }
+/***********************************************
+* @brief : ADC调试函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_ADC(Menu Father,uint8 Maxsize){
-    //-----------Display-------------------//
-
+        //-----------Display-------------------//
         tft180_show_string(20,10*Line1,"ADC:");
-//        tft180_show_int(80,10*Line2,adc_value[0],4);
-//        tft180_show_int(80,10*Line3,adc_value[1],4);
-//        tft180_show_int(80,10*Line4,adc_value[2],4);
-//        tft180_show_int(80,10*Line5,adc_value[3],4);
-//        tft180_show_int(80,10*Line6,adc_value[4],4);
         tft180_show_string(20,10*Maxsize,"EXIT");
        //------------FUNC-----------------------//
+        select=Line7;
          do{
              ADCGetValue(adc_value);
              tft180_show_int(80,10*Line2,adc_value[0],4);
@@ -992,41 +1095,39 @@ void Func_ADC(Menu Father,uint8 Maxsize){
              tft180_show_int(80,10*Line4,adc_value[2],4);
              tft180_show_int(80,10*Line5,adc_value[3],4);
              tft180_show_int(80,10*Line6,adc_value[4],4);
-                tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
                 my_sel=KeySelect(Maxsize);
-            }
-           while(my_sel<0);
-            tft180_show_string(00,10*TFT_MAX_LINE,"Selectend");
+            }while(my_sel<0);
            switch (select)
            {
-
            case Line7:
                page = Father;
                tft180_clear();
                break;
            default:
-               //select=0;//宏定义
                break;
            }
 }
+/***********************************************
+* @brief : MPU调试函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_MPU(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
-        int16 menu_gyro = GetICM20602Gyro_Y();
-        tft180_show_string(80,10*Line1,"MPU");
-        tft180_show_int(20,10*Line2,menu_gyro,5);
-        tft180_show_string(20,10*Maxsize,"EXIT");
-       //------------FUNC-----------------------//
-         do{
-             int16 menu_gyro = GetICM20602Gyro_Y();
-             tft180_show_int(20,10*Line2,menu_gyro,5);
-                tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-                my_sel=KeySelect(Maxsize);
-            }
-           while(my_sel<0);
-            tft180_show_string(00,10*TFT_MAX_LINE,"Selectend");
-           switch (select)
-           {
-
+    int16 menu_gyro = GetICM20602Gyro_Y();
+    tft180_show_string(80,10*Line1,"MPU");
+    tft180_show_int(20,10*Line2,menu_gyro,5);
+    tft180_show_string(20,10*Maxsize,"EXIT");
+   //------------FUNC-----------------------//
+     do{
+         int16 menu_gyro = GetICM20602Gyro_Y();
+         tft180_show_int(20,10*Line2,menu_gyro,5);
+            my_sel=KeySelect(Maxsize);
+        }while(my_sel<0);
+       switch (select)
+       {
            case Line3:
                page = Father;
                tft180_clear();
@@ -1034,325 +1135,126 @@ void Func_MPU(Menu Father,uint8 Maxsize){
            default:
                //select=0;//宏定义
                break;
-           }
-}
-#define LeftCircle 1
-void Func_PropLeftCircle(Menu Father,uint8 Maxsize){
-    //-----------Display-------------------//
-    tft180_show_string(20,10*Line1,"LeftCircle");
-             tft180_show_string(20,10*Line2,"MaxSpeed:");
-             tft180_show_int(90,10*Line2,process_property[LeftCircle].max_speed,4);
-             tft180_show_string(20,10*Line3,"MinSpeed:");
-             tft180_show_int(90,10*Line3,process_property[LeftCircle].min_speed,4);
-             tft180_show_string(20,10*Line4,"integral:");
-             tft180_show_int(90,10*Line4,process_property[LeftCircle].integral,4);
-             tft180_show_string(20,10*Maxsize,"EXIT");
-            //------------FUNC-----------------------//
-          do{
-                 tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-                 my_sel=KeySelect(Maxsize);
-             }
-            while(my_sel<0);
-             tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
-            switch (select)
-            {
-            case Line2:
-                if(LR_flag==PushRight) process_property[LeftCircle].max_speed+=key_N;
-                else if(LR_flag==PushLeft) process_property[LeftCircle].max_speed-=key_N;
-                else  MenuErrorLog("Prop"); //Loading
-                break;
-            case Line3:
-                if(LR_flag==PushRight) process_property[LeftCircle].min_speed+=key_N;
-                else if(LR_flag==PushLeft) process_property[LeftCircle].min_speed-=key_N;
-                else  MenuErrorLog("Prop"); //Loading
-                break;
-            case Line4:
-                if(LR_flag==PushRight) process_property[LeftCircle].integral+=key_N;
-                else if(LR_flag==PushLeft) process_property[LeftCircle].integral-=key_N;
-                else  MenuErrorLog("Prop"); //Loading
-                break;
-            case Line5:
-                page = Father;
-                tft180_clear();
-                break;
-            default:
-                select=1;//宏定义
-                break;
-            }
-}
-#define RightCircle 2
-void Func_PropRightCircle(Menu Father,uint8 Maxsize){
-    //-----------Display-------------------//
-       tft180_show_string(20,10*Line1,"RightCircle");
-        tft180_show_string(20,10*Line2,"MaxSpeed:");
-        tft180_show_int(90,10*Line2,process_property[RightCircle].max_speed,4);
-        tft180_show_string(20,10*Line3,"MinSpeed:");
-        tft180_show_int(90,10*Line3,process_property[RightCircle].min_speed,4);
-        tft180_show_string(20,10*Line4,"integral:");
-        tft180_show_int(90,10*Line4,process_property[RightCircle].integral,4);
-        tft180_show_string(20,10*Maxsize,"EXIT");
-       //------------FUNC-----------------------//
-     do{
-            tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-            my_sel=KeySelect(Maxsize);
-        }
-       while(my_sel<0);
-        tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
-       switch (select)
-       {
-       case Line2:
-           if(LR_flag==PushRight) process_property[RightCircle].max_speed+=key_N;
-           else if(LR_flag==PushLeft) process_property[RightCircle].max_speed-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line3:
-           if(LR_flag==PushRight) process_property[RightCircle].min_speed+=key_N;
-           else if(LR_flag==PushLeft) process_property[RightCircle].min_speed-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line4:
-           if(LR_flag==PushRight) process_property[RightCircle].integral+=key_N;
-           else if(LR_flag==PushLeft) process_property[RightCircle].integral-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line5:
-           page = Father;
-           tft180_clear();
-           break;
-       default:
-           select=1;//宏定义
-           break;
        }
 }
-#define Cut 4
-void Func_PropCut(Menu Father,uint8 Maxsize){
-    //-----------Display-------------------//
-       tft180_show_string(20,10*Line1,"Cut");
-        tft180_show_string(20,10*Line2,"MaxSpeed:");
-        tft180_show_int(90,10*Line2,process_property[Cut].max_speed,4);
-        tft180_show_string(20,10*Line3,"MinSpeed:");
-        tft180_show_int(90,10*Line3,process_property[Cut].min_speed,4);
-        tft180_show_string(20,10*Line4,"integral:");
-        tft180_show_int(90,10*Line4,process_property[Cut].integral,4);
-        tft180_show_string(20,10*Maxsize,"EXIT");
-       //------------FUNC-----------------------//
-     do{
-            tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-            my_sel=KeySelect(Maxsize);
-        }
-       while(my_sel<0);
-        tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
-       switch (select)
-       {
-       case Line2:
-           if(LR_flag==PushRight) process_property[Cut].max_speed+=key_N;
-           else if(LR_flag==PushLeft) process_property[Cut].max_speed-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line3:
-           if(LR_flag==PushRight) process_property[Cut].min_speed+=key_N;
-           else if(LR_flag==PushLeft) process_property[Cut].min_speed-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line4:
-           if(LR_flag==PushRight) process_property[Cut].integral+=key_N;
-           else if(LR_flag==PushLeft) process_property[Cut].integral-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line5:
-           page = Father;
-           tft180_clear();
-           break;
-       default:
-           select=1;//宏定义
-           break;
-       }
-}
-#define Slope 5
-void Func_PropSlope(Menu Father,uint8 Maxsize){
-    //-----------Display-------------------//
-       tft180_show_string(20,10*Line1,"Slope");
-        tft180_show_string(20,10*Line2,"MaxSpeed:");
-        tft180_show_int(90,10*Line2,process_property[Slope].max_speed,4);
-        tft180_show_string(20,10*Line3,"MinSpeed:");
-        tft180_show_int(90,10*Line3,process_property[Slope].min_speed,4);
-        tft180_show_string(20,10*Line4,"integral:");
-        tft180_show_int(90,10*Line4,process_property[Slope].integral,4);
-        tft180_show_string(20,10*Maxsize,"EXIT");
-       //------------FUNC-----------------------//
-     do{
-            tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-            my_sel=KeySelect(Maxsize);
-        }
-       while(my_sel<0);
-        tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
-       switch (select)
-       {
-       case Line2:
-           if(LR_flag==PushRight) process_property[Slope].max_speed+=key_N;
-           else if(LR_flag==PushLeft) process_property[Slope].max_speed-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line3:
-           if(LR_flag==PushRight) process_property[Slope].min_speed+=key_N;
-           else if(LR_flag==PushLeft) process_property[Slope].min_speed-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line4:
-           if(LR_flag==PushRight) process_property[Slope].integral+=key_N;
-           else if(LR_flag==PushLeft) process_property[Slope].integral-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line5:
-           page = Father;
-           tft180_clear();
-           break;
-       default:
-           select=1;//宏定义
-           break;
-       }
-}
-#define Barrier 6
-void Func_PropBarrier(Menu Father,uint8 Maxsize){
-    //-----------Display-------------------//
-       tft180_show_string(20,10*Line1,"Barrier");
-        tft180_show_string(20,10*Line2,"MaxSpeed:");
-        tft180_show_int(90,10*Line2,process_property[Barrier].max_speed,4);
-        tft180_show_string(20,10*Line3,"MinSpeed:");
-        tft180_show_int(90,10*Line3,process_property[Barrier].min_speed,4);
-        tft180_show_string(20,10*Line4,"integral:");
-        tft180_show_int(90,10*Line4,process_property[Barrier].integral,4);
-        tft180_show_string(20,10*Maxsize,"EXIT");
-       //------------FUNC-----------------------//
-     do{
-            tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
-            my_sel=KeySelect(Maxsize);
-        }
-       while(my_sel<0);
-        tft180_show_string(80,10*TFT_MAX_LINE,"Selectend");
-
-       switch (select)
-       {
-       case Line2:
-           if(LR_flag==PushRight) process_property[Barrier].max_speed+=key_N;
-           else if(LR_flag==PushLeft) process_property[Barrier].max_speed-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line3:
-           if(LR_flag==PushRight) process_property[Barrier].min_speed+=key_N;
-           else if(LR_flag==PushLeft) process_property[Barrier].min_speed-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line4:
-           if(LR_flag==PushRight) process_property[Barrier].integral+=key_N;
-           else if(LR_flag==PushLeft) process_property[Barrier].integral-=key_N;
-           else  MenuErrorLog("Prop"); //Loading
-           break;
-       case Line5:
-           page = Father;
-           tft180_clear();
-           break;
-       default:
-           select=1;//宏定义
-           break;
-       }
-}
+/***********************************************
+* @brief : 逆透视图像查看选择函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_per_image(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
-            tft180_show_string(50,10*Line1,"per_image");
-            tft180_show_string(20,10*Line2,"per_edgeline:");
-            tft180_show_string(20,10*Line3,"c_line");
-            tft180_show_string(20,10*Maxsize,"EXIT");
-           //------------FUNC-----------------------//
-             do{
-                    my_sel=KeySelect(Maxsize);
-                }
-               while(my_sel<0);
-               switch (select)
-               {
-               case Line2:
-                   per_edgeline_flag=1;
-                   break;
-               case Line3:
-                   c_line_flag=1;
-                   break;
-               case Line4:
-                   page = Father;
-                   tft180_clear();
-                   break;
-               case KEY_EXIT:
-                   page = HOME;
-                   tft180_clear();
-                   break;
-               default:
-                   select=2;//宏定义
-                   break;
-               }
+    tft180_show_string(50,10*Line1,"per_image");
+    tft180_show_string(20,10*Line2,"per_edgeline:");
+    tft180_show_string(20,10*Line3,"c_line");
+    tft180_show_string(20,10*Maxsize,"EXIT");
+   //------------FUNC-----------------------//
+     do{
+            my_sel=KeySelect(Maxsize);
+        }while(my_sel<0);
+       switch (select)
+       {
+           case Line2:
+               per_edgeline_flag=1;
+               break;
+           case Line3:
+               c_line_flag=1;
+               break;
+           case Line4:
+               page = Father;
+               tft180_clear();
+               break;
+           case KEY_EXIT:
+               page = HOME;
+               tft180_clear();
+               break;
+           default:
+               select=2;//宏定义
+               break;
+       }
 }
+/***********************************************
+* @brief : 灰度图像查看选择函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_gray_image(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
-            tft180_show_string(50,10*Line1,"gray_image");
-            tft180_show_string(20,10*Line2,"edgeline");
-            tft180_show_string(20,10*Line3,"per_edgeline");
-            tft180_show_string(20,10*Line4,"c_line");
-            tft180_show_string(20,10*Maxsize,"EXIT");
-           //------------FUNC-----------------------//
-             do{
-                    my_sel=KeySelect(Maxsize);
-                }
-               while(my_sel<0);
-               switch (select)
-               {
-               case Line2:
-                   per_edgeline_flag=1;
-                   break;
-               case Line3:
-                   edgeline_flag=1;
-                   break;
-               case Line4:
-                   c_line_flag=1;
-                   break;
-               case Line5:
-                   page = Father;
-                   tft180_clear();
-                   break;
-               case KEY_EXIT:
-                   page = HOME;
-                   tft180_clear();
-                   break;
-               default:
-                   select=2;//宏定义
-                   break;
-               }
+    tft180_show_string(50,10*Line1,"gray_image");
+    tft180_show_string(20,10*Line2,"per_edgeline");
+    tft180_show_string(20,10*Line3,"edgeline");
+    tft180_show_string(20,10*Line4,"c_line");
+    tft180_show_string(20,10*Maxsize,"EXIT");
+   //------------FUNC-----------------------//
+     do{
+            my_sel=KeySelect(Maxsize);
+        }while(my_sel<0);
+       switch (select)
+       {
+           case Line2:
+               per_edgeline_flag=1;
+               break;
+           case Line3:
+               edgeline_flag=1;
+               break;
+           case Line4:
+               c_line_flag=1;
+               break;
+           case Line5:
+               page = Father;
+               tft180_clear();
+               break;
+           case KEY_EXIT:
+               page = HOME;
+               tft180_clear();
+               break;
+           default:
+               select=2;//宏定义
+               break;
+       }
 }
+/***********************************************
+* @brief : Sobel查看函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_sobel(Menu Father,uint8 Maxsize){
-
+    tft180_show_uint(120, 20, otsu_thr, 3);
     while(KeySelect(Maxsize)<0){
-        sobel(mt9v03x_image,binary_image);
-        tft180_show_binary_image(0, 0,binary_image[0],MT9V03X_W, MT9V03X_H, 160, 120);
-    }
-    switch (select){
-        case KEY_EXIT:
-            page = kImage ;
-            break;
-        default :
-            break;
-    }
+            if(mt9v03x_finish_flag){
+                sobel(mt9v03x_image,binary_image);
+                tft180_show_binary_image(0, 0,binary_image[0],MT9V03X_W, MT9V03X_H, 160, 120);
+                mt9v03x_finish_flag=0;
+            }
+        }
+        switch (select){
+            case KEY_EXIT:
+                page = kImage ;
+                break;
+            default :
+                break;
+        }
 }
-
+/***********************************************
+* @brief : 曝光调整函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_EXP_TIME(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
                 tft180_show_string(20,10*Line1,"EXP_TIME=");
                 tft180_show_int(80,10*Line1,Change_EXP_TIME_DEF,3);
-
                 tft180_show_string(20,10*Maxsize,"EXIT");
                //------------FUNC-----------------------//
     while(KeySelect(Maxsize)<0){
-
           }
       switch (select){
           case Line1:
@@ -1373,8 +1275,13 @@ void Func_EXP_TIME(Menu Father,uint8 Maxsize){
               break;
       }
 }
-bool Outgarage_dir=0;//0为左 1为右
-
+/***********************************************
+* @brief : 出库方向函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
 void Func_Outgarage(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
                    tft180_show_string(30,10*Line1,"Left or Right");
@@ -1405,12 +1312,12 @@ void Func_Outgarage(Menu Father,uint8 Maxsize){
 * @brief : 按键控制状态机
 * @param : void
 * @return: void
-* @date  : 2023.7.7
-* @author: L
+* @date  : 2023.7.12
+* @author: 黄诚钜
 ************************************************/
 void KeyStateMachine(void)
 {
-    while(departure){
+    while(Departure_flag){
         tft180_clear();
         switch(page){
             //-------------一级菜单-----------------//
@@ -1492,14 +1399,13 @@ void KeyStateMachine(void)
             default:break;
         }
     }
+    //Departure_退出后
     system_delay_ms(1000);//延时一秒方便发车人离开
     encoder_clear_count(ENCODER_LEFT);                                      //清空左边编码器计数
     encoder_clear_count(ENCODER_RIGHT);                                     //清空右边编码器计数
     pit_enable(CCU60_CH0);//速度环
     pit_enable(CCU60_CH1);//方向环
 }
-
-
 /***********************************************
 * @brief : 按下按键唤醒屏幕查看跑车时间，为了应对赛场上调试不给用计时器
 * @param : void
