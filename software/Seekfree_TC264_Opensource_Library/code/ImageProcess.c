@@ -164,7 +164,7 @@ void ImageProcess(void)
             }
             else
             {
-                if(dis>1000)
+                if(dis>process_property[process_status_cnt].integral*10)
                 {
                     encoder_dis_flag=0;
                     encoder_status=0;
@@ -179,7 +179,7 @@ void ImageProcess(void)
             if(gyro_status==0)
             {
                 gyro_status=1;
-                StartIntegralAngle_X(70);//开启陀螺仪积70度
+                StartIntegralAngle_X(process_property[process_status_cnt].integral);//开启陀螺仪积70度
             }
             else
             {
@@ -223,12 +223,6 @@ void ImageProcess(void)
         }
         image_bias = GetAnchorPointBias(aim_distance, per_l_line_count, center_line_l);
     }
-    //速度决策
-//    if(speed_type==kImageSpeed)
-//    {
-//        base_speed=SpeedDecision(original_speed,8);//弯道是68直道是80
-//    }
-//    tft180_show_uint(0, 0, base_speed, 3);
 }
 
 /***********************************************
@@ -291,37 +285,60 @@ void ProcessPropertyInit(void)
     {
         if(process_status[i]==7 || process_status[i]==8)//入库
         {
+            process_property[i].max_speed=60;
             process_property[i].min_speed=60;
+            process_property[i].integral=0;
+            process_property[i].speed_detaction_flag=0;//默认不开启速度决策
         }
         switch(process_status[i])
         {
             case 1://左环岛
                 process_property[i].max_speed=65;
                 process_property[i].min_speed=60;
+                process_property[i].integral=0;
+                process_property[i].speed_detaction_flag=0;//默认不开启速度决策
                 break;
             case 2://右环岛
                 process_property[i].max_speed=60;
                 process_property[i].min_speed=60;
+                process_property[i].integral=0;
+                process_property[i].speed_detaction_flag=0;//默认不开启速度决策
                 break;
             case 3://十字
                 process_property[i].max_speed=60;
                 process_property[i].min_speed=60;
+                process_property[i].integral=0;
+                process_property[i].speed_detaction_flag=0;//默认不开启速度决策
                 break;
             case 4://断路
                 process_property[i].max_speed=60;
-                process_property[i].min_speed=62;
+                process_property[i].min_speed=60;
+                process_property[i].integral=0;
+                process_property[i].speed_detaction_flag=0;//默认不开启速度决策
                 break;
             case 5://坡道
                 process_property[i].max_speed=60;
                 process_property[i].min_speed=55;
+                process_property[i].integral=0;
+                process_property[i].speed_detaction_flag=0;//默认不开启速度决策
                 break;
             case 6://路障
                 process_property[i].max_speed=60;
                 process_property[i].min_speed=60;
+                process_property[i].integral=0;
+                process_property[i].speed_detaction_flag=0;//默认不开启速度决策
                 break;
-            case 7://入左库
+            case 'G'://陀螺仪
                 process_property[i].max_speed=60;
                 process_property[i].min_speed=60;
+                process_property[i].integral=40;//默认40度
+                process_property[i].speed_detaction_flag=1;//默认开启速度决策
+                break;
+            case 'E'://编码器
+                process_property[i].max_speed=60;
+                process_property[i].min_speed=60;
+                process_property[i].integral=100;//默认100cm
+                process_property[i].speed_detaction_flag=1;//默认开启速度决策
                 break;
             default:break;
         }
@@ -332,37 +349,60 @@ void ProcessPropertyDefault(uint8 i)
 {
     if(process_status[i]==7 || process_status[i]==8)//入库
     {
+        process_property[i].max_speed=60;
         process_property[i].min_speed=60;
+        process_property[i].integral=0;
+        process_property[i].speed_detaction_flag=0;//默认不开启速度决策
     }
     switch(process_status[i])
     {
         case 1://左环岛
             process_property[i].max_speed=65;
             process_property[i].min_speed=60;
+            process_property[i].integral=0;
+            process_property[i].speed_detaction_flag=0;//默认不开启速度决策
             break;
         case 2://右环岛
             process_property[i].max_speed=60;
             process_property[i].min_speed=60;
+            process_property[i].integral=0;
+            process_property[i].speed_detaction_flag=0;//默认不开启速度决策
             break;
         case 3://十字
             process_property[i].max_speed=60;
             process_property[i].min_speed=60;
+            process_property[i].integral=0;
+            process_property[i].speed_detaction_flag=0;//默认不开启速度决策
             break;
         case 4://断路
             process_property[i].max_speed=60;
             process_property[i].min_speed=60;
+            process_property[i].integral=0;
+            process_property[i].speed_detaction_flag=0;//默认不开启速度决策
             break;
         case 5://坡道
             process_property[i].max_speed=60;
             process_property[i].min_speed=55;
+            process_property[i].integral=0;
+            process_property[i].speed_detaction_flag=0;//默认不开启速度决策
             break;
         case 6://路障
             process_property[i].max_speed=60;
             process_property[i].min_speed=60;
+            process_property[i].integral=0;
+            process_property[i].speed_detaction_flag=0;//默认不开启速度决策
             break;
-        case 7://入左库
+        case 'G'://陀螺仪
             process_property[i].max_speed=60;
             process_property[i].min_speed=60;
+            process_property[i].integral=40;//默认40度
+            process_property[i].speed_detaction_flag=1;//默认开启速度决策
+            break;
+        case 'E'://编码器
+            process_property[i].max_speed=60;
+            process_property[i].min_speed=60;
+            process_property[i].integral=100;//默认100cm
+            process_property[i].speed_detaction_flag=1;//默认开启速度决策
             break;
         default:break;
     }

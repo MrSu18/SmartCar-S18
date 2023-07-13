@@ -19,8 +19,8 @@ typedef struct ControlParam//不同速度对应的不同参数
 
 typedef enum SpeedType
 {
-    kImageSpeed=0,//使用图像速度决策
-    kNormalSpeed,//取消速度决策
+    kNormalSpeed=0,//取消速度决策
+    kImageSpeed,//使用图像速度决策
 }SpeedType;//点的结构体
 
 extern ControlParam contro_param[10];

@@ -1083,7 +1083,7 @@ void Func_Motor(Menu Father,uint8 Maxsize){
     tft180_show_string(20,10*Line2,"Motor:");
     tft180_show_int(80,10*Line2,speed_left,4);
     tft180_show_string(20,10*Maxsize,"EXIT");
-    MotorSetPWM(3000,3000);
+    MotorSetPWM(2000,-2000);
    //------------FUNC-----------------------//
      do{
             my_sel=KeySelect(Maxsize);

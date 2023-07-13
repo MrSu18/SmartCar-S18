@@ -44,6 +44,7 @@
 #include "ADRC.h"
 #include "Control.h"
 #include "pid.h"
+#include "ImageProcess.h"
 
 float icm_target_angle_z,icm_target_angle_x,icm_target_angle_y;   //陀螺仪*轴积分的目标角度
 uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //陀螺仪*轴积分达到目标角度 标志位  可作为环岛出环标志位 //待整合
@@ -87,7 +88,7 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)//转向环
     {
         PIDTurnADC();
     }
-    if(speed_type==kImageSpeed)
+    if(speed_type==kImageSpeed && process_property[process_status_cnt].speed_detaction_flag==1)
     {
         base_speed=gyropid.out;
     }
