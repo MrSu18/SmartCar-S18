@@ -32,8 +32,9 @@ int s=0;//速度决策的位移
 ************************************************/
 uint16 SpeedDecision(uint16 original_speed,float a)
 {
-    int len=0;
+    //偏差太大就恢复成设定速度
     if(image_bias>5 || image_bias<-5)   return original_speed;
+    int len=0;
     float* angle;
     switch (track_type)
     {
@@ -74,9 +75,10 @@ uint16 SpeedDecision(uint16 original_speed,float a)
     }
     else
     {
-        vt= (uint16)sqrt(original_speed*original_speed+2*a*adrc_speed_detection.x1);
+        vt= (uint16)sqrt(original_speed*((speed_left+speed_right)/2)+2*a*adrc_speed_detection.x1);//使用实时速度作为v0
+//        vt= (uint16)sqrt(original_speed*original_speed+2*a*adrc_speed_detection.x1);//使用base_speeed作为v0
         //这里加权考虑偏差
-        if(-3<image_bias && image_bias<3)
+        if(-2<image_bias && image_bias<2)
         {
             vt+=2;
         }
