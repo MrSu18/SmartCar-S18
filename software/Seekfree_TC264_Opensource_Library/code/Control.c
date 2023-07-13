@@ -21,6 +21,7 @@ enum SpeedType speed_type=kNormalSpeed;
 //设定的速度
 uint16 original_speed=65;
 int s=0;//速度决策的位移
+float speed_detection_a=9;//速度决策的加速度
 
 /***********************************************
 * @brief : 速度决策
@@ -78,7 +79,7 @@ uint16 SpeedDecision(uint16 original_speed,float a)
         vt= (uint16)sqrt(original_speed*((speed_left+speed_right)/2)+2*a*adrc_speed_detection.x1);//使用实时速度作为v0
 //        vt= (uint16)sqrt(original_speed*original_speed+2*a*adrc_speed_detection.x1);//使用base_speeed作为v0
         //这里加权考虑偏差
-        if(-2<image_bias && image_bias<2)
+        if(-1<image_bias && image_bias<1)
         {
             vt+=2;
         }

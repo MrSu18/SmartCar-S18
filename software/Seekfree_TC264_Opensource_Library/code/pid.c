@@ -9,6 +9,7 @@
 #include "ADRC.h"
 #include "motor.h"
 #include "adc.h"
+#include "ImageProcess.h"
 
 PID speedpid_left;                          //赛道左轮速度环PID
 PID speedpid_right;                         //赛道右轮速度环PID
@@ -114,6 +115,11 @@ void PIDTurnImage(void)
 void PIDTurnADC(void)
 {
     turnpid_adc.err = ChaBiHe(TRACK);//电磁偏差
+    if(process_status[process_status_cnt]==5)//如果是坡道状态就给adc限幅避免在坡道左右拐
+    {
+        if(turnpid_adc.err>7) turnpid_adc.err=7;
+        else if(turnpid_adc.err<-7) turnpid_adc.err=-7;
+    }
     float EC = turnpid_adc.err - turnpid_adc.last_err;//偏差变化量
 
     turnpid_adc.out = (int)(turnpid_adc.P * turnpid_adc.err + turnpid_adc.D * EC + gyropid.P*real_gyro);//PID公式计算输出量

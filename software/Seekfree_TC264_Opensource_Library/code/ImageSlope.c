@@ -26,7 +26,6 @@
 uint8 SlopeIdentify(void)
 {
     static uint8 status=0;//坡道状态转移变量
-//    tft180_show_uint(120, 100, status, 2);
     switch(status)
     {
         case 0://开启陀螺仪检测上坡

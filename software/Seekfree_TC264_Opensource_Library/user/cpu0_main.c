@@ -127,7 +127,7 @@ int core0_main(void)
 //       }
        if(c0h1_isr_flag==1)
        {
-           printf("%d,%d,%d,%d\r\n",base_speed,process_status[process_status_cnt],flash_union_buffer[0+PROCESS_LENGTH].uint16_type,process_speed[0]);
+           printf("%f,%d,%f\r\n",turnpid_adc.err,turnpid_adc.out,my_angle_y);
            c0h1_isr_flag=0;
        }
         // 此处编写需要循环执行的代码

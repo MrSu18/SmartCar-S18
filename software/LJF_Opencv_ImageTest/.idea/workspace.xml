@@ -20,12 +20,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="clip_value可以按键修改">
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageGarage.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageGarage.c" afterDir="false" />
+    <list default="true" id="227c0d0c-8b5d-45cf-b797-d83269a35b33" name="变更" comment="速度决策修改为实时速度作为v0">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Control.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Menu.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Menu.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageSlope.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/pid.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu0_main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/cpu1_main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,6 +100,11 @@
   }
 }</component>
   <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="LJF_Opencv_ImageTest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$/../../../../../../../IDE/OpenCVcpp/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/x64/mingw/bin" PASS_PARENT_ENVS_2="true" PROJECT_NAME="LJF_Opencv_ImageTest" TARGET_NAME="LJF_Opencv_ImageTest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="LJF_Opencv_ImageTest" RUN_TARGET_NAME="LJF_Opencv_ImageTest">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -106,7 +114,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="93b6f23a-1ea3-43ae-a825-d6bd4480a098" name="Changes" comment="" />
+      <changelist id="227c0d0c-8b5d-45cf-b797-d83269a35b33" name="变更" comment="速度决策修改为实时速度作为v0" />
       <created>1670220554743</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -361,13 +369,7 @@
       <workItem from="1689151939033" duration="1065000" />
       <workItem from="1689153103347" duration="1826000" />
       <workItem from="1689177320719" duration="2000" />
-    </task>
-    <task id="LOCAL-00030" summary="灰度扫线">
-      <created>1681194170586</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1681194170586</updated>
+      <workItem from="1689236996270" duration="1381000" />
     </task>
     <task id="LOCAL-00031" summary="灰度扫线">
       <created>1681300116810</created>
@@ -705,7 +707,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689154451991</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="速度决策修改为实时速度作为v0">
+      <created>1689233953510</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1689233953511</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -723,7 +732,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="发现直道上解算出来的KP噪声也很大，对EC滤波之后会好点，但是还是不行，所以暂时先放弃使用模糊PID，改为使用普通PID，P和D的参数比3月份使用普通PID时能小很多就能过弯" />
     <MESSAGE value="串角速度环，但是速度并没提升，提速了还是跑不了，跑有元素的赛道是13.6但是没加之前是13.36可能是手触发计时器的误差，先这么用着" />
     <MESSAGE value="加配重跑的丝滑之后再来直接废掉，而且很明显右转就是跳轮，左转不会" />
     <MESSAGE value="断路状态结束的条件加严" />
@@ -748,7 +756,8 @@
     <MESSAGE value="按键菜单添加元素时默认元素属性是默认的而不依据代码里面的初始化" />
     <MESSAGE value="修正了sobel显示不了的Bug,速度环参数是新的速度环参数" />
     <MESSAGE value="clip_value可以按键修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="clip_value可以按键修改" />
+    <MESSAGE value="速度决策修改为实时速度作为v0" />
+    <option name="LAST_COMMIT_MESSAGE" value="速度决策修改为实时速度作为v0" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

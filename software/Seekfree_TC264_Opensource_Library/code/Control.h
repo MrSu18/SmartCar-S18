@@ -27,6 +27,7 @@ extern ControlParam contro_param[10];
 extern enum SpeedType speed_type;//基础速度决策的依据
 extern uint16 original_speed;//设定的速度
 extern int s;//速度决策图像看到长直道的长度
+extern float speed_detection_a;//速度决策的加速度
 
 void ControlParmInit(void);//初始化控制参数
 uint16 SpeedDecision(uint16 original_speed,float a);//速度决策
