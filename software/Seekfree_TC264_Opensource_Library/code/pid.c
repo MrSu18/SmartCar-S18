@@ -15,6 +15,9 @@ PID speedpid_left;                          //赛道左轮速度环PID
 PID speedpid_right;                         //赛道右轮速度环PID
 //图像转向环PID
 PID turnpid_image;//左转
+float turnright_P = 12;//右转转向的P
+float turnright_D = 0;//右转转向的D
+float turngyro_right = 0.01;//右转角速度抑制的增益
 //电磁转向环PID
 PID turnpid_adc;                            //电磁转向环PID
 //速度环前馈控制
@@ -86,7 +89,7 @@ void PIDTurnImage(void)
     }
     else//右转
     {
-        turnpid_image.out = (int)(12 * turnpid_image.err + turnpid_image.D * adrc_controller_errc.x1 + gyropid.P*real_gyro);//PID公式计算输出量
+        turnpid_image.out = (int)(turnright_P * turnpid_image.err + turnright_D * adrc_controller_errc.x1 + turngyro_right*real_gyro);//PID公式计算输出量
     }
     turnpid_image.last_err = turnpid_image.err;//更新上一次偏差
     //*********************双环串级时转向PID输出限幅***************

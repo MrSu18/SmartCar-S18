@@ -17,12 +17,16 @@
 #include "math.h"
 #include "ImageProcess.h"
 
-#define TOF_DISTANCE_THR 2000//TOF测距的阈值
-#define IMAGE_DISTANCE_THR  0.55//图像拐点的阈值
-#define ADC_IN_TRACK_THR    300//判断车是否在赛道内的ADC阈值
-
 uint8 barrier_status=0;//路障状态
 uint8 barrier_icm_flag=0;//路障特殊陀螺仪标志变量
+
+int tof_distance_thr=2000;//TOF测距的阈值
+float image_distance_thr=0.55;//图像拐点的阈值
+int adc_in_track_thr=300;//判断车是否在赛道内的ADC阈值
+float out_integral_angle=50;//积分出去的目标角度
+float back_integral_angle=90;//积分回到赛道的角度
+float out_integral_dis=589.54;//积分出去的目标距离
+float back_integral_dis=760.44;//积分回到赛道的距离
 
 uint8 BarrierImageVerify(void);//路障图像二次验证
 
@@ -43,7 +47,7 @@ uint8 BarrierIdentify(void)
             {
                 //tof二次判断
                 dl1a_get_distance();
-                if(dl1a_distance_mm <= TOF_DISTANCE_THR && dl1a_finsh_flag==1)//tof检测到路障
+                if(dl1a_distance_mm <= tof_distance_thr && dl1a_finsh_flag==1)//tof检测到路障
                 {
                     barrier_status=1;
                     gpio_set_level(BEER, 1);//识别到开蜂鸣器
@@ -51,21 +55,21 @@ uint8 BarrierIdentify(void)
                     speed_type=kNormalSpeed;base_speed=process_property[process_status_cnt].min_speed;//降速
                     track_type=kTrackSpecial;image_bias=6;//左拐
                     encoder_dis_flag=1;
-                    StartIntegralAngle_X(50);while(!icm_angle_x_flag);//等待40度
+                    StartIntegralAngle_X(out_integral_angle);while(!icm_angle_x_flag);//等待40度
                     image_bias=0;
-                    while(dis<589.54);encoder_dis_flag=0;
+                    while(dis<out_integral_dis);encoder_dis_flag=0;
                     track_type=kTrackSpecial;image_bias=-8;//右拐
                     encoder_dis_flag=1;
-                    StartIntegralAngle_X(90);while(!icm_angle_x_flag);//等待70度
+                    StartIntegralAngle_X(back_integral_angle);while(!icm_angle_x_flag);//等待70度
                     image_bias=0;
-                    while(dis<760.44);encoder_dis_flag=0;
+                    while(dis<back_integral_dis);encoder_dis_flag=0;
 //                    return 1;
                 }
             }
             break;
         case 1://写死拐出去拐回来后，判断此时的左边线是不是真的左边线
             //电磁判断是否出状态
-            if((L>ADC_IN_TRACK_THR && LM>ADC_IN_TRACK_THR) || M>ADC_IN_TRACK_THR || (RM>ADC_IN_TRACK_THR && R>ADC_IN_TRACK_THR))
+            if((L>adc_in_track_thr && LM>adc_in_track_thr) || M>adc_in_track_thr || (RM>adc_in_track_thr && R>adc_in_track_thr))
             {
                 gpio_set_level(BEER, 0);//状态结束关闭蜂鸣器
                 LedSet(1, 1, 1);//灭灯
@@ -79,7 +83,7 @@ uint8 BarrierIdentify(void)
                 track_type=kTrackLeft;
             }
             //电磁判断是否在赛道内
-            else if(L<ADC_IN_TRACK_THR && LM<ADC_IN_TRACK_THR && M<ADC_IN_TRACK_THR && RM<ADC_IN_TRACK_THR && R<ADC_IN_TRACK_THR)
+            else if(L<adc_in_track_thr && LM<adc_in_track_thr && M<adc_in_track_thr && RM<adc_in_track_thr && R<adc_in_track_thr)
             {
                 //验证右边线是否是赛道要走的左边
                 if(r_line_count>20 && (r_growth_direction[1]+r_growth_direction[0]-r_growth_direction[4]-r_growth_direction[3])>r_line_count-20)
@@ -133,7 +137,7 @@ uint8 BarrierImageVerify(void)
     for(uint8 i=0;i<len;i++)
     {
         float temp=fabs(angle[i]);
-        if(temp>(70. / 180. * 3.14) && temp<(120. / 180. * 3.14) && i<IMAGE_DISTANCE_THR/SAMPLE_DIST)
+        if(temp>(70. / 180. * 3.14) && temp<(120. / 180. * 3.14) && i<image_distance_thr/SAMPLE_DIST)
         {
             return 1;
         }

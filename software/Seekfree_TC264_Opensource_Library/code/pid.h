@@ -41,6 +41,9 @@ extern PID speedpid_left;
 extern PID speedpid_right;
 //图像转向环PID
 extern PID turnpid_image;
+extern float turnright_P;//右转转向的P
+extern float turnright_D;//右转转向的D
+extern float turngyro_right;//右转角速度抑制的增益
 extern PID turnpid_adc;
 extern PID gyropid;
 extern FFC speedffc_left;

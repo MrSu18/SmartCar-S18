@@ -16,6 +16,13 @@ float CalculateGradient(uint8 lr_flag);//坡道计算边线斜率
 //路障函数
 extern uint8 barrier_status;
 extern uint8 barrier_icm_flag;
+extern int tof_distance_thr;//TOF测距的阈值
+extern float image_distance_thr;//图像拐点的阈值
+extern int adc_in_track_thr;//判断车是否在赛道内的ADC阈值
+extern float out_integral_angle;//积分出去的目标角度
+extern float back_integral_angle;//积分回到赛道的角度
+extern float out_integral_dis;//积分出去的目标距离
+extern float back_integral_dis;//积分回到赛道的距离
 uint8 BarrierIdentify(void);//路障状态机
 //车库函数
 uint8 GarageFindCorner(int* corner_id);//车库找角点
