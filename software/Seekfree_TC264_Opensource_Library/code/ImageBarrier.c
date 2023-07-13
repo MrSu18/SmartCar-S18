@@ -27,6 +27,8 @@ float out_integral_angle=50;//积分出去的目标角度
 float back_integral_angle=90;//积分回到赛道的角度
 float out_integral_dis=589.54;//积分出去的目标距离
 float back_integral_dis=760.44;//积分回到赛道的距离
+float out_bias=6;//拐出去的偏差
+float back_bias=-8;//拐回赛道的偏差
 
 uint8 BarrierImageVerify(void);//路障图像二次验证
 
@@ -53,12 +55,12 @@ uint8 BarrierIdentify(void)
                     gpio_set_level(BEER, 1);//识别到开蜂鸣器
                     LedSet(0, 0, 0);//亮灯
                     speed_type=kNormalSpeed;base_speed=process_property[process_status_cnt].min_speed;//降速
-                    track_type=kTrackSpecial;image_bias=6;//左拐
+                    track_type=kTrackSpecial;image_bias=out_bias;//左拐
                     encoder_dis_flag=1;
                     StartIntegralAngle_X(out_integral_angle);while(!icm_angle_x_flag);//等待40度
                     image_bias=0;
                     while(dis<out_integral_dis);encoder_dis_flag=0;
-                    track_type=kTrackSpecial;image_bias=-8;//右拐
+                    track_type=kTrackSpecial;image_bias=back_bias;//右拐
                     encoder_dis_flag=1;
                     StartIntegralAngle_X(back_integral_angle);while(!icm_angle_x_flag);//等待70度
                     image_bias=0;

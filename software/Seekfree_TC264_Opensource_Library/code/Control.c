@@ -14,7 +14,7 @@
 #include "ADRC.h"
 #include "ImageProcess.h"
 
-extern bool Outgarage_dir;//出库方向 0为左 1为右
+extern uint8 Outgarage_dir;//出库方向 0为左 1为右 2为直行
 //不同速度对应的控制参数
 ControlParam contro_param[10]={0};
 //当前的速度决策方式

@@ -23,6 +23,8 @@ extern float out_integral_angle;//积分出去的目标角度
 extern float back_integral_angle;//积分回到赛道的角度
 extern float out_integral_dis;//积分出去的目标距离
 extern float back_integral_dis;//积分回到赛道的距离
+extern float out_bias;//拐出去的偏差
+extern float back_bias;//拐回赛道的偏差
 uint8 BarrierIdentify(void);//路障状态机
 //车库函数
 uint8 GarageFindCorner(int* corner_id);//车库找角点

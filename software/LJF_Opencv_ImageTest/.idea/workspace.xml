@@ -20,9 +20,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="227c0d0c-8b5d-45cf-b797-d83269a35b33" name="变更" comment="加入元素状态是否开启速度决策的flag属性">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="227c0d0c-8b5d-45cf-b797-d83269a35b33" name="变更" comment="加LED配合蜂鸣器" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -360,14 +358,7 @@
       <workItem from="1689236996270" duration="1408000" />
       <workItem from="1689239284013" duration="17000" />
       <workItem from="1689239595010" duration="1583000" />
-      <workItem from="1689253812262" duration="1000" />
-    </task>
-    <task id="LOCAL-00033" summary="测试环岛，有很多问题，问题是在于经常把电磁线检测到边线，使得状态错乱，灰度扫线在同色区域的时候会扫出错误边线需要解决">
-      <created>1681649104718</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1681649104718</updated>
+      <workItem from="1689253812262" duration="469000" />
     </task>
     <task id="LOCAL-00034" summary="灰度扫线加权上一次边线的灰度值，进行区块运算">
       <created>1681726934822</created>
@@ -705,7 +696,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689242088776</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="加LED配合蜂鸣器">
+      <created>1689253831589</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1689253831589</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -723,7 +721,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="断路状态结束的条件加严" />
     <MESSAGE value="删除模糊PID和角速度环等不用的东西" />
     <MESSAGE value="增加速度决策，但是感觉加的还不行，有一些地方还是没加起来速度" />
     <MESSAGE value="增加入库之后，插入屏幕，五轴按键按下确认键能够查看单片机运行时间，便于比赛的时候查看自己的速度有没有快" />
@@ -748,7 +745,8 @@
     <MESSAGE value="速度决策修改为实时速度作为v0" />
     <MESSAGE value="坡道adc的eer限幅，修改直道加速的阈值" />
     <MESSAGE value="加入元素状态是否开启速度决策的flag属性" />
-    <option name="LAST_COMMIT_MESSAGE" value="加入元素状态是否开启速度决策的flag属性" />
+    <MESSAGE value="加LED配合蜂鸣器" />
+    <option name="LAST_COMMIT_MESSAGE" value="加LED配合蜂鸣器" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

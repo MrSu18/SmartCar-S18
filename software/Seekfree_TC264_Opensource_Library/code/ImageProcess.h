@@ -23,7 +23,7 @@ typedef struct ProcessProperty//进入元素之后的一些特殊属性
 {
     uint8 max_speed;//元素内提速要提速到多少
     uint8 min_speed;//元素降速要降速到多少
-    uint8 integral;//编码器或者陀螺仪积分到多少算一个状态
+    uint16 integral;//编码器或者陀螺仪积分到多少算一个状态
     uint8 speed_detaction_flag;//速度决策的方式，就是说这一整个元素状态开不开速度决策
 }ProcessProperty;
 

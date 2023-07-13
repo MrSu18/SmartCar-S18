@@ -19,6 +19,7 @@
 #include "ImageConversion.h"
 #include "ImageBasic.h"
 #include "ImageSpecial.h"
+#include "Control.h"
 
 #define TFT_MAX_LINE 11 //可显示12行 从0开始数起
 #define Unknown_sta -5 //未知状态标志位，可用于检错
@@ -35,7 +36,7 @@ uint8 No_States;//状态机状态计数器
 uint8 States_amount;//状态机总数
 uint8 print_Line1_flag,print_Line2_flag;//print函数临时使用变量 待优化
 int16 Change_EXP_TIME_DEF=MT9V03X_EXP_TIME_DEF;  //要想曝光生效，必须要改摄像头配置文件里的参数
-uint8 Outgarage_dir=0;//出库方向 0为左 1为右
+uint8 Outgarage_dir=0;//出库方向 0为左 1为右 2:直行
 int page; //页数--即状态机状态
 short select;//实时获取行数
 short my_sel;//保存上一个select
@@ -60,6 +61,8 @@ typedef enum Menu {//注册菜单
     kprocess_speed,
     kEXP_TIME,
     kOutgarage,
+    kRush_time,
+    kspeed_detection_a,
     /*Parameter*/
 
     /*Checkout*/
@@ -234,7 +237,7 @@ void Func_Home(Menu Father,uint8 Maxsize){
      tft180_show_string(20,10*Line3,"Checkout");
      tft180_show_string(20,10*Line4,"Flash");
      tft180_show_string(20,10*Line5,"Barrier");
-     tft180_show_string(20,10*Maxsize,"EXIT");
+     tft180_show_string(20,10*Maxsize,"Start!!!!!!!!!");
     //------------FUNC-----------------------//
      do{
          my_sel=KeySelect(Maxsize);
@@ -393,6 +396,8 @@ void Func_Parameter(Menu Father,uint8 Maxsize){
      tft180_show_string(20,10*Line3,"Basetrack");
      tft180_show_string(20,10*Line4,"EXP_TIME");
      tft180_show_string(20,10*Line5,"OutGarage_dir");
+     tft180_show_string(20,10*Line6,"Rush_time");
+     tft180_show_string(20,10*Line7,"speed_dect_a");
      tft180_show_string(20,10*Maxsize,"EXIT");
     //------------FUNC-----------------------//
     do{
@@ -410,10 +415,12 @@ void Func_Parameter(Menu Father,uint8 Maxsize){
             break;
         case Line3:
             page = kBasetrack;
+            select = Line2;
             tft180_clear();
             break;
         case Line4:
             page = kEXP_TIME;
+            select = Line1;
             tft180_clear();
             break;
         case Line5:
@@ -422,6 +429,14 @@ void Func_Parameter(Menu Father,uint8 Maxsize){
             tft180_clear();
             break;
         case Line6:
+            page = kRush_time;
+            select = Line1;
+            break;
+        case Line7:
+            page = kspeed_detection_a;
+            select = Line1;
+            break;
+        case Line8:
             page = Father;
             tft180_clear();
             break;
@@ -504,7 +519,7 @@ void Func_Pid(Menu Father,uint8 Maxsize){
      tft180_show_string(20,10*Line1,"kLeftpid");
      tft180_show_string(20,10*Line2,"kRightpid");
      tft180_show_string(20,10*Line3,"Gyro_pid");
-     tft180_show_string(20,10*Line4,"kImagepid");
+     tft180_show_string(20,10*Line4,"kImagepid_l");
      tft180_show_string(20,10*Line5,"kImagepid_r");
      tft180_show_string(20,10*Line6,"kAdcpid");
 
@@ -518,26 +533,32 @@ void Func_Pid(Menu Father,uint8 Maxsize){
         {
         case Line1:
             page = kLeftpid;
+            select = Line1;
             tft180_clear();
             break;
         case Line2:
             page = kRightpid;
+            select = Line1;
             tft180_clear();
             break;
         case Line3:
             page = kGyropid;
+            select = Line1;
             tft180_clear();
             break;
         case Line4:
             page = kImagepid;
+            select = Line1;
             tft180_clear();
             break;
         case Line5:
             page = kImagepid_right;
+            select = Line1;
             tft180_clear();
             break;
         case Line6:
             page = kAdcpid;
+            select = Line1;
             tft180_clear();
             break;
         case Line7:
@@ -701,6 +722,7 @@ void Func_process_speed(Menu Father,uint8 Maxsize){
           case Line10:
               page = Father;
               No_States=0;
+              select= Line6;
               break;
           case KEY_EXIT://暂时充当跳转位
               Return_flag =0;
@@ -712,6 +734,7 @@ void Func_process_speed(Menu Father,uint8 Maxsize){
               }while(Return_flag !=1);
               No_States=CacheOfNo_States;
               break;
+
           default:
               //select=Line2;//宏定义
               break;
@@ -1477,6 +1500,10 @@ void Func_Barrier(Menu Father,uint8 Maxsize){
    tft180_show_float(110,10*Line6,out_integral_dis,4,2);
    tft180_show_string(20,10*Line7,"back_dis");
    tft180_show_float(110,10*Line7,back_integral_dis,4,2);
+   tft180_show_string(20,10*Line8,"out_bias");
+   tft180_show_float(110,10*Line8,out_bias,4,2);
+   tft180_show_string(20,10*Line9,"back_bias");
+   tft180_show_float(110,10*Line9,back_bias,4,2);
    tft180_show_string(20,10*Maxsize,"EXIT");
    //------------FUNC-----------------------//
    while(KeySelect(Maxsize)<0){
@@ -1519,6 +1546,16 @@ void Func_Barrier(Menu Father,uint8 Maxsize){
          else  MenuErrorLog("Barrier"); //Loading
          break;
      case Line8 :
+         if(LR_flag==PushRight) out_bias+=key_N;
+         else if(LR_flag==PushLeft) out_bias-=key_N;
+         else  MenuErrorLog("Barrier"); //Loading
+         break;
+     case Line9 :
+         if(LR_flag==PushRight) back_bias+=key_N;
+         else if(LR_flag==PushLeft) back_bias-=key_N;
+         else  MenuErrorLog("Barrier"); //Loading
+         break;
+     case Line10 :
          page = HOME ;
          break;
      case KEY_EXIT:
@@ -1529,7 +1566,66 @@ void Func_Barrier(Menu Father,uint8 Maxsize){
  }
 
 }
-
+/***********************************************
+* @brief : 运行时间修改函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
+void Func_Rush_time(Menu Father,uint8 Maxsize){
+    //------------display-----------//
+    tft180_show_string(20, 10*Line1, "Rush_time:");
+    tft180_show_int(80, 10*Line1, Rush_time, 6);
+    tft180_show_string(20, 10*Maxsize, "EXIT:");
+    //-------------func--------------------//
+    while(KeySelect(Maxsize)<0){
+          tft180_show_int(100,10*TFT_MAX_LINE,key_N*100,3);
+        }
+    switch (select){
+        case Line1:
+          if(LR_flag==PushRight) Rush_time+=key_N*100;
+          else if(LR_flag==PushLeft) Rush_time-=key_N*100;
+          else  MenuErrorLog("Rush_time"); //Loading
+          break;
+        case Line2:
+            page= Father;
+            break;
+        case KEY_EXIT:
+            page= Father;
+            break;
+    }
+}
+/***********************************************
+* @brief : 速度决策加速度修改函数
+* @param : Father 父级  Maxsize 最大行数(不包括EXIT，会自动加进去)
+* @return: void
+* @date  : 2023.7.12
+* @author: 黄诚钜
+************************************************/
+void Func_Speed_Detection_a(Menu Father,uint8 Maxsize){
+    //------------display-----------//
+    tft180_show_string(20, 10*Line1, "speed_dect_a:");
+    tft180_show_int(100, 10*Line1, speed_detection_a, 3);
+    tft180_show_string(20, 10*Maxsize, "EXIT:");
+    //-------------func--------------------//
+    while(KeySelect(Maxsize)<0){
+          tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+        }
+    switch (select){
+        case Line1:
+          if(LR_flag==PushRight) speed_detection_a+=key_N;
+          else if(LR_flag==PushLeft) speed_detection_a-=key_N;
+          else  MenuErrorLog("speed_dect_a"); //Loading
+          break;
+        case Line2:
+            page= Father;
+            break;
+        case KEY_EXIT:
+            page= Father;
+            break;
+    }
+}
 void Func_printf(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
        tft180_show_string(20,10*Line1,"status");
@@ -1644,10 +1740,10 @@ void KeyStateMachine(void)
                 Func_State_machine(HOME,11);
                 break;
             case Parameter:
-                Func_Parameter(HOME,5);
+                Func_Parameter(HOME,7);
                 break;
             case kBarrier:
-                Func_Barrier(HOME, 7);
+                Func_Barrier(HOME, 9);
                 break;
             case Checkout:
                 Func_Checkout(HOME,7);
@@ -1673,6 +1769,12 @@ void KeyStateMachine(void)
                 break;
             case kOutgarage:
                 Func_Outgarage(Parameter, 2);
+                break;
+            case kRush_time:
+                Func_Rush_time(Parameter,1);
+                break;
+            case kspeed_detection_a:
+                Func_Speed_Detection_a(Parameter,1);
                 break;
             case kImage:
                 Func_Image(Checkout, 5);
@@ -1789,7 +1891,7 @@ void WriteToFlash(uint32 page,uint32 read_flag)
                 flash_union_buffer[index+2*PROCESS_LENGTH].uint8_type=process_property[index].min_speed;//元素中的最低速度
                 flash_union_buffer[index+3*PROCESS_LENGTH].uint8_type=process_property[index].max_speed;//元素中的最高速度
                 flash_union_buffer[index+4*PROCESS_LENGTH].uint8_type=process_property[index].speed_detaction_flag;//每个元素是否开启速度决策
-                flash_union_buffer[index+5*PROCESS_LENGTH].uint8_type=process_property[index].integral;//编码器或陀螺仪积分多少
+                flash_union_buffer[index+5*PROCESS_LENGTH].uint16_type=process_property[index].integral;//编码器或陀螺仪积分多少
             }
             index+=5*PROCESS_LENGTH+1;
             flash_union_buffer[index++].float_type=turnpid_image.P;//图像方向环P
@@ -1820,6 +1922,10 @@ void WriteToFlash(uint32 page,uint32 read_flag)
             flash_union_buffer[index++].float_type=turnright_P;//右转方向环P
             flash_union_buffer[index++].float_type=turnright_D;//右转方向环D
             flash_union_buffer[index++].float_type=turngyro_right;//右转角速度抑制增益
+            flash_union_buffer[index++].float_type=out_bias;//拐出去的偏差
+            flash_union_buffer[index++].float_type=back_bias;//拐回赛道的偏差
+            flash_union_buffer[index++].uint32_type=Rush_time;//设定车跑的时间
+            flash_union_buffer[index++].float_type=speed_detection_a;//速度决策使用的加速度
 
             flash_write_page_from_buffer(0, 2);//将缓冲区中的值写入Flash
             break;
@@ -1859,7 +1965,7 @@ void ReadFromFlash(void)
             process_property[index].min_speed=flash_union_buffer[index+2*PROCESS_LENGTH].uint8_type;//元素中的最低速度
             process_property[index].max_speed=flash_union_buffer[index+3*PROCESS_LENGTH].uint8_type;//元素中的最高速度
             process_property[index].speed_detaction_flag=flash_union_buffer[index+4*PROCESS_LENGTH].uint8_type;//每个元素是否开启速度决策
-            process_property[index].integral=flash_union_buffer[index+5*PROCESS_LENGTH].uint8_type;//编码器或陀螺仪积分多少
+            process_property[index].integral=flash_union_buffer[index+5*PROCESS_LENGTH].uint16_type;//编码器或陀螺仪积分多少
         }
         index+=5*PROCESS_LENGTH+1;
         turnpid_image.P=flash_union_buffer[index++].float_type;//图像方向环P
@@ -1890,6 +1996,10 @@ void ReadFromFlash(void)
         turnright_P=flash_union_buffer[index++].float_type;//右转方向环P
         turnright_D=flash_union_buffer[index++].float_type;//右转方向环D
         turngyro_right=flash_union_buffer[index++].float_type;//右转角速度抑制增益
+        out_bias=flash_union_buffer[index++].float_type;//拐出去的偏差
+        back_bias=flash_union_buffer[index++].float_type;//拐回来的偏差
+        Rush_time=flash_union_buffer[index++].uint32_type;//设定车跑的时间
+        speed_detection_a=flash_union_buffer[index++].float_type;//速度决策使用的加速度
 
         flash_buffer_clear();//清空缓冲区
     }
