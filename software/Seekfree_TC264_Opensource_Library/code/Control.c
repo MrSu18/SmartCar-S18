@@ -14,6 +14,7 @@
 #include "ADRC.h"
 #include "ImageProcess.h"
 
+extern bool Outgarage_dir;//出库方向 0为左 1为右
 //不同速度对应的控制参数
 ControlParam contro_param[10]={0};
 //当前的速度决策方式
@@ -99,13 +100,33 @@ uint16 SpeedDecision(uint16 original_speed,float a)
 ************************************************/
 void OutGarage(void)
 {
-    encoder_dis_flag=1;
-//    image_bias=0.5;
-    while(dis<500);//给时间车加速
-    encoder_dis_flag=0;
-//    image_bias=5;    //向左打死
-//    StartIntegralAngle_X(70);
-//    while(!icm_angle_x_flag);   //左转70°进入正常寻迹
+    switch(Outgarage_dir)
+    {
+        case 0://左转
+            encoder_dis_flag=1;
+            image_bias=0.5;
+            while(dis<150);//给时间车加速
+            encoder_dis_flag=0;
+            image_bias=5;    //向左打死
+            StartIntegralAngle_X(70);
+            while(!icm_angle_x_flag);   //左转70°进入正常寻迹
+            break;
+        case 1://右转
+            encoder_dis_flag=1;
+            image_bias=-0.5;
+            while(dis<150);//给时间车加速
+            encoder_dis_flag=0;
+            image_bias=-5;    //向左打死
+            StartIntegralAngle_X(70);
+            while(!icm_angle_x_flag);   //左转70°进入正常寻迹
+            break;
+        case 2://直走
+            encoder_dis_flag=1;
+            while(dis<500);//给时间车加速
+            encoder_dis_flag=0;
+            break;
+        default:break;
+    }
     speed_type=kImageSpeed;//出库之后启动速度决策
 }
 

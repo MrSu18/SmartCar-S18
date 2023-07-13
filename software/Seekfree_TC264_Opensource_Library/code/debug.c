@@ -14,6 +14,7 @@
 #define PER_IMAGE_H     120             //逆透视图像的高度
 #define PER_IMG     gray_image    //用于透视变换的图像
 #define IMAGE_BAN   127             //逆透视禁止区域的灰度值
+uint8 led_array=0; //led亮起队列
 
 inline int Limit(int x, int low, int up)//给x设置上下限幅
 {
@@ -210,9 +211,22 @@ void LedInit(void)
     gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     //RGB灯
 //    gpio_init(P23_1, GPO, GPIO_LOW, GPO_PUSH_PULL);
-    pwm_init(GREEN, 12500, 10000);
-    pwm_init(RED,12500,10000);
-    pwm_init(BLUE,12500,10000);
+//    pwm_init(GREEN, 12500, 10000);
+//    pwm_init(RED,12500,10000);
+//    pwm_init(BLUE,12500,10000);
+    //B 小灯泡
+    gpio_init(P23_1, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    //R
+    gpio_init(P22_0, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    //G
+    gpio_init(P22_1, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+    //B 大灯珠
+   gpio_init(P22_2, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+   //R
+   gpio_init(P21_4, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+   //G
+   gpio_init(P22_3, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+
 }
 /***********************************************
 * @brief : 调RGB灯的颜色,pwm越小颜色越亮
@@ -228,4 +242,40 @@ void ColorOfRGB(int green_pwm,int red_pwm,int blue_pwm)
     pwm_set_duty(GREEN, green_pwm);
     pwm_set_duty(RED, red_pwm);
     pwm_set_duty(BLUE, blue_pwm);
+}
+
+/***********************************************
+* @brief : 调RGB灯的颜色
+* @param : RGB三色轮转
+* @return:
+* @date  : 2023.7.13
+* @author: Kammer
+************************************************/
+void LedSet (uint8 R,uint8 G,uint8 B){
+    gpio_set_level(P21_4,R);
+    gpio_set_level(P22_3,G);
+    gpio_set_level(P22_2,B);
+}
+/***********************************************
+* @brief : 调RGB灯的颜色
+* @param : void
+* @return:
+* @date  : 2023.7.13
+* @author: Kammer
+************************************************/
+
+void LedShift(void){//中用不中看
+    led_array++;
+    if(led_array==3) led_array =0;
+    switch(led_array){
+    case 0:
+        LedSet(0, 1, 1);
+        break;
+    case 1:;
+        LedSet(1, 0, 1);
+        break;
+    case 2:
+        LedSet(1, 1, 0);
+        break;
+    }
 }

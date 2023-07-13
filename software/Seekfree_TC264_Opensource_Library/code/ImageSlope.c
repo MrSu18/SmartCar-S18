@@ -44,6 +44,7 @@ uint8 SlopeIdentify(void)
             if(((gradient_l * gradient_r < 0) && gradient_l < 0.5 && gradient_l > 0.2 && gradient_r < -0.2 && gradient_r > -0.5)||(dl1a_distance_mm < 600))
             {
                 gpio_set_level(BEER,1);//开启蜂鸣器
+                LedSet(0, 0, 0);//亮灯
                 speed_type=kNormalSpeed;//关闭速度决策
                 base_speed = process_property[process_status_cnt].min_speed;//降速
                 track_mode = kTrackADC;//切换成电磁循迹
@@ -66,6 +67,7 @@ uint8 SlopeIdentify(void)
                 base_speed=original_speed;//恢复速度
                 speed_type=kImageSpeed;//开启速度决策
                 gpio_set_level(BEER,0);
+                LedSet(1, 1, 1);//灭灯
                 status=0;
                 return 1;
             }

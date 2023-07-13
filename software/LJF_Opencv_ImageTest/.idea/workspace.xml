@@ -20,9 +20,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="227c0d0c-8b5d-45cf-b797-d83269a35b33" name="变更" comment="坡道adc的eer限幅，修改直道加速的阈值">
+    <list default="true" id="227c0d0c-8b5d-45cf-b797-d83269a35b33" name="变更" comment="加入元素状态是否开启速度决策的flag属性">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Menu.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Menu.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -360,14 +359,8 @@
       <workItem from="1689177320719" duration="2000" />
       <workItem from="1689236996270" duration="1408000" />
       <workItem from="1689239284013" duration="17000" />
-      <workItem from="1689239595010" duration="594000" />
-    </task>
-    <task id="LOCAL-00032" summary="边线进行透视">
-      <created>1681306268952</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1681306268952</updated>
+      <workItem from="1689239595010" duration="1583000" />
+      <workItem from="1689253812262" duration="1000" />
     </task>
     <task id="LOCAL-00033" summary="测试环岛，有很多问题，问题是在于经常把电磁线检测到边线，使得状态错乱，灰度扫线在同色区域的时候会扫出错误边线需要解决">
       <created>1681649104718</created>
@@ -705,7 +698,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689238673549</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="加入元素状态是否开启速度决策的flag属性">
+      <created>1689242088775</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1689242088776</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -723,7 +723,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="加配重跑的丝滑之后再来直接废掉，而且很明显右转就是跳轮，左转不会" />
     <MESSAGE value="断路状态结束的条件加严" />
     <MESSAGE value="删除模糊PID和角速度环等不用的东西" />
     <MESSAGE value="增加速度决策，但是感觉加的还不行，有一些地方还是没加起来速度" />
@@ -748,7 +747,8 @@
     <MESSAGE value="clip_value可以按键修改" />
     <MESSAGE value="速度决策修改为实时速度作为v0" />
     <MESSAGE value="坡道adc的eer限幅，修改直道加速的阈值" />
-    <option name="LAST_COMMIT_MESSAGE" value="坡道adc的eer限幅，修改直道加速的阈值" />
+    <MESSAGE value="加入元素状态是否开启速度决策的flag属性" />
+    <option name="LAST_COMMIT_MESSAGE" value="加入元素状态是否开启速度决策的flag属性" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

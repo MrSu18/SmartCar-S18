@@ -159,6 +159,8 @@ void ImageProcess(void)
         case 'E':
             if(encoder_status==0)
             {
+                gpio_toggle_level(BEER);
+                LedSet(0, 0, 0);//ÁÁµÆ
                 encoder_status=1;
                 encoder_dis_flag=1;//¿ªÆô±àÂëÆ÷²â¾à
             }
@@ -166,6 +168,7 @@ void ImageProcess(void)
             {
                 if(dis>process_property[process_status_cnt].integral*10)
                 {
+                    LedSet(1, 1, 1);//ÃðµÆ
                     encoder_dis_flag=0;
                     encoder_status=0;
                     gpio_toggle_level(BEER);
@@ -178,6 +181,8 @@ void ImageProcess(void)
         case 'G':
             if(gyro_status==0)
             {
+                gpio_toggle_level(BEER);
+                LedSet(0, 0, 0);//ÁÁµÆ
                 gyro_status=1;
                 StartIntegralAngle_X(process_property[process_status_cnt].integral);//¿ªÆôÍÓÂÝÒÇ»ý70¶È
             }
@@ -187,6 +192,7 @@ void ImageProcess(void)
                 {
                     gyro_status=0;
                     gpio_toggle_level(BEER);
+                    LedSet(1, 1, 1);//ÃðµÆ
                     process_status_cnt++;
                     original_speed=process_speed[process_status_cnt];
                     base_speed=original_speed;

@@ -26,5 +26,5 @@ void ShowImage(void);
 void ShowLine(void);
 void LedInit(void);
 void ColorOfRGB(int green_pwm,int red_pwm,int blue_pwm);
-
+void LedSet (uint8 R,uint8 G,uint8 B);
 #endif /* CODE_DEBUG_H_ */

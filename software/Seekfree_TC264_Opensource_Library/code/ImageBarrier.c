@@ -47,6 +47,7 @@ uint8 BarrierIdentify(void)
                 {
                     barrier_status=1;
                     gpio_set_level(BEER, 1);//识别到开蜂鸣器
+                    LedSet(0, 0, 0);//亮灯
                     speed_type=kNormalSpeed;base_speed=process_property[process_status_cnt].min_speed;//降速
                     track_type=kTrackSpecial;image_bias=6;//左拐
                     encoder_dis_flag=1;
@@ -67,6 +68,7 @@ uint8 BarrierIdentify(void)
             if((L>ADC_IN_TRACK_THR && LM>ADC_IN_TRACK_THR) || M>ADC_IN_TRACK_THR || (RM>ADC_IN_TRACK_THR && R>ADC_IN_TRACK_THR))
             {
                 gpio_set_level(BEER, 0);//状态结束关闭蜂鸣器
+                LedSet(1, 1, 1);//灭灯
                 speed_type=kImageSpeed;
                 barrier_status=0;
                 return 1;

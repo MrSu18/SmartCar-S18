@@ -54,6 +54,7 @@ uint8 CutIdentify(void)
                 else
                 {
                     gpio_set_level(BEER,1);//¿ªÆô·äÃùÆ÷
+                    LedSet(0, 0, 0);//ÁÁµÆ
                     cut_type = kCutIn;
                 }
             }
@@ -117,6 +118,7 @@ uint8 CutIdentify(void)
                     track_mode = kTrackImage;//ÇÐ»»Í¼ÏñÑ­¼£
                     cut_type = kCutBegin;//¸´Î»×´Ì¬»ú
                     gpio_set_level(BEER,0);//¹Ø±Õ·äÃùÆ÷
+                    LedSet(1, 1, 1);//ÃðµÆ
                     base_speed = original_speed;//»Ö¸´ËÙ¶È
                     now_flag = 0;
                     return 1;

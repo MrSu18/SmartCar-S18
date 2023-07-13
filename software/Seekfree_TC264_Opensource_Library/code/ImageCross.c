@@ -52,6 +52,7 @@ uint8 CrossIdentify(void)
                 else
                 {
                     gpio_set_level(BEER,1);//¿ªÆô·äÃùÆ÷
+                    LedSet(0, 0, 0);
                     cross_type = kCrossIn;
                 }
             }
@@ -100,6 +101,7 @@ uint8 CrossIdentify(void)
                 encoder_dis_flag = 0;
                 cross_type = kCrossBegin;
                 gpio_set_level(BEER,0);//¹Ø±Õ·äÃùÆ÷
+                LedSet(1, 1, 1);//ÃðµÆ
                 aim_distance = origin_aimdis;
                 return 1;
             }
