@@ -20,7 +20,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="227c0d0c-8b5d-45cf-b797-d83269a35b33" name="变更" comment="加LED配合蜂鸣器" />
+    <list default="true" id="227c0d0c-8b5d-45cf-b797-d83269a35b33" name="变更" comment="加速度改成按键调">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/ImageProcess.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Menu.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/code/Menu.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Seekfree_TC264_Opensource_Library/user/isr.c" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -358,14 +363,9 @@
       <workItem from="1689236996270" duration="1408000" />
       <workItem from="1689239284013" duration="17000" />
       <workItem from="1689239595010" duration="1583000" />
-      <workItem from="1689253812262" duration="469000" />
-    </task>
-    <task id="LOCAL-00034" summary="灰度扫线加权上一次边线的灰度值，进行区块运算">
-      <created>1681726934822</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1681726934822</updated>
+      <workItem from="1689253812262" duration="1717000" />
+      <workItem from="1689302231907" duration="46000" />
+      <workItem from="1689348139317" duration="2000" />
     </task>
     <task id="LOCAL-00035" summary="采图">
       <created>1681726997139</created>
@@ -703,7 +703,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689253831589</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <task id="LOCAL-00083" summary="加速度改成按键调">
+      <created>1689261203461</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1689261203461</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -721,7 +728,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="删除模糊PID和角速度环等不用的东西" />
     <MESSAGE value="增加速度决策，但是感觉加的还不行，有一些地方还是没加起来速度" />
     <MESSAGE value="增加入库之后，插入屏幕，五轴按键按下确认键能够查看单片机运行时间，便于比赛的时候查看自己的速度有没有快" />
     <MESSAGE value="重新写坡道函数，使用陀螺仪出状态" />
@@ -746,7 +752,8 @@
     <MESSAGE value="坡道adc的eer限幅，修改直道加速的阈值" />
     <MESSAGE value="加入元素状态是否开启速度决策的flag属性" />
     <MESSAGE value="加LED配合蜂鸣器" />
-    <option name="LAST_COMMIT_MESSAGE" value="加LED配合蜂鸣器" />
+    <MESSAGE value="加速度改成按键调" />
+    <option name="LAST_COMMIT_MESSAGE" value="加速度改成按键调" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -22,7 +22,8 @@
 
 //内轮纯减速可以跑72环岛70环内加速到75，入库前降速到65，转向P为12D为1
 /*1:左环岛 2:右环岛 3:十字 4:断路 5:坡道 6:路障 7:入左库 8:入右库 9:库直行 'S':停车 'E':编码器测距1m 'G':陀螺仪积分70°*/
-uint8 process_status[PROCESS_LENGTH]={6,5,4,3,3,2,8,'S'};//总状态机元素执行顺序数组
+//uint8 process_status[PROCESS_LENGTH]={6,5,4,3,3,2,8,'S'};//总状态机元素执行顺序数组
+uint8 process_status[PROCESS_LENGTH]={1,3,3,4,5,6,7,'S'};//左跑状态机
 uint16 process_speed[PROCESS_LENGTH]={60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60};//上面数组对应的元素路段的速度
 ProcessProperty process_property[PROCESS_LENGTH];
 uint8 process_status_cnt=0;//元素状态数组的计数器
@@ -299,7 +300,7 @@ void ProcessPropertyInit(void)
         switch(process_status[i])
         {
             case 1://左环岛
-                process_property[i].max_speed=65;
+                process_property[i].max_speed=60;
                 process_property[i].min_speed=60;
                 process_property[i].integral=0;
                 process_property[i].speed_detaction_flag=0;//默认不开启速度决策
@@ -324,7 +325,7 @@ void ProcessPropertyInit(void)
                 break;
             case 5://坡道
                 process_property[i].max_speed=60;
-                process_property[i].min_speed=55;
+                process_property[i].min_speed=60;
                 process_property[i].integral=0;
                 process_property[i].speed_detaction_flag=0;//默认不开启速度决策
                 break;
@@ -363,7 +364,7 @@ void ProcessPropertyDefault(uint8 i)
     switch(process_status[i])
     {
         case 1://左环岛
-            process_property[i].max_speed=65;
+            process_property[i].max_speed=60;
             process_property[i].min_speed=60;
             process_property[i].integral=0;
             process_property[i].speed_detaction_flag=0;//默认不开启速度决策
@@ -388,7 +389,7 @@ void ProcessPropertyDefault(uint8 i)
             break;
         case 5://坡道
             process_property[i].max_speed=60;
-            process_property[i].min_speed=55;
+            process_property[i].min_speed=60;
             process_property[i].integral=0;
             process_property[i].speed_detaction_flag=0;//默认不开启速度决策
             break;

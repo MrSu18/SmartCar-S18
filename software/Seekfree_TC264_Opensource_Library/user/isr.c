@@ -50,7 +50,7 @@ float icm_target_angle_z,icm_target_angle_x,icm_target_angle_y;   //ÍÓÂİÒÇ*Öá»ı·
 uint8 icm_angle_z_flag=0,icm_angle_x_flag=0,icm_angle_y_flag=0;     //ÍÓÂİÒÇ*Öá»ı·Ö´ïµ½Ä¿±ê½Ç¶È ±êÖ¾Î»  ¿É×÷Îª»·µº³ö»·±êÖ¾Î» //´ıÕûºÏ
 uint32 elapsed_time=0;//ÔËĞĞÊ±¼ä£¬¼ÇÂ¼³µÅÜÁË¶à¾Ã
 uint8 c0h0_isr_flag=0,c0h1_isr_flag=0,c1h0_isr_flag=0;                                  //0ºËÍ¨µÀ0µÄ±êÖ¾Î» 0:Ã»½øÖĞ¶Ï 1:ÖĞ¶Ï
-uint32 Rush_time = 4500;//9s
+uint32 Rush_time = 10000;//20s
 // **************************** PITÖĞ¶Ïº¯Êı ****************************
 IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)//ËÙ¶È»·
 {

@@ -36,7 +36,7 @@ uint8 No_States;//状态机状态计数器
 uint8 States_amount;//状态机总数
 uint8 print_Line1_flag,print_Line2_flag;//print函数临时使用变量 待优化
 int16 Change_EXP_TIME_DEF=MT9V03X_EXP_TIME_DEF;  //要想曝光生效，必须要改摄像头配置文件里的参数
-uint8 Outgarage_dir=1;//出库方向 0为左 1为右 2:直行
+uint8 Outgarage_dir=0;//出库方向 0为左 1为右 2:直行
 int page; //页数--即状态机状态
 short select;//实时获取行数
 short my_sel;//保存上一个select
@@ -759,7 +759,7 @@ void Func_Basetrack(Menu Father,uint8 Maxsize){
          tft180_show_string(20,10*Maxsize,"EXIT");
         //------------FUNC-----------------------//
       do{
-          tft180_show_int(100,10*TFT_MAX_LINE,key_N*0.001,3);
+          tft180_show_float(100,10*TFT_MAX_LINE,key_N*0.001,1,3);
              my_sel=KeySelect(Maxsize);
          }
         while(my_sel<0);
@@ -797,24 +797,24 @@ void Func_Imagepid(Menu Father,uint8 Maxsize){
       tft180_show_string(20,10*Maxsize,"EXIT");
      //------------FUNC-----------------------//
    do{
-       tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+       tft180_show_float(100,10*TFT_MAX_LINE,key_N*0.1,3,1);
           my_sel=KeySelect(Maxsize);
       }while(my_sel<0);
      switch (select)
      {
      case Line1:
-         if(LR_flag==PushRight) turnpid_image.P+=key_N;
-         else if(LR_flag==PushLeft) turnpid_image.P-=key_N;
+         if(LR_flag==PushRight) turnpid_image.P+=key_N*0.1;
+         else if(LR_flag==PushLeft) turnpid_image.P-=key_N*0.1;
          else   MenuErrorLog("ImaPID"); //Loading
          break;
      case Line2:
-         if(LR_flag==PushRight) turnpid_image.I+=key_N;
-         else if(LR_flag==PushLeft) turnpid_image.I-=key_N;
+         if(LR_flag==PushRight) turnpid_image.I+=key_N*0.1;
+         else if(LR_flag==PushLeft) turnpid_image.I-=key_N*0.1;
          else  MenuErrorLog("ImaPID"); //Loading
          break;
      case Line3:
-         if(LR_flag==PushRight) turnpid_image.D+=key_N;
-         else if(LR_flag==PushLeft) turnpid_image.D-=key_N;
+         if(LR_flag==PushRight) turnpid_image.D+=key_N*0.1;
+         else if(LR_flag==PushLeft) turnpid_image.D-=key_N*0.1;
          else  MenuErrorLog("ImaPID"); //Loading
          break;
      case Line4:
@@ -845,25 +845,25 @@ void Func_ADCpid(Menu Father,uint8 Maxsize){
          tft180_show_string(20,10*Maxsize,"EXIT");
         //------------FUNC-----------------------//
       do{
-          tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+          tft180_show_float(100,10*TFT_MAX_LINE,key_N*0.1,3,2);
              my_sel=KeySelect(Maxsize);
          }
         while(my_sel<0);
         switch (select)
         {
         case Line1:
-            if(LR_flag==PushRight) turnpid_adc.P+=key_N;
-            else if(LR_flag==PushLeft) turnpid_adc.P-=key_N;
+            if(LR_flag==PushRight) turnpid_adc.P+=key_N*0.1;
+            else if(LR_flag==PushLeft) turnpid_adc.P-=key_N*0.1;
             else  MenuErrorLog("ADCPID"); //Loading
             break;
         case Line2:
-            if(LR_flag==PushRight) turnpid_adc.I+=key_N;
-            else if(LR_flag==PushLeft) turnpid_adc.I-=key_N;
+            if(LR_flag==PushRight) turnpid_adc.I+=key_N*0.1;
+            else if(LR_flag==PushLeft) turnpid_adc.I-=key_N*0.1;
             else  MenuErrorLog("ADCPID"); //Loading
             break;
         case Line3:
-            if(LR_flag==PushRight) turnpid_adc.D+=key_N;
-            else if(LR_flag==PushLeft) turnpid_adc.D-=key_N;
+            if(LR_flag==PushRight) turnpid_adc.D+=key_N*0.1;
+            else if(LR_flag==PushLeft) turnpid_adc.D-=key_N*0.1;
             else  MenuErrorLog("ADCPID"); //Loading
             break;
         case Line4:
@@ -894,7 +894,10 @@ void Func_Leftpid(Menu Father,uint8 Maxsize){
             tft180_show_string(20,10*Maxsize,"EXIT");
             //------------FUNC-----------------------//
          do{
-             tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+             tft180_show_int(40,10*TFT_MAX_LINE,key_N,3);
+             tft180_show_string(20, 10*TFT_MAX_LINE, "P:");
+             tft180_show_string(80, 10*TFT_MAX_LINE, "ID:");
+             tft180_show_float(100,10*TFT_MAX_LINE,key_N*0.01,1,3);
                 my_sel=KeySelect(Maxsize);
             }while(my_sel<0);
            switch (select)
@@ -905,13 +908,13 @@ void Func_Leftpid(Menu Father,uint8 Maxsize){
                else  MenuErrorLog("speedpid_left"); //Loading
                break;
            case Line2:
-               if(LR_flag==PushRight) speedpid_left.I+=key_N;
-               else if(LR_flag==PushLeft) speedpid_left.I-=key_N;
+               if(LR_flag==PushRight) speedpid_left.I+=key_N*0.01;
+               else if(LR_flag==PushLeft) speedpid_left.I-=key_N*0.01;
                else  MenuErrorLog("speedpid_left"); //Loading
                break;
            case Line3:
-               if(LR_flag==PushRight) speedpid_left.D+=key_N;
-               else if(LR_flag==PushLeft) speedpid_left.D-=key_N;
+               if(LR_flag==PushRight) speedpid_left.D+=key_N*0.01;
+               else if(LR_flag==PushLeft) speedpid_left.D-=key_N*0.01;
                else  MenuErrorLog("speedpid_left"); //Loading
                break;
            case Line4:
@@ -942,9 +945,11 @@ void Func_Rightpid(Menu Father,uint8 Maxsize){
             tft180_show_string(20,10*Maxsize,"EXIT");
            //------------FUNC-----------------------//
          do{
-             tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
-
-             my_sel=KeySelect(Maxsize);
+            tft180_show_int(40,10*TFT_MAX_LINE,key_N,3);
+            tft180_show_string(20, 10*TFT_MAX_LINE, "P:");
+            tft180_show_string(80, 10*TFT_MAX_LINE, "ID:");
+            tft180_show_float(100,10*TFT_MAX_LINE,key_N*0.01,1,3);
+            my_sel=KeySelect(Maxsize);
             }while(my_sel<0);
            switch (select)
            {
@@ -954,13 +959,13 @@ void Func_Rightpid(Menu Father,uint8 Maxsize){
                else  MenuErrorLog("speedpid_right"); //Loading
                break;
            case Line2:
-               if(LR_flag==PushRight) speedpid_right.I+=key_N;
-               else if(LR_flag==PushLeft) speedpid_right.I-=key_N;
+               if(LR_flag==PushRight) speedpid_right.I+=key_N*0.01;
+               else if(LR_flag==PushLeft) speedpid_right.I-=key_N*0.01;
                else  MenuErrorLog("speedpid_right"); //Loading
                break;
            case Line3:
-               if(LR_flag==PushRight) speedpid_right.D+=key_N;
-               else if(LR_flag==PushLeft) speedpid_right.D-=key_N;
+               if(LR_flag==PushRight) speedpid_right.D+=key_N*0.01;
+               else if(LR_flag==PushLeft) speedpid_right.D-=key_N*0.01;
                else  MenuErrorLog("speedpid_right"); //Loading
                break;
            case Line4:
@@ -982,33 +987,33 @@ void Func_Rightpid(Menu Father,uint8 Maxsize){
 void Func_Gyropid(Menu Father,uint8 Maxsize){
             //-----------Display-------------------//
             tft180_show_string(20,10*Line1,"Gyro.P:");
-            tft180_show_float(80,10*Line1,gyropid.P,4,5);
+            tft180_show_float(80,10*Line1,gyropid.P,4,4);
             tft180_show_string(20,10*Line2,"Gyro.I:");
-            tft180_show_float(80,10*Line2,gyropid.I,4,5);
+            tft180_show_float(80,10*Line2,gyropid.I,4,4);
             tft180_show_string(20,10*Line3,"Gyro.D:");
-            tft180_show_float(80,10*Line3,gyropid.D,4,5);
+            tft180_show_float(80,10*Line3,gyropid.D,4,4);
             tft180_show_string(20,10*Maxsize,"EXIT");
            //------------FUNC-----------------------//
          do{
-             tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+             tft180_show_float(60,10*TFT_MAX_LINE,key_N*0.005,2,4);
              my_sel=KeySelect(Maxsize);
             }
            while(my_sel<0);
            switch (select)
            {
            case Line1:
-               if(LR_flag==PushRight) gyropid.P+=key_N;
-               else if(LR_flag==PushLeft) gyropid.P-=key_N;
+               if(LR_flag==PushRight) gyropid.P+=key_N*0.005;
+               else if(LR_flag==PushLeft) gyropid.P-=key_N*0.005;
                else  MenuErrorLog("gyropid"); //Loading
                break;
            case Line2:
-               if(LR_flag==PushRight) gyropid.I+=key_N;
-               else if(LR_flag==PushLeft) gyropid.I-=key_N;
+               if(LR_flag==PushRight) gyropid.I+=key_N*0.005;
+               else if(LR_flag==PushLeft) gyropid.I-=key_N*0.005;
                else  MenuErrorLog("gyropid"); //Loading
                break;
            case Line3:
-               if(LR_flag==PushRight) gyropid.D+=key_N;
-               else if(LR_flag==PushLeft) gyropid.D-=key_N;
+               if(LR_flag==PushRight) gyropid.D+=key_N*0.005;
+               else if(LR_flag==PushLeft) gyropid.D-=key_N*0.005;
                else  MenuErrorLog("gyropid"); //Loading
                break;
            case Line4:
@@ -1081,11 +1086,9 @@ void Func_Tof(Menu Father,uint8 Maxsize){
          do{
              dl1a_get_distance();
              tft180_show_int(20, 10*Line2, dl1a_distance_mm, 5);
-                tft180_show_string(00,10*TFT_MAX_LINE,"Selecting"); //Loading
                 my_sel=KeySelect(Maxsize);
             }
            while(my_sel<0);
-            tft180_show_string(00,10*TFT_MAX_LINE,"Selectend");
            switch (select)
            {
            case Line3:
@@ -1137,10 +1140,10 @@ void Func_Encoder(Menu Father,uint8 Maxsize){
 ************************************************/
 void Func_Motor(Menu Father,uint8 Maxsize){
     //-----------Display-------------------//
-    tft180_show_string(20,10*Line1,"Motor:");
-    tft180_show_int(80,10*Line1,speed_left,4);
-    tft180_show_string(20,10*Line2,"Motor:");
-    tft180_show_int(80,10*Line2,speed_left,4);
+    tft180_show_string(20,10*Line1,"Motor:3000");
+    //tft180_show_int(80,10*Line1,speed_left,4);
+    tft180_show_string(20,10*Line2,"Motor:3000");
+    //tft180_show_int(80,10*Line2,speed_left,4);
     tft180_show_string(20,10*Maxsize,"EXIT");
     MotorSetPWM(3000,3000);
    //------------FUNC-----------------------//
@@ -1513,12 +1516,19 @@ void Func_Barrier(Menu Father,uint8 Maxsize){
    tft180_show_string(20,10*Maxsize,"EXIT");
    //------------FUNC-----------------------//
    while(KeySelect(Maxsize)<0){
-       tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+       tft180_show_string(0,10*Line11,"dis_N:");
+       tft180_show_int(35,10*Line11,key_N,3);
+       tft180_show_string(60,10*Line11,"tof&adc");
+          tft180_show_int(110,10*Line11,key_N*10,3);
+       tft180_show_string(0,10*TFT_MAX_LINE,"bias");
+       tft180_show_int(30,10*TFT_MAX_LINE,key_N*0.1,3);
+       tft180_show_string(70,10*TFT_MAX_LINE,"img");
+       tft180_show_float(110,10*TFT_MAX_LINE,key_N*0.01,2,3);
      }
  switch (select){
      case Line1 :
-         if(LR_flag==PushRight) tof_distance_thr+=key_N;
-         else if(LR_flag==PushLeft) tof_distance_thr-=key_N;
+         if(LR_flag==PushRight) tof_distance_thr+=key_N*10;
+         else if(LR_flag==PushLeft) tof_distance_thr-=key_N*10;
          else  MenuErrorLog("Barrier"); //Loading
          break;
      case Line2 :
@@ -1527,8 +1537,8 @@ void Func_Barrier(Menu Father,uint8 Maxsize){
          else  MenuErrorLog("Barrier"); //Loading
          break;
      case Line3 :
-         if(LR_flag==PushRight) adc_in_track_thr+=key_N;
-         else if(LR_flag==PushLeft) adc_in_track_thr-=key_N;
+         if(LR_flag==PushRight) adc_in_track_thr+=key_N*10;
+         else if(LR_flag==PushLeft) adc_in_track_thr-=key_N*10;
          else  MenuErrorLog("Barrier"); //Loading
          break;
      case Line4 :
@@ -1552,13 +1562,13 @@ void Func_Barrier(Menu Father,uint8 Maxsize){
          else  MenuErrorLog("Barrier"); //Loading
          break;
      case Line8 :
-         if(LR_flag==PushRight) out_bias+=key_N;
-         else if(LR_flag==PushLeft) out_bias-=key_N;
+         if(LR_flag==PushRight) out_bias+=key_N*0.1;
+         else if(LR_flag==PushLeft) out_bias-=key_N*0.1;
          else  MenuErrorLog("Barrier"); //Loading
          break;
      case Line9 :
-         if(LR_flag==PushRight) back_bias+=key_N;
-         else if(LR_flag==PushLeft) back_bias-=key_N;
+         if(LR_flag==PushRight) back_bias+=key_N*0.1;
+         else if(LR_flag==PushLeft) back_bias-=key_N*0.1;
          else  MenuErrorLog("Barrier"); //Loading
          break;
      case Line10 :
@@ -1586,7 +1596,7 @@ void Func_Rush_time(Menu Father,uint8 Maxsize){
     tft180_show_string(20, 10*Maxsize, "EXIT:");
     //-------------func--------------------//
     while(KeySelect(Maxsize)<0){
-          tft180_show_int(100,10*TFT_MAX_LINE,key_N*100,3);
+          tft180_show_int(50,10*TFT_MAX_LINE,key_N*100,6);
         }
     switch (select){
         case Line1:
@@ -1612,16 +1622,16 @@ void Func_Rush_time(Menu Father,uint8 Maxsize){
 void Func_Speed_Detection_a(Menu Father,uint8 Maxsize){
     //------------display-----------//
     tft180_show_string(20, 10*Line1, "speed_dect_a:");
-    tft180_show_int(100, 10*Line1, speed_detection_a, 3);
-    tft180_show_string(20, 10*Maxsize, "EXIT:");
+    tft180_show_float(110, 10*Line1, speed_detection_a, 3,3);
+    tft180_show_string(20, 10*Maxsize,"EXIT");
     //-------------func--------------------//
     while(KeySelect(Maxsize)<0){
-          tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+          tft180_show_float(100,10*TFT_MAX_LINE,key_N*0.1,3,2);
         }
     switch (select){
         case Line1:
-          if(LR_flag==PushRight) speed_detection_a+=key_N;
-          else if(LR_flag==PushLeft) speed_detection_a-=key_N;
+          if(LR_flag==PushRight) speed_detection_a+=key_N*0.1;
+          else if(LR_flag==PushLeft) speed_detection_a-=key_N*0.1;
           else  MenuErrorLog("speed_dect_a"); //Loading
           break;
         case Line2:
@@ -1695,19 +1705,22 @@ void Func_Imagepid_right(Menu Father,uint8 Maxsize){
       tft180_show_string(20,10*Maxsize,"EXIT");
      //------------FUNC-----------------------//
    do{
-       tft180_show_int(100,10*TFT_MAX_LINE,key_N,3);
+       tft180_show_string(20, 10*TFT_MAX_LINE, "PD");
+       tft180_show_float(40,10*TFT_MAX_LINE,key_N*0.1,3,2);
+       tft180_show_string(75, 10*TFT_MAX_LINE, "gyro");
+       tft180_show_float(100,10*TFT_MAX_LINE,key_N*0.005,2,4);
           my_sel=KeySelect(Maxsize);
       }while(my_sel<0);
      switch (select)
      {
      case Line1:
-         if(LR_flag==PushRight) turnright_P+=key_N;
-         else if(LR_flag==PushLeft) turnright_P-=key_N;
+         if(LR_flag==PushRight) turnright_P+=key_N*0.1;
+         else if(LR_flag==PushLeft) turnright_P-=key_N*0.1;
          else   MenuErrorLog("ImaRightPID"); //Loading
          break;
      case Line2:
-         if(LR_flag==PushRight) turnright_D+=key_N;
-         else if(LR_flag==PushLeft) turnright_D-=key_N;
+         if(LR_flag==PushRight) turnright_D+=key_N*0.1;
+         else if(LR_flag==PushLeft) turnright_D-=key_N*0.1;
          else  MenuErrorLog("ImaRightPID"); //Loading
          break;
      case Line3:
