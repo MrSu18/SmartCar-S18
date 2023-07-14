@@ -36,7 +36,7 @@ uint8 No_States;//状态机状态计数器
 uint8 States_amount;//状态机总数
 uint8 print_Line1_flag,print_Line2_flag;//print函数临时使用变量 待优化
 int16 Change_EXP_TIME_DEF=MT9V03X_EXP_TIME_DEF;  //要想曝光生效，必须要改摄像头配置文件里的参数
-uint8 Outgarage_dir=0;//出库方向 0为左 1为右 2:直行
+uint8 Outgarage_dir=1;//出库方向 0为左 1为右 2:直行
 int page; //页数--即状态机状态
 short select;//实时获取行数
 short my_sel;//保存上一个select
@@ -474,14 +474,17 @@ void Func_Checkout(Menu Father,uint8 Maxsize){
             break;
         case Line2:
             page = kTof;
+            select = Line3;
             tft180_clear();
             break;
         case Line3:
             page = kEncoder;
+            select = Line3;
             tft180_clear();
             break;
         case Line4:
             page = kMotor;
+            select = Line3;
             tft180_clear();
             break;
         case Line5:
@@ -490,6 +493,7 @@ void Func_Checkout(Menu Father,uint8 Maxsize){
             break;
         case Line6:
             page = kMPU;
+            select = Line3;
             tft180_clear();
             break;
         case Line7:
@@ -1247,6 +1251,7 @@ void Func_per_image(Menu Father,uint8 Maxsize){
                break;
            case KEY_EXIT:
                page = HOME;
+               select = Line6;
                tft180_clear();
                break;
            default:
@@ -1289,6 +1294,7 @@ void Func_gray_image(Menu Father,uint8 Maxsize){
                break;
            case KEY_EXIT:
                page = HOME;
+               select = Line6;
                tft180_clear();
                break;
            default:
@@ -1926,6 +1932,8 @@ void WriteToFlash(uint32 page,uint32 read_flag)
             flash_union_buffer[index++].float_type=back_bias;//拐回赛道的偏差
             flash_union_buffer[index++].uint32_type=Rush_time;//设定车跑的时间
             flash_union_buffer[index++].float_type=speed_detection_a;//速度决策使用的加速度
+            flash_union_buffer[index++].uint8_type=otsu_thr;//sobel阈值
+            flash_union_buffer[index++].uint8_type=clip_value;//自适应二值化阈值
 
             flash_write_page_from_buffer(0, 2);//将缓冲区中的值写入Flash
             break;
@@ -2000,6 +2008,8 @@ void ReadFromFlash(void)
         back_bias=flash_union_buffer[index++].float_type;//拐回来的偏差
         Rush_time=flash_union_buffer[index++].uint32_type;//设定车跑的时间
         speed_detection_a=flash_union_buffer[index++].float_type;//速度决策使用的加速度
+        otsu_thr=flash_union_buffer[index++].uint8_type;//sobel阈值
+        clip_value=flash_union_buffer[index++].uint8_type;//自适应二值化阈值
 
         flash_buffer_clear();//清空缓冲区
     }
