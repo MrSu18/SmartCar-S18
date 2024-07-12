@@ -369,7 +369,11 @@ void perspective_init(void)
 }
 void EdgeLinePerspective(myPoint* in_line,uint8 num,myPoint_f* out_line)
 {
-    double change_inverse_Mat[3][3]={{-0.436724513740008,-2.68225460836311,134.828057006092},{0,-3.82738237165181,170.456836310779},{0,-0.0285350419014467,0.999958150225339}};
+//    double change_inverse_Mat[3][3]={{-0.450704225352113,-2.72202627471566,136.839504023517},{0,-3.89036645079278,172.936592684971},{0,-0.0288082934270768,0.999958727192363}}; //2023年7月9日的
+//    double change_inverse_Mat[3][3]={{31.8623546280070,101.466096213244,-2901.88657726193},{0,157.116868378518,-3254.39748706091},{0,1.06897064017597,0.999887503565963}};//华北四轮
+    double change_inverse_Mat[3][3]={{-3.95505475773312	,-13.4382670639701,483.822334916094},{0,-20.5468765157809,598.721153956221},{0	,-0.138576762936780,0.999999883895144}};//师弟的
+//    double change_inverse_Mat[3][3]={{-0.436724513740008,-2.68225460836311,134.828057006092},{0,-3.82738237165181,170.456836310779},{0,-0.0285350419014467,0.999958150225339}};
+//    double change_inverse_Mat[3][3]={{-0.334324677893821,-2.11300683868024,123.360797799595},{-0.00651850973406959,-3.08326465843391,165.360408354706},{-0.000100347505591652,-0.0225320551364840,1.00004732375657}};//左环岛
     for(uint8 count=0;count<num;count++)
     {
         float i=in_line[count].X;float j=in_line[count].Y;
@@ -403,4 +407,35 @@ myPoint_f PointPerspective(myPoint point)
     per_point.X = solve_x;
     per_point.Y = solve_y;
     return per_point;
+}
+
+float RegressionSlope(int star_num,int end_num,myPoint_f* in_line)//求斜率
+{
+    //Y=BX+A
+    int i=0;
+    float SumX=0,SumY=0,SumLines=0;
+    float SumUp=0,SumDown=0,avrX=0,avrY=0,Bias=0;
+
+    for (int num = star_num; num < end_num; num++)
+    {
+        SumX += in_line[num].Y;//因为是横着看的，原点在左下角，当作第二象限
+        SumY += in_line[num].X;
+    }
+
+    SumLines=end_num-star_num;
+
+    avrX=(float)(SumX/SumLines);     //X的平均值
+    avrY=(float)(SumY/SumLines);     //Y的平均值
+
+    for (int num = star_num; num < end_num; num++)
+    {
+        SumUp+=(in_line[num].X-avrY)*(in_line[num].Y-avrX);//分子
+        SumDown+=(in_line[num].Y-avrX)*(in_line[num].Y-avrX);//分母
+    }
+
+    if(SumDown==0)
+        Bias=0;
+    else
+        Bias=SumUp/SumDown;
+    return Bias;
 }
